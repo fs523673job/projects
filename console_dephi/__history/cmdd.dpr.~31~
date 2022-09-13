@@ -23,7 +23,6 @@ begin
   Console.WriteLine('First parameter must be the repository directory. Ex: C:\Apdata_X64');
   Console.WriteLine('Digit "exit" or "break" to finalize application');
   Console.WriteLine('Digit "setdir" to set directory for repository');
-  Console.WriteLine('Digit "menu" to options');
 
   if (ParamStr(1) <> '') then
     DirectoryRepository := ParamStr(1)
@@ -54,7 +53,7 @@ begin
         5    :
           begin
             if (CommandParameters = '') then
-              DirectoryRepository := 'c:\apdata_x64'
+              DirectoryRepository := 'c:\apdata_x64';
             else
               DirectoryRepository := CommandParameters;
           end;

@@ -2,7 +2,7 @@
 
 interface
 
-function ExecuteConsoleOutput(const ACommand, AParameters: String): Boolean;
+function ExcecuteConsoleOutput(const ACommand, AParameters: String): Boolean;
 
 implementation
 
@@ -11,7 +11,7 @@ uses
   System.Console
   ;
 
-function ExecuteConsoleOutput(const ACommand, AParameters: String): Boolean;
+procedure CaptureConsoleOutput(const ACommand, AParameters: String);
 const
   CReadBuffer = 2400;
 var
@@ -24,16 +24,12 @@ var
   dRead      : DWord;
   dRunning   : DWord;
 begin
-  Result := False;
-
   saSecurity.nLength              := SizeOf(TSecurityAttributes);
   saSecurity.bInheritHandle       := True;
   saSecurity.lpSecurityDescriptor := nil;
 
   if CreatePipe(hRead, hWrite, @saSecurity, 0) then
   begin
-    Console.WriteColor('CreatePipe', [TConsoleColor.Red]);
-
     FillChar(suiStartup, SizeOf(TStartupInfo), #0);
     suiStartup.cb          := SizeOf(TStartupInfo);
     suiStartup.hStdInput   := hRead;
@@ -44,9 +40,6 @@ begin
 
     if CreateProcess(nil, PChar(ACommand + ' ' + AParameters), @saSecurity, @saSecurity, True, NORMAL_PRIORITY_CLASS, nil, nil, suiStartup, piProcess) then
     begin
-      Result := True;
-
-      Console.WriteColor('CreateProcess', [TConsoleColor.Red]);
       repeat
         dRunning  := WaitForSingleObject(piProcess.hProcess, 100);
         SleepEx(10, True);
@@ -58,16 +51,13 @@ begin
           OemToAnsi(pBuffer, pBuffer);
           Console.WriteLine(String(pBuffer));
         until (dRead < CReadBuffer);
-        Console.WriteColor('end repeat 01', [TConsoleColor.Red]);
       until (dRunning <> WAIT_TIMEOUT);
-      Console.WriteColor('end repeat 02', [TConsoleColor.Red]);
       CloseHandle(piProcess.hProcess);
       CloseHandle(piProcess.hThread);
     end;
     CloseHandle(hRead);
     CloseHandle(hWrite);
   end;
-  Console.WriteColor('close all handle', [TConsoleColor.Red]);
 end;
 
 

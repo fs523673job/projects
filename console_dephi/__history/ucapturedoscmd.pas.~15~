@@ -67,7 +67,6 @@ begin
     CloseHandle(hRead);
     CloseHandle(hWrite);
   end;
-  Console.WriteColor('close all handle', [TConsoleColor.Red]);
 end;
 
 

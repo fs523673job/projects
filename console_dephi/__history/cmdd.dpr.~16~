@@ -11,25 +11,16 @@ uses
   System.StrUtils,
   System.RTTI,
   ucompile in 'ucompile.pas',
-  ucapturedoscmd in 'ucapturedoscmd.pas',
-  unbuildoptions in 'unbuildoptions.pas';
+  ucapturedoscmd in 'ucapturedoscmd.pas';
 
 var
-  Command             : String;
-  CommandParameters   : String;
-  InputArray          : TArray<string>;
-  DirectoryRepository : String;
+  Command           : String;
+  CommandParameters : String;
+  InputArray        : TArray<string>;
+
 begin
-  Console.WriteLine('First parameter must be the repository directory. Ex: C:\Apdata_X64');
+  Console.WriteLine('Test Console - Execute Bat Compilations');
   Console.WriteLine('Digit "exit" or "break" to finalize application');
-  Console.WriteLine('Digit "setdir" to set directory for repository');
-  Console.WriteLine('Digit "menu" to options');
-
-  if (ParamStr(1) <> '') then
-    DirectoryRepository := ParamStr(1)
-  else
-    DirectoryRepository := 'c:\apdata_x64';
-
   try
     while True do
     begin
@@ -46,18 +37,15 @@ begin
       else
         CommandParameters := String.Empty;
 
-      case IndexStr(Command, ['EXIT', 'BREAK', 'CLEAR', 'CLS', 'MENU', 'SETDIR']) of
+      case IndexStr(Command, ['EXIT', 'BREAK', 'CLEAR', 'CLS', 'MENU']) of
         0    : Exit;
         1    : Break;
         2..3 : Console.Clear;
-        4    : MenuBuildOptions(DirectoryRepository);
-        5    :
-          begin
-            if (CommandParameters = '') then
-              DirectoryRepository := 'c:\apdata_x64'
-            else
-              DirectoryRepository := CommandParameters;
-          end;
+        4    :
+        begin
+          Console.WriteColor('Inform the Repository Directory', [TConsoleColor.Blue]);
+          MenuCompilex64;
+        end
         else
         begin
           if not (ExecuteConsoleOutput(Command, CommandParameters)) then

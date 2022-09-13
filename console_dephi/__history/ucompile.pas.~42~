@@ -95,7 +95,7 @@ begin
        09 : ;
        10 : ;
        11 : ;
-       12 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+       12 : ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
        13 : ;
        14 : ;
        15 : ;

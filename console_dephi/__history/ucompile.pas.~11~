@@ -2,7 +2,7 @@
 
 interface
 
-procedure MenuCompilex64(const APathDir: String; const ABuildOption: Integer);
+procedure MenuCompilex64;
 
 implementation
 
@@ -11,9 +11,18 @@ uses
   System.Console,
   System.Classes,
   System.StrUtils,
-  System.RTTI,
-  ucapturedoscmd
+  System.RTTI
   ;
+
+procedure PrintMenuBuild;
+begin
+  Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
+  Console.WriteColorLine('* 01 - ApServer [32]                                                  *', [TConsoleColor.Blue]);
+  Console.WriteColorLine('* 02 - ApServer [64]                                                  *', [TConsoleColor.Blue]);
+  Console.WriteColorLine('* 03 - ApTools                                                        *', [TConsoleColor.Blue]);
+  Console.WriteColorLine('* 04 - Back                                                           *', [TConsoleColor.Blue]);
+  Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
+end;
 
 procedure PrintMenu;
 begin
@@ -38,32 +47,11 @@ begin
   Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
 end;
 
-procedure MenuCompilex64(const APathDir: String; const ABuildOption: Integer);
+procedure MenuCompilex64;(const APathDir: String);
 var
   Command           : String;
   CommandParameters : String;
   InputArray        : TArray<String>;
-
-  function BuildOptionsToStr(const ABOP: Integer): String;
-  begin
-    case ABOP of
-      1 : Result := 'DEBUG';
-      2 : Result := 'RELEASE';
-      3 : Result := 'MEMLEAK';
-      else
-        Result := 'DEBUG'
-    end;
-  end;
-
-  procedure ExecuteInternal(const ACommand, AParameters: String);
-  begin
-    Console.Clear;
-    if not ExecuteConsoleOutput(ACommand, Aparameters) then
-      Console.WriteColor('Command not executed', [TConsoleColor.Red])
-    else
-      Console.WriteLine('compile>sucess!');
-  end;
-
 begin
   Console.Clear;
   PrintMenu;
@@ -84,9 +72,9 @@ begin
         CommandParameters := String.Empty;
 
       case StrToIntDef(Command, 0) of
-       01 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+       01 : Format('%s\Aplicacoes\ApServer\Source\buildServer.bat %s %s', []  ;
        02 : ;
-       03 : ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+       03 : ;
        04 : ;
        05 : ;
        06 : ;
@@ -95,7 +83,7 @@ begin
        09 : ;
        10 : ;
        11 : ;
-       12 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+       12 : ;
        13 : ;
        14 : ;
        15 : ;

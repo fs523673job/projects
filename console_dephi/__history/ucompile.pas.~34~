@@ -57,11 +57,8 @@ var
 
   procedure ExecuteInternal(const ACommand, AParameters: String);
   begin
-    Console.Clear;
     if not ExecuteConsoleOutput(ACommand, Aparameters) then
-      Console.WriteColor('Command not executed', [TConsoleColor.Red])
-    else
-      Console.WriteLine('compile>sucess!');
+      Console.WriteColor('Command not executed', [TConsoleColor.Red]);
   end;
 
 begin
@@ -86,7 +83,7 @@ begin
       case StrToIntDef(Command, 0) of
        01 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
        02 : ;
-       03 : ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+       03 : ;
        04 : ;
        05 : ;
        06 : ;
@@ -95,7 +92,7 @@ begin
        09 : ;
        10 : ;
        11 : ;
-       12 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+       12 : ;
        13 : ;
        14 : ;
        15 : ;

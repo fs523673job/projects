@@ -58,16 +58,14 @@ begin
           OemToAnsi(pBuffer, pBuffer);
           Console.WriteLine(String(pBuffer));
         until (dRead < CReadBuffer);
-        Console.WriteColor('end repeat 01', [TConsoleColor.Red]);
+        Console.WriteColor('CreateProcess', [TConsoleColor.Red]);
       until (dRunning <> WAIT_TIMEOUT);
-      Console.WriteColor('end repeat 02', [TConsoleColor.Red]);
       CloseHandle(piProcess.hProcess);
       CloseHandle(piProcess.hThread);
     end;
     CloseHandle(hRead);
     CloseHandle(hWrite);
   end;
-  Console.WriteColor('close all handle', [TConsoleColor.Red]);
 end;
 
 
