@@ -3,11 +3,13 @@
 interface
 
 function ExecuteConsoleOutput(const ACommand, AParameters: String): Boolean;
+function ExecuteConsoleOutputEx(const ACommand, AParameters: String; Work: string = 'c:\'): Boolean;
 
 implementation
 
 uses
   Windows,
+  System.Classes,
   System.Console
   ;
 
@@ -32,43 +34,102 @@ begin
 
   if CreatePipe(hRead, hWrite, @saSecurity, 0) then
   begin
-    Console.WriteColor('CreatePipe', [TConsoleColor.Red]);
+    try
+      FillChar(suiStartup, SizeOf(TStartupInfo), #0);
+      suiStartup.cb          := SizeOf(TStartupInfo);
+      suiStartup.hStdInput   := hRead;
+      suiStartup.hStdOutput  := hWrite;
+      suiStartup.hStdError   := hWrite;
+      suiStartup.dwFlags     := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
+      suiStartup.wShowWindow := SW_HIDE;
 
-    FillChar(suiStartup, SizeOf(TStartupInfo), #0);
-    suiStartup.cb          := SizeOf(TStartupInfo);
-    suiStartup.hStdInput   := hRead;
-    suiStartup.hStdOutput  := hWrite;
-    suiStartup.hStdError   := hWrite;
-    suiStartup.dwFlags     := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
-    suiStartup.wShowWindow := SW_HIDE;
+      if CreateProcess(nil, PChar(ACommand + ' ' + AParameters), @saSecurity, @saSecurity, True, NORMAL_PRIORITY_CLASS, nil, nil, suiStartup, piProcess) then
+      begin
+        Result := True;
+        try
+          CloseHandle(hWrite);
+          repeat
+            dRunning := WaitForSingleObject(piProcess.hProcess, 100);
+            CheckSynchronize();
+            SleepEx(100, True);
+            repeat
+              dRead := 0;
+              if (windows.ReadFile(hRead, pBuffer[0], CReadBuffer, dRead, nil)) then
+              begin
+                pBuffer[dRead] := #0;
 
-    if CreateProcess(nil, PChar(ACommand + ' ' + AParameters), @saSecurity, @saSecurity, True, NORMAL_PRIORITY_CLASS, nil, nil, suiStartup, piProcess) then
-    begin
-      Result := True;
-
-      Console.WriteColor('CreateProcess', [TConsoleColor.Red]);
-      repeat
-        dRunning  := WaitForSingleObject(piProcess.hProcess, 100);
-        SleepEx(10, True);
-        repeat
-          dRead := 0;
-          ReadFile(hRead, pBuffer[0], CReadBuffer, dRead, nil);
-          pBuffer[dRead] := #0;
-
-          OemToAnsi(pBuffer, pBuffer);
-          Console.WriteLine(String(pBuffer));
-        until (dRead < CReadBuffer);
-        Console.WriteColor('end repeat 01', [TConsoleColor.Red]);
-      until (dRunning <> WAIT_TIMEOUT);
-      Console.WriteColor('end repeat 02', [TConsoleColor.Red]);
-      CloseHandle(piProcess.hProcess);
-      CloseHandle(piProcess.hThread);
+                OemToAnsi(pBuffer, pBuffer);
+                Console.WriteLine(String(pBuffer));
+              end;
+            until (dRead < CReadBuffer);
+          until (dRunning <> WAIT_TIMEOUT);
+        finally
+          CloseHandle(piProcess.hProcess);
+          CloseHandle(piProcess.hThread);
+        end;
+      end;
+    finally
+      CloseHandle(hRead);
     end;
-    CloseHandle(hRead);
-    CloseHandle(hWrite);
   end;
-  Console.WriteColor('close all handle', [TConsoleColor.Red]);
 end;
 
+function ExecuteConsoleOutputEx(const ACommand, AParameters: String; Work: string = 'c:\'): Boolean;
+const
+  CReadBuffer = 255;
+var
+  SecAtrrs        : TSecurityAttributes;
+  StartupInfo     : TStartupInfo;
+  ProcessInfo     : TProcessInformation;
+  StdOutPipeRead  : THandle;
+  StdOutPipeWrite : THandle;
+  WasOK           : Boolean;
+  pCommandLine    : array[0..CReadBuffer] of AnsiChar;
+  BytesRead       : Cardinal;
+  WorkDir         : string;
+  Handle          : Boolean;
+begin
+  Result := False;
+
+  SecAtrrs.nLength              := SizeOf(SecAtrrs);
+  SecAtrrs.bInheritHandle       := True;
+  SecAtrrs.lpSecurityDescriptor := nil;
+
+  CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SecAtrrs, 0);
+  try
+    FillChar(StartupInfo, SizeOf(StartupInfo), 0);
+    StartupInfo.cb         := SizeOf(StartupInfo);
+    StartupInfo.dwFlags     := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+    StartupInfo.wShowWindow := SW_HIDE;
+    StartupInfo.hStdInput   := GetStdHandle(STD_INPUT_HANDLE); // don't redirect stdin
+    StartupInfo.hStdOutput  := StdOutPipeWrite;
+    StartupInfo.hStdError   := StdOutPipeWrite;
+
+    WorkDir := Work;
+    Handle  := CreateProcess(nil, PChar('cmd.exe /c ' + ACommand + ' ' + AParameters), nil, nil, True, 0, nil, PChar(WorkDir), StartupInfo, ProcessInfo);
+
+    CloseHandle(StdOutPipeWrite);
+
+    if Handle then
+      try
+        Result := True;
+        repeat
+          WasOK := Windows.ReadFile(StdOutPipeRead, pCommandLine, CReadBuffer, BytesRead, nil);
+          if BytesRead > 0 then
+          begin
+            pCommandLine[BytesRead] := #0;
+            OemToAnsi(pCommandLine, pCommandLine);
+            Console.WriteLine(String(pCommandLine));
+          end;
+        until not WasOK or (BytesRead = 0);
+        WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+      finally
+        CloseHandle(ProcessInfo.hThread);
+        CloseHandle(ProcessInfo.hProcess);
+      end;
+  finally
+    CloseHandle(StdOutPipeRead);
+  end;
+end;
 
 end.

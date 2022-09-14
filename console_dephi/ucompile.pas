@@ -59,9 +59,13 @@ var
   begin
     Console.Clear;
     if not ExecuteConsoleOutput(ACommand, Aparameters) then
-      Console.WriteColor('Command not executed', [TConsoleColor.Red])
+      Console.WriteColorLine('Command not executed', [TConsoleColor.Red])
     else
-      Console.WriteLine('compile>sucess!');
+    begin
+      Console.Write('compile>');
+      Console.WriteColor('executed!', [TConsoleColor.Green]);
+      Console.WriteLine('');
+    end;
   end;
 
 begin
