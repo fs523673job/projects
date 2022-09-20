@@ -1,36 +1,29 @@
 ﻿[Closed Files]
-File_0=TSourceModule,'c:\program files (x86)\embarcadero\studio\19.0\SOURCE\RTL\SYS\System.pas',0,1,6235,1,6234,0,0,,
-File_1=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\System\unUserLogin.pas',0,1,4058,66,4069,0,0,,
-File_2=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\Grupos_Usuarios\unUsuarios.pas',0,1,1637,74,1634,0,0,,
-File_3=TSourceModule,'C:\Apdata_x64\ApComps\ApLibrary\ApLibServer\unAbstractServerObject.pas',0,1,608,1,626,0,0,,
-File_4=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\WorkFlow\unWorkFlowInspector.pas',0,1,10321,1,10337,0,0,,
-File_5=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\unWorkFlowFlexConsistencyEngine.pas',0,1,317,1,336,0,0,,
-File_6=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\Interfaces\unFlexConsistencyConsts.pas',0,1,121,7,136,0,0,,
-File_7=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\Interfaces\unFlexConsistencyEngine.pas',0,1,2339,1,2345,0,0,,{1
-File_8=TSourceModule,'C:\Apdata_x64\ApComps\SqlDir6\SDEngine.pas',0,1,4291,112,4319,0,0,,
-File_9=TSourceModule,'C:\Apdata_x64\ApComps\ApLibrary\ApBuffer\BufferDef.pas',0,1,5270,1,5288,0,0,,
-File_10=TSourceModule,'C:\Apdata_x64\ApComps\TMSScripter\source\imports\apdata\ap_ppUtils.pas',0,1,1915,42,1925,0,0,,
-File_11=TSourceModule,'C:\Apdata_x64\ApComps\RB\Source\ppStructuredStorage.pas',0,1,76,53,209,0,0,,
-File_12=TSourceModule,'C:\Apdata_x64\ApComps\RB\Source\ppMetaFileReader.pas',0,1,1752,24,1760,0,0,,
-File_13=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\DocumentosDigitais\unDocumentosDigitalizadosContratadoService.pas',0,1,16,46,23,0,0,,
-File_14=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\Contratados\unInsertEmployee.pas',0,1,1595,19,1600,0,0,,
+File_0=TSourceModule,'C:\github\projects\console_dephi\3rparty\System.Console.pas',0,1,1041,41,1065,0,0,,
+File_1=TSourceModule,'c:\program files (x86)\embarcadero\studio\19.0\SOURCE\RTL\SYS\System.pas',0,1,30103,1,30116,0,0,,
+File_2=TSourceModule,'c:\program files (x86)\embarcadero\studio\19.0\source\rtl\win\Winapi.Windows.pas',0,1,37902,1,37920,0,0,,
+File_3=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\System\unUserLogin.pas',0,1,4058,66,4069,0,0,,
+File_4=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\Grupos_Usuarios\unUsuarios.pas',0,1,1637,74,1634,0,0,,
+File_5=TSourceModule,'C:\Apdata_x64\ApComps\ApLibrary\ApLibServer\unAbstractServerObject.pas',0,1,608,1,626,0,0,,
+File_6=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\WorkFlow\unWorkFlowInspector.pas',0,1,10321,1,10337,0,0,,
+File_7=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\unWorkFlowFlexConsistencyEngine.pas',0,1,317,1,336,0,0,,
+File_8=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\Interfaces\unFlexConsistencyConsts.pas',0,1,121,7,136,0,0,,
+File_9=TSourceModule,'C:\Apdata_x64\Aplicacoes\ApServer\Source\Classes\Interfaces\unFlexConsistencyEngine.pas',0,1,2339,1,2345,0,0,,{1
+File_10=TSourceModule,'C:\Apdata_x64\ApComps\SqlDir6\SDEngine.pas',0,1,4291,112,4319,0,0,,
+File_11=TSourceModule,'C:\Apdata_x64\ApComps\ApLibrary\ApBuffer\BufferDef.pas',0,1,5270,1,5288,0,0,,
+File_12=TSourceModule,'C:\Apdata_x64\ApComps\TMSScripter\source\imports\apdata\ap_ppUtils.pas',0,1,1915,42,1925,0,0,,
+File_13=TSourceModule,'C:\Apdata_x64\ApComps\RB\Source\ppStructuredStorage.pas',0,1,76,53,209,0,0,,
+File_14=TSourceModule,'C:\Apdata_x64\ApComps\RB\Source\ppMetaFileReader.pas',0,1,1752,24,1760,0,0,,
 
 [Modules]
-Module0=C:\github\projects\console_dephi\ucapturedoscmd.pas
-Module1=C:\github\projects\console_dephi\ucompile.pas
-Module2=C:\github\projects\console_dephi\cmdd.dproj
-Module3=C:\github\projects\console_dephi\unbuildoptions.pas
-Module4=C:\github\projects\console_dephi\3rparty\System.Console.pas
-Module5=default.htm
-Module6=documentation.htm
-Count=7
+Module0=C:\github\projects\console_dephi\cmdd.dproj
+Module1=C:\github\projects\console_dephi\unbuildoptions.pas
+Module2=C:\github\projects\console_dephi\ucompile.pas
+Module3=C:\github\projects\console_dephi\ucapturedoscmd.pas
+Module4=default.htm
+Module5=documentation.htm
+Count=6
 EditWindowCount=1
-
-[C:\github\projects\console_dephi\ucapturedoscmd.pas]
-ModuleType=TSourceModule
-
-[C:\github\projects\console_dephi\ucompile.pas]
-ModuleType=TSourceModule
 
 [C:\github\projects\console_dephi\cmdd.dproj]
 ModuleType=TBaseProject
@@ -38,7 +31,10 @@ ModuleType=TBaseProject
 [C:\github\projects\console_dephi\unbuildoptions.pas]
 ModuleType=TSourceModule
 
-[C:\github\projects\console_dephi\3rparty\System.Console.pas]
+[C:\github\projects\console_dephi\ucompile.pas]
+ModuleType=TSourceModule
+
+[C:\github\projects\console_dephi\ucapturedoscmd.pas]
 ModuleType=TSourceModule
 
 [default.htm]
@@ -48,15 +44,14 @@ ModuleType=TURLModule
 ModuleType=TURLModule
 
 [EditWindow0]
-ViewCount=7
-CurrentEditView=C:\github\projects\console_dephi\ucapturedoscmd.pas
+ViewCount=6
+CurrentEditView=C:\github\projects\console_dephi\cmdd.dpr
 View0=0
 View1=1
 View2=2
 View3=3
 View4=4
 View5=5
-View6=6
 PercentageSizes=1
 Create=1
 Visible=1
@@ -95,9 +90,9 @@ WelcomePageURL=bds:/documentation.htm
 [View2]
 CustomEditViewType=TEditView
 Module=C:\github\projects\console_dephi\cmdd.dpr
-CursorX=77
-CursorY=65
-TopLine=46
+CursorX=86
+CursorY=71
+TopLine=65
 LeftCol=1
 Elisions=
 Bookmarks=
@@ -106,9 +101,9 @@ EditViewName=C:\github\projects\console_dephi\cmdd.dpr
 [View3]
 CustomEditViewType=TEditView
 Module=C:\github\projects\console_dephi\unbuildoptions.pas
-CursorX=26
-CursorY=56
-TopLine=37
+CursorX=5
+CursorY=57
+TopLine=27
 LeftCol=1
 Elisions=
 Bookmarks=
@@ -117,9 +112,9 @@ EditViewName=C:\github\projects\console_dephi\unbuildoptions.pas
 [View4]
 CustomEditViewType=TEditView
 Module=C:\github\projects\console_dephi\ucompile.pas
-CursorX=80
-CursorY=98
-TopLine=37
+CursorX=31
+CursorY=130
+TopLine=104
 LeftCol=1
 Elisions=
 Bookmarks=
@@ -128,24 +123,13 @@ EditViewName=C:\github\projects\console_dephi\ucompile.pas
 [View5]
 CustomEditViewType=TEditView
 Module=C:\github\projects\console_dephi\ucapturedoscmd.pas
-CursorX=17
-CursorY=51
-TopLine=31
+CursorX=125
+CursorY=110
+TopLine=19
 LeftCol=1
 Elisions=
 Bookmarks=
 EditViewName=C:\github\projects\console_dephi\ucapturedoscmd.pas
-
-[View6]
-CustomEditViewType=TEditView
-Module=C:\github\projects\console_dephi\3rparty\System.Console.pas
-CursorX=41
-CursorY=1065
-TopLine=1041
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=C:\github\projects\console_dephi\3rparty\System.Console.pas
 
 [UndockedDesigner]
 Count=0

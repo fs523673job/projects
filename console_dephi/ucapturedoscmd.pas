@@ -3,12 +3,13 @@
 interface
 
 function ExecuteConsoleOutput(const ACommand, AParameters: String): Boolean;
-function ExecuteConsoleOutputEx(const ACommand, AParameters: String; Work: string = 'c:\'): Boolean;
+function ExecuteConsoleOutputEx(const ACommand, AParameters: String): Boolean;
 
 implementation
 
 uses
   Windows,
+  System.SysUtils,
   System.Classes,
   System.Console
   ;
@@ -74,7 +75,7 @@ begin
   end;
 end;
 
-function ExecuteConsoleOutputEx(const ACommand, AParameters: String; Work: string = 'c:\'): Boolean;
+function ExecuteConsoleOutputEx(const ACommand, AParameters: String): Boolean;
 const
   CReadBuffer = 255;
 var
@@ -105,7 +106,7 @@ begin
     StartupInfo.hStdOutput  := StdOutPipeWrite;
     StartupInfo.hStdError   := StdOutPipeWrite;
 
-    WorkDir := Work;
+    WorkDir := ExtractFileDir(ACommand);
     Handle  := CreateProcess(nil, PChar('cmd.exe /c ' + ACommand + ' ' + AParameters), nil, nil, True, 0, nil, PChar(WorkDir), StartupInfo, ProcessInfo);
 
     CloseHandle(StdOutPipeWrite);

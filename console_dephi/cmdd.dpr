@@ -19,11 +19,17 @@ var
   CommandParameters   : String;
   InputArray          : TArray<string>;
   DirectoryRepository : String;
+
+  procedure PrintMenuBuild;
+  begin
+    Console.WriteColorLine('First parameter must be the repository directory. Ex: cmdd.exe c:\apdata_x64', [TConsoleColor.Green]);
+    Console.WriteColorLine('Digit "exit" or "break" to finalize application', [TConsoleColor.Green]);
+    Console.WriteColorLine('Digit "setdir" to set directory for repository. Ex: setdir c:\apdata_x64', [TConsoleColor.Green]);
+    Console.WriteColorLine('Digit "menu" to options', [TConsoleColor.Green]);
+  end;
+
 begin
-  Console.WriteLine('First parameter must be the repository directory. Ex: C:\Apdata_X64');
-  Console.WriteLine('Digit "exit" or "break" to finalize application');
-  Console.WriteLine('Digit "setdir" to set directory for repository');
-  Console.WriteLine('Digit "menu" to options');
+  PrintMenuBuild;
 
   if (ParamStr(1) <> '') then
     DirectoryRepository := ParamStr(1)
@@ -49,8 +55,17 @@ begin
       case IndexStr(Command, ['EXIT', 'BREAK', 'CLEAR', 'CLS', 'MENU', 'SETDIR']) of
         0    : Exit;
         1    : Break;
-        2..3 : Console.Clear;
-        4    : MenuBuildOptions(DirectoryRepository);
+        2..3 :
+          begin
+            Console.Clear;
+            PrintMenuBuild;
+          end;
+        4    :
+          begin
+            MenuBuildOptions(DirectoryRepository);
+            Console.Clear;
+            PrintMenuBuild;
+          end;
         5    :
           begin
             if (CommandParameters = '') then

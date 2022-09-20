@@ -51,17 +51,10 @@ begin
 
       case StrToIntDef(Command, 0) of
        01..03 : MenuCompilex64(APathDir, StrToIntDef(Command, 0)) ;
-       04 :
-         begin
-           Console.Clear;
-           Break;
-         end;
-       else
-       begin
-         Console.Clear;
-         PrintMenuBuild;
-       end;
+       04     : Break;
       end;
+      Console.Clear;
+      PrintMenuBuild;
     end;
   except
     on E: Exception do

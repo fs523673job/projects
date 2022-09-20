@@ -18,6 +18,9 @@ uses
 procedure PrintMenu;
 begin
   Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
+  Console.WriteColorLine('* You can type the systems in sequence to compile                     *', [TConsoleColor.Green]);
+  Console.WriteColorLine('* Ex: 01,02,03,10,11                                                  *', [TConsoleColor.Green]);
+  Console.WriteColorLine('*=====================================================================*', [TConsoleColor.Blue]);
   Console.WriteColorLine('* 01 - ApServer [32]                                                  *', [TConsoleColor.Blue]);
   Console.WriteColorLine('* 02 - ApServer [64]                                                  *', [TConsoleColor.Blue]);
   Console.WriteColorLine('* 03 - ApTools                                                        *', [TConsoleColor.Blue]);
@@ -33,16 +36,20 @@ begin
   Console.WriteColorLine('* 13 - ApIntegrationInterface [64]                                    *', [TConsoleColor.Blue]);
   Console.WriteColorLine('* 14 - ApManager                                                      *', [TConsoleColor.Blue]);
   Console.WriteColorLine('* 15 - ApUsers                                                        *', [TConsoleColor.Blue]);
-  Console.WriteColorLine('* 16 - All                                                            *', [TConsoleColor.Blue]);
-  Console.WriteColorLine('* 17 - Back                                                           *', [TConsoleColor.Blue]);
+  Console.WriteColorLine('* 16 - Generate Messages                                              *', [TConsoleColor.Blue]);
+  Console.WriteColorLine('* 17 - All                                                            *', [TConsoleColor.Blue]);
+  Console.WriteColorLine('* 18 - Back                                                           *', [TConsoleColor.Blue]);
   Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
 end;
 
 procedure MenuCompilex64(const APathDir: String; const ABuildOption: Integer);
+const
+  BACK = 18;
 var
-  Command           : String;
-  CommandParameters : String;
-  InputArray        : TArray<String>;
+  Command    : String;
+  InputArray : TArray<String>;
+  c          : Integer;
+  IsBreak    : Boolean;
 
   function BuildOptionsToStr(const ABOP: Integer): String;
   begin
@@ -57,8 +64,7 @@ var
 
   procedure ExecuteInternal(const ACommand, AParameters: String);
   begin
-    Console.Clear;
-    if not ExecuteConsoleOutput(ACommand, Aparameters) then
+    if not ExecuteConsoleOutputEx(ACommand, Aparameters) then
       Console.WriteColorLine('Command not executed', [TConsoleColor.Red])
     else
     begin
@@ -68,48 +74,51 @@ var
     end;
   end;
 
+  procedure ExecuteCommand(const ACommand: Integer; var AIsBreak: Boolean);
+  begin
+    case StrToIntDef(Command, 0) of
+      01 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+      02 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [APathDir]), Format('%s Win64', [BuildOptionsToStr(ABuildOption)]));
+      03 : ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [APathDir]), BuildOptionsToStr(ABuildOption));
+      04 : ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Source\buildWebDispatcher.bat', [APathDir]), BuildOptionsToStr(ABuildOption));
+      05 : ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+      06 : ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [APathDir]), Format('%s Win64', [BuildOptionsToStr(ABuildOption)]));
+      07 : ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [APathDir]), BuildOptionsToStr(ABuildOption));
+      08 : ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+      09 : ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [APathDir]), Format('%s Win64', [BuildOptionsToStr(ABuildOption)]));
+      10 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+      11 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [APathDir]), Format('%s Win64', [BuildOptionsToStr(ABuildOption)]));
+      12 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
+      13 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [APathDir]), Format('%s Win64', [BuildOptionsToStr(ABuildOption)]));
+      14 : ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [APathDir]), BuildOptionsToStr(ABuildOption));
+      15 : ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [APathDir]), BuildOptionsToStr(ABuildOption));
+      16 : ExecuteInternal(Format('%s\GenerateMessages.bat', [APathDir]), BuildOptionsToStr(ABuildOption));
+      17 : Console.WriteColor('not impelmented yet!', [TConsoleColor.Green]);
+      18 : AIsBreak := True;
+      else
+      begin
+        Console.Clear;
+        PrintMenu;
+      end;
+    end;
+  end;
+
 begin
   Console.Clear;
   PrintMenu;
   try
-    while True do
+    IsBreak := False;
+
+    while not (IsBreak) do
     begin
       Console.Write('compile>');
-      InputArray := Console.ReadLine.Split([' ', sLineBreak]);
+      InputArray := Console.ReadLine.Split([',', sLineBreak]);
 
-      if Length(InputArray) >= 1 then
-        Command := InputArray[0].ToUpper
-      else
-        Command := String.Empty;
-
-      if Length(InputArray) >= 2 then
-        CommandParameters := InputArray[1].ToUpper
-      else
-        CommandParameters := String.Empty;
-
-      case StrToIntDef(Command, 0) of
-       01 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
-       02 : ;
-       03 : ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
-       04 : ;
-       05 : ;
-       06 : ;
-       07 : ;
-       08 : ;
-       09 : ;
-       10 : ;
-       11 : ;
-       12 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [APathDir]), Format('%s Win32', [BuildOptionsToStr(ABuildOption)]));
-       13 : ;
-       14 : ;
-       15 : ;
-       16 : ;
-       17 : Break;
-       else
-       begin
-         Console.Clear;
-         PrintMenu;
-       end;
+      for c := 0 to Length(InputArray) - 1 do
+      begin
+        Command := InputArray[c].ToUpper;
+        Console.WriteColorLine(Format('compile> compiling %.2d/%.2d', [c + 1, Length(InputArray)]), [TConsoleColor.DarkGreen]);
+        ExecuteCommand(StrToIntDef(Command, 0), IsBreak);
       end;
     end;
   except
