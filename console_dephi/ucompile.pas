@@ -18,6 +18,9 @@ uses
 procedure PrintMenu;
 begin
   Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
+  Console.WriteColorLine('* Set compiler type                                                   *', [TConsoleColor.Green]);
+  Console.WriteColorLine('* set DEBUG or set RELEASE or set MEMLEAK                             *', [TConsoleColor.Green]);
+  Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
   Console.WriteColorLine('* You can type the systems in sequence to compile                     *', [TConsoleColor.Green]);
   Console.WriteColorLine('* Ex: 01,02,03,10,11                                                  *', [TConsoleColor.Green]);
   Console.WriteColorLine('*=====================================================================*', [TConsoleColor.Blue]);
@@ -37,8 +40,9 @@ begin
   Console.WriteColorLine('* 14 - ApManager                                                      *', [TConsoleColor.Blue]);
   Console.WriteColorLine('* 15 - ApUsers                                                        *', [TConsoleColor.Blue]);
   Console.WriteColorLine('* 16 - Generate Messages                                              *', [TConsoleColor.Blue]);
-  Console.WriteColorLine('* 17 - All                                                            *', [TConsoleColor.Blue]);
-  Console.WriteColorLine('* 18 - Back                                                           *', [TConsoleColor.Blue]);
+  Console.WriteColorLine('* 17 - Build Sass                                                     *', [TConsoleColor.Blue]);
+  Console.WriteColorLine('* 18 - All                                                            *', [TConsoleColor.Blue]);
+  Console.WriteColorLine('* 19 - Back                                                           *', [TConsoleColor.Blue]);
   Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
 end;
 
@@ -93,8 +97,9 @@ var
       14 : ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [APathDir]), BuildOptionsToStr(ABuildOption));
       15 : ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [APathDir]), BuildOptionsToStr(ABuildOption));
       16 : ExecuteInternal(Format('%s\GenerateMessages.bat', [APathDir]), BuildOptionsToStr(ABuildOption));
-      17 : Console.WriteColor('not impelmented yet!', [TConsoleColor.Green]);
-      18 : AIsBreak := True;
+      17 : ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [APathDir]), BuildOptionsToStr(ABuildOption));
+      18 : Console.WriteColor('not impelmented yet!', [TConsoleColor.Green]);
+      19 : AIsBreak := True;
       else
       begin
         Console.Clear;
