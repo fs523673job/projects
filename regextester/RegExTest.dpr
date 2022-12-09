@@ -1,4 +1,4 @@
-program RegExTest;
+﻿program RegExTest;
 
 uses
   Forms,

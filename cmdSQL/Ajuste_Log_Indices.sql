@@ -1,0 +1,3 @@
+select AVQ_NuiUltimoLogTransacao from DefSisConfiguracoesGerais
+select max(LTR_CdiLogTransacao) from LogsTransacoes
+update DefSisConfiguracoesGerais set AVQ_NuiUltimoLogTransacao = 62000

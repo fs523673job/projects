@@ -152,6 +152,7 @@ begin
     begin
       Console.Write('>');
       InputArray := Console.ReadLine.Split([' ', sLineBreak]);
+      Finalize(SystemArray);
 
       if Length(InputArray) >= 1 then
         Command := InputArray[0].ToUpper
@@ -165,8 +166,16 @@ begin
 
       if AnsiSameText(Command, 'compile') then
       begin
-        if Length(InputArray) >= 3 then
-          SystemArray := InputArray[2].Split([',']);
+        if Length(InputArray) = 3 then
+          SystemArray := InputArray[2].Split([','])
+        else if Length(InputArray) > 3 then
+        begin
+          for c := 2 to High(InputArray) do
+          begin
+            SetLength(SystemArray, Length(SystemArray) + 1);
+            SystemArray[High(SystemArray)] := InputArray[c].Replace(',','');
+          end;
+        end;
       end;
 
       case IndexStr(Command, ['EXIT', 'BREAK', 'CLEAR', 'CLS', 'MENU', 'SETDIR', 'COMPILE']) of

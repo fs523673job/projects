@@ -1,0 +1,1 @@
+select convert(varchar(max), convert(varbinary(max), Campo)) from Tabela where Campo = Filtro
