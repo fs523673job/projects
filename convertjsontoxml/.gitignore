@@ -1,0 +1,8 @@
+/Win32
+/__recovery
+/__history
+*.res
+*.dproj.local
+*.~dsk
+*.stat
+*.dsk
