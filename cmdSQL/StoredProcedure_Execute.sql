@@ -100,12 +100,12 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModel
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10008'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLsGrupos'
 exec sp_Simple_Generate_Inserts_From_Selects 'Consultas', 'ACS_CdiConsulta = 10008'
-exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida > 1006', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
+exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida in (1004, 1005)', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
 exec sp_Simple_Generate_Inserts_From_Selects 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao = 1'
 exec sp_Simple_Generate_Inserts_From_Selects 'TiposComandosIntegrs'
 
 /*CAMPOS GERAIS UTILIZADOS PARA CLONAR*/
-exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10008', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL'
+exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10006', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL'
   
 /**/
 
@@ -120,5 +120,7 @@ exec sp_clearAllDataIntegration 0
 
 exec sp_StandardData_FixedValues 0
 
-SELECT FLOOR(RAND()*(100-1+1)+1) as keyid;
+SELECT FLOOR(RAND()*(45-1+1)+1) as keyid;
 
+with dual(dummy) as (select 'x')
+SELECT '9140692' as keymaster, '110011' as field1, '20221101' as field2  FROM dual  WHERE 1 <= :keyid
