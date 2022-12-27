@@ -2,8 +2,8 @@ object frmMain: TfrmMain
   Left = 0
   Top = 0
   Caption = 'Json To Xml'
-  ClientHeight = 412
-  ClientWidth = 608
+  ClientHeight = 591
+  ClientWidth = 876
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,13 +11,17 @@ object frmMain: TfrmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  DesignSize = (
+    876
+    591)
   PixelsPerInch = 96
   TextHeight = 13
-  object seJSON: TSynEdit
-    Left = 8
+  object seXML: TSynEdit
+    Left = 464
     Top = 8
-    Width = 290
-    Height = 350
+    Width = 404
+    Height = 487
+    Anchors = [akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -35,22 +39,47 @@ object frmMain: TfrmMain
     Gutter.Font.Height = -11
     Gutter.Font.Name = 'Courier New'
     Gutter.Font.Style = []
-    Highlighter = SynJSONSyn1
+    Highlighter = SynXMLSyn1
     Lines.Strings = (
-      'seJSON')
+      'seXML')
     FontSmoothing = fsmNone
+    ExplicitLeft = 423
+    ExplicitHeight = 462
   end
-  object seXML: TSynEdit
-    Left = 312
-    Top = 8
+  object btnConvert: TButton
+    Left = 8
+    Top = 503
     Width = 290
-    Height = 350
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Caption = 'Convert JSON To XML'
+    TabOrder = 1
+    OnClick = btnConvertClick
+    ExplicitTop = 476
+  end
+  object btConvert2: TButton
+    Left = 8
+    Top = 534
+    Width = 290
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Caption = 'Convert JSON To XML [2]'
+    TabOrder = 2
+    OnClick = btConvert2Click
+    ExplicitTop = 507
+  end
+  object seJSON: TSynEdit
+    Left = 8
+    Top = 8
+    Width = 444
+    Height = 489
+    Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'Courier New'
     Font.Style = []
-    TabOrder = 1
+    TabOrder = 3
     CodeFolding.CollapsedLineColor = clGrayText
     CodeFolding.FolderBarLinesColor = clGrayText
     CodeFolding.ShowCollapsedLine = True
@@ -62,19 +91,12 @@ object frmMain: TfrmMain
     Gutter.Font.Height = -11
     Gutter.Font.Name = 'Courier New'
     Gutter.Font.Style = []
-    Highlighter = SynXMLSyn1
+    Highlighter = SynJSONSyn1
     Lines.Strings = (
-      'seXML')
+      'seJSON')
     FontSmoothing = fsmNone
-  end
-  object btnConvert: TButton
-    Left = 8
-    Top = 364
-    Width = 290
-    Height = 25
-    Caption = 'Convert JSON To XML'
-    TabOrder = 2
-    OnClick = btnConvertClick
+    ExplicitWidth = 407
+    ExplicitHeight = 462
   end
   object SynXMLSyn1: TSynXMLSyn
     Options.AutoDetectEnabled = False

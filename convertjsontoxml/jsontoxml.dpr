@@ -2,7 +2,8 @@
 
 uses
   Vcl.Forms,
-  unMain in 'unMain.pas' {frmMain};
+  unMain in 'unMain.pas' {frmMain},
+  SimpleJsonToXML in 'SimpleJsonToXML.pas';
 
 {$R *.res}
 

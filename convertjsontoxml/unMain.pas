@@ -14,19 +14,23 @@ uses
   Vcl.Dialogs,
   SynEdit,
   Vcl.StdCtrls,
-
-  U_FormatConverter, SynHighlighterJSON, SynEditHighlighter,
-  SynHighlighterXML
+  SynHighlighterJSON,
+  SynEditHighlighter,
+  SynHighlighterXML,
+  U_FormatConverter,
+  SimpleJsonToXML
   ;
 
 type
   TfrmMain = class(TForm)
-    seJSON: TSynEdit;
     seXML: TSynEdit;
     btnConvert: TButton;
     SynXMLSyn1: TSynXMLSyn;
     SynJSONSyn1: TSynJSONSyn;
+    btConvert2: TButton;
+    seJSON: TSynEdit;
     procedure btnConvertClick(Sender: TObject);
+    procedure btConvert2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -51,6 +55,12 @@ begin
   finally
     FC.Free;
   end;
+end;
+
+procedure TfrmMain.btConvert2Click(Sender: TObject);
+begin
+  seXML.Lines.Clear;
+  seXML.Lines.Add(TJsonToXML.StringToString(seJSON.Text));
 end;
 
 end.

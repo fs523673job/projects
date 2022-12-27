@@ -513,6 +513,7 @@ begin
 		/*REST*/ insert into ModelosIntegracoes(BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao)              values (10013, '(TESTES) CONSULTAS REMOTAS');
 		/*REST MOCK POSTMAN*/ insert into ModelosIntegracoes(BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao) values (10014, '(TESTES) MOCK POSTMAN GET ARRAY');
 		/*REST POSTMAN THIRDPART*/ insert into ModelosIntegracoes(BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao) values (10015, '(TESTES) API THIRDPART GET');
+		/*REST REPROCESS*/ insert into ModelosIntegracoes(BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao) values (10016, '(TESTES) MOCK REST REPROCESS');
 
 		/*OBJETO - 555*/
 		/*SOAP*/ insert into ModelosIntegracoesCmds(BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto)     values (10001, 10001, '(TESTES) CORREIOS CONSULTA CEP - CMD', 2, 30063, 'AtendeClienteService;AtendeCliente;consultaCEP#consultaCEPResponse;return;cidade###6')  
@@ -576,6 +577,13 @@ begin
 		/*REST POSTMAN THIRDPART*/ insert into ModelosIntegracoesCmds(BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_CdiComandoSQL) values (10015, 10015, '(TESTES) API THIRDPART GET', 1, 30063, 'https://62d6befa51e6e8f06f1214f9.mockapi.io/api/v1/post/#keyid#', 1, @SQL_CdiComandoSQL + 8)  
 		/*REST POSTMAN THIRDPART*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                      values (10029, 10015, 'keyid', 'keyid', 9, 1008)
 
+		/*REST REPROCESS*/ insert into ModelosIntegracoesCmds(BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_CdiComandoSQL, BBS_OplGravarResponse) values (10016, 10016, '(TESTES) MOCK REST REPROCESS', 1, 30063, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/get/#keyid#', 1, @SQL_CdiComandoSQL + 7, 1)  
+		/*REST REPROCESS*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                                             values (10030, 10016, 'keyid', 'keyid', 9, 1004)
+		/*REST REPROCESS*/ insert into ModelosIntegracoesCmdsRets(JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem) values (10002, 10016, 'userid', 'data;userid')
+		/*REST REPROCESS*/ insert into ModelosIntegracoesCmdsRets(JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem) values (10003, 10016, 'name', 'data;name')
+		/*REST REPROCESS*/ insert into ModelosIntegracoesCmdsRets(JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem) values (10004, 10016, 'age', 'data;age')
+		/*REST REPROCESS*/ insert into ModelosIntegracoesCmdsRets(JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem) values (10005, 10016, 'verb', 'data;verb')
+
 		/*OBJETO - 550 - ABA BASES DE DADOS*/
 		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (01, 1, '(TESTES) SOAP CORREIOS',           10001, 1, 6, 1,  'https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl'); 
 		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (02, 1, '(TESTES) REST SEM PARAMETROS',     10002, 1, 10, 1, 'http://echo.jsontest.com/key/value/one/two'); 
@@ -591,6 +599,7 @@ begin
 		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor, BBO_CdiTipoAutentConsWebServi) values (12, 1, '(TESTES) REST CONSULTAS REMOTAS',  10013, 2, 10, 1, '', 5); 
 		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (13, 1, '(TESTES) MOCK POSTMAN GET ARRAY',  10014, 1, 10, 1, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/');
 		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (14, 1, '(TESTES) API THIRDPART GET',       10015, 1, 10, 1, 'https://62d6befa51e6e8f06f1214f9.mockapi.io/api');
+		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (15, 1, '(TESTES) MOCK REST REPROCESS',     10016, 1, 10, 1, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/');
 
 		/*OUTROS AJUSTES PARA TESTES*/
 		update FormulariosWFSobreps set BRH_CdiOpcao_Desativado = 0 /* CdiOpcao_Desativado (bind) */ where BRH_CdiFormularioWF = 407 /* CdiFormularioWF (bind) */
