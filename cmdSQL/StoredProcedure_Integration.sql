@@ -1,7 +1,6 @@
 use INTEGRATION_BETA
 GO
 
-/*
 drop procedure sp_deleteCascate 
 GO
 drop procedure sp_StandardData_FixedValues 
@@ -36,9 +35,6 @@ drop procedure sp_ConvertBinaryToText
 GO
 drop procedure sp_Select_Into 
 GO
-*/
-
-
 
 /************************************************************ 
 	  1 -	Store Procedure Delete Tables Related
@@ -446,8 +442,8 @@ GO
   6 - Store Procedure Standard Data
 ***********************************************************************/
 
---create procedure sp_StandardData_FixedValues
-create or alter procedure sp_StandardData_FixedValues
+create procedure sp_StandardData_FixedValues
+--create or alter procedure sp_StandardData_FixedValues
 	@ConsiderApDataRange int
 as
 begin

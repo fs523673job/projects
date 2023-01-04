@@ -21,6 +21,10 @@ select * from ComandosSQLs
 select * from ComandosSQLsSobs
 select * from ComandosSQLsGrupos
 select * from TiposComandosIntegrs
+select * from LogsTransacoes where LTR_CdiLogTransacao = 10
+select * from LogsIntegracoes
+select * from LogsIntegracoesServidores
+
 
 select count(BBO_CdiServidorIntegracaoBD) as ServidoresIntegracoesBDs  from ServidoresIntegracoesBDs
 select count(BBN_CdiServidorIntegracao) as ServidoresIntegracoes from ServidoresIntegracoes
@@ -120,9 +124,3 @@ select convert(varchar(max), cast(SQL_DsbComandoSQL as varbinary), 1) from Coman
 exec sp_clearAllDataIntegration 0
 
 exec sp_StandardData_FixedValues 0
-
-SELECT FLOOR(RAND()*(45-1+1)+1) as keyid;
-
-with dual(dummy) as (select 'x')
-SELECT '9140692' as keymaster, '110011' as field1, '20221101' as field2  FROM dual  WHERE 1 <= :keyid
-
