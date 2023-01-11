@@ -1,4 +1,5 @@
---use INTEGRATION_BETA
+use INTEGRATION_BETA
+go
 
 select * from ServidoresIntegracoesBDs --where BBO_CdiServidorIntegracaoBD = 5
 select * from ServidoresIntegracoes
