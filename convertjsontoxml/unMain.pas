@@ -18,7 +18,8 @@ uses
   SynEditHighlighter,
   SynHighlighterXML,
   U_FormatConverter,
-  SimpleJsonToXML
+  SimpleJsonToXML,
+  JsonValueToXML
   ;
 
 type
@@ -29,8 +30,10 @@ type
     SynJSONSyn1: TSynJSONSyn;
     btConvert2: TButton;
     seJSON: TSynEdit;
+    btnConvert3: TButton;
     procedure btnConvertClick(Sender: TObject);
     procedure btConvert2Click(Sender: TObject);
+    procedure btnConvert3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -62,5 +65,12 @@ begin
   seXML.Lines.Clear;
   seXML.Lines.Add(TJsonToXML.StringToString(seJSON.Text));
 end;
+
+procedure TfrmMain.btnConvert3Click(Sender: TObject);
+begin
+  seXML.Lines.Clear;
+  seXML.Lines.Add(TJSonUtils.JsonToXML(TJSonUtils.ConvertJSONValueToJSONObject(seJSON.Text)));
+end;
+
 
 end.

@@ -1,4 +1,4 @@
-unit U_JSON.XML;
+Ôªøunit U_JSON.XML;
 
 interface
 
@@ -102,7 +102,7 @@ begin
     arquivo.SaveToFile(filePathResult);
     if not FileExists(filePathResult) then
     begin
-      raise Exception.Create('Arquivo de retorno n„o foi gerado.');
+      raise Exception.Create('Arquivo de retorno n√£o foi gerado.');
     end;
 
   except
@@ -602,7 +602,7 @@ begin
     arquivo.SaveToFile(filePathResult);
     if not FileExists(filePathResult) then
     begin
-      raise Exception.Create('Arquivo de retorno n„o foi gerado.');
+      raise Exception.Create('Arquivo de retorno n√£o foi gerado.');
     end;
 
   except
@@ -691,7 +691,7 @@ begin
     arquivo.SaveToFile(filePathResult);
     if not FileExists(filePathResult) then
     begin
-      raise Exception.Create('Arquivo de retorno n„o foi gerado.');
+      raise Exception.Create('Arquivo de retorno n√£o foi gerado.');
     end;
 
   except

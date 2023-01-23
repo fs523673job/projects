@@ -43,8 +43,6 @@ object frmMain: TfrmMain
     Lines.Strings = (
       'seXML')
     FontSmoothing = fsmNone
-    ExplicitLeft = 423
-    ExplicitHeight = 462
   end
   object btnConvert: TButton
     Left = 8
@@ -55,7 +53,6 @@ object frmMain: TfrmMain
     Caption = 'Convert JSON To XML'
     TabOrder = 1
     OnClick = btnConvertClick
-    ExplicitTop = 476
   end
   object btConvert2: TButton
     Left = 8
@@ -66,7 +63,6 @@ object frmMain: TfrmMain
     Caption = 'Convert JSON To XML [2]'
     TabOrder = 2
     OnClick = btConvert2Click
-    ExplicitTop = 507
   end
   object seJSON: TSynEdit
     Left = 8
@@ -95,8 +91,16 @@ object frmMain: TfrmMain
     Lines.Strings = (
       'seJSON')
     FontSmoothing = fsmNone
-    ExplicitWidth = 407
-    ExplicitHeight = 462
+  end
+  object btnConvert3: TButton
+    Left = 8
+    Top = 565
+    Width = 290
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Caption = 'Convert JSON To XML [3]'
+    TabOrder = 4
+    OnClick = btnConvert3Click
   end
   object SynXMLSyn1: TSynXMLSyn
     Options.AutoDetectEnabled = False

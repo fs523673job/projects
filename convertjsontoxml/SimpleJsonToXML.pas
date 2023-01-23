@@ -46,12 +46,12 @@ begin
     begin
       jsa := jsv as TJSONArray;
       Result := TJSONObject.Create;
-      Result.AddPair(TJsonPair.Create('ResponseArray', jsa));
+      Result.AddPair(TJsonPair.Create('dataArray', jsa));
     end
     else if jsv is TJSONString then
     begin
       Result := TJSONObject.Create;
-      Result.AddPair('ResponseString', (jsv as TJSONString).ToString);
+      Result.AddPair('dataString', (jsv as TJSONString).ToString);
     end
     else
       Result := nil;
