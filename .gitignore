@@ -66,5 +66,8 @@ Win32
 # Castalia statistics file (since XE7 Castalia is distributed with Delphi)
 *.stat
 
+# Delphi Desktop File. Contains information about the IDE desktop settings, including which files are open and the position of windows.
+*.dsk
+
 # Boss dependency manager vendor folder https://github.com/HashLoad/boss
 modules/
