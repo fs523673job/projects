@@ -4,3 +4,5 @@
 cmdd.res
 cmdd.dproj.local
 cmdd.~dsk
+*.dsk
+*.stat
