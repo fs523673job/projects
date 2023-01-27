@@ -3,7 +3,6 @@
 uses
   Vcl.Forms,
   unMain in 'unMain.pas' {frmMain},
-  SimpleJsonToXML in 'SimpleJsonToXML.pas',
   JSonValueToXML in 'JSonValueToXML.pas';
 
 {$R *.res}

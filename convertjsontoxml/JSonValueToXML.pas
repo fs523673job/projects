@@ -116,10 +116,9 @@ var
 
   procedure AddJsonArray(ARootNode: TXmlNode; AJSONArray: TJSONArray);
   var
-    y, x, z   : Integer;
+    y, x      : Integer;
     LocalNode : TXmlNode;
     auxNode   : TXmlNode;
-    item      : TJSONObject;
     itemObj   : TJSONObject;
   begin
     for y := 0 to TJSONArray(AJSONArray).Count - 1 do
