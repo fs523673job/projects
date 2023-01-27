@@ -3,8 +3,8 @@
 interface
 
 uses
-  System.Json,
   NativeXML,
+  System.Json,
   System.SysUtils
   ;
 
@@ -12,7 +12,7 @@ type
   TJSonUtils = class(TObject)
   public
     class function ConvertJSONValueToJSONObject(const AJSONContent: String): TJSONObject;
-    class function JsonToXML(AJSONObj: TJSONValue): String;
+    class function JsonToXML(AJSONValue: TJSONValue): String;
   end;
 
 implementation
@@ -45,71 +45,37 @@ begin
   end;
 end;
 
-class function TJSonUtils.JsonToXML(AJSONObj: TJSONValue): String;
+class function TJSonUtils.JsonToXML(AJSONValue: TJSONValue): String;
 var
-  c, i, w : Integer;
-  XMLDoc  : TNativeXml;
-  XMLNode : TXmlNode;
-  item    : TJSONObject;
-  itemObj : TJSONObject;
+  nativeXML : TNativeXml;
 
-  procedure AddJsonArray(ARootNode: TXmlNode; AJSONArray: TJSONArray);
+  procedure AddJsonArray(ARootNode: TXmlNode; AJSONArray: TJSONArray); forward;
+
+  procedure AddJsonObject(AElement: TsdElement; ANode: TXmlNode; AJSONObj: TJSONValue);
   var
-    y, x, z   : Integer;
-    LocalNode : TXmlNode;
+    XMLNode : TXmlNode;
+    c, i, w : Integer;
+    item    : TJSONObject;
+    itemObj : TJSONObject;
   begin
-    for y := 0 to TJSONArray(AJSONArray).Count - 1 do
-    begin
-      if AJSONArray.Items[y] is TJSONObject then
-      begin
-        itemObj := TJSONObject(AJSONArray.Items[y]);
-
-        LocalNode := ARootNode.NodeNew('element');
-
-        for x := 0 to itemObj.Count - 1 do
-        begin
-          if itemObj.Pairs[x].JsonValue is TJSONArray then
-          begin
-            LocalNode := LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value);
-            AddJsonArray(LocalNode, TJSONArray(itemObj.Pairs[x].JsonValue))
-          end
-          else if (itemObj.Pairs[x].JsonValue is TJSONObject) then
-          begin
-            for z := 0 to TJSONObject(itemObj.Pairs[x].JsonValue).Count - 1 do
-            begin
-              Item := TJSONObject(itemObj.Pairs[x].JsonValue);
-              LocalNode.NodeNew(Item.Pairs[z].JsonString.Value).Value := Item.Pairs[z].JsonValue.Value;
-            end;
-          end
-          else
-            LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value).Value := itemObj.Pairs[x].JsonValue.Value;
-        end
-      end
-      else if AJSONArray.Items[y].ClassType = TJSONPair then
-         ARootNode.NodeNew(TJSONPair(AJSONArray.Items[y]).JSONString.Value).Value := TJSONPair(AJSONArray.Items[y]).JsonValue.Value
-      else
-        AddJsonArray(ARootNode, TJSONArray(AJSONArray.Items[y]));
-    end;
-  end;
-
-begin
-  XMLDoc := TNativeXml.CreateName('root');
-  try
     if (AJSONObj is TJSONObject) then
     begin
       for c := 0 to TJSONObject(AJSONObj).Count - 1 do
       begin
-        if TJSONObject(AJSONObj).Pairs[c].JsonValue is TJSONArray then
+        if Assigned(AElement) then
+          XMLNode := AElement.NodeNew(TJSONObject(AJSONObj).Pairs[c].JsonString.Value)
+        else
+          XMLNode := ANode.NodeNew(TJSONObject(AJSONObj).Pairs[c].JsonString.Value);
+
+        if (TJSONObject(AJSONObj).Pairs[c].JsonValue is TJSONArray) then
+          AddJsonArray(XMLNode, TJSONArray(TJSONObject(AJSONObj).Pairs[c].JsonValue))
+        else if (TJSONObject(AJSONObj).Pairs[c].JsonValue is TJSONObject) then
         begin
-          XMLNode := XMLDoc.Root.NodeNew(TJSONObject(AJSONObj).Pairs[c].JsonString.Value);
-          AddJsonArray(XMLNode, TJSONArray(TJSONObject(AJSONObj).Pairs[c].JsonValue));
-        end
-        else if TJSONObject(AJSONObj).Pairs[c].JsonValue is TJSONObject then
-        begin
-          XMLNode := XMLDoc.Root.NodeNew(TJSONObject(AJSONObj).Pairs[c].JsonString.Value);
           if (TJSONObject(TJSONObject(AJSONObj).Pairs[c].JsonValue).Count > 0) then
             AddJsonArray(XMLNode, TJSONArray(TJSONObject(AJSONObj).Pairs[c].JsonValue));
-        end;
+        end
+        else
+          XMLNode.Value := TJSONObject(AJSONObj).Pairs[c].JsonValue.Value;
       end;
     end
     else if (AJSONObj is TJSONArray) then
@@ -120,7 +86,10 @@ begin
         begin
           item := TJSONObject(TJSONArray(AJSONObj).Items[c]);
 
-          XMLNode := XMLDoc.Root.NodeNew('element');
+          if Assigned(AElement) then
+            XMLNode := AElement.NodeNew('element')
+          else
+            XMLNode := ANode.NodeNew('element');
 
           for i := 0 to item.Count - 1 do
           begin
@@ -143,9 +112,60 @@ begin
         end;
       end;
     end;
-    XMLDoc.SaveToString(Result);
+  end;
+
+  procedure AddJsonArray(ARootNode: TXmlNode; AJSONArray: TJSONArray);
+  var
+    y, x, z   : Integer;
+    LocalNode : TXmlNode;
+    auxNode   : TXmlNode;
+    item      : TJSONObject;
+    itemObj   : TJSONObject;
+  begin
+    for y := 0 to TJSONArray(AJSONArray).Count - 1 do
+    begin
+      if AJSONArray.Items[y] is TJSONObject then
+      begin
+        itemObj := TJSONObject(AJSONArray.Items[y]);
+
+        LocalNode := ARootNode.NodeNew('element');
+
+        for x := 0 to itemObj.Count - 1 do
+        begin
+          if itemObj.Pairs[x].JsonValue is TJSONArray then
+          begin
+            LocalNode := LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value);
+            AddJsonArray(LocalNode, TJSONArray(itemObj.Pairs[x].JsonValue))
+          end
+          else if (itemObj.Pairs[x].JsonValue is TJSONObject) then
+          begin
+            auxNode:= LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value);
+            AddJsonObject(nil, auxNode, itemObj.Pairs[x].JsonValue);
+          end
+          else
+            LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value).Value := itemObj.Pairs[x].JsonValue.Value;
+        end
+      end
+      else if AJSONArray.Items[y].ClassType = TJSONPair then
+      begin
+         auxNode := ARootNode.NodeNew(TJSONPair(AJSONArray.Items[y]).JSONString.Value);
+         if (TJSONPair(AJSONArray.Items[y]).JsonValue.Value <> '') then
+           auxNode.Value := TJSONPair(AJSONArray.Items[y]).JsonValue.Value
+         else
+           AddJsonObject(nil, auxNode, TJSONPair(AJSONArray.Items[y]).JsonValue);
+      end
+      else
+        AddJsonArray(ARootNode, TJSONArray(AJSONArray.Items[y]));
+    end;
+  end;
+
+begin
+  nativeXML := TNativeXml.CreateName('root');
+  try
+    AddJsonObject(nativeXML.Root, nil, AJSONValue);
+    nativeXML.SaveToString(Result);
   finally
-    XMLDoc.Free;
+    nativeXML.Free;
   end;
 end;
 
