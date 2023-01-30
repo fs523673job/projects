@@ -25,6 +25,9 @@ var
 begin
   jsv := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(AJSONContent), 0);
   try
+    if not Assigned(jsv) then
+      jsv := TJSONObject.ParseJSONValue(AJSONContent, True);
+
     if (jsv is TJSONObject) then
       Result := jsv as TJSONObject
     else if jsv is TJSONArray then
