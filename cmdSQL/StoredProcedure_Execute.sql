@@ -69,7 +69,9 @@ exec sp_lastIdTable 'ModelosIntegracoes'
 exec sp_lastIdTable 'ComandosSQLs'
 exec sp_lastIdTable 'ComandosSQLsGrupos'
 exec sp_lastIdTable 'EstruturasAD'
+exec sp_lastIdTable 'DefSisIntegracaoAD'
 
+exec sp_takeKeyForInsertion 'DefSisIntegracaoAD'
 exec sp_takeKeyForInsertion 'ServidoresIntegracoesBDs'
 
 exec sp_infoApDataPkLimit 'ServidoresIntegracoes'
@@ -118,19 +120,11 @@ exec sp_Simple_Generate_Inserts_From_Selects 'DefSisIntegracaoAD'
 exec sp_Simple_Generate_Inserts_From_Selects 'EstruturasAD'
 exec sp_Simple_Generate_Inserts_From_Selects 'EstruturasADProps' 
 
-exec sp_New_Execute_Sql 'dbo', 'ServidoresIntegracoes', 'BBN_CdiServidorIntegracao, BBN_D1sServidorIntegracao, BBN_CosEnderecoIP, BBN_NuiPorta', '1, ''(TESTES) - INTEGRATION - SERVIDORES'', ''localhost'', 7080'  
-
 /*CAMPOS GERAIS UTILIZADOS PARA CLONAR*/
+
+exec sp_New_Execute_Sql 'dbo', 01, 'ServidoresIntegracoes', 'BBN_CdiServidorIntegracao, BBN_D1sServidorIntegracao, BBN_CosEnderecoIP, BBN_NuiPorta', '1, ''(TESTES) - INTEGRATION - SERVIDORES'', ''localhost'', 7080', 1  
+
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10006', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL'
-  
-/**/
-
-exec sp_ConvertBinaryToText 'ComandosSQLs', 'SQL_DsbComandoSQL', 'SQL_CdiComandoSQL = 10002'
-exec sp_ConvertBinaryToText 'ComandosSQLs', 'SQL_DsbComandoSQL', 'SQL_CdiComandoSQL = 10003'
-
-exec sp_Select_Into 'dbo', 'ContratadosRC', 'CRC_CdiContratado = 605'
-
-select convert(varchar(max), cast(SQL_DsbComandoSQL as varbinary), 1) from ComandosSQLs where SQL_CdiComandoSQL = 10002
 
 exec sp_clearAllDataIntegration 0
 

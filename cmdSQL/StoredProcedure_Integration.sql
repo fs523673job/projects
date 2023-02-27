@@ -1,6 +1,8 @@
 use INTEGRATION_BETA
 GO
 
+drop procedure sp_Execute_Insert
+GO
 drop procedure sp_deleteCascate 
 GO
 drop procedure sp_StandardData_FixedValues 
@@ -34,8 +36,6 @@ GO
 drop procedure sp_ConvertBinaryToText 
 GO
 drop procedure sp_Select_Into 
-GO
-drop procedure sp_Execute_Insert
 GO
 
 /************************************************************ 
@@ -91,8 +91,15 @@ begin
 
 		if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)
 		begin
-		    print 'Before Execute: ' + @sqlcommand
-			exec sp_ExecuteSQL @sqlcommand
+		    begin try
+				exec sp_ExecuteSQL @sqlcommand
+				print 'Before Execute Delete Table: ['+ @RefTable + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
+			end try
+			begin catch
+			    print '--################### ERROR BEGINS ##################'
+				print 'Before Execute Delete Table: ['+ @RefTable + '] -> Error: [' + ERROR_MESSAGE() + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
+				print '--################### ERROR ENDS ####################'
+			end catch
 		end
 		else
 			print @sqlcommand
@@ -119,8 +126,15 @@ begin
 
 	if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)
 	begin
-		print 'Before Execute: ' + @sqlcommand
-		exec sp_ExecuteSQL @sqlcommand
+	    begin try
+			exec sp_ExecuteSQL @sqlcommand
+			print 'Before Execute Delete Table: ['+ @TableName + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
+		end try
+		begin catch
+		    print '--################### ERROR BEGINS ##################'
+			print 'Before Execute Delete Table: ['+ @RefTable + '] -> Error: [' + ERROR_MESSAGE() + '] -> Command: [' + @sqlcommand + ']'
+			print '--################### ERROR ENDS ####################'
+		end catch
 	end
 	else
 		print @sqlcommand
@@ -159,8 +173,15 @@ begin
 
 	if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)
 	begin
-	    print 'Before Execute: ' + @sqlcommand
-		exec sp_ExecuteSQL @sqlcommand
+	    begin try
+			exec sp_ExecuteSQL @sqlcommand
+			print 'Before Execute Delete Table: ['+ @TableName + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
+		end try
+		begin catch
+		    print '--################### ERROR BEGINS ##################'
+			print 'Before Execute Delete Table: ['+ @TableName + '] -> Error: [' + ERROR_MESSAGE() + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
+			print '--################### ERROR ENDS ####################'
+		end catch
 	end
 	else
 		print @sqlcommand
@@ -198,14 +219,14 @@ begin
 
 	exec sp_executesql @sqlcommand, @paramdefinition, @Value = @FieldPK OUTPUT
 
-	set @sqlcommand = N'select @Value = Max(' + @FieldPK + ') from ' + @TableName
+	set @sqlcommand = N'select @Value = IsNull(Max(' + @FieldPK + '), 0) from ' + @TableName
 	set @paramdefinition = N'@Value int OUTPUT'
 
 	exec sp_executesql @sqlcommand, @paramdefinition, @Value = @LastKeyPK OUTPUT
 	
 	if (@Limit > 0)
 	begin
-	  if (@LastKeyPK < @Limit)
+	  if (@LastKeyPK < @Limit) 
 	     set @LastKeyPK = @Limit
 	end
 	  
@@ -444,7 +465,42 @@ end
 GO
 
 /**********************************************************************
-  6 - Store Procedure Standard Data
+    6 - OVERLOAD SP_EXECUTESQL 
+***********************************************************************/
+
+create or alter procedure sp_Execute_Insert(@schema   varchar(200) = 'dbo',
+                                            @ordNum   int = 0,
+											@table    varchar(200),
+											@fields   varchar(max) = null,
+											@values   varchar(max) = null,
+											@showCmd  int = 0
+                                           )
+as
+begin
+  declare @insert_fields nvarchar(max);
+
+  set nocount on
+
+  set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + @values + ')';
+  
+  begin try
+	exec sp_ExecuteSQL @insert_fields
+	if (@showCmd = 1)
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']' + '-> Command: ' + @insert_fields
+    else 
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @insert_fields
+  end try
+  begin catch
+    print '--################### ERROR BEGINS ##################'
+	print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @insert_fields
+	print '--################### ERROR ENDS ####################'
+  end catch
+end
+GO
+
+
+/**********************************************************************
+  7 - Store Procedure Standard Data
 ***********************************************************************/
 
 create procedure sp_StandardData_FixedValues
@@ -460,29 +516,22 @@ begin
 
 		exec sp_clearAllDataIntegration @ConsiderApDataRange
 
-		print null
-
+		set nocount on
+		
 		/*OBJETO - 550*/
-		exec sp_Execute_Insert 'dbo', 'ServidoresIntegracoes', 'BBN_CdiServidorIntegracao, BBN_D1sServidorIntegracao, BBN_CosEnderecoIP, BBN_NuiPorta', '1, ''(TESTES) - INTEGRATION - SERVIDORES'', ''localhost'', 7080'  
+		exec sp_Execute_Insert 'dbo', 01, 'ServidoresIntegracoes', 'BBN_CdiServidorIntegracao, BBN_D1sServidorIntegracao, BBN_CosEnderecoIP, BBN_NuiPorta', '1, ''(TESTES) - INTEGRATION - SERVIDORES'', ''localhost'', 7080', 1  
 
 		/*OBJETO - 551*/
-		print '01 - DLLsIntegracoes' 
-		insert into DLLsIntegracoes(BBV_CdiDLLIntegracao, BBV_D1sDLLIntegracao, BBV_CosCaminhoArquivoDLL) values (50001, '(TESTES) - DLL INTEGRACAO INTERFACE', 'C:\Apdata_x64\Aplicacoes\ApIntegrationInterface\bin\Win32\Debug\ApIntegrationInterface.dll');
-		
-		print '01 - DLLsIntegracoesMetodos';
-		insert into DLLsIntegracoesMetodos(BBW_CdiDLLIntegracaoMetodo, BBW_CdiDLLIntegracao, BBW_CosDLLIntegracaoMetodo, BBW_D1sDLLIntegracaoMetodo) values (50001, 50001, 'TreatTransactionEvent', 'TreatTransactionEvent');
+		exec sp_Execute_Insert 'dbo', 01, 'DLLsIntegracoes', 'BBV_CdiDLLIntegracao, BBV_D1sDLLIntegracao, BBV_CosCaminhoArquivoDLL', '50001, ''(TESTES) - DLL INTEGRACAO INTERFACE'', ''C:\Apdata_x64\Aplicacoes\ApIntegrationInterface\bin\Win32\Debug\ApIntegrationInterface.dll''', 1
+		exec sp_Execute_Insert 'dbo', 01, 'DLLsIntegracoesMetodos', 'BBW_CdiDLLIntegracaoMetodo, BBW_CdiDLLIntegracao, BBW_CosDLLIntegracaoMetodo, BBW_D1sDLLIntegracaoMetodo', '50001, 50001, ''TreatTransactionEvent'', ''TreatTransactionEvent''', 1
 
 		/*OBJETO - 559*/
-		print '01 - TransacoesIntegracoes';
-		insert into TransacoesIntegracoes(BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao) values (50001, 50001, 2, 30063) ;
-		print '02 - TransacoesIntegracoes';
-		insert into TransacoesIntegracoes(BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao) values (50002, 50001, 2, 43192) ;
-		print '03 - TransacoesIntegracoes';
-		insert into TransacoesIntegracoes(BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao) values (50003, 50001, 2, 21233) ;
-		print '04 - TransacoesIntegracoes';
-		insert into TransacoesIntegracoes(BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao) values (50004, 50001, 2, 30842) ;
-		print '05 - TransacoesIntegracoes';
-		insert into TransacoesIntegracoes(BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao) values (50005, 50001, 2, 15953) ;
+		exec sp_Execute_Insert 'dbo', 01, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50001, 50001, 2, 30063', 1
+		exec sp_Execute_Insert 'dbo', 02, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50002, 50001, 2, 43192', 1
+		exec sp_Execute_Insert 'dbo', 03, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50003, 50001, 2, 21233', 1
+		exec sp_Execute_Insert 'dbo', 04, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50004, 50001, 2, 30842', 1
+		exec sp_Execute_Insert 'dbo', 05, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50005, 50001, 2, 15953', 1
+		exec sp_Execute_Insert 'dbo', 06, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50006, 50001, 2, 29993', 1
 
 		/*OBJETO - 962*/
 		print '01 - LayoutsSaidas';
@@ -809,7 +858,7 @@ end
 GO
 
 /**********************************************************************
-  7 - Generate Insert From Select Table
+  8 - Generate Insert From Select Table
 ***********************************************************************/
 
 /*
@@ -909,7 +958,7 @@ end
 GO
 
 /**********************************************************************
-  8 - Generate Insert From Select Table
+  9 - Generate Insert From Select Table
 ***********************************************************************/
 
 create or alter procedure sp_Simple_Generate_Inserts_From_Selects(@table  varchar(200),
@@ -948,7 +997,7 @@ end
 GO
 
 /**********************************************************************
-    9 - Convert Binary To Text
+    10 - Convert Binary To Text
 ***********************************************************************/
 
 create or alter procedure sp_ConvertBinaryToText(@TableName[sysname],
@@ -971,7 +1020,7 @@ end
 GO
 
 /**********************************************************************
-    10 - SELECT INTO 
+    11 - SELECT INTO 
 ***********************************************************************/
 
 create or alter procedure sp_Select_Into(@schema    varchar(200) = 'dbo',
@@ -1022,9 +1071,8 @@ begin
 end
 GO
 
-
 /**********************************************************************
-    11 - STRING SPLIT (COMPATIBILIDADE DE FUNCAO)
+    12 - STRING SPLIT (COMPATIBILIDADE DE FUNCAO)
 ***********************************************************************/
 
 /*
@@ -1043,36 +1091,6 @@ return (
 )
 GO
 */
-
-/**********************************************************************
-    12 - OVERLOAD SP_EXECUTESQL 
-***********************************************************************/
-
-create or alter procedure sp_Execute_Insert(@schema    varchar(200) = 'dbo',
-                                             @table    varchar(200),
-											 @fields   varchar(max) = null,
-											 @values   varchar(max) = null,
-											 @showCmd  int = 0
-                                             )
-as
-begin
-  declare @insert_fields nvarchar(max);
-
-  set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + @values + ')';
-  
-  if (@showCmd = 1)
-	print @insert_fields
-
-  begin try
-	exec sp_ExecuteSQL @insert_fields
-	if (@showCmd = 1)
-		print 'After Execute Insert: ' + @table + ' [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
-  end try
-  begin catch
-	print 'After Execute Insert [Error]'  + @table + ' - command: ' + @insert_fields 
-  end catch
-end
-GO
 
 exec sp_StandardData_FixedValues 0 
 GO
