@@ -35,7 +35,7 @@ drop procedure sp_ConvertBinaryToText
 GO
 drop procedure sp_Select_Into 
 GO
-drop procedure sp_New_Execute_Sql
+drop procedure sp_Execute_Insert
 GO
 
 /************************************************************ 
@@ -463,7 +463,7 @@ begin
 		print null
 
 		/*OBJETO - 550*/
-		exec sp_New_Execute_Sql 'dbo', 'ServidoresIntegracoes', 'BBN_CdiServidorIntegracao, BBN_D1sServidorIntegracao, BBN_CosEnderecoIP, BBN_NuiPorta', '1, ''(TESTES) - INTEGRATION - SERVIDORES'', ''localhost'', 7080'  
+		exec sp_Execute_Insert 'dbo', 'ServidoresIntegracoes', 'BBN_CdiServidorIntegracao, BBN_D1sServidorIntegracao, BBN_CosEnderecoIP, BBN_NuiPorta', '1, ''(TESTES) - INTEGRATION - SERVIDORES'', ''localhost'', 7080'  
 
 		/*OBJETO - 551*/
 		print '01 - DLLsIntegracoes' 
@@ -840,8 +840,6 @@ begin
   print substring(@insert, @start, @end - 1);
   set @insert = substring(@insert, @end + 1, len(@insert) - @end + 1);
 end;
-
-
 */
 
 create or alter procedure sp_Generate_Inserts_From_Selects(@schema    varchar(200) = 'dbo',
@@ -1051,10 +1049,10 @@ GO
 ***********************************************************************/
 
 create or alter procedure sp_Execute_Insert(@schema    varchar(200) = 'dbo',
-                                             @table     varchar(200),
-											 @fields    varchar(max) = null,
-											 @values    varchar(max) = null,
-											 @showCmd   int
+                                             @table    varchar(200),
+											 @fields   varchar(max) = null,
+											 @values   varchar(max) = null,
+											 @showCmd  int = 0
                                              )
 as
 begin
@@ -1067,9 +1065,11 @@ begin
 
   begin try
 	exec sp_ExecuteSQL @insert_fields
-	print 'After Execute Insert: ' + @table
+	if (@showCmd = 1)
+		print 'After Execute Insert: ' + @table + ' [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
   end try
   begin catch
+	print 'After Execute Insert [Error]'  + @table + ' - command: ' + @insert_fields 
   end catch
 end
 GO
