@@ -25,7 +25,8 @@ select * from TiposComandosIntegrs
 select * from LogsTransacoes where LTR_CdiLogTransacao = 10
 select * from LogsIntegracoes
 select * from LogsIntegracoesServidores
-
+select * from EstruturasAD
+select * from EstruturasADProps
 
 select count(BBO_CdiServidorIntegracaoBD) as ServidoresIntegracoesBDs  from ServidoresIntegracoesBDs
 select count(BBN_CdiServidorIntegracao) as ServidoresIntegracoes from ServidoresIntegracoes
@@ -67,6 +68,7 @@ exec sp_lastIdTable 'ModelosIntegracoesCmds'
 exec sp_lastIdTable 'ModelosIntegracoes' 
 exec sp_lastIdTable 'ComandosSQLs'
 exec sp_lastIdTable 'ComandosSQLsGrupos'
+exec sp_lastIdTable 'EstruturasAD'
 
 exec sp_takeKeyForInsertion 'ServidoresIntegracoesBDs'
 
@@ -86,6 +88,9 @@ exec sp_infoApDataPkLimit 'ModelosIntegracoesCmds'
 exec sp_infoApDataPkLimit 'ModelosIntegracoes'
 exec sp_infoApDataPkLimit 'ComandosSQLs'
 exec sp_infoApDataPkLimit 'ComandosSQLsGrupos'
+exec sp_infoApDataPkLimit 'EstruturasAD'
+exec sp_infoApDataPkLimit 'EstruturasADProps'
+exec sp_infoApDataPkLimit 'DefSisIntegracaoAD'
 
 exec sp_Simple_Generate_Inserts_From_Selects 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD = 5', 'BBO_CdiServidorIntegracaoBD,BBO_CdiServidorIntegracao,BBO_D1sServidorIntegracaoBD,BBO_CdiModeloIntegracao,BBO_CdiTipoIntegracao,BBO_CdiBaseDado,BBO_CdiTipoConexaoBaseDado,BBO_DssNomeServidor'
 exec sp_Simple_Generate_Inserts_From_Selects 'ServidoresIntegracoes'
@@ -102,13 +107,18 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsPars'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd = 10005', 'BBP_CdiModeloIntegracaoCmdCpo,BBP_CdiModeloIntegracaoCmd,BBP_DssCampo_Destino,BBP_DssCampo_Origem,BBP_CdiTipoCampo'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao > 0'
-exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10008'
+exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL in (10011, 10012)'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLsGrupos'
 exec sp_Simple_Generate_Inserts_From_Selects 'Consultas', 'ACS_CdiConsulta = 10008'
 exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida in (1004, 1005)', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
 exec sp_Simple_Generate_Inserts_From_Selects 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao = 1'
 exec sp_Simple_Generate_Inserts_From_Selects 'TiposComandosIntegrs'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsRets'
+exec sp_Simple_Generate_Inserts_From_Selects 'DefSisIntegracaoAD'
+exec sp_Simple_Generate_Inserts_From_Selects 'EstruturasAD'
+exec sp_Simple_Generate_Inserts_From_Selects 'EstruturasADProps' 
+
+exec sp_New_Execute_Sql 'dbo', 'ServidoresIntegracoes', 'BBN_CdiServidorIntegracao, BBN_D1sServidorIntegracao, BBN_CosEnderecoIP, BBN_NuiPorta', '1, ''(TESTES) - INTEGRATION - SERVIDORES'', ''localhost'', 7080'  
 
 /*CAMPOS GERAIS UTILIZADOS PARA CLONAR*/
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10006', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL'
