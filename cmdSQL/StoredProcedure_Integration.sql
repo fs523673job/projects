@@ -1067,7 +1067,7 @@ begin
 
   begin try
 	exec sp_ExecuteSQL @insert_fields
-	print 'After Execute: ' + @insert_fields + ' [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
+	print 'After Execute Insert: ' + @table
   end try
   begin catch
   end catch
