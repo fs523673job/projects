@@ -41,6 +41,236 @@ drop procedure sp_Execute_Insert_Key
 GO
 drop procedure sp_Execute_Insert_Key_ForeignKey
 GO
+drop procedure sp_Execute_Update
+GO
+drop procedure sp_Execute_Insert_ThreeKey
+GO
+drop procedure sp_Execute_Delete
+GO
+
+/*** PROCEDURES UTILITÁRIAS *******************************************/
+
+/**********************************************************************
+    1 - OVERLOAD SP_EXECUTESQL (Insert)
+***********************************************************************/
+
+create or alter procedure sp_Execute_Insert(@schema         varchar(200) = 'dbo',
+                                            @ordNum         int = 0,
+											@table          varchar(200),
+											@fields         varchar(max) = null,
+											@values         varchar(max) = null,
+											@showCmd        int = 0,
+											@customMsgError varchar(max) = null
+                                           )
+as
+begin
+  declare @insert_fields nvarchar(max);
+
+  set nocount on
+
+  set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + @values + ')';
+  
+  begin try
+	exec sp_ExecuteSQL @insert_fields
+	if (@showCmd = 1)
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']' + '-> Command: ' + @insert_fields
+    else 
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @insert_fields
+  end try
+  begin catch
+    if (@customMsgError is null) 
+	begin
+		print '--################### ERROR BEGINS ##################'
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @insert_fields
+		print '--################### ERROR ENDS ####################'
+	end
+	else
+	  print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + ']' + 'Custom Message: [' + @customMsgError + ']'
+  end catch
+end
+GO
+
+/**********************************************************************
+    1.1 - OVERLOAD SP_EXECUTESQL (Insert One Key)
+***********************************************************************/
+
+create or alter procedure sp_Execute_Insert_Key(@schema   varchar(200) = 'dbo',
+                                                @ordNum   int = 0,
+										    	@table    varchar(200),
+										   	    @fields   varchar(max) = null,
+												@keyTable int = 0,
+												@incKey   int = 0,
+											    @values   varchar(max) = null,
+											    @showCmd  int = 0
+                                               )
+as
+begin
+  declare @insert_fields nvarchar(max);
+
+  set nocount on
+
+  set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + trim(cast(@keyTable + @incKey as char(10))) + ',' + @values + ')';
+  
+  begin try
+	exec sp_ExecuteSQL @insert_fields
+	if (@showCmd = 1)
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']' + '-> Command: ' + @insert_fields
+    else 
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @insert_fields
+  end try
+  begin catch
+    print '--################### ERROR BEGINS ##################'
+	print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @insert_fields
+	print '--################### ERROR ENDS ####################'
+  end catch
+end
+GO
+
+/**********************************************************************
+    1.2 - OVERLOAD SP_EXECUTESQL (Insert Two Key)
+***********************************************************************/
+
+create or alter procedure sp_Execute_Insert_Key_ForeignKey(@schema   varchar(200) = 'dbo',
+                                                           @ordNum   int = 0,
+										    	           @table    varchar(200),
+										   	               @fields   varchar(max) = null,
+												           @keyTable int = 0,
+												           @incKey   int = 0,
+											               @forKey   int = 0,
+														   @incFor   int = 0,
+														   @values   varchar(max) = null,
+											               @showCmd  int = 0
+                                                          )
+as
+begin
+  declare @insert_fields nvarchar(max);
+
+  set nocount on
+
+  set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + trim(cast(@keyTable + @incKey as char(10))) + ',' + trim(cast(@forKey + @incFor as char(10))) + ',' + @values + ')';
+  
+  begin try
+	exec sp_ExecuteSQL @insert_fields
+	if (@showCmd = 1)
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']' + '-> Command: ' + @insert_fields
+    else 
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @insert_fields
+  end try
+  begin catch
+    print '--################### ERROR BEGINS ##################'
+	print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @insert_fields
+	print '--################### ERROR ENDS ####################'
+  end catch
+end
+GO
+
+/**********************************************************************
+    1.3 - OVERLOAD SP_EXECUTESQL (Update)
+***********************************************************************/
+
+create or alter procedure sp_Execute_Update(@schema   varchar(200) = 'dbo',
+                                            @ordNum   int = 0,
+											@table    varchar(200),
+											@fields   varchar(max) = null,
+											@where    varchar(max) = null,
+											@showCmd  int = 0
+                                           )
+as
+begin
+  declare @update_fields nvarchar(max);
+
+  set nocount on
+
+  set @update_fields = 'update ' + @schema + '.' + @table + ' set ' + @fields + ' where ' + @where;
+  
+  begin try
+	exec sp_ExecuteSQL @update_fields
+	if (@showCmd = 1)
+		print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']' + '-> Command: ' + @update_fields
+    else 
+		print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @update_fields
+  end try
+  begin catch
+    print '--################### ERROR BEGINS ##################'
+	print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @update_fields
+	print '--################### ERROR ENDS ####################'
+  end catch
+end
+GO
+
+/**********************************************************************
+    1.4 - OVERLOAD SP_EXECUTESQL (Insert Three Key)
+***********************************************************************/
+
+create or alter procedure sp_Execute_Insert_ThreeKey(@schema       varchar(200) = 'dbo',
+                                                     @ordNum       int = 0,
+										    	     @table        varchar(200),
+										   	         @fields       varchar(max) = null,
+												     @keyOne       int = 0,
+												     @incKeyOne    int = 0,
+											         @KeyTwo       int = 0,
+													 @incKeyTwoFor int = 0,
+													 @KeyThree     int = 0,
+													 @incKeyThree  int = 0,
+													 @values       varchar(max) = null,
+											         @showCmd      int = 0
+                                                    )
+as
+begin
+  declare @insert_fields nvarchar(max);
+
+  set nocount on
+
+  set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + trim(cast(@keyOne + @incKeyOne as char(10))) + ',' + trim(cast(@KeyTwo + @incKeyTwoFor as char(10))) + ',' + trim(cast(@KeyThree + @incKeyThree as char(10))) + ',' + @values + ')';
+  
+  begin try
+	exec sp_ExecuteSQL @insert_fields
+	if (@showCmd = 1)
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']' + '-> Command: ' + @insert_fields
+    else 
+		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @insert_fields
+  end try
+  begin catch
+    print '--################### ERROR BEGINS ##################'
+	print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @insert_fields
+	print '--################### ERROR ENDS ####################'
+  end catch
+end
+GO
+
+/**********************************************************************
+    1.5 - OVERLOAD SP_EXECUTESQL (Delete)
+***********************************************************************/
+
+create or alter procedure sp_Execute_Delete(@schema   varchar(200) = 'dbo',
+                                            @ordNum   int = 0,
+											@table    varchar(200),
+											@where    varchar(max) = null,
+											@showCmd  int = 0
+                                           )
+as
+begin
+  declare @delete_fields nvarchar(max);
+
+  set nocount on
+
+  set @delete_fields = 'delete from ' + @schema + '.' + @table + ' where ' + @where;
+  
+  begin try
+	exec sp_ExecuteSQL @delete_fields
+	if (@showCmd = 1)
+		print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']' + '-> Command: ' + @delete_fields
+    else 
+		print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @delete_fields
+  end try
+  begin catch
+    print '--################### ERROR BEGINS ##################'
+	print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @delete_fields
+	print '--################### ERROR ENDS ####################'
+  end catch
+end
+GO
+
 
 /************************************************************ 
 	  1 -	Store Procedure Delete Tables Related
@@ -465,120 +695,15 @@ begin
 	exec sp_deleteOptionByApDataRange 'ComandosSQLsSobs', 1, 1
 	exec sp_deleteOptionByApDataRange 'ComandosSQLs', 1, 1
 	exec sp_deleteOptionByApDataRange 'ComandosSQLsGrupos', 1, 1
+	/*other deletes*/
+	exec sp_Execute_Delete 'dbo', 01, 'FormulariosWFCampos', 'FWC_CdiFormularioWFCampo = 100505'
+	exec sp_Execute_Delete 'dbo', 02, 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao = 1'
+	
 end
 GO
 
 /**********************************************************************
-    6 - OVERLOAD SP_EXECUTESQL 
-***********************************************************************/
-
-create or alter procedure sp_Execute_Insert(@schema   varchar(200) = 'dbo',
-                                            @ordNum   int = 0,
-											@table    varchar(200),
-											@fields   varchar(max) = null,
-											@values   varchar(max) = null,
-											@showCmd  int = 0
-                                           )
-as
-begin
-  declare @insert_fields nvarchar(max);
-
-  set nocount on
-
-  set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + @values + ')';
-  
-  begin try
-	exec sp_ExecuteSQL @insert_fields
-	if (@showCmd = 1)
-		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']' + '-> Command: ' + @insert_fields
-    else 
-		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @insert_fields
-  end try
-  begin catch
-    print '--################### ERROR BEGINS ##################'
-	print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @insert_fields
-	print '--################### ERROR ENDS ####################'
-  end catch
-end
-GO
-
-/**********************************************************************
-    6.1 - OVERLOAD SP_EXECUTESQL 
-***********************************************************************/
-
-create or alter procedure sp_Execute_Insert_Key(@schema   varchar(200) = 'dbo',
-                                                @ordNum   int = 0,
-										    	@table    varchar(200),
-										   	    @fields   varchar(max) = null,
-												@keyTable int = 0,
-												@incKey   int = 0,
-											    @values   varchar(max) = null,
-											    @showCmd  int = 0
-                                               )
-as
-begin
-  declare @insert_fields nvarchar(max);
-
-  set nocount on
-
-  set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + trim(cast(@keyTable + @incKey as char(10))) + ',' + @values + ')';
-  
-  begin try
-	exec sp_ExecuteSQL @insert_fields
-	if (@showCmd = 1)
-		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']' + '-> Command: ' + @insert_fields
-    else 
-		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @insert_fields
-  end try
-  begin catch
-    print '--################### ERROR BEGINS ##################'
-	print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @insert_fields
-	print '--################### ERROR ENDS ####################'
-  end catch
-end
-GO
-
-/**********************************************************************
-    6.2 - OVERLOAD SP_EXECUTESQL 
-***********************************************************************/
-
-create or alter procedure sp_Execute_Insert_Key_ForeignKey(@schema   varchar(200) = 'dbo',
-                                                           @ordNum   int = 0,
-										    	           @table    varchar(200),
-										   	               @fields   varchar(max) = null,
-												           @keyTable int = 0,
-												           @incKey   int = 0,
-											               @forKey   int = 0,
-														   @incFor   int = 0,
-														   @values   varchar(max) = null,
-											               @showCmd  int = 0
-                                                          )
-as
-begin
-  declare @insert_fields nvarchar(max);
-
-  set nocount on
-
-  set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + trim(cast(@keyTable + @incKey as char(10))) + ',' + trim(cast(@forKey + @incFor as char(10))) + ',' + @values + ')';
-  
-  begin try
-	exec sp_ExecuteSQL @insert_fields
-	if (@showCmd = 1)
-		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']' + '-> Command: ' + @insert_fields
-    else 
-		print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @insert_fields
-  end try
-  begin catch
-    print '--################### ERROR BEGINS ##################'
-	print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @insert_fields
-	print '--################### ERROR ENDS ####################'
-  end catch
-end
-GO
-
-
-/**********************************************************************
-  7 - Store Procedure Standard Data
+  6 - Store Procedure Standard Data
 ***********************************************************************/
 
 --create procedure sp_StandardData_FixedValues
@@ -611,6 +736,8 @@ begin
 		exec sp_Execute_Insert 'dbo', 04, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50004, 50001, 2, 30842', 1
 		exec sp_Execute_Insert 'dbo', 05, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50005, 50001, 2, 15953', 1
 		exec sp_Execute_Insert 'dbo', 06, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50006, 50001, 2, 29993', 1
+		exec sp_Execute_Insert 'dbo', 07, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50007, 50001, 2, 39802', 1
+		exec sp_Execute_Insert 'dbo', 08, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50008, 50001, 2, 39803', 1
 
 		/*#### OBJETO - 962 - Tabela - LayoutsSaidas*/
 		exec sp_Execute_Insert 'dbo', 01, 'LayoutsSaidas', 'BRD_CdiLayOutSaida, BRD_D1sLayOutSaida, BRD_D1bLayOutSaida', '1001, ''(TESTES) LAYOUT REST PARAMETROS'', 0xEFBBBF7B226B6579223A20222376616C7565506172616D6574657223227D', 1   
@@ -661,6 +788,7 @@ begin
 		/*REST*/ exec sp_Execute_Insert 'dbo', 16, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10016, ''(TESTES) MOCK REST REPROCESS''', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 17, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10017, ''(TESTES) MOCK POSTMAN GET COMPLEXY ARRAY''', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 18, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10018, ''(TESTES) REST COMBATIDAS REAIS''', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 19, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10019, ''(TESTES) SOAP TESTE WSDL TECBAN''', 1
 
 		/*#### OBJETO - 555 */
 		/*##### ModelosIntegracoesCmds*/
@@ -668,177 +796,130 @@ begin
 		/*REST*/ exec sp_Execute_Insert 'dbo', 02, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10002, 10002, ''(TESTES) REST SEM PARAMETROS'', 2, 30063, ''http://echo.jsontest.com/key/value/one/two'', 1', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 03, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10003, 10003, ''(TESTES) REST COM PARAMETROS'', 2, 30063, ''http://validate.jsontest.com/?json='', 1', 1  
 		/*REST*/ exec sp_Execute_Insert 'dbo', 04, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10004, 10004, ''(TESTES) REST COM PARAMETROS URL'', 2, 30063, '''', 1', 1  
-		/*REST*/ exec sp_Execute_Insert 'dbo', 05, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10005, 10005, ''(TESTES) REST ALTERACAO SENHA 2330'', 1, 21233, '', 1', 1  
-		/*REST*/ exec sp_Execute_Insert 'dbo', 06, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10006, 10006, ''(TESTES) REST MARCACAO PONTO'', 2, 43192, '', 1', 1  
+		/*REST*/ exec sp_Execute_Insert 'dbo', 05, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10005, 10005, ''(TESTES) REST ALTERACAO SENHA 2330'', 1, 21233, '''', 1', 1  
+		/*REST*/ exec sp_Execute_Insert 'dbo', 06, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10006, 10006, ''(TESTES) REST MARCACAO PONTO'', 2, 43192, '''', 1', 1  
 		/*REST*/ exec sp_Execute_Insert 'dbo', 07, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao', '10007, 10007, ''(TESTES) REST ENTRADA BASEX64'',  1, 30842, 407', 1  
 		/*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 08, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao, BBS_DssNomeObjeto, BBS_OplEnviarTudo, BBS_DssCamposLote', 10008, 0, @SQL_CdiComandoSQL, 3, '10008, ''(TESTES) SOAP CORREIOS LOTE'',  1, 30063, 0, ''AtendeClienteService;AtendeCliente;consultaCEP#consultaCEPResponse#consultaCEPResponse##0'', 1, ''cep''', 1  
-		
-		/*REST*/ exec sp_Execute_Insert 'dbo', 09, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao, BBS_DssNomeObjeto, BBS_CdiComandoSQL, BBS_CdiEventoTransacao, BBS_CdiVerboHTTP) values (10009, 10009, '(TESTES) INTEGRACAO FOTO',  4, 30063, 0, 'https://httpbin.org/post', @SQL_CdiComandoSQL + 4, 2, 3)  
-		
-		/*REST*/ exec sp_Execute_Insert 'dbo', 10, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_CdiComandoSQL) values (10010, 10010, '(TESTES) MOCK POSTMAN GET', 1, 30063, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/get/#keyid#', 1, @SQL_CdiComandoSQL + 7)  
-		/*REST*/ exec sp_Execute_Insert 'dbo', 11, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_CdiComandoSQL, BBS_CdiEventoTransacao) values (10011, 10011, '(TESTES) MOCK POSTMAN PUT', 1, 30063, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/put/#keyid#', 2, @SQL_CdiComandoSQL + 5, 2)  
-		/*REST*/ exec sp_Execute_Insert 'dbo', 12, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao, BBS_DssNomeObjeto, BBS_CdiComandoSQL, BBS_CdiEventoTransacao, BBS_CdiVerboHTTP) values (10012, 10012, '(TESTES) SAIDA REST 1106',  1, 15953, 0, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/post/add', @SQL_CdiComandoSQL + 6, 2, 3)
-		/*REST*/ exec sp_Execute_Insert 'dbo', 13, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr) values (10013, 10013, '(TESTES) CONSULTAS REMOTAS OAUTH', 5)
-		/*REST*/ exec sp_Execute_Insert 'dbo', 14, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP) values (10014, 10014, '(TESTES) MOCK POSTMAN GET ARRAY', 1, 30063, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/get/arrayjson', 1)  
-		/*REST*/ exec sp_Execute_Insert 'dbo', 15, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_CdiComandoSQL) values (10015, 10015, '(TESTES) API THIRDPART GET', 1, 30063, 'https://62d6befa51e6e8f06f1214f9.mockapi.io/api/v1/post/#keyid#', 1, @SQL_CdiComandoSQL + 8)  
-		/*REST*/ exec sp_Execute_Insert 'dbo', 16, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_CdiComandoSQL, BBS_OplGravarResponse) values (10016, 10016, '(TESTES) MOCK REST REPROCESS', 1, 30063, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/get/#keyid#', 1, @SQL_CdiComandoSQL + 7, 1)  
-		/*REST*/ exec sp_Execute_Insert 'dbo', 17, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP) values (10017, 10017, '(TESTES) MOCK POSTMAN GET COMPLEXY ARRAY', 1, 30063, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v2/get/arrayjson', 1)  
+		/*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 09, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao, BBS_DssNomeObjeto, BBS_CdiEventoTransacao, BBS_CdiVerboHTTP', 10009, 0, @SQL_CdiComandoSQL, 4, '10009, ''(TESTES) INTEGRACAO FOTO'',  4, 30063, 0, ''https://httpbin.org/post'', 2, 3', 1  
+		/*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 10, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', 10010, 0, @SQL_CdiComandoSQL, 7, '10010, ''(TESTES) MOCK POSTMAN GET'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/get/#keyid#'', 1', 1  
+		/*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 11, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_CdiEventoTransacao', 10011, 0, @SQL_CdiComandoSQL, 5,  '10011, ''(TESTES) MOCK POSTMAN PUT'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/put/#keyid#'', 2, 2', 1  
+		/*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 12, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao, BBS_DssNomeObjeto, BBS_CdiEventoTransacao, BBS_CdiVerboHTTP', 10012, 0, @SQL_CdiComandoSQL, 6,  '10012, ''(TESTES) SAIDA REST 1106'',  1, 15953, 0, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/post/add'', 2, 3', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 13, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr', '10013, 10013, ''(TESTES) CONSULTAS REMOTAS OAUTH'', 5', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 14, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10014, 10014, ''(TESTES) MOCK POSTMAN GET ARRAY'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/get/arrayjson'', 1', 1  
+		/*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 15, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', 10015, 0, @SQL_CdiComandoSQL, 8, '10015, ''(TESTES) API THIRDPART GET'', 1, 30063, ''https://62d6befa51e6e8f06f1214f9.mockapi.io/api/v1/post/#keyid#'', 1', 1   
+		/*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 16, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_OplGravarResponse', 10016, 0, @SQL_CdiComandoSQL, 7, '10016, ''(TESTES) MOCK REST REPROCESS'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/get/#keyid#'', 1, 1', 1  
+		/*REST*/ exec sp_Execute_Insert 'dbo', 17, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10017, 10017, ''(TESTES) MOCK POSTMAN GET COMPLEXY ARRAY'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v2/get/arrayjson'', 1', 1  
+		/*REST*/ exec sp_Execute_Insert 'dbo', 18, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_CdiTipoComandoIntegr, BBS_DssNomeObjeto, BBS_CdiTransacao, BBS_NuiOrdem, BBS_OplOneForManyInclusao, BBS_OplValidaVazio, BBS_CdiComandoSQL, BBS_OplComandoNativo, BBS_CdiEventoTransacao, BBS_CdiFormularioWF, BBS_D1sModeloIntegracaoCmd, BBS_D2sModeloIntegracaoCmd, BBS_D3sModeloIntegracaoCmd, BBS_D4sModeloIntegracaoCmd, BBS_D5sModeloIntegracaoCmd, BBS_D6sModeloIntegracaoCmd, BBS_D7sModeloIntegracaoCmd, BBS_D8sModeloIntegracaoCmd, BBS_DsbComandoSQLValidacao, BBS_D1bDescritivo, BBS_D2bDescritivo, BBS_D3bDescritivo, BBS_D4bDescritivo, BBS_D5bDescritivo, BBS_D6bDescritivo, BBS_D7bDescritivo, BBS_D8bDescritivo, BBS_CdiModeloIntegracaoCmd_Ftr, BBS_NuiTipoEdicao, BBS_CdiTransacaoWF, BBS_CdiModeloIntegracao_Exc, BBS_CdiModeloIntegracao_Suc, BBS_CdiTpTratamentoIntegracao, BBS_OplExecutarSQL_Apdata, BBS_OplEnviarTudo, BBS_OplDesativado, BBS_CdiVerboHTTP, BBS_CdiModeloIntegracaoCmd_Pre, BBS_CdiLayOutSaida_Autentica, BBS_CdiLayOutSaida', /*values*/ '10018, 10018, 1, null, 29993, 0, 0, 0, 0, 0, 2, 0, ''Invalidação de Marcação-Transação 29993 - Obj 3111'', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0', 1  
+		/*REST*/ exec sp_Execute_Insert 'dbo', 19, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_CdiTipoComandoIntegr, BBS_DssNomeObjeto, BBS_CdiTransacao, BBS_NuiOrdem, BBS_OplOneForManyInclusao, BBS_OplValidaVazio, BBS_CdiComandoSQL, BBS_OplComandoNativo, BBS_CdiEventoTransacao, BBS_CdiFormularioWF, BBS_D1sModeloIntegracaoCmd, BBS_D2sModeloIntegracaoCmd, BBS_D3sModeloIntegracaoCmd, BBS_D4sModeloIntegracaoCmd, BBS_D5sModeloIntegracaoCmd, BBS_D6sModeloIntegracaoCmd, BBS_D7sModeloIntegracaoCmd, BBS_D8sModeloIntegracaoCmd, BBS_DsbComandoSQLValidacao, BBS_D1bDescritivo, BBS_D2bDescritivo, BBS_D3bDescritivo, BBS_D4bDescritivo, BBS_D5bDescritivo, BBS_D6bDescritivo, BBS_D7bDescritivo, BBS_D8bDescritivo, BBS_CdiModeloIntegracaoCmd_Ftr, BBS_NuiTipoEdicao, BBS_CdiTransacaoWF, BBS_CdiModeloIntegracao_Exc, BBS_CdiModeloIntegracao_Suc, BBS_CdiTpTratamentoIntegracao, BBS_OplExecutarSQL_Apdata, BBS_OplEnviarTudo, BBS_OplDesativado, BBS_CdiVerboHTTP, BBS_CdiModeloIntegracaoCmd_Pre, BBS_CdiLayOutSaida_Autentica, BBS_CdiLayOutSaida', /*values*/ '10019, 10018, 1, null, 39802, 0, 0, 0, 0, 0, 2, 0, ''Inclusão de Marcação - Obj. 4176'', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0', 1  
+		/*REST*/ exec sp_Execute_Insert 'dbo', 20, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_CdiTipoComandoIntegr, BBS_DssNomeObjeto, BBS_CdiTransacao, BBS_NuiOrdem, BBS_OplOneForManyInclusao, BBS_OplValidaVazio, BBS_CdiComandoSQL, BBS_OplComandoNativo, BBS_CdiEventoTransacao, BBS_CdiFormularioWF, BBS_D1sModeloIntegracaoCmd, BBS_D2sModeloIntegracaoCmd, BBS_D3sModeloIntegracaoCmd, BBS_D4sModeloIntegracaoCmd, BBS_D5sModeloIntegracaoCmd, BBS_D6sModeloIntegracaoCmd, BBS_D7sModeloIntegracaoCmd, BBS_D8sModeloIntegracaoCmd, BBS_DsbComandoSQLValidacao, BBS_D1bDescritivo, BBS_D2bDescritivo, BBS_D3bDescritivo, BBS_D4bDescritivo, BBS_D5bDescritivo, BBS_D6bDescritivo, BBS_D7bDescritivo, BBS_D8bDescritivo, BBS_CdiModeloIntegracaoCmd_Ftr, BBS_NuiTipoEdicao, BBS_CdiTransacaoWF, BBS_CdiModeloIntegracao_Exc, BBS_CdiModeloIntegracao_Suc, BBS_CdiTpTratamentoIntegracao, BBS_OplExecutarSQL_Apdata, BBS_OplEnviarTudo, BBS_OplDesativado, BBS_CdiVerboHTTP, BBS_CdiModeloIntegracaoCmd_Pre, BBS_CdiLayOutSaida_Autentica, BBS_CdiLayOutSaida', /*values*/ '10020, 10018, 1, null, 39803, 0, 0, 0, 0, 0, 2, 0, ''Alteração de Marcação - Obj. 4176'', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0', 1  
+		/*REST*/ exec sp_Execute_Insert 'dbo', 21, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_CdiTipoComandoIntegr, BBS_DssNomeObjeto, BBS_CdiTransacao, BBS_NuiOrdem, BBS_OplOneForManyInclusao, BBS_OplValidaVazio, BBS_CdiComandoSQL, BBS_OplComandoNativo, BBS_CdiEventoTransacao, BBS_CdiFormularioWF, BBS_D1sModeloIntegracaoCmd, BBS_D2sModeloIntegracaoCmd, BBS_D3sModeloIntegracaoCmd, BBS_D4sModeloIntegracaoCmd, BBS_D5sModeloIntegracaoCmd, BBS_D6sModeloIntegracaoCmd, BBS_D7sModeloIntegracaoCmd, BBS_D8sModeloIntegracaoCmd, BBS_DsbComandoSQLValidacao, BBS_D1bDescritivo, BBS_D2bDescritivo, BBS_D3bDescritivo, BBS_D4bDescritivo, BBS_D5bDescritivo, BBS_D6bDescritivo, BBS_D7bDescritivo, BBS_D8bDescritivo, BBS_CdiModeloIntegracaoCmd_Ftr, BBS_NuiTipoEdicao, BBS_CdiTransacaoWF, BBS_CdiModeloIntegracao_Exc, BBS_CdiModeloIntegracao_Suc, BBS_CdiTpTratamentoIntegracao, BBS_OplExecutarSQL_Apdata, BBS_OplEnviarTudo, BBS_OplDesativado, BBS_CdiVerboHTTP, BBS_CdiModeloIntegracaoCmd_Pre, BBS_CdiLayOutSaida_Autentica, BBS_CdiLayOutSaida', /*values*/ '10021, 10018, 1, null, 30132, 0, 0, 0, 0, 0, 1, 0, ''Inclusão de Crachá Provisório'', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0', 1  
+		/*REST*/ exec sp_Execute_Insert 'dbo', 22, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_CdiTipoComandoIntegr, BBS_DssNomeObjeto, BBS_CdiTransacao, BBS_NuiOrdem, BBS_OplOneForManyInclusao, BBS_OplValidaVazio, BBS_CdiComandoSQL, BBS_OplComandoNativo, BBS_CdiEventoTransacao, BBS_CdiFormularioWF, BBS_D1sModeloIntegracaoCmd, BBS_D2sModeloIntegracaoCmd, BBS_D3sModeloIntegracaoCmd, BBS_D4sModeloIntegracaoCmd, BBS_D5sModeloIntegracaoCmd, BBS_D6sModeloIntegracaoCmd, BBS_D7sModeloIntegracaoCmd, BBS_D8sModeloIntegracaoCmd, BBS_DsbComandoSQLValidacao, BBS_D1bDescritivo, BBS_D2bDescritivo, BBS_D3bDescritivo, BBS_D4bDescritivo, BBS_D5bDescritivo, BBS_D6bDescritivo, BBS_D7bDescritivo, BBS_D8bDescritivo, BBS_CdiModeloIntegracaoCmd_Ftr, BBS_NuiTipoEdicao, BBS_CdiTransacaoWF, BBS_CdiModeloIntegracao_Exc, BBS_CdiModeloIntegracao_Suc, BBS_CdiTpTratamentoIntegracao, BBS_OplExecutarSQL_Apdata, BBS_OplEnviarTudo, BBS_OplDesativado, BBS_CdiVerboHTTP, BBS_CdiModeloIntegracaoCmd_Pre, BBS_CdiLayOutSaida_Autentica, BBS_CdiLayOutSaida', /*values*/ '10022, 10018, 1, null, 30133, 0, 0, 0, 0, 0, 1, 0, ''Baixa de Crachá Provisório'', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0', 1  
+		/*REST*/ exec sp_Execute_Insert 'dbo', 23, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_CdiTipoComandoIntegr, BBS_DssNomeObjeto, BBS_CdiTransacao, BBS_NuiOrdem, BBS_OplOneForManyInclusao, BBS_OplValidaVazio, BBS_CdiComandoSQL, BBS_OplComandoNativo, BBS_CdiEventoTransacao, BBS_CdiFormularioWF, BBS_D1sModeloIntegracaoCmd, BBS_D2sModeloIntegracaoCmd, BBS_D3sModeloIntegracaoCmd, BBS_D4sModeloIntegracaoCmd, BBS_D5sModeloIntegracaoCmd, BBS_D6sModeloIntegracaoCmd, BBS_D7sModeloIntegracaoCmd, BBS_D8sModeloIntegracaoCmd, BBS_DsbComandoSQLValidacao, BBS_D1bDescritivo, BBS_D2bDescritivo, BBS_D3bDescritivo, BBS_D4bDescritivo, BBS_D5bDescritivo, BBS_D6bDescritivo, BBS_D7bDescritivo, BBS_D8bDescritivo, BBS_CdiModeloIntegracaoCmd_Ftr, BBS_NuiTipoEdicao, BBS_CdiTransacaoWF, BBS_CdiModeloIntegracao_Exc, BBS_CdiModeloIntegracao_Suc, BBS_CdiTpTratamentoIntegracao, BBS_OplExecutarSQL_Apdata, BBS_OplEnviarTudo, BBS_OplDesativado, BBS_CdiVerboHTTP, BBS_CdiModeloIntegracaoCmd_Pre, BBS_CdiLayOutSaida_Autentica, BBS_CdiLayOutSaida', /*values*/ '10023, 10019, 1, ''SFAPIService12;SFAPI12;login####0'', 30063, 0, 0, 0, 0, 0, 2, 0, ''Soap Teste Wsdl Tecban'', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0', 1  
 
 		/*##### ModelosIntegracoesCmdsCpos*/
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 01, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String, BBP_OplConteudoFixo', '10001, 10001, ''consultaCEP;cep'', 9, ''03510030'', 1', 1        
 		/*REST*/ exec sp_Execute_Insert 'dbo', 02, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String', '10002, 10002, '''', 9, ''''', 1        
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String, BBP_OplConteudoFixo, BBP_CdiLayOutSaida) values (10003, 10003, 'valueParameter', 9, 'value', 1, 1001)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String, BBP_OplConteudoFixo, BBP_CdiLayOutSaida) values (10004, 10004, 'cep', 9, '01001000', 1, 1002)
-        /*REST*/insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiComandoSQL)                    values (10005, 10005, 'idcontratado', 'USR_CdiUsuario', 3, @SQL_CdiComandoSQL + 1)
-		/*REST*/insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiComandoSQL)                    values (10006, 10005, '', 'USR_CosEMail', 9, @SQL_CdiComandoSQL + 2)
-		/*REST*/insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                                       values (10007, 10005, 'USR_OplPrimeiroAcesso', 'USR_OplPrimeiroAcesso', 12)
-		/*REST*/insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                                       values (10008, 10005, 'USR_CosSenha', 'USR_CosSenha', 9)
-		/*REST*/insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                                   values (10009, 10006, 'BatidaData', 'CBD_DtdBatidaData', 10)
-		/*REST*/insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                                   values (10010, 10006, 'BatidaHoraMinuto', 'CBD_HrdBatidaHoraMinuto', 11)
-        /*REST*/insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                                   values (10011, 10006, 'DispositivoAcesso', 'CBD_NuiDispositivoAcesso', 9)
-		/*REST*/insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                                   values (10012, 10006, 'Cdicontratado', 'CBD_CosCrachaBase', 9)
-        /*REST*/insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                                   values (10013, 10006, 'latitude', 'CBD_QtnLatitude', 9)
-		/*REST*/insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                                   values (10014, 10006, 'longitude', 'CBD_QtnLongitude', 9)
-		/*REST*/ insert into ModelosIntegracoesCmds(BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao) values (10007, 10007, '(TESTES) REST ENTRADA BASEX64',  1, 30842, 407)  
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                     values (10015, 10007, 'D1sCargo', 'CAR_D1sCargo', 9)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                     values (10016, 10007, 'D1sCargoRes', 'CAR_D1sCargoRes', 9)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                     values (10017, 10007, 'anexo', 'CampoVirtual_100505', 17)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo)                     values (10018, 10007, 'CBO', 'CAR_CdiCodBrasileiroOcupacao', 9)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Origem, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_OplConteudoFixo)                                                                            values (10019, 10008, 'cep', 'consultaCEP;cep', 9, 0)
-		/*REST*/ insert into ModelosIntegracoesCmds(BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao, BBS_DssNomeObjeto, BBS_CdiComandoSQL, BBS_CdiEventoTransacao, BBS_CdiVerboHTTP) values (10009, 10009, '(TESTES) INTEGRACAO FOTO',  4, 30063, 0, 'https://httpbin.org/post', @SQL_CdiComandoSQL + 4, 2, 3)  
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                                                                 values (10020, 10009, 'AGI_CdiAssuntoGeralItem', 'AGI_CdiAssuntoGeralItem', 3, 1003)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                                                                 values (10021, 10009, 'AGI_ArbArquivoRelatorio', 'AGI_ArbArquivoRelatorio', 18, 1003)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                      values (10022, 10010, 'keyid', 'keyid', 9, 1004)
-		/*REST*/ insert into ModelosIntegracoesCmds(BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_CdiComandoSQL, BBS_CdiEventoTransacao) values (10011, 10011, '(TESTES) MOCK POSTMAN PUT', 1, 30063, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/put/#keyid#', 2, @SQL_CdiComandoSQL + 5, 2)  
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                                              values (10023, 10011, 'keyid', 'keyid', 9, 1005)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                                              values (10024, 10011, 'field1', 'field1', 9, 1006)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                                              values (10025, 10011, 'field2', 'field2', 9, 1006)
-		/*REST*/ insert into ModelosIntegracoesCmds(BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao, BBS_DssNomeObjeto, BBS_CdiComandoSQL, BBS_CdiEventoTransacao, BBS_CdiVerboHTTP) values (10012, 10012, '(TESTES) SAIDA REST 1106',  1, 15953, 0, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/post/add', @SQL_CdiComandoSQL + 6, 2, 3)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                                                                 values (10026, 10012, 'nome',  'nome',  9, 1007)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                                                                 values (10027, 10012, 'email', 'email', 9, 1007)
-		/*REST*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                                                                 values (10028, 10012, 'id',    'id',    9, 1007)
-		/*REST POSTMAN THIRDPART*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                      values (10029, 10015, 'keyid', 'keyid', 9, 1008)
-		/*REST REPROCESS*/ insert into ModelosIntegracoesCmdsCpos(BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida)                                                             values (10030, 10016, 'keyid', 'keyid', 9, 1004)
-		/*REST REPROCESS*/ insert into ModelosIntegracoesCmdsRets(JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem) values (10002, 10016, 'userid', 'data;userid')
-		/*REST REPROCESS*/ insert into ModelosIntegracoesCmdsRets(JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem) values (10003, 10016, 'name', 'data;name')
-		/*REST REPROCESS*/ insert into ModelosIntegracoesCmdsRets(JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem) values (10004, 10016, 'age', 'data;age')
-		/*REST REPROCESS*/ insert into ModelosIntegracoesCmdsRets(JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem) values (10005, 10016, 'verb', 'data;verb')
+		/*REST*/ exec sp_Execute_Insert 'dbo', 03, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String, BBP_OplConteudoFixo, BBP_CdiLayOutSaida', '10003, 10003, ''valueParameter'', 9, ''value'', 1, 1001', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 04, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String, BBP_OplConteudoFixo, BBP_CdiLayOutSaida', '10004, 10004, ''cep'', 9, ''01001000'', 1, 1002', 1
+        /*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 05, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiComandoSQL, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', 10005, 0,  @SQL_CdiComandoSQL, 1, '10005, ''idcontratado'', ''USR_CdiUsuario'', 3', 1
+		/*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 06, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiComandoSQL, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', 10006, 0,  @SQL_CdiComandoSQL, 2, '10005, '''', ''USR_CosEMail'', 9', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 07, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10007, 10005, ''USR_OplPrimeiroAcesso'', ''USR_OplPrimeiroAcesso'', 12', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 08, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10008, 10005, ''USR_CosSenha'', ''USR_CosSenha'', 9', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 09, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10009, 10006, ''BatidaData'', ''CBD_DtdBatidaData'', 10', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 10, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10010, 10006, ''BatidaHoraMinuto'', ''CBD_HrdBatidaHoraMinuto'', 11', 1
+        /*REST*/ exec sp_Execute_Insert 'dbo', 11, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10011, 10006, ''DispositivoAcesso'', ''CBD_NuiDispositivoAcesso'', 9', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 12, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10012, 10006, ''Cdicontratado'', ''CBD_CosCrachaBase'', 9', 1
+        /*REST*/ exec sp_Execute_Insert 'dbo', 13, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10013, 10006, ''latitude'', ''CBD_QtnLatitude'', 9', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 14, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10014, 10006, ''longitude'', ''CBD_QtnLongitude'', 9', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 15, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10015, 10007, ''D1sCargo'', ''CAR_D1sCargo'', 9', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 16, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10016, 10007, ''D1sCargoRes'', ''CAR_D1sCargoRes'', 9', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 17, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10017, 10007, ''anexo'', ''CampoVirtual_100505'', 17', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 18, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10018, 10007, ''CBO'', ''CAR_CdiCodBrasileiroOcupacao'', 9', 1 
+		/*REST*/ exec sp_Execute_Insert 'dbo', 19, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Origem, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_OplConteudoFixo', '10019, 10008, ''cep'', ''consultaCEP;cep'', 9, 0', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 20, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10020, 10009, ''AGI_CdiAssuntoGeralItem'', ''AGI_CdiAssuntoGeralItem'', 3, 1003', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 21, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10021, 10009, ''AGI_ArbArquivoRelatorio'', ''AGI_ArbArquivoRelatorio'', 18, 1003', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 22, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10022, 10010, ''keyid'', ''keyid'', 9, 1004', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 23, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10023, 10011, ''keyid'', ''keyid'', 9, 1005', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 24, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10024, 10011, ''field1'', ''field1'', 9, 1006', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 25, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10025, 10011, ''field2'', ''field2'', 9, 1006', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 26, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10026, 10012, ''nome'',  ''nome'',  9, 1007', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 27, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10027, 10012, ''email'', ''email'', 9, 1007', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 28, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10028, 10012, ''id'', ''id'', 9, 1007', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 29, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10029, 10015, ''keyid'', ''keyid'', 9, 1008', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 30, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida', '10030, 10016, ''keyid'', ''keyid'', 9, 1004', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 31, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_OplConteudoFixo, BBP_NuiConteudo_Inteiro, BBP_DtdConteudo_DataHora, BBP_DssConteudo_String, BBP_OplConteudo_Logico, BBP_VlnConteudo_Numerico, BBP_VrnConteudo_Numerico, BBP_DsbConteudo_Blob, BBP_OplFiltro, BBP_CdiModeloDeParaGeral, BBP_CdiCampo_TabelaRelacionada, BBP_CdiComandoSQL, BBP_CdiCalculoLPC, BBP_CdiLayOutSaida, BBP_CdiOperacaoLogica, BBP_OplComandoNativo, BBP_CosAgrupamento, BBP_CdiPais_Registro, BBP_OplConsiderarNulo, BBP_OplExecutarSql_Cliente, BBP_OplParametroWSRetorno, BBP_OplEncriptografarCpoBlob, BBP_OplDesconsiderarCpoVazio, BBP_DssArquivoRetorno, BBP_CosExtensaoArquivoRetorno, BBP_CdiAcaoArquivoIntegracao, BBP_CdiTipoArquivoIntegracao, BBP_CdiOpcao_MsgErroDePara, BBP_D1bMensagemErroDePara, BBP_D2bMensagemErroDePara, BBP_D3bMensagemErroDePara', /*values*/ '10031, 10018, ''CBE_CdiConBatidaReal'', ''CBE_CdiConBatidaReal'', 3, 0, 0, null, null, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, null, null, 0, 0, 0, null, null, null', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 32, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_OplConteudoFixo, BBP_NuiConteudo_Inteiro, BBP_DtdConteudo_DataHora, BBP_DssConteudo_String, BBP_OplConteudo_Logico, BBP_VlnConteudo_Numerico, BBP_VrnConteudo_Numerico, BBP_DsbConteudo_Blob, BBP_OplFiltro, BBP_CdiModeloDeParaGeral, BBP_CdiCampo_TabelaRelacionada, BBP_CdiComandoSQL, BBP_CdiCalculoLPC, BBP_CdiLayOutSaida, BBP_CdiOperacaoLogica, BBP_OplComandoNativo, BBP_CosAgrupamento, BBP_CdiPais_Registro, BBP_OplConsiderarNulo, BBP_OplExecutarSql_Cliente, BBP_OplParametroWSRetorno, BBP_OplEncriptografarCpoBlob, BBP_OplDesconsiderarCpoVazio, BBP_DssArquivoRetorno, BBP_CosExtensaoArquivoRetorno, BBP_CdiAcaoArquivoIntegracao, BBP_CdiTipoArquivoIntegracao, BBP_CdiOpcao_MsgErroDePara, BBP_D1bMensagemErroDePara, BBP_D2bMensagemErroDePara, BBP_D3bMensagemErroDePara', /*values*/ '10032, 10018, ''CBE_CdiOcorrenciaMarcacao'', ''CBE_CdiOcorrenciaMarcacao'', 3, 0, 0, null, null, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, null, null, 0, 0, 0, null, null, null', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 33, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_OplConteudoFixo, BBP_NuiConteudo_Inteiro, BBP_DtdConteudo_DataHora, BBP_DssConteudo_String, BBP_OplConteudo_Logico, BBP_VlnConteudo_Numerico, BBP_VrnConteudo_Numerico, BBP_DsbConteudo_Blob, BBP_OplFiltro, BBP_CdiModeloDeParaGeral, BBP_CdiCampo_TabelaRelacionada, BBP_CdiComandoSQL, BBP_CdiCalculoLPC, BBP_CdiLayOutSaida, BBP_CdiOperacaoLogica, BBP_OplComandoNativo, BBP_CosAgrupamento, BBP_CdiPais_Registro, BBP_OplConsiderarNulo, BBP_OplExecutarSql_Cliente, BBP_OplParametroWSRetorno, BBP_OplEncriptografarCpoBlob, BBP_OplDesconsiderarCpoVazio, BBP_DssArquivoRetorno, BBP_CosExtensaoArquivoRetorno, BBP_CdiAcaoArquivoIntegracao, BBP_CdiTipoArquivoIntegracao, BBP_CdiOpcao_MsgErroDePara, BBP_D1bMensagemErroDePara, BBP_D2bMensagemErroDePara, BBP_D3bMensagemErroDePara', /*values*/ '10033, 10019, ''login;credential;companyId'', null, 9, 1, 0, null, ''tecnologiaT1'', 0, 0, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, null, null, 0, 0, 0, null, null, null', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 34, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_OplConteudoFixo, BBP_NuiConteudo_Inteiro, BBP_DtdConteudo_DataHora, BBP_DssConteudo_String, BBP_OplConteudo_Logico, BBP_VlnConteudo_Numerico, BBP_VrnConteudo_Numerico, BBP_DsbConteudo_Blob, BBP_OplFiltro, BBP_CdiModeloDeParaGeral, BBP_CdiCampo_TabelaRelacionada, BBP_CdiComandoSQL, BBP_CdiCalculoLPC, BBP_CdiLayOutSaida, BBP_CdiOperacaoLogica, BBP_OplComandoNativo, BBP_CosAgrupamento, BBP_CdiPais_Registro, BBP_OplConsiderarNulo, BBP_OplExecutarSql_Cliente, BBP_OplParametroWSRetorno, BBP_OplEncriptografarCpoBlob, BBP_OplDesconsiderarCpoVazio, BBP_DssArquivoRetorno, BBP_CosExtensaoArquivoRetorno, BBP_CdiAcaoArquivoIntegracao, BBP_CdiTipoArquivoIntegracao, BBP_CdiOpcao_MsgErroDePara, BBP_D1bMensagemErroDePara, BBP_D2bMensagemErroDePara, BBP_D3bMensagemErroDePara', /*values*/ '10034, 10019, ''login;credential;username'', null, 9, 1, 0, null, ''sfapi'', 0, 0, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, null, null, 0, 0, 0, null, null, null', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 35, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_OplConteudoFixo, BBP_NuiConteudo_Inteiro, BBP_DtdConteudo_DataHora, BBP_DssConteudo_String, BBP_OplConteudo_Logico, BBP_VlnConteudo_Numerico, BBP_VrnConteudo_Numerico, BBP_DsbConteudo_Blob, BBP_OplFiltro, BBP_CdiModeloDeParaGeral, BBP_CdiCampo_TabelaRelacionada, BBP_CdiComandoSQL, BBP_CdiCalculoLPC, BBP_CdiLayOutSaida, BBP_CdiOperacaoLogica, BBP_OplComandoNativo, BBP_CosAgrupamento, BBP_CdiPais_Registro, BBP_OplConsiderarNulo, BBP_OplExecutarSql_Cliente, BBP_OplParametroWSRetorno, BBP_OplEncriptografarCpoBlob, BBP_OplDesconsiderarCpoVazio, BBP_DssArquivoRetorno, BBP_CosExtensaoArquivoRetorno, BBP_CdiAcaoArquivoIntegracao, BBP_CdiTipoArquivoIntegracao, BBP_CdiOpcao_MsgErroDePara, BBP_D1bMensagemErroDePara, BBP_D2bMensagemErroDePara, BBP_D3bMensagemErroDePara', /*values*/ '10035, 10019, ''login;credential;password'', null, 9, 1, 0, null, ''BanTec2020@#$'', 0, 0, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, null, null, 0, 0, 0, null, null, null', 1
+
+		/*##### ModelosIntegracoesCmdsRets*/
+		/*REST*/ exec sp_Execute_Insert 'dbo', 01, 'ModelosIntegracoesCmdsRets', 'JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem', '10002, 10016, ''userid'', ''data;userid''', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 02, 'ModelosIntegracoesCmdsRets', 'JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem', '10003, 10016, ''name'', ''data;name''', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 03, 'ModelosIntegracoesCmdsRets', 'JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem', '10004, 10016, ''age'', ''data;age''', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 04, 'ModelosIntegracoesCmdsRets', 'JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem', '10005, 10016, ''verb'', ''data;verb''', 1
 
 
-		/*OBJETO - 550 - ABA BASES DE DADOS*/
-		print '01 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (01, 1, '(TESTES) SERVIDOR SOAP CORREIOS',           10001, 1, 6, 1,  'https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl'); 
-		print '02 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (02, 1, '(TESTES) SERVIDOR REST SEM PARAMETROS',     10002, 1, 10, 1, 'http://echo.jsontest.com/key/value/one/two'); 
-		print '03 - ServidoresIntegracoesBDs';
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (03, 1, '(TESTES) SERVIDOR REST COM PARAMETROS',     10003, 1, 10, 1, 'http://validate.jsontest.com/'); 
-		print '04 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (04, 1, '(TESTES) SERVIDOR REST COM PARAMETROS URL', 10004, 1, 10, 1, 'https://viacep.com.br/'); 
-		print '05 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (05, 1, '(TESTES) SERVIDOR REST ALTERACAO OBJ 2330', 10005, 2, 10, 1, ''); 
-		print '06 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (06, 1, '(TESTES) SERVIDOR REST MARCACAO PONTO',     10006, 2, 10, 0, '');
-		print '07 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (07, 1, '(TESTES) SERVIDOR REST ENTRADA BASEX64',    10007, 2, 10, 0, '');
-		print '08 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor, BBO_CdiTipoAutentConsWebServi) values (08, 1, '(TESTES) SERVIDOR REST CORREIOS LOTE',      10008, 1, 6, 0,  'https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl', 1);
-        print '09 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (09, 1, '(TESTES) SERVIDOR MOCK POSTMAN GET',        10010, 1, 10, 1, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/');
-		print '10 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (10, 1, '(TESTES) SERVIDOR MOCK POSTMAN PUT',        10011, 1, 10, 1, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/'); 
-		print '11 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (11, 1, '(TESTES) SERVIDOR MOCK POSTMAN POST AT',    10012, 1, 10, 1, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/'); 
-		print '12 - ServidoresIntegracoesBDs';
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor, BBO_CdiTipoAutentConsWebServi) values (12, 1, '(TESTES) SERVIDOR REST CONSULTAS REMOTAS',  10013, 2, 10, 1, '', 5); 
-		print '13 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (13, 1, '(TESTES) SERVIDOR MOCK POSTMAN GET ARRAY',  10014, 1, 10, 1, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/');
-		print '14 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (14, 1, '(TESTES) SERVIDOR API THIRDPART GET',                10015, 1, 10, 1, 'https://62d6befa51e6e8f06f1214f9.mockapi.io/api');
-		print '15 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (15, 1, '(TESTES) SERVIDOR MOCK REST REPROCESS',              10016, 1, 10, 1, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/');
-		print '16 - ServidoresIntegracoesBDs';           
-		insert into ServidoresIntegracoesBDs(BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor)                                values (16, 1, '(TESTES) SERVIDOR MOCK POSTMAN GET COMPLEXY ARRAY',  10017, 1, 10, 1, 'https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/');
-		print '17 - ServidoresIntegracoesBDs';           
+		/*#### OBJETO - 550 - ABA BASES DE DADOS - ServidoresIntegracoesBDs*/
+		exec sp_Execute_Insert 'dbo', 01, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '01, 1, ''(TESTES) SERVIDOR SOAP CORREIOS'', 10001, 1, 6, 1, ''https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl''', 1
+		exec sp_Execute_Insert 'dbo', 02, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '02, 1, ''(TESTES) SERVIDOR REST SEM PARAMETROS'', 10002, 1, 10, 1, ''http://echo.jsontest.com/key/value/one/two''', 1
+		exec sp_Execute_Insert 'dbo', 03, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '03, 1, ''(TESTES) SERVIDOR REST COM PARAMETROS'', 10003, 1, 10, 1, ''http://validate.jsontest.com/''', 1
+		exec sp_Execute_Insert 'dbo', 04, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '04, 1, ''(TESTES) SERVIDOR REST COM PARAMETROS URL'', 10004, 1, 10, 1, ''https://viacep.com.br/''', 1
+		exec sp_Execute_Insert 'dbo', 05, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '05, 1, ''(TESTES) SERVIDOR REST ALTERACAO OBJ 2330'', 10005, 2, 10, 1, ''''', 1
+		exec sp_Execute_Insert 'dbo', 06, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '06, 1, ''(TESTES) SERVIDOR REST MARCACAO PONTO'', 10006, 2, 10, 0, ''''', 1
+		exec sp_Execute_Insert 'dbo', 07, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '07, 1, ''(TESTES) SERVIDOR REST ENTRADA BASEX64'', 10007, 2, 10, 0, ''''', 1
+		exec sp_Execute_Insert 'dbo', 08, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor, BBO_CdiTipoAutentConsWebServi', '08, 1, ''(TESTES) SERVIDOR REST CORREIOS LOTE'', 10008, 1, 6, 0,  ''https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl'', 1', 1
+		exec sp_Execute_Insert 'dbo', 09, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '09, 1, ''(TESTES) SERVIDOR MOCK POSTMAN GET'', 10010, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1
+		exec sp_Execute_Insert 'dbo', 10, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '10, 1, ''(TESTES) SERVIDOR MOCK POSTMAN PUT'', 10011, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1 
+		exec sp_Execute_Insert 'dbo', 11, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '11, 1, ''(TESTES) SERVIDOR MOCK POSTMAN POST AT'', 10012, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1 
+		exec sp_Execute_Insert 'dbo', 12, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor, BBO_CdiTipoAutentConsWebServi', '12, 1, ''(TESTES) SERVIDOR REST CONSULTAS REMOTAS'',  10013, 2, 10, 1, '''', 5', 1 
+		exec sp_Execute_Insert 'dbo', 13, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '13, 1, ''(TESTES) SERVIDOR MOCK POSTMAN GET ARRAY'',  10014, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1
+		exec sp_Execute_Insert 'dbo', 14, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '14, 1, ''(TESTES) SERVIDOR API THIRDPART GET'', 10015, 1, 10, 1, ''https://62d6befa51e6e8f06f1214f9.mockapi.io/api''', 1
+		exec sp_Execute_Insert 'dbo', 15, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '15, 1, ''(TESTES) SERVIDOR MOCK REST REPROCESS'', 10016, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1
+		exec sp_Execute_Insert 'dbo', 16, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '16, 1, ''(TESTES) SERVIDOR MOCK POSTMAN GET COMPLEXY ARRAY'',  10017, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1
+		exec sp_Execute_Insert 'dbo', 17, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '17, 1, ''(TESTES) COMBATIDAS REAIS'',  10018, 1, 10, 1, ''''', 1
+
+
 		/*OUTROS AJUSTES PARA TESTES*/
-		update FormulariosWFSobreps set BRH_CdiOpcao_Desativado = 0 /* CdiOpcao_Desativado (bind) */ where BRH_CdiFormularioWF = 407 /* CdiFormularioWF (bind) */
-
-		begin try
-		    print '01 - FormulariosWFCampos';
-			insert into dbo.FormulariosWFCampos(FWC_CdiFormularioWFCampo, FWC_CdiFormularioWF, FWC_CdiCampo, FWC_CdiClasseProcCpoPar, FWC_NuiSequencial, FWC_NuiOrdem, FWC_OplReferencia, FWC_OplLigacao, FWC_OplCampoBase, FWC_CdiCampoAgrupamento, FWC_OplDataBase, FWC_CdiOpcao_InfObrigatoria, FWC_OplDataBaseBloqueio, FWC_CdiObjetoLookup, FWC_DsbSqlLookupField, FWC_CdiOpcao_Protocolo, FWC_DssContDefault_String, FWC_DtdContDefault_DataHora, FWC_NuiContDefault_Inteiro, FWC_OplContDefault_Logico, FWC_VlnContDefault_Numerico, FWC_VrnContDefault_Numerico, FWC_CdiOpcao_Default, FWC_CdiDominio, FWC_D1sLiteral, FWC_D2sLiteral, FWC_D3sLiteral, FWC_D4sLiteral, FWC_D5sLiteral, FWC_D6sLiteral, FWC_D7sLiteral, FWC_D8sLiteral, FWC_OplInformacaoObrigatoria, FWC_OplProtocolo, FWC_OplLigacaoFilho, FWC_CdiOpcao_LookupTodasEtapas, FWC_DsbContDefault_Blob, FWC_OplDesabilitaCpoLkpParam, FWC_CdiCampoFlexivel, FWC_OplDesativado, FWC_OplCampoCondicao, FWC_DsbSqlCampoVirtual, FWC_CdiAcaoCampo, FWC_CdiOpcao_GdMultiTransacao, FWC_NuiOrigemRegistro, FWC_OplMultiplaSelecao, FWC_OplExibirAjuda, FWC_D1bAjudaCampo, FWC_D2bAjudaCampo, FWC_D3bAjudaCampo, FWC_D4bAjudaCampo, FWC_D5bAjudaCampo, FWC_D6bAjudaCampo, FWC_D7bAjudaCampo, FWC_D8bAjudaCampo)
-			values(100505, 407, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, null, null, 0, 0, 0, 0, 0, 214, 'ANEXO', null, null, null, null, null, null, null, 0, 0, 0, 0, null, 0, 0, 0, 0, null, 0, 0, 4, 0, 0, null, null, null, null, null, null, null, null);
-		end try
-		begin catch
-			print ('OK -> FormulariosWFCampos - Ajuste já realizado para testar anexo')
-		end catch
-
-		begin try
-		    print '01 - UsuariosAutenticacoes';
-			insert into UsuariosAutenticacoes(JVQ_CdiUsuarioAutenticacao, JVQ_CdiUsuario, JVQ_CdsClientId, JVQ_CdsSecretKey, JVQ_CdiPerfil, JVQ_NuiMinutosValidadeToken, JVQ_D1sDescricao, JVQ_D2sDescricao, JVQ_D3sDescricao, JVQ_D4sDescricao, JVQ_D5sDescricao, JVQ_D6sDescricao, JVQ_D7sDescricao, JVQ_D8sDescricao)
-			values(1, 1, '1658444F-EF87-47E7-B62C-F4F70BACE420', '@@/WJ8YRQ7Di9Sq/ci8cU2qJRdFdDvz9RefzHbOTyHNfoZpTtpog9cY/qjfqtQFtwxwo3w9bBxRbZmAyW/WkkcpUcaUbu+33yM', 1, 10, 'Apdata OAuth2', 'j2Bu6Bc6xuNZMM35x8ED4qN7cGJT5eH4', null, null, null, null, null, null);
-		end try
-		begin catch
-			print ('OK -> UsuariosAutenticacoes - Autenticao OAuth ja inserida')
-		end catch
+		exec sp_Execute_Update 'dbo', 01, 'FormulariosWFSobreps', 'BRH_CdiOpcao_Desativado = 0', 'BRH_CdiFormularioWF = 407'
+		exec sp_Execute_Insert 'dbo', 01, 'FormulariosWFCampos', 'FWC_CdiFormularioWFCampo, FWC_CdiFormularioWF, FWC_CdiCampo, FWC_CdiClasseProcCpoPar, FWC_NuiSequencial, FWC_NuiOrdem, FWC_OplReferencia, FWC_OplLigacao, FWC_OplCampoBase, FWC_CdiCampoAgrupamento, FWC_OplDataBase, FWC_CdiOpcao_InfObrigatoria, FWC_OplDataBaseBloqueio, FWC_CdiObjetoLookup, FWC_DsbSqlLookupField, FWC_CdiOpcao_Protocolo, FWC_DssContDefault_String, FWC_DtdContDefault_DataHora, FWC_NuiContDefault_Inteiro, FWC_OplContDefault_Logico, FWC_VlnContDefault_Numerico, FWC_VrnContDefault_Numerico, FWC_CdiOpcao_Default, FWC_CdiDominio, FWC_D1sLiteral, FWC_D2sLiteral, FWC_D3sLiteral, FWC_D4sLiteral, FWC_D5sLiteral, FWC_D6sLiteral, FWC_D7sLiteral, FWC_D8sLiteral, FWC_OplInformacaoObrigatoria, FWC_OplProtocolo, FWC_OplLigacaoFilho, FWC_CdiOpcao_LookupTodasEtapas, FWC_DsbContDefault_Blob, FWC_OplDesabilitaCpoLkpParam, FWC_CdiCampoFlexivel, FWC_OplDesativado, FWC_OplCampoCondicao, FWC_DsbSqlCampoVirtual, FWC_CdiAcaoCampo, FWC_CdiOpcao_GdMultiTransacao, FWC_NuiOrigemRegistro, FWC_OplMultiplaSelecao, FWC_OplExibirAjuda, FWC_D1bAjudaCampo, FWC_D2bAjudaCampo, FWC_D3bAjudaCampo, FWC_D4bAjudaCampo, FWC_D5bAjudaCampo, FWC_D6bAjudaCampo, FWC_D7bAjudaCampo, FWC_D8bAjudaCampo', '100505, 407, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, null, null, 0, 0, 0, 0, 0, 214, ''ANEXO'', null, null, null, null, null, null, null, 0, 0, 0, 0, null, 0, 0, 0, 0, null, 0, 0, 4, 0, 0, null, null, null, null, null, null, null, null', 1
+		exec sp_Execute_Insert 'dbo', 01, 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao, JVQ_CdiUsuario, JVQ_CdsClientId, JVQ_CdsSecretKey, JVQ_CdiPerfil, JVQ_NuiMinutosValidadeToken, JVQ_D1sDescricao, JVQ_D2sDescricao, JVQ_D3sDescricao, JVQ_D4sDescricao, JVQ_D5sDescricao, JVQ_D6sDescricao, JVQ_D7sDescricao, JVQ_D8sDescricao', '1, 1, ''1658444F-EF87-47E7-B62C-F4F70BACE420'', ''@@/WJ8YRQ7Di9Sq/ci8cU2qJRdFdDvz9RefzHbOTyHNfoZpTtpog9cY/qjfqtQFtwxwo3w9bBxRbZmAyW/WkkcpUcaUbu+33yM'', 1, 10, ''Apdata OAuth2'', ''j2Bu6Bc6xuNZMM35x8ED4qN7cGJT5eH4'', null, null, null, null, null, null', 1 
 
 		exec sp_takeKeyForInsertion 'Consultas', @MaxKeyFromTable OUTPUT 
 
     	/*Desativa a tag de segurança para consultas*/
-		print '01 - USR_OplForcarUsoTAGApDesig';
-		update Usuarios Set USR_OplForcarUsoTAGApDesig = 0 where USR_CdiUsuario = 1
+		exec sp_Execute_Update 'dbo', '01', 'Usuarios', 'USR_OplForcarUsoTAGApDesig = 0', 'USR_CdiUsuario = 1', 1
 
-		print '01 - Consultas';           		
-		/*QUERY_EXECUTE*/insert into dbo.Consultas(ACS_CdiConsulta, ACS_CdiConsultaGrupo, ACS_DtdAbertura, ACS_DsbConteudo, ACS_DssConsulta, ACS_OplExigirSenhaAdicl, ACS_CdiPais, ACS_OplFolhasDesativadas, ACS_OplPublico, ACS_NuiIcone, ACS_NuiIcone_Selecionado, ACS_NuiIcone_WorkArea, ACS_OplVisContratadoConectado, ACS_D1sNomeReferencia, ACS_D2sNomeReferencia, ACS_D3sNomeReferencia, ACS_D4sNomeReferencia, ACS_D5sNomeReferencia, ACS_D6sNomeReferencia, ACS_D7sNomeReferencia, ACS_D8sNomeReferencia, ACS_D1bAjuda, ACS_D2bAjuda, ACS_D3bAjuda, ACS_D4bAjuda, ACS_D5bAjuda, ACS_D6bAjuda, ACS_D7bAjuda, ACS_D8bAjuda, ACS_OplAltoConsumoRecurso, ACS_D1sConsultaExplicacao, ACS_D2sConsultaExplicacao, ACS_D3sConsultaExplicacao, ACS_D4sConsultaExplicacao, ACS_D5sConsultaExplicacao, ACS_D6sConsultaExplicacao, ACS_D7sConsultaExplicacao, ACS_D8sConsultaExplicacao, ACS_OplDesativado)
-		/*QUERY_EXECUTE*/values(@MaxKeyFromTable, 75, null, 0x545046300654646153514C00035461670372631147756964436F6C6C6174696F6E54797065070D67634D5353514C5365727665720C446174616261736554797065070D64744D5353514C5365727665721044617461506970656C696E654E616D65060B426C6F624172717569766F0D4564697453514C41735465787409094C696E6B436F6C6F720707636C426C61636B084C696E6B5479706507126C74506172616D65746572697A656453514C164D617853514C4669656C64416C6961734C656E67746802000F53514C546578742E537472696E677301063073656C656374204C57435F4364694C616E63616D656E746F57462C204C57435F447362436F6E746575646F5F426C6F62061B202046726F6D204C616E63616D656E746F73574643616D706F7320067020207768657265204C57435F4364694C616E63616D656E746F574620696E202873656C656374204C57465F4364694C616E63616D656E746F57462046726F6D204C616E63616D656E746F735746207768657265204C57465F436469466F726D756C6172696F5746203D203A496446572906262020416E64204C57435F447362436F6E746575646F5F426C6F62206973206E6F74206E756C6C1200000000000753514C547970650706737153514C32074C69746572616C060B426C6F624172717569766F06506172616D730E01084461746154797065070C667457696465537472696E67044E616D6506044964465709506172616D5479706507097074556E6B6E6F776E00000D4E6F5472616E736C6174696F6E0800085464614669656C640864614669656C643105416C69617314170000004C616EC3A7616D656E746F20646520576F726B666C6F7708446174615479706507096474496E74656765720C446973706C6179576964746802080A4669656C64416C69617314170000004C616EC3A7616D656E746F20646520576F726B666C6F770B4669656C644C656E677468020A094669656C644E616D6506134C57435F4364694C616E63616D656E746F57460C53514C4669656C644E616D6506134C57435F4364694C616E63616D656E746F5746095461626C654E616D6506134C616E63616D656E746F73574643616D706F730000085464614669656C640864614669656C643205416C6961731410000000436F6E7465C3BA646F202D20426C6F6208446174615479706507066474424C4F420C446973706C6179576964746803AD0D0A4669656C64416C6961731410000000436F6E7465C3BA646F202D20426C6F620B4669656C644C656E677468038813094669656C644E616D6506144C57435F447362436F6E746575646F5F426C6F62084C696E6B61626C65080C53514C4669656C644E616D6506144C57435F447362436F6E746575646F5F426C6F62095461626C654E616D6506134C616E63616D656E746F73574643616D706F73000000, 'BlobArquivo', 0, 1, 0, 0, 0, 0, 0, 0, 'BlobArquivo', 'Español=', 'BlobArquivo', 'BlobArquivo', 'BlobArquivo', 'BlobArquivo', 'BlobArquivo', 'BlobArquivo', null, null, null, null, null, null, null, null, 0, '', '', '', '', '', '', '', '', 0);
+		/*Query Execute*/
+		exec sp_Execute_Insert_Key 'dbo', 01, 'Consultas', 'ACS_CdiConsulta, ACS_CdiConsultaGrupo, ACS_DtdAbertura, ACS_DsbConteudo, ACS_DssConsulta, ACS_OplExigirSenhaAdicl, ACS_CdiPais, ACS_OplFolhasDesativadas, ACS_OplPublico, ACS_NuiIcone, ACS_NuiIcone_Selecionado, ACS_NuiIcone_WorkArea, ACS_OplVisContratadoConectado, ACS_D1sNomeReferencia, ACS_D2sNomeReferencia, ACS_D3sNomeReferencia, ACS_D4sNomeReferencia, ACS_D5sNomeReferencia, ACS_D6sNomeReferencia, ACS_D7sNomeReferencia, ACS_D8sNomeReferencia, ACS_D1bAjuda, ACS_D2bAjuda, ACS_D3bAjuda, ACS_D4bAjuda, ACS_D5bAjuda, ACS_D6bAjuda, ACS_D7bAjuda, ACS_D8bAjuda, ACS_OplAltoConsumoRecurso, ACS_D1sConsultaExplicacao, ACS_D2sConsultaExplicacao, ACS_D3sConsultaExplicacao, ACS_D4sConsultaExplicacao, ACS_D5sConsultaExplicacao, ACS_D6sConsultaExplicacao, ACS_D7sConsultaExplicacao, ACS_D8sConsultaExplicacao, ACS_OplDesativado', @MaxKeyFromTable, 0, '75, null, 0x545046300654646153514C00035461670372631147756964436F6C6C6174696F6E54797065070D67634D5353514C5365727665720C446174616261736554797065070D64744D5353514C5365727665721044617461506970656C696E654E616D65060B426C6F624172717569766F0D4564697453514C41735465787409094C696E6B436F6C6F720707636C426C61636B084C696E6B5479706507126C74506172616D65746572697A656453514C164D617853514C4669656C64416C6961734C656E67746802000F53514C546578742E537472696E677301063073656C656374204C57435F4364694C616E63616D656E746F57462C204C57435F447362436F6E746575646F5F426C6F62061B202046726F6D204C616E63616D656E746F73574643616D706F7320067020207768657265204C57435F4364694C616E63616D656E746F574620696E202873656C656374204C57465F4364694C616E63616D656E746F57462046726F6D204C616E63616D656E746F735746207768657265204C57465F436469466F726D756C6172696F5746203D203A496446572906262020416E64204C57435F447362436F6E746575646F5F426C6F62206973206E6F74206E756C6C1200000000000753514C547970650706737153514C32074C69746572616C060B426C6F624172717569766F06506172616D730E01084461746154797065070C667457696465537472696E67044E616D6506044964465709506172616D5479706507097074556E6B6E6F776E00000D4E6F5472616E736C6174696F6E0800085464614669656C640864614669656C643105416C69617314170000004C616EC3A7616D656E746F20646520576F726B666C6F7708446174615479706507096474496E74656765720C446973706C6179576964746802080A4669656C64416C69617314170000004C616EC3A7616D656E746F20646520576F726B666C6F770B4669656C644C656E677468020A094669656C644E616D6506134C57435F4364694C616E63616D656E746F57460C53514C4669656C644E616D6506134C57435F4364694C616E63616D656E746F5746095461626C654E616D6506134C616E63616D656E746F73574643616D706F730000085464614669656C640864614669656C643205416C6961731410000000436F6E7465C3BA646F202D20426C6F6208446174615479706507066474424C4F420C446973706C6179576964746803AD0D0A4669656C64416C6961731410000000436F6E7465C3BA646F202D20426C6F620B4669656C644C656E677468038813094669656C644E616D6506144C57435F447362436F6E746575646F5F426C6F62084C696E6B61626C65080C53514C4669656C644E616D6506144C57435F447362436F6E746575646F5F426C6F62095461626C654E616D6506134C616E63616D656E746F73574643616D706F73000000, ''BlobArquivo'', 0, 1, 0, 0, 0, 0, 0, 0, ''BlobArquivo'', ''Español='', ''BlobArquivo'', ''BlobArquivo'', ''BlobArquivo'', ''BlobArquivo'', ''BlobArquivo'', ''BlobArquivo'', null, null, null, null, null, null, null, null, 0, '''', '''', '''', '''', '''', '''', '''', '''', 0', 1
 	
 	    /*ADINTEGRATOR - ACTIVE DIRECTORY*/
-			print '01 - DefSisIntegracaoAD';
 			exec sp_takeKeyForInsertion 'DefSisIntegracaoAD', @AuxKey OUTPUT
-			insert into DefSisIntegracaoAD(DZW_CdiSistema, DZW_DtdOficializacaoSistema, DZW_OplAtivaIntegracao, DZW_OplCriacaoUsuarioAut, DZW_DssCaminhoLDAP, DZW_OplIntegraViaWS, DZW_DssWSCriaUsuario, DZW_DssWSAtualizaDados, DZW_DssWSTrocaSenha, DZW_DssWSResetaSenha, DZW_DssWSAtivaDesativaUsuario, DZW_CdsWSUsuario, DZW_CosWSSenha, DZW_OplAtivaLogIntegracao, DZW_OplNaoSincronizarGrupo, DZW_OplNaoSincronizarEstrutura, DZW_DssWSValidaLogin, DZW_DssWSTrataSSO)
-			values(@AuxKey/*72*/, null, 1, 0, 'LDAP://DC=apdatatst,DC=com,DC=br', 1, 'http://172.27.10.50/ADIProduto/ApADIntegratorWS.dll/soap/IApADIntegrationIntf', 'http://172.27.10.50/ADIProduto/ApADIntegratorWS.dll/soap/IApADIntegrationIntf', null, null, 'http://172.27.10.50/ADIProduto/ApADIntegratorWS.dll/soap/IApADIntegrationIntf', 'caraujo', 'CAgelado!@24', 1, 0, 0, null, null);
 
-			print '01 - EstruturasAD';
+			exec sp_Execute_Insert_Key 'dbo', 01, 'DefSisIntegracaoAD', 'DZW_CdiSistema, DZW_DtdOficializacaoSistema, DZW_OplAtivaIntegracao, DZW_OplCriacaoUsuarioAut, DZW_DssCaminhoLDAP, DZW_OplIntegraViaWS, DZW_DssWSCriaUsuario, DZW_DssWSAtualizaDados, DZW_DssWSTrocaSenha, DZW_DssWSResetaSenha, DZW_DssWSAtivaDesativaUsuario, DZW_CdsWSUsuario, DZW_CosWSSenha, DZW_OplAtivaLogIntegracao, DZW_OplNaoSincronizarGrupo, DZW_OplNaoSincronizarEstrutura, DZW_DssWSValidaLogin, DZW_DssWSTrataSSO', @AuxKey/*72*/, 0,  'null, 1, 0, ''LDAP://DC=apdatatst,DC=com,DC=br'', 1, ''http://172.27.10.50/ADIProduto/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', ''http://172.27.10.50/ADIProduto/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', null, null, ''http://172.27.10.50/ADIProduto/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', ''caraujo'', ''CAgelado!@24'', 1, 0, 0, null, null', 1
+			
 			declare @EstruturasADKey int
 			exec sp_takeKeyForInsertion 'EstruturasAD', @EstruturasADKey OUTPUT
-			insert into dbo.EstruturasAD(DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar)
-			values(@EstruturasADKey/*1002*/, '(TESTE)BASIC FIELDS FOR AD CONFIGURATION', null, null, null, null, null, null, null, 1, 0, 0, 'LDAP://OU=Transitorio', 0, 0);
+			exec sp_Execute_Insert_Key 'dbo', 01, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey/*1002*/, 0, '''(TESTE) BASIC FIELDS FOR AD CONFIGURATION'', null, null, null, null, null, null, null, 1, 0, 0, ''LDAP://OU=Transitorio'', 0, 0', 1 
 
 			declare @EstruturasADPropsKey int
 			exec sp_takeKeyForInsertion 'EstruturasADProps', @EstruturasADPropsKey OUTPUT
 
-			print '01 - EstruturasADProps';
-			insert into dbo.EstruturasADProps(EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL)
-			values(@EstruturasADPropsKey, @EstruturasADKey, 105848, 38, 0, 0);
- 
-			print '02 - EstruturasADProps';
-			insert into dbo.EstruturasADProps(EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL)
-			values(@EstruturasADPropsKey + 1, @EstruturasADKey, 91403, 7, 0, 0);
- 
-			print '03 - EstruturasADProps';
-			insert into dbo.EstruturasADProps(EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL)
-			values(@EstruturasADPropsKey + 2, @EstruturasADKey, 96978, 39, 0, 0);
-			           		
-            print '04 - EstruturasADProps';           		
-			insert into dbo.EstruturasADProps(EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL)
-			values(@EstruturasADPropsKey + 3, @EstruturasADKey, 9420, 35, 1, 0);
- 
-			print '05 - EstruturasADProps';
-			insert into dbo.EstruturasADProps(EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL)
-			values(@EstruturasADPropsKey + 4, @EstruturasADKey, 89918, 6, 0, @SQL_CdiComandoSQL + 11);
-			           		
-            print '06 - EstruturasADProps';           		
-			insert into dbo.EstruturasADProps(EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL)
-			values(@EstruturasADPropsKey + 5, @EstruturasADKey, 0, 3, 0, @SQL_CdiComandoSQL + 10);
- 
-			print '07 - EstruturasADProps';
-			insert into dbo.EstruturasADProps(EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL)
-			values(@EstruturasADPropsKey + 6, @EstruturasADKey, 0, 0, 0, @SQL_CdiComandoSQL + 11);
+			exec sp_Execute_Insert_Key_ForeignKey 'dbo', 01, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 0, @EstruturasADKey, 0, '105848, 38, 0, 0', 1   
+	        exec sp_Execute_Insert_Key_ForeignKey 'dbo', 02, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 1, @EstruturasADKey, 0, '91403, 7, 0, 0', 1
+			exec sp_Execute_Insert_Key_ForeignKey 'dbo', 03, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 2, @EstruturasADKey, 0, '96978, 39, 0, 0', 1
+			exec sp_Execute_Insert_Key_ForeignKey 'dbo', 04, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 3, @EstruturasADKey, 0, '9420, 35, 1, 0', 1
+			
+			exec sp_Execute_Insert_ThreeKey 'dbo', 05, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 4, @EstruturasADKey, 0, @SQL_CdiComandoSQL, 11, '89918, 6, 0', 1
+			exec sp_Execute_Insert_ThreeKey 'dbo', 06, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 5, @EstruturasADKey, 0, @SQL_CdiComandoSQL, 10, '0, 3, 0', 1
+			exec sp_Execute_Insert_ThreeKey 'dbo', 07, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 6, @EstruturasADKey, 0, @SQL_CdiComandoSQL, 11, '0, 0, 0', 1
 		/*ADINTEGRATOR - ACTIVE DIRECTORY*/
 	commit;
 end
 GO
 
 /**********************************************************************
-  8 - Generate Insert From Select Table
+  7 - Generate Insert From Select Table
 ***********************************************************************/
 
 /*
@@ -938,7 +1019,7 @@ end
 GO
 
 /**********************************************************************
-  9 - Generate Insert From Select Table
+  8 - Generate Insert From Select Table
 ***********************************************************************/
 
 create or alter procedure sp_Simple_Generate_Inserts_From_Selects(@table  varchar(200),
@@ -977,7 +1058,7 @@ end
 GO
 
 /**********************************************************************
-    10 - Convert Binary To Text
+    9 - Convert Binary To Text
 ***********************************************************************/
 
 create or alter procedure sp_ConvertBinaryToText(@TableName[sysname],
