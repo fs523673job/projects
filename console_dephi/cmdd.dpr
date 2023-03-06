@@ -52,23 +52,25 @@ var
     Console.WriteColorLine('* You can type the systems in sequence to compile                     *', [TConsoleColor.Green]);
     Console.WriteColorLine('* Ex: compile debug 01,02,03,10,11 or compile release 01,02,03,04     *', [TConsoleColor.Green]);
     Console.WriteColorLine('*=====================================================================*', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 01 - ApServer [32]                                                  *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 02 - ApServer [64]                                                  *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 01 - ApServer [ApServer32]                                          *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 02 - ApServer [ApServer64]                                          *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 03 - ApTools                                                        *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 04 - ApWebDispatcher [Only Copy Jenkins]                            *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 05 - ApLoadBalancer [32]                                            *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 06 - ApLoadBalancer [64]                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 05 - ApLoadBalancer [ApLoadBalancer32]                              *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 06 - ApLoadBalancer [ApLoadBalancer64]                              *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 07 - ApESocialMsg                                                   *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 08 - ApScripter [32]                                                *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 09 - ApScripter [64]                                                *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 10 - ApIntegrationServer [32]                                       *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 11 - ApIntegrationServer [64]                                       *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 12 - ApIntegrationInterface [32]                                    *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 13 - ApIntegrationInterface [64]                                    *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 08 - ApScripter [ApScripter32]                                      *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 09 - ApScripter [ApScripter64]                                      *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 10 - ApIntegrationServer [ApIntegrationServer32]                    *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 11 - ApIntegrationServer [ApIntegrationServer64]                    *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 12 - ApIntegrationInterface [ApIntegrationInterface32]              *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 13 - ApIntegrationInterface [ApIntegrationInterface64]              *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 14 - ApManager                                                      *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 15 - ApUsers                                                        *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 16 - Generate Messages                                              *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 17 - Build Sass                                                     *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 16 - Generate Messages [compile messages]                           *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 17 - Build Sass [compile sass]                                      *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 18 - Pack Integracao [pintegration32]                               *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 19 - Pack Integracao [pintegration64]                               *', [TConsoleColor.Blue]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
   end;
 
@@ -92,6 +94,18 @@ var
       15 : ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand);
       16 : ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]));
       17 : ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [DirectoryRepository]));
+      18 :
+        begin
+          ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
+        end;
+      19 :
+        begin
+          ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
+        end
       else
         Console.WriteColor('Command not executed', [TConsoleColor.Red]);
     end;
@@ -136,6 +150,10 @@ var
         Result := 16
       else if (AnsiSameText(ANameSystem, 'Sass')) then
         Result := 17
+      else if (AnsiSameText(ANameSystem, 'pintegration32')) then
+        Result := 18
+      else  if (AnsiSameText(ANameSystem, 'pintegration64')) then
+        Result := 19
     end;
   end;
 
