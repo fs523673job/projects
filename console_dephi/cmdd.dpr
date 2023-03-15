@@ -77,6 +77,28 @@ var
   procedure ExecuteCommand(const ASystemId: Integer; const ASubCommand: String = '');
   begin
     case ASystemId of
+      01 : Console.WriteColorLine('* 01 - Compiling ApServer [ApServer32]                                          *', [TConsoleColor.Yellow]);
+      02 : Console.WriteColorLine('* 02 - Compiling ApServer [ApServer64]                                          *', [TConsoleColor.Yellow]);
+      03 : Console.WriteColorLine('* 03 - Compiling ApTools                                                        *', [TConsoleColor.Yellow]);
+      04 : Console.WriteColorLine('* 04 - Compiling ApWebDispatcher [Only Copy Jenkins]                            *', [TConsoleColor.Yellow]);
+      05 : Console.WriteColorLine('* 05 - Compiling ApLoadBalancer [ApLoadBalancer32]                              *', [TConsoleColor.Yellow]);
+      06 : Console.WriteColorLine('* 06 - Compiling ApLoadBalancer [ApLoadBalancer64]                              *', [TConsoleColor.Yellow]);
+      07 : Console.WriteColorLine('* 07 - Compiling ApESocialMsg                                                   *', [TConsoleColor.Yellow]);
+      08 : Console.WriteColorLine('* 08 - Compiling ApScripter [ApScripter32]                                      *', [TConsoleColor.Yellow]);
+      09 : Console.WriteColorLine('* 09 - Compiling ApScripter [ApScripter64]                                      *', [TConsoleColor.Yellow]);
+      10 : Console.WriteColorLine('* 10 - Compiling ApIntegrationServer [ApIntegrationServer32]                    *', [TConsoleColor.Yellow]);
+      11 : Console.WriteColorLine('* 11 - Compiling ApIntegrationServer [ApIntegrationServer64]                    *', [TConsoleColor.Yellow]);
+      12 : Console.WriteColorLine('* 12 - Compiling ApIntegrationInterface [ApIntegrationInterface32]              *', [TConsoleColor.Yellow]);
+      13 : Console.WriteColorLine('* 13 - Compiling ApIntegrationInterface [ApIntegrationInterface64]              *', [TConsoleColor.Yellow]);
+      14 : Console.WriteColorLine('* 14 - Compiling ApManager                                                      *', [TConsoleColor.Yellow]);
+      15 : Console.WriteColorLine('* 15 - Compiling ApUsers                                                        *', [TConsoleColor.Yellow]);
+      16 : Console.WriteColorLine('* 16 - Compiling Generate Messages [compile messages]                           *', [TConsoleColor.Yellow]);
+      17 : Console.WriteColorLine('* 17 - Compiling Build Sass [compile sass]                                      *', [TConsoleColor.Yellow]);
+      18 : Console.WriteColorLine('* 18 - Compiling Pack Integracao [pintegration32]                               *', [TConsoleColor.Yellow]);
+      19 : Console.WriteColorLine('* 19 - Compiling Pack Integracao [pintegration64]                               *', [TConsoleColor.Yellow]);
+    end;
+
+    case ASystemId of
       01 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
       02 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
       03 : ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand);
@@ -190,8 +212,11 @@ begin
         begin
           for c := 2 to High(InputArray) do
           begin
-            SetLength(SystemArray, Length(SystemArray) + 1);
-            SystemArray[High(SystemArray)] := InputArray[c].Replace(',','');
+            if (InputArray[c] <> '') then
+            begin
+              SetLength(SystemArray, Length(SystemArray) + 1);
+              SystemArray[High(SystemArray)] := InputArray[c].Replace(',','');
+            end;
           end;
         end;
       end;
