@@ -10,11 +10,9 @@ object frmMain: TfrmMain
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   DesignSize = (
     876
     591)
-  PixelsPerInch = 96
   TextHeight = 13
   object seJSON: TSynEdit
     Left = 8
@@ -27,22 +25,40 @@ object frmMain: TfrmMain
     Font.Height = -13
     Font.Name = 'Courier New'
     Font.Style = []
+    Font.Quality = fqClearTypeNatural
     TabOrder = 0
-    CodeFolding.CollapsedLineColor = clGrayText
-    CodeFolding.FolderBarLinesColor = clGrayText
     CodeFolding.ShowCollapsedLine = True
-    CodeFolding.IndentGuidesColor = clGray
-    CodeFolding.IndentGuides = True
     UseCodeFolding = False
     Gutter.Font.Charset = DEFAULT_CHARSET
     Gutter.Font.Color = clWindowText
     Gutter.Font.Height = -11
     Gutter.Font.Name = 'Courier New'
     Gutter.Font.Style = []
+    Gutter.Font.Quality = fqClearTypeNatural
+    Gutter.Bands = <
+      item
+        Kind = gbkMarks
+        Width = 13
+      end
+      item
+        Kind = gbkLineNumbers
+      end
+      item
+        Kind = gbkFold
+      end
+      item
+        Kind = gbkTrackChanges
+      end
+      item
+        Kind = gbkMargin
+        Width = 3
+      end>
     Highlighter = SynJSONSyn1
     Lines.Strings = (
       'seJSON')
-    FontSmoothing = fsmNone
+    SelectedColor.Alpha = 0.400000005960464500
+    ExplicitWidth = 440
+    ExplicitHeight = 488
   end
   object btnConvertJasonXML: TButton
     Left = 8
@@ -53,6 +69,8 @@ object frmMain: TfrmMain
     Caption = 'Convert JSON To XML'
     TabOrder = 1
     OnClick = btnConvertJasonXMLClick
+    ExplicitLeft = 4
+    ExplicitTop = 516
   end
   object seXML: TMemo
     Left = 458
@@ -65,9 +83,6 @@ object frmMain: TfrmMain
     TabOrder = 2
   end
   object SynJSONSyn1: TSynJSONSyn
-    Options.AutoDetectEnabled = False
-    Options.AutoDetectLineLimit = 0
-    Options.Visible = False
     Left = 168
     Top = 168
   end

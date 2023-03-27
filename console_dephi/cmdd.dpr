@@ -49,8 +49,12 @@ var
     Console.WriteColorLine('* Set compiler type                                                   *', [TConsoleColor.Green]);
     Console.WriteColorLine('* DEBUG or RELEASE or MEMLEAK                                         *', [TConsoleColor.Green]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
+    Console.WriteColorLine('* You can to set directory for repository                             *', [TConsoleColor.Green]);
+    Console.WriteColorLine('* Ex: setdir c:\apdata_x64                                            *', [TConsoleColor.Green]);
+    Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
     Console.WriteColorLine('* You can type the systems in sequence to compile                     *', [TConsoleColor.Green]);
     Console.WriteColorLine('* Ex: compile debug 01,02,03,10,11 or compile release 01,02,03,04     *', [TConsoleColor.Green]);
+    Console.WriteColorLine('* Ex: compile debug ApServer32, ApLoadBalancer32                      *', [TConsoleColor.Green]);
     Console.WriteColorLine('*=====================================================================*', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 01 - ApServer [ApServer32]                                          *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 02 - ApServer [ApServer64]                                          *', [TConsoleColor.Blue]);

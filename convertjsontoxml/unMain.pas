@@ -20,7 +20,7 @@ uses
   JsonValueToXML,
   ActiveX,
   XMLIntf,
-  XMLDoc
+  XMLDoc, SynEditCodeFolding
   ;
 
 type

@@ -106,12 +106,12 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ModsIntsMonitsBasesEventos'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesSobs'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesQueries'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsPars'
-exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd = 10005', 'BBP_CdiModeloIntegracaoCmdCpo,BBP_CdiModeloIntegracaoCmd,BBP_DssCampo_Destino,BBP_DssCampo_Origem,BBP_CdiTipoCampo'
-exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds'
-exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao > 0'
-exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL in (10011, 10012)'
+exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd = 10026', 'BBP_CdiModeloIntegracaoCmdCpo,BBP_CdiComandoSQL,BBP_CdiModeloIntegracaoCmd,BBP_DssCampo_Destino,BBP_DssCampo_Origem,BBP_CdiTipoCampo'
+exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd = 10026'
+exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao = 10021'
+exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10016'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLsGrupos'
-exec sp_Simple_Generate_Inserts_From_Selects 'Consultas', 'ACS_CdiConsulta = 10008'
+exec sp_Simple_Generate_Inserts_From_Selects 'Consultas', 'ACS_CdiConsulta = 10016'
 exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida in (1004, 1005)', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
 exec sp_Simple_Generate_Inserts_From_Selects 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao = 1'
 exec sp_Simple_Generate_Inserts_From_Selects 'TiposComandosIntegrs'
@@ -130,51 +130,11 @@ exec sp_clearAllDataIntegration 0
 
 exec sp_StandardData_FixedValues 0
 
-/*SELECT TESTES*/
+with dual(dummy) as (select 'x') select :NUMEROINFORMADO  from dual
 
-DECLARE @outPutPath varchar(50) = 'C:\temp'
-, @i bigint
-, @init int
-, @data varbinary(max) 
-, @fPath varchar(max)  
-, @folderPath  varchar(max) 
- 
---Get Data into temp Table variable so that we can iterate over it 
-DECLARE @Doctable TABLE (id int identity(1,1), [Doc_Num]  varchar(100) , [FileName]  varchar(100), [Doc_Content] varBinary(max) )
- 
-INSERT INTO @Doctable([Doc_Num] , [FileName],[Doc_Content])
-Select [Doc_Num] , [FileName],[Doc_Content] FROM  [dbo].[Document]
- 
---SELECT * FROM @table
+with dual(dummy) as (select 'x')SELECT '9140692' as keymaster, '110011' as field1, '20221101' as field2  FROM dual  WHERE 1 <= 1
 
-SELECT @i = COUNT(1) FROM @Doctable
- 
-WHILE @i >= 1
-BEGIN 
+/**/
 
-	SELECT 
-	 @data = [Doc_Content],
-	 @fPath = @outPutPath + '\'+ [Doc_Num] + '\' +[FileName],
-	 @folderPath = @outPutPath + '\'+ [Doc_Num]
-	FROM @Doctable WHERE id = @i
- 
-  --Create folder first
-  EXEC  [dbo].[CreateFolder]  @folderPath
-  
-  EXEC sp_OACreate 'ADODB.Stream', @init OUTPUT; -- An instace created
-  EXEC sp_OASetProperty @init, 'Type', 1;  
-  EXEC sp_OAMethod @init, 'Open'; -- Calling a method
-  EXEC sp_OAMethod @init, 'Write', NULL, @data; -- Calling a method
-  EXEC sp_OAMethod @init, 'SaveToFile', NULL, @fPath, 2; -- Calling a method
-  EXEC sp_OAMethod @init, 'Close'; -- Calling a method
-  EXEC sp_OADestroy @init; -- Closed the resources
- 
-  print 'Document Generated at - '+  @fPath   
-
---Reset the variables for next use
-SELECT @data = NULL  
-, @init = NULL
-, @fPath = NULL  
-, @folderPath = NULL
-SET @i -= 1
-END
+select * from CrachasExtras 
+delete from  CrachasExtras  Where CEX_CdiCrachaExtra > 9000009 
