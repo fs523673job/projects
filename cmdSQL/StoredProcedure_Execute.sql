@@ -107,9 +107,9 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesSobs'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesQueries'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsPars'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd = 10026', 'BBP_CdiModeloIntegracaoCmdCpo,BBP_CdiComandoSQL,BBP_CdiModeloIntegracaoCmd,BBP_DssCampo_Destino,BBP_DssCampo_Origem,BBP_CdiTipoCampo'
-exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd = 10026'
+exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd = 10027'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao = 10021'
-exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10016'
+exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10017'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLsGrupos'
 exec sp_Simple_Generate_Inserts_From_Selects 'Consultas', 'ACS_CdiConsulta = 10016'
 exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida in (1004, 1005)', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
@@ -134,7 +134,17 @@ with dual(dummy) as (select 'x') select :NUMEROINFORMADO  from dual
 
 with dual(dummy) as (select 'x')SELECT '9140692' as keymaster, '110011' as field1, '20221101' as field2  FROM dual  WHERE 1 <= 1
 
-/**/
+select * from tabelas where atb_cditabela in (select djn_cditabela from ControlesSeqsInternos)
 
-select * from CrachasExtras 
-delete from  CrachasExtras  Where CEX_CdiCrachaExtra > 9000009 
+select * from LogsIntegracoes
+select * from LogsIntegracoesServidores
+select * from LogsIntegracoesCampos
+
+exec sp_deleteOptionByApDataRange 'LogsIntegracoes', 1, 1
+exec sp_deleteOptionByApDataRange 'LogsIntegracoesCampos', 1, 1
+exec sp_deleteOptionByApDataRange 'LogsIntegracoesServidores', 1, 1
+
+drop index BCN_I01 on LogsIntegracoesServidores
+create index BCN_I01 on LogsIntegracoesServidores(BCN_CdiLogIntegracaoServidor, BCN_CdiLogIntegracao, BCN_CdiServidorIntegracao) 
+
+select * from LogsIntegracoesServidores
