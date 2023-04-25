@@ -156,6 +156,11 @@ var
          else
            AddJsonObject(nil, auxNode, TJSONPair(AJSONArray.Items[y]).JsonValue);
       end
+      else if AJSONArray.Items[y].ClassType <> TJSONArray then
+      begin
+        auxNode := ARootNode.NodeNew('element');
+        auxNode.Value := TJSONString(AJSONArray.Items[y]).Value;
+      end
       else
         AddJsonArray(ARootNode, TJSONArray(AJSONArray.Items[y]));
     end;
