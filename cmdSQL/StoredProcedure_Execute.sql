@@ -146,3 +146,5 @@ exec sp_deleteOptionByApDataRange 'LogsIntegracoesServidores', 1, 1
 
 drop index BCN_I01 on LogsIntegracoesServidores
 create index BCN_I01 on LogsIntegracoesServidores(BCN_CdiLogIntegracaoServidor, BCN_CdiLogIntegracao, BCN_CdiServidorIntegracao) 
+
+SELECT FLOOR(RAND()*(100-1+1)+1) as keyid;
