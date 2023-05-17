@@ -376,7 +376,174 @@ end
 GO
 
 /************************************************************ 
-	  2.1 -	Store Procedure Delete Tables Related
+  2.1 - Store Procedure Delete Only Registry Tables Related
+*************************************************************/
+
+--create procedure sp_deleteCascateRegistry
+create or alter procedure sp_deleteCascateRegistry
+  (
+		@TableName varchar(50), 
+		@Criteria nvarchar(50),
+		@OnlyStrCmd int = 1,
+		@seqInt int = 0
+  )
+as
+begin
+    set nocount on
+
+	declare @RefTable varchar(80)
+	declare @RefField varchar(80)
+	declare @auxRefTable varchar(80)
+	declare @sqlcommand nvarchar(4000)
+	declare @paramdefinition nvarchar(500)
+	declare @FieldPrimaryKey varchar(80)
+	declare @ValuePrimaryKey int
+	declare @NewCriteria nvarchar(50)
+
+	set @sqlcommand = 
+	  N'select @Value = C.COLUMN_NAME ' + 
+	   '  FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS T ' +
+	   '  JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE C ON (C.CONSTRAINT_NAME = T.CONSTRAINT_NAME)  ' +
+	   '  WHERE C.TABLE_NAME = ''' + @TableName + ''' and T.CONSTRAINT_TYPE = ''PRIMARY KEY'' ' 
+	set @paramdefinition = N'@Value varchar(80) OUTPUT' 
+
+	exec sp_executesql @sqlcommand, @paramdefinition, @Value = @FieldPrimaryKey OUTPUT
+
+	if (@FieldPrimaryKey <> '') 
+	begin
+		set @sqlcommand = 
+		  N'select @Value = ' + @FieldPrimaryKey + 
+		   '  FROM ' + @TableName +
+	       '  WHERE ' + @Criteria
+	    
+		set @paramdefinition = N'@Value int OUTPUT' 
+
+		exec sp_executesql @sqlcommand, @paramdefinition, @Value = @ValuePrimaryKey OUTPUT
+
+		set @NewCriteria = @FieldPrimaryKey + ' = ' + trim(cast(@ValuePrimaryKey as char(10))) 
+	end
+	else
+	    set @NewCriteria = @Criteria
+
+
+	declare localCursor CURSOR LOCAL FOR
+		SELECT --FK.name AS Ds_Nome_FK,
+			   objeto_ori.name AS Ds_Objeto,
+			   coluna_ori.name AS Ds_Coluna
+		       --objeto_dest.name AS Ds_Objeto_Referencia,
+		       --coluna_dest.name AS Ds_Coluna_Referencia
+	     FROM sys.foreign_keys AS FK WITH(NOLOCK)
+	     JOIN sys.foreign_key_columns AS FK_Coluna WITH(NOLOCK) ON FK.object_id = FK_Coluna.constraint_object_id
+	     JOIN .sys.objects AS objeto_ori WITH(NOLOCK) ON FK.parent_object_id = objeto_ori.object_id
+	     JOIN .sys.objects AS objeto_dest WITH(NOLOCK) ON FK.referenced_object_id = objeto_dest.object_id
+	     JOIN sys.schemas AS schema_ori WITH(NOLOCK) ON objeto_ori.schema_id = schema_ori.schema_id
+	     JOIN sys.schemas AS schema_dest WITH(NOLOCK) ON FK.schema_id = schema_dest.schema_id
+	     JOIN sys.columns AS coluna_ori WITH(NOLOCK) ON FK_Coluna.parent_object_id = coluna_ori.object_id AND FK_Coluna.parent_column_id = coluna_ori.column_id
+	     JOIN sys.columns AS coluna_dest WITH(NOLOCK) ON FK_Coluna.referenced_object_id = coluna_dest.object_id AND FK_Coluna.referenced_column_id = coluna_dest.column_id
+	     WHERE objeto_dest.name = @TableName
+
+	open localCursor
+	
+	fetch next from localCursor
+	into @RefTable, @RefField
+
+	set @auxRefTable = ''
+
+	if (@OnlyStrCmd = 1) 
+	begin
+		print '--################### TABLE PARENT - BEGIN [' + @TableName + '] ' + '##################';
+		print 'Original Parent Table: [' + @TableName + '] -> Original Criteria: [' + @Criteria + '] -> New Criteria: [' + @NewCriteria + ']';
+		while @@FETCH_STATUS = 0
+		begin
+			print 'Related Table: [' + @RefTable + '] -> Foregin Key Field: [' + @RefField + '] -> Criteria: [' + @RefField + ' = ' + trim(cast(@ValuePrimaryKey as char(10))) + ']'
+			fetch next from localCursor
+			into @RefTable, @RefField
+		end
+		print '--################### TABLE PARENT - END ####################'
+		print ''
+
+		close localCursor
+		open localCursor 
+
+		fetch next from localCursor
+		into @RefTable, @RefField
+
+		set @auxRefTable = ''
+	end
+
+	while @@FETCH_STATUS = 0
+	begin
+		set @sqlcommand = 'DELETE FROM [' + @RefTable + '] WHERE ' + @RefField + ' = ' + trim(cast(@ValuePrimaryKey as char(10)))
+
+		if (( @auxRefTable <> @RefTable ) and (@RefTable <> @TableName))
+		begin
+		    set @seqInt = @seqInt + 1
+			set @NewCriteria = @RefField + ' = ' + trim(cast(@ValuePrimaryKey as char(10)))
+			exec sp_deleteCascateRegistry @RefTable, @NewCriteria, @OnlyStrCmd, @seqInt
+		end
+
+		if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)
+		begin
+		    begin try
+				exec sp_ExecuteSQL @sqlcommand
+				print 'After Execute Delete Table: ['+ @RefTable + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + trim(cast(@@ROWCOUNT as char(03))) + ']'
+			end try
+			begin catch
+			    print '--################### ERROR BEGINS ##################'
+				print 'After Execute Delete Table: ['+ @RefTable + '] -> Error: [' + ERROR_MESSAGE() + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + trim(cast(@@ROWCOUNT as char(03))) + ']'
+				print '--################### ERROR ENDS ####################'
+				print ''
+			end catch
+		end
+
+		set @auxRefTable = @RefTable
+
+		fetch next from localCursor
+		into @RefTable, @RefField
+	end
+
+	close localCursor;
+	deallocate localCursor;
+
+	set @sqlcommand = 
+	  N'select @Value = C.COLUMN_NAME ' + 
+	   '  FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS T ' +
+	   '  JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE C ON (C.CONSTRAINT_NAME = T.CONSTRAINT_NAME)  ' +
+	   '  WHERE C.TABLE_NAME = ''' + @TableName + ''' and T.CONSTRAINT_TYPE = ''PRIMARY KEY'' ' 
+	set @paramdefinition = N'@Value varchar(80) OUTPUT' 
+
+	exec sp_executesql @sqlcommand, @paramdefinition, @Value = @RefField OUTPUT
+
+	set @sqlcommand = 'DELETE FROM [' + @TableName + '] WHERE ' + @NewCriteria
+
+	if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)
+	begin
+	    begin try
+			exec sp_ExecuteSQL @sqlcommand
+			print 'After Execute Delete Table: ['+ @TableName + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
+		end try
+		begin catch
+		    print '--################### ERROR BEGINS ##################'
+			print 'After Execute Delete Table: ['+ @RefTable + '] -> Error: [' + ERROR_MESSAGE() + '] -> Command: [' + @sqlcommand + ']'
+			print '--################### ERROR ENDS ####################'
+			print ''
+		end catch
+	end
+	else
+	begin
+	    if (@sqlcommand <> '')
+		begin
+			print '--################### TABLE PARENT DELETE - BEGIN ##################'
+			print '[' + cast(@seqInt as char(05)) + '] -> ' +  @sqlcommand
+			print '--################### TABLE PARENT DELETE - END ####################'
+			print ''
+		end
+	end
+end
+GO
+
+/************************************************************ 
+	  2.2 -	Store Procedure Delete Tables Related
 *************************************************************/
 
 --create procedure sp_delete
@@ -806,6 +973,7 @@ begin
 		/*REST*/ exec sp_Execute_Insert 'dbo', 23, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10023, ''(TESTES) REST POSTMAN LOTE''', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 24, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10024, ''(TESTES) REST MOCK POSTMAN GET COMPLEXY ARRAY 2''', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 25, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10025, ''(TESTES) REST ALTER DA TRANSACAO E O TIPO EDICAO''', 1
+		/*REST*/ exec sp_Execute_Insert 'dbo', 26, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10026, ''(TESTES) SOAP ADMISSAO - INCLUSAO DEPENDENTES''', 1
 
 		/*#### OBJETO - 555 */
 		/*##### ModelosIntegracoesCmds*/
@@ -839,7 +1007,8 @@ begin
 		/*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 27, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_DssCamposLote, BBS_OplEnviarTudo', 10028, 0, @SQL_CdiComandoSQL, 16, '10023, ''(TESTES) REST POSTMAN LOTE'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/get/keyid'', 1, ''keyid'', 1', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 28, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10029, 10024, ''(TESTES) REST MOCK POSTMAN GET COMPLEXY ARRAY'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v3/get/arrayjson'', 1', 1  
 		/*REST*/ exec sp_Execute_Insert_ThreeKey 'dbo', 29, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL_Transacao, BBS_CdiComandoSQL_TipoEdicao, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao',/*values*/ 10030, 0,  @SQL_CdiComandoSQL, 18, @SQL_CdiComandoSQL, 19, '10025, ''(TESTES) REST ALTER DA TRANSACAO E O TIPO EDICAO'',  1, 30842, 407', 1 
-
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 30, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao', '10026, 10031, ''(TESTES) ADMISSAO - INCLUSAO DEPENDENTES'', 1, 16012', 1
+		
 		/*##### ModelosIntegracoesCmdsCpos*/
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 01, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String, BBP_OplConteudoFixo', '10001, 10001, ''consultaCEP;cep'', 9, ''03510030'', 1', 1        
 		/*REST*/ exec sp_Execute_Insert 'dbo', 02, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String', '10002, 10002, '''', 9, ''''', 1        

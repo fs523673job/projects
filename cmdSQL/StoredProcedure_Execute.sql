@@ -94,6 +94,8 @@ exec sp_infoApDataPkLimit 'EstruturasAD'
 exec sp_infoApDataPkLimit 'EstruturasADProps'
 exec sp_infoApDataPkLimit 'DefSisIntegracaoAD'
 
+exec sp_deleteCascate 'ConDependentes', '= 1037', 1 /*Excluir todos os registros relacionados em todas tabelas*/
+
 exec sp_Simple_Generate_Inserts_From_Selects 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD = 5', 'BBO_CdiServidorIntegracaoBD,BBO_CdiServidorIntegracao,BBO_D1sServidorIntegracaoBD,BBO_CdiModeloIntegracao,BBO_CdiTipoIntegracao,BBO_CdiBaseDado,BBO_CdiTipoConexaoBaseDado,BBO_DssNomeServidor'
 exec sp_Simple_Generate_Inserts_From_Selects 'ServidoresIntegracoes'
 exec sp_Simple_Generate_Inserts_From_Selects 'TransacoesIntegracoesSobs'
@@ -106,7 +108,7 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ModsIntsMonitsBasesEventos'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesSobs'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesQueries'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsPars'
-exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd = 10026', 'BBP_CdiModeloIntegracaoCmdCpo,BBP_CdiComandoSQL,BBP_CdiModeloIntegracaoCmd,BBP_DssCampo_Destino,BBP_DssCampo_Origem,BBP_CdiTipoCampo'
+exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd = 10031', 'BBP_CdiModeloIntegracaoCmdCpo,BBP_CdiModeloIntegracaoCmd,BBP_DssCampo_Destino,BBP_DssCampo_Origem,BBP_CdiTipoCampo'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd = 10027'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao = 10021'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10020', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL'
