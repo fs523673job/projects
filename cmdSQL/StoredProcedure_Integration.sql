@@ -3,6 +3,8 @@ GO
 
 drop procedure sp_deleteCascate 
 GO
+drop procedure sp_deleteCascateRegistry
+GO
 drop procedure sp_StandardData_FixedValues 
 GO
 drop procedure sp_delete 
@@ -47,7 +49,14 @@ drop procedure sp_Execute_Insert_ThreeKey
 GO
 drop procedure sp_Execute_Delete
 GO
+drop procedure sp_getKeyValue
+GO
+drop procedure sp_getNewCriteria
+GO
+drop function fn_getPKFieldName
+GO
 
+/*** FUNÇÕES UTILITÁRIAS **********************************************/
 /*** PROCEDURES UTILITÁRIAS *******************************************/
 
 /**********************************************************************
@@ -271,7 +280,6 @@ begin
 end
 GO
 
-
 /************************************************************ 
 	  2 -	Store Procedure Delete Tables Related
 *************************************************************/
@@ -385,7 +393,7 @@ create or alter procedure sp_deleteCascateRegistry
 		@TableName varchar(50), 
 		@Criteria nvarchar(50),
 		@OnlyStrCmd int = 1,
-		@seqInt int = 0
+		@DeleteOrder int = 0
   )
 as
 begin
@@ -397,34 +405,24 @@ begin
 	declare @sqlcommand nvarchar(4000)
 	declare @paramdefinition nvarchar(500)
 	declare @FieldPrimaryKey varchar(80)
-	declare @ValuePrimaryKey int
+	declare @FieldKeyValue int
 	declare @NewCriteria nvarchar(50)
 
+	set @NewCriteria = ''
+	set @FieldKeyValue = 0
+
+	select @FieldPrimaryKey = [dbo].[fn_getPKFieldName](@TableName)
+
 	set @sqlcommand = 
-	  N'select @Value = C.COLUMN_NAME ' + 
-	   '  FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS T ' +
-	   '  JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE C ON (C.CONSTRAINT_NAME = T.CONSTRAINT_NAME)  ' +
-	   '  WHERE C.TABLE_NAME = ''' + @TableName + ''' and T.CONSTRAINT_TYPE = ''PRIMARY KEY'' ' 
-	set @paramdefinition = N'@Value varchar(80) OUTPUT' 
-
-	exec sp_executesql @sqlcommand, @paramdefinition, @Value = @FieldPrimaryKey OUTPUT
-
-	if (@FieldPrimaryKey <> '') 
-	begin
-		set @sqlcommand = 
-		  N'select @Value = ' + @FieldPrimaryKey + 
-		   '  FROM ' + @TableName +
-	       '  WHERE ' + @Criteria
+	  N'select @Value = ' + @FieldPrimaryKey + 
+	   '  FROM ' + @TableName +
+       '  WHERE ' + @Criteria
 	    
-		set @paramdefinition = N'@Value int OUTPUT' 
+	set @paramdefinition = N'@Value int OUTPUT' 
 
-		exec sp_executesql @sqlcommand, @paramdefinition, @Value = @ValuePrimaryKey OUTPUT
-
-		set @NewCriteria = @FieldPrimaryKey + ' = ' + trim(cast(@ValuePrimaryKey as char(10))) 
-	end
-	else
-	    set @NewCriteria = @Criteria
-
+	exec sp_executesql @sqlcommand, @paramdefinition, @Value = @FieldKeyValue OUTPUT
+	
+	set @NewCriteria = @FieldPrimaryKey + ' = ' + cast(@FieldKeyValue as char(6))
 
 	declare localCursor CURSOR LOCAL FOR
 		SELECT --FK.name AS Ds_Nome_FK,
@@ -442,59 +440,35 @@ begin
 	     JOIN sys.columns AS coluna_dest WITH(NOLOCK) ON FK_Coluna.referenced_object_id = coluna_dest.object_id AND FK_Coluna.referenced_column_id = coluna_dest.column_id
 	     WHERE objeto_dest.name = @TableName
 
-	open localCursor
-	
+	open localCursor 
+
 	fetch next from localCursor
 	into @RefTable, @RefField
 
 	set @auxRefTable = ''
 
-	if (@OnlyStrCmd = 1) 
-	begin
-		print '--################### TABLE PARENT - BEGIN [' + @TableName + '] ' + '##################';
-		print 'Original Parent Table: [' + @TableName + '] -> Original Criteria: [' + @Criteria + '] -> New Criteria: [' + @NewCriteria + ']';
-		while @@FETCH_STATUS = 0
-		begin
-			print 'Related Table: [' + @RefTable + '] -> Foregin Key Field: [' + @RefField + '] -> Criteria: [' + @RefField + ' = ' + trim(cast(@ValuePrimaryKey as char(10))) + ']'
-			fetch next from localCursor
-			into @RefTable, @RefField
-		end
-		print '--################### TABLE PARENT - END ####################'
-		print ''
-
-		close localCursor
-		open localCursor 
-
-		fetch next from localCursor
-		into @RefTable, @RefField
-
-		set @auxRefTable = ''
-	end
-
 	while @@FETCH_STATUS = 0
 	begin
-		set @sqlcommand = 'DELETE FROM [' + @RefTable + '] WHERE ' + @RefField + ' = ' + trim(cast(@ValuePrimaryKey as char(10)))
+	    set @NewCriteria = @RefField + ' = ' + trim(cast(@FieldKeyValue as char(6)))
+
+		set @sqlcommand = 'DELETE FROM [' + @RefTable + '] WHERE ' + @NewCriteria
 
 		if (( @auxRefTable <> @RefTable ) and (@RefTable <> @TableName))
 		begin
-		    set @seqInt = @seqInt + 1
-			set @NewCriteria = @RefField + ' = ' + trim(cast(@ValuePrimaryKey as char(10)))
-			exec sp_deleteCascateRegistry @RefTable, @NewCriteria, @OnlyStrCmd, @seqInt
+			set @DeleteOrder = @DeleteOrder + 1
+			exec sp_deleteCascateRegistry @RefTable, @NewCriteria, @OnlyStrCmd, @DeleteOrder
 		end
-
-		if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)
-		begin
-		    begin try
+		
+	    begin try
+			if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)
 				exec sp_ExecuteSQL @sqlcommand
-				print 'After Execute Delete Table: ['+ @RefTable + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + trim(cast(@@ROWCOUNT as char(03))) + ']'
-			end try
-			begin catch
-			    print '--################### ERROR BEGINS ##################'
-				print 'After Execute Delete Table: ['+ @RefTable + '] -> Error: [' + ERROR_MESSAGE() + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + trim(cast(@@ROWCOUNT as char(03))) + ']'
-				print '--################### ERROR ENDS ####################'
-				print ''
-			end catch
-		end
+			print '[' + cast(@DeleteOrder as char(03)) + '] After Execute Delete Table: ['+ @RefTable + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
+		end try
+		begin catch
+		    print '--################### ERROR BEGINS ##################'
+			print '[' + cast(@DeleteOrder as char(03)) + '] After Execute Delete Table: ['+ @RefTable + '] -> Error: [' + ERROR_MESSAGE() + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
+			print '--################### ERROR ENDS ####################'
+		end catch
 
 		set @auxRefTable = @RefTable
 
@@ -505,40 +479,22 @@ begin
 	close localCursor;
 	deallocate localCursor;
 
-	set @sqlcommand = 
-	  N'select @Value = C.COLUMN_NAME ' + 
-	   '  FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS T ' +
-	   '  JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE C ON (C.CONSTRAINT_NAME = T.CONSTRAINT_NAME)  ' +
-	   '  WHERE C.TABLE_NAME = ''' + @TableName + ''' and T.CONSTRAINT_TYPE = ''PRIMARY KEY'' ' 
-	set @paramdefinition = N'@Value varchar(80) OUTPUT' 
+	set @DeleteOrder = @DeleteOrder + 1
 
-	exec sp_executesql @sqlcommand, @paramdefinition, @Value = @RefField OUTPUT
+	set @NewCriteria = @FieldPrimaryKey + ' = ' + trim(cast(@FieldKeyValue as char(6)))
 
 	set @sqlcommand = 'DELETE FROM [' + @TableName + '] WHERE ' + @NewCriteria
-
-	if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)
-	begin
-	    begin try
+	
+    begin try
+		if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)
 			exec sp_ExecuteSQL @sqlcommand
-			print 'After Execute Delete Table: ['+ @TableName + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
-		end try
-		begin catch
-		    print '--################### ERROR BEGINS ##################'
-			print 'After Execute Delete Table: ['+ @RefTable + '] -> Error: [' + ERROR_MESSAGE() + '] -> Command: [' + @sqlcommand + ']'
-			print '--################### ERROR ENDS ####################'
-			print ''
-		end catch
-	end
-	else
-	begin
-	    if (@sqlcommand <> '')
-		begin
-			print '--################### TABLE PARENT DELETE - BEGIN ##################'
-			print '[' + cast(@seqInt as char(05)) + '] -> ' +  @sqlcommand
-			print '--################### TABLE PARENT DELETE - END ####################'
-			print ''
-		end
-	end
+		print  '[' + cast(@DeleteOrder as char(03)) + '] After Execute Delete Table: ['+ @TableName + '] -> Command: [' + @sqlcommand + '] -> [rows affected  =  ' + cast(@@ROWCOUNT as char(03)) + ']'
+	end try
+	begin catch
+	    print '--################### ERROR BEGINS ##################'
+		print '[' + cast(@DeleteOrder as char(03)) + '] After Execute Delete Table: ['+ @RefTable + '] -> Error: [' + ERROR_MESSAGE() + '] -> Command: [' + @sqlcommand + ']'
+		print '--################### ERROR ENDS ####################'
+	end catch
 end
 GO
 
@@ -655,6 +611,64 @@ GO
 /************************************************************ 
      3.2 - Function For Return Last Id From Table
 *************************************************************/
+
+create or alter procedure sp_getNewCriteria
+  (
+	@TableName[sysname],
+	@Criteria nvarchar(1000),
+	@NewCriteria nvarchar(1000) = null OUTPUT,
+  )
+as
+begin
+	declare @sqlcommand nvarchar(4000)
+	declare @paramdefinition nvarchar(500)
+	declare @FieldPrimaryKey varchar(80)
+	declare @ValueAux int
+
+	select @FieldPrimaryKey = [dbo].[fn_getPKFieldName](@TableName)
+
+	set @sqlcommand = 
+	  N'select @Value = ' + @FieldPrimaryKey + 
+	   '  FROM ' + @TableName +
+       '  WHERE ' + @Criteria
+	    
+	set @paramdefinition = N'@Value int OUTPUT' 
+
+	exec sp_executesql @sqlcommand, @paramdefinition, @Value = @ValueAux OUTPUT
+
+	select @NewCriteria = @FieldPrimaryKey + ' = ' + trim(cast(@ValueAux as char(7)))
+end
+GO
+
+create or alter procedure sp_getKeyValue
+  (
+	@TableName[sysname],
+	@Criteria nvarchar(1000),
+	@KeyValue int = null OUTPUT
+  )
+as
+begin
+	declare @sqlcommand nvarchar(4000)
+	declare @paramdefinition nvarchar(500)
+	declare @FieldPrimaryKey varchar(80)
+	declare @ValueAux int
+
+	select @FieldPrimaryKey = [dbo].[fn_getPKFieldName](@TableName)
+
+	set @sqlcommand = 
+	  N'select @Value = ' + @FieldPrimaryKey + 
+	   '  FROM ' + @TableName +
+       '  WHERE ' + @Criteria
+	    
+	set @paramdefinition = N'@Value int OUTPUT' 
+
+	exec sp_executesql @sqlcommand, @paramdefinition, @Value = @ValueAux OUTPUT
+
+	select @KeyValue = @ValueAux
+end
+GO
+
+
 --create function fn_getPKFieldName(@TableName[sysname])
 create or alter function fn_getPKFieldName(@TableName[sysname])
 returns varchar(1000)
@@ -689,9 +703,9 @@ create or alter function fn_getTableMaxKey(@TableName[sysname])
 returns int
 as
 begin
-    declare @dsql varchar(1000)
+    declare @result int
 	
-	select @dsql = 'select max('+ z.COLUMN_NAME +')' + ' from '+ z.TABLE_NAME  
+	select @result = Max(z.COLUMN_NAME)   
 	   from (
               SELECT u.TABLE_NAME,u.COLUMN_NAME
               FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE u
@@ -701,7 +715,7 @@ begin
               and u.TABLE_NAME = @TableName
 			) as z
 
-	return (select @dsql)
+	return @result
 end
 GO
 
@@ -865,7 +879,7 @@ begin
 	exec sp_deleteOptionByApDataRange 'LogsIntegracoes', 1, 1
 	exec sp_deleteOptionByApDataRange 'LogsIntegracoesCampos', 1, 1
 	/*other deletes*/
-	exec sp_Execute_Delete 'dbo', 01, 'FormulariosWFCampos', 'FWC_CdiFormularioWFCampo = 100505'
+	exec sp_Execute_Delete 'dbo', 01, 'FormulariosWFCampos', 'FWC_CdiFormularioWFCampo = 100505' 
 	exec sp_Execute_Delete 'dbo', 02, 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao = 1'
 	exec sp_Execute_Delete 'dbo', 03, 'ControlesSeqsInternos', 'DJN_CdiTabela > 0'
 end
@@ -1007,7 +1021,7 @@ begin
 		/*REST*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 27, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_DssCamposLote, BBS_OplEnviarTudo', 10028, 0, @SQL_CdiComandoSQL, 16, '10023, ''(TESTES) REST POSTMAN LOTE'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/get/keyid'', 1, ''keyid'', 1', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 28, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10029, 10024, ''(TESTES) REST MOCK POSTMAN GET COMPLEXY ARRAY'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v3/get/arrayjson'', 1', 1  
 		/*REST*/ exec sp_Execute_Insert_ThreeKey 'dbo', 29, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL_Transacao, BBS_CdiComandoSQL_TipoEdicao, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao',/*values*/ 10030, 0,  @SQL_CdiComandoSQL, 18, @SQL_CdiComandoSQL, 19, '10025, ''(TESTES) REST ALTER DA TRANSACAO E O TIPO EDICAO'',  1, 30842, 407', 1 
-		/*SOAP*/ exec sp_Execute_Insert 'dbo', 30, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao', '10026, 10031, ''(TESTES) ADMISSAO - INCLUSAO DEPENDENTES'', 1, 16012', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 30, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao', '10031, 10026, ''(TESTES) ADMISSAO - INCLUSAO DEPENDENTES'', 1, 16012', 1
 		
 		/*##### ModelosIntegracoesCmdsCpos*/
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 01, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String, BBP_OplConteudoFixo', '10001, 10001, ''consultaCEP;cep'', 9, ''03510030'', 1', 1        
@@ -1075,6 +1089,26 @@ begin
 		/*REST*/ exec sp_Execute_Insert 'dbo', 63, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10064, 10030, ''D1sCargo'', ''CAR_D1sCargo'', 9', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 64, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10065, 10030, ''D1sCargoRes'', ''CAR_D1sCargoRes'', 9', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 65, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10066, 10030, ''CBO'', ''CAR_CdiCodBrasileiroOcupacao'', 9', 1 
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 66, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10067, 10031, ''DEP_CdiContratado'', ''DEP_CdiContratado'', 8', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 67, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10068, 10031, ''DEP_CdiLigacaoPessoa'', ''DEP_CdiLigacaoPessoa'', 8', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 68, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10069, 10031, ''DEP_CdiSexo'', ''DEP_CdiSexo'', 8', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 69, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10070, 10031, ''DEP_CdiEstadoCivil'', ''DEP_CdiEstadoCivil'', 8', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 70, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10071, 10031, ''DEP_CdiEstado_OrgaoRg'', ''DEP_CdiEstado_OrgaoRg'', 8', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 71, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10072, 10031, ''DEP_CdiSituacaoDependente'', ''DEP_CdiSituacaoDependente'', 8', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 72, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10073, 10031, ''DEP_DssNomeCompleto', 'DEP_DssNomeCompleto'', 9', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 73, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10074, 10031, ''DEP_DtdApresCertNascimento'', ''DEP_DtdApresCertNascimento'', 10', 1
+        /*SOAP*/ exec sp_Execute_Insert 'dbo', 74, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10075, 10031, ''DEP_OplImpRendaDependente'', ''DEP_OplImpRendaDependente'', 8', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 75, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10076, 10031, ''DEP_DssNome'', ''DEP_DssNome'', 9', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 76, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10077, 10031, ''DEP_CosNumeroRg'', ''DEP_CosNumeroRg'', 9', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 77, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10078, 10031, ''DEP_CosOrgaoRg'', ''DEP_CosOrgaoRg'', 9', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 78, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10079, 10031, ''DEP_DtdEmissaoRg'', ''DEP_DtdEmissaoRg'', 10', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 79, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10080, 10031, ''DEP_NusCICNumero'', ''DEP_NusCICNumero'', 9', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 80, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10081, 10031, ''DEP_DssNascimentoLocal'', ''DEP_DssNascimentoLocal'', 9', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 81, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10082, 10031, ''DEP_DtdNascimentoData'', ''DEP_DtdNascimentoData'', 10', 1
+        /*SOAP*/ exec sp_Execute_Insert 'dbo', 81, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10083, 10031, ''DEP_DssNomePai'', ''DEP_DssNomePai'', 9', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 81, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10084, 10031, ''DEP_DssNomeMae'', ''DEP_DssNomeMae'', 9', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 81, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10085, 10031, ''DEP_CosCartaoNacionalSaude'', ''DEP_CosCartaoNacionalSaude'', 9', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 81, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10086, 10031, ''DPF_CdiCodigoFlexivelDep01'', ''DPF_CdiCodigoFlexivelDep01'', 10', 1
 
 		/*##### ModelosIntegracoesCmdsRets*/
 		/*REST*/ exec sp_Execute_Insert 'dbo', 01, 'ModelosIntegracoesCmdsRets', 'JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem', '10002, 10016, ''userid'', ''data;userid''', 1

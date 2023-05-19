@@ -94,7 +94,9 @@ exec sp_infoApDataPkLimit 'EstruturasAD'
 exec sp_infoApDataPkLimit 'EstruturasADProps'
 exec sp_infoApDataPkLimit 'DefSisIntegracaoAD'
 
-exec sp_deleteCascate 'ConDependentes', '= 1037', 1 /*Excluir todos os registros relacionados em todas tabelas*/
+exec sp_deleteCascate 'ConDependentes', '= 1037', 1                          /*0 - Deletar, 1 - Mostra os Comandos - Excluir todos os registros relacionados em todas tabelas*/
+exec sp_deleteCascateRegistry 'ConDependentes', 'DEP_CdiContratado = 617', 1 /*0 - Deletar, 1 - Mostra os Comandos - Excluir todos os registros relacionados em todas tabelas*/
+exec sp_deleteCascateRegistry 'FormulariosWFCampos', 'FWC_CdiFormularioWFCampo = 100505', 0 
 
 exec sp_Simple_Generate_Inserts_From_Selects 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD = 5', 'BBO_CdiServidorIntegracaoBD,BBO_CdiServidorIntegracao,BBO_D1sServidorIntegracaoBD,BBO_CdiModeloIntegracao,BBO_CdiTipoIntegracao,BBO_CdiBaseDado,BBO_CdiTipoConexaoBaseDado,BBO_DssNomeServidor'
 exec sp_Simple_Generate_Inserts_From_Selects 'ServidoresIntegracoes'
