@@ -13,8 +13,6 @@ drop procedure sp_lastIdTable
 GO
 drop procedure sp_takeKeyForInsertion 
 GO
-drop function fn_getPKFieldName 
-GO
 drop function fn_getTableCount 
 GO
 drop function fn_getTableMaxKey 
@@ -53,7 +51,7 @@ drop procedure sp_getKeyValue
 GO
 drop procedure sp_getNewCriteria
 GO
-drop function fn_getPKFieldName
+drop function fn_getPKFieldName 
 GO
 
 /*** FUNÇÕES UTILITÁRIAS **********************************************/
@@ -616,7 +614,7 @@ create or alter procedure sp_getNewCriteria
   (
 	@TableName[sysname],
 	@Criteria nvarchar(1000),
-	@NewCriteria nvarchar(1000) = null OUTPUT,
+	@NewCriteria nvarchar(1000) = null OUTPUT
   )
 as
 begin
@@ -667,7 +665,6 @@ begin
 	select @KeyValue = @ValueAux
 end
 GO
-
 
 --create function fn_getPKFieldName(@TableName[sysname])
 create or alter function fn_getPKFieldName(@TableName[sysname])
@@ -1095,7 +1092,7 @@ begin
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 69, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10070, 10031, ''DEP_CdiEstadoCivil'', ''DEP_CdiEstadoCivil'', 8', 1
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 70, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10071, 10031, ''DEP_CdiEstado_OrgaoRg'', ''DEP_CdiEstado_OrgaoRg'', 8', 1
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 71, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10072, 10031, ''DEP_CdiSituacaoDependente'', ''DEP_CdiSituacaoDependente'', 8', 1
-		/*SOAP*/ exec sp_Execute_Insert 'dbo', 72, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10073, 10031, ''DEP_DssNomeCompleto', 'DEP_DssNomeCompleto'', 9', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 72, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10073, 10031, ''DEP_DssNomeCompleto'', ''DEP_DssNomeCompleto'', 9', 1
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 73, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10074, 10031, ''DEP_DtdApresCertNascimento'', ''DEP_DtdApresCertNascimento'', 10', 1
         /*SOAP*/ exec sp_Execute_Insert 'dbo', 74, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10075, 10031, ''DEP_OplImpRendaDependente'', ''DEP_OplImpRendaDependente'', 8', 1
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 75, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10076, 10031, ''DEP_DssNome'', ''DEP_DssNome'', 9', 1
@@ -1138,6 +1135,7 @@ begin
 		exec sp_Execute_Insert 'dbo', 19, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '19, 1, ''(TESTES) SERVICO LOTES REST'',  10023, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1
 		exec sp_Execute_Insert 'dbo', 20, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '20, 1, ''(TESTES) SERVICO MOCK POSTMAN GET COMPLEXY ARRAY'',  10024, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1
 		exec sp_Execute_Insert 'dbo', 21, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '21, 1, ''(TESTES) REST ALTER DA TRANSACAO E O TIPO EDICAO'', 10025, 2, 10, 0, ''''', 1
+		exec sp_Execute_Insert 'dbo', 22, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '22, 1, ''(TESTES) SOAP ADMISSAO - INCLUSAO DEPENDENTES'', 10026, 2, 10, 0, ''''', 1
 
 		/*OUTROS AJUSTES PARA TESTES*/
 		exec sp_Execute_Update 'dbo', 01, 'FormulariosWFSobreps', 'BRH_CdiOpcao_Desativado = 0', 'BRH_CdiFormularioWF = 407'

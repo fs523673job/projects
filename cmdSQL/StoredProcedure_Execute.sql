@@ -111,7 +111,7 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesSobs'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesQueries'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsPars'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd = 10031', 'BBP_CdiModeloIntegracaoCmdCpo,BBP_CdiModeloIntegracaoCmd,BBP_DssCampo_Destino,BBP_DssCampo_Origem,BBP_CdiTipoCampo'
-exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd = 10027'
+exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd = 10026'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao = 10021'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10020', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLsGrupos'
@@ -152,3 +152,6 @@ drop index BCN_I01 on LogsIntegracoesServidores
 create index BCN_I01 on LogsIntegracoesServidores(BCN_CdiLogIntegracaoServidor, BCN_CdiLogIntegracao, BCN_CdiServidorIntegracao) 
 
 SELECT FLOOR(RAND()*(100-1+1)+1) as keyid;
+
+
+select * from ModelosIntegracoesCmds 
