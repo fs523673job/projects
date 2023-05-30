@@ -408,19 +408,30 @@ begin
 
 	set @NewCriteria = ''
 	set @FieldKeyValue = 0
+	set @DeleteOrder = @DeleteOrder + 1
 
-	select @FieldPrimaryKey = [dbo].[fn_getPKFieldName](@TableName)
+	begin try
+		select @FieldPrimaryKey = [dbo].[fn_getPKFieldName](@TableName)
+	end try
+	begin catch
+	  print '[' + @TableName + ']' + ERROR_MESSAGE()
+	end catch
 
 	set @sqlcommand = 
-	  N'select @Value = ' + @FieldPrimaryKey + 
+	  N'select top 1 @Value = ' + @FieldPrimaryKey + 
 	   '  FROM ' + @TableName +
        '  WHERE ' + @Criteria
-	    
+
 	set @paramdefinition = N'@Value int OUTPUT' 
 
-	exec sp_executesql @sqlcommand, @paramdefinition, @Value = @FieldKeyValue OUTPUT
+	begin try
+		exec sp_executesql @sqlcommand, @paramdefinition, @Value = @FieldKeyValue OUTPUT
+	end try
+	begin catch
+	  print '[' + @sqlcommand + '] ' + ERROR_MESSAGE()
+	end catch
 	
-	set @NewCriteria = @FieldPrimaryKey + ' = ' + cast(@FieldKeyValue as char(6))
+	set @NewCriteria = @FieldPrimaryKey + ' = ' + trim(cast(@FieldKeyValue as char(15)))
 
 	declare localCursor CURSOR LOCAL FOR
 		SELECT --FK.name AS Ds_Nome_FK,
@@ -447,15 +458,12 @@ begin
 
 	while @@FETCH_STATUS = 0
 	begin
-	    set @NewCriteria = @RefField + ' = ' + trim(cast(@FieldKeyValue as char(6)))
+	    set @NewCriteria = @RefField + ' = ' + trim(cast(@FieldKeyValue as char(15)))
 
 		set @sqlcommand = 'DELETE FROM [' + @RefTable + '] WHERE ' + @NewCriteria
 
 		if (( @auxRefTable <> @RefTable ) and (@RefTable <> @TableName))
-		begin
-			set @DeleteOrder = @DeleteOrder + 1
 			exec sp_deleteCascateRegistry @RefTable, @NewCriteria, @OnlyStrCmd, @DeleteOrder
-		end
 		
 	    begin try
 			if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)
@@ -479,7 +487,7 @@ begin
 
 	set @DeleteOrder = @DeleteOrder + 1
 
-	set @NewCriteria = @FieldPrimaryKey + ' = ' + trim(cast(@FieldKeyValue as char(6)))
+	set @NewCriteria = @FieldPrimaryKey + ' = ' + trim(cast(@FieldKeyValue as char(15)))
 
 	set @sqlcommand = 'DELETE FROM [' + @TableName + '] WHERE ' + @NewCriteria
 	
@@ -671,7 +679,7 @@ create or alter function fn_getPKFieldName(@TableName[sysname])
 returns varchar(1000)
 as
 begin
-    return (select C.COLUMN_NAME as PK
+    return (select top 1 C.COLUMN_NAME as PK
    		      FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS T
 		      JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE C ON C.CONSTRAINT_NAME = T.CONSTRAINT_NAME  
 	          WHERE C.TABLE_NAME = @TableName
@@ -918,6 +926,7 @@ begin
 		exec sp_Execute_Insert 'dbo', 06, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50006, 50001, 2, 29993', 1
 		exec sp_Execute_Insert 'dbo', 07, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50007, 50001, 2, 39802', 1
 		exec sp_Execute_Insert 'dbo', 08, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50008, 50001, 2, 39803', 1
+		exec sp_Execute_Insert 'dbo', 09, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50009, 50001, 2, 30122', 1
 
 		/*#### OBJETO - 962 - Tabela - LayoutsSaidas*/
 		exec sp_Execute_Insert 'dbo', 01, 'LayoutsSaidas', 'BRD_CdiLayOutSaida, BRD_D1sLayOutSaida, BRD_D1bLayOutSaida', '1001, ''(TESTES) LAYOUT REST PARAMETROS'', 0xEFBBBF7B226B6579223A20222376616C7565506172616D6574657223227D', 1   
@@ -1140,6 +1149,7 @@ begin
 		exec sp_Execute_Insert 'dbo', 20, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '20, 1, ''(TESTES) SERVICO MOCK POSTMAN GET COMPLEXY ARRAY'',  10024, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1
 		exec sp_Execute_Insert 'dbo', 21, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '21, 1, ''(TESTES) REST ALTER DA TRANSACAO E O TIPO EDICAO'', 10025, 2, 10, 0, ''''', 1
 		exec sp_Execute_Insert 'dbo', 22, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '22, 1, ''(TESTES) SOAP ADMISSAO - INCLUSAO DEPENDENTES'', 10026, 2, 10, 0, ''''', 1
+		exec sp_Execute_Insert 'dbo', 23, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '23, 1, ''(TESTES) REST ADD DATE/HOUR IN OBJ 3129'', 10021, 2, 10, 0, ''''', 1
 
 		/*OUTROS AJUSTES PARA TESTES*/
 		exec sp_Execute_Update 'dbo', 01, 'FormulariosWFSobreps', 'BRH_CdiOpcao_Desativado = 0', 'BRH_CdiFormularioWF = 407'

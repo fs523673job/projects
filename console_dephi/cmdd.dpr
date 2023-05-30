@@ -53,7 +53,7 @@ var
     Console.WriteColorLine('* Ex: setdir c:\apdata_x64                                            *', [TConsoleColor.Green]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
     Console.WriteColorLine('* You can type the systems in sequence to compile                     *', [TConsoleColor.Green]);
-    Console.WriteColorLine('* Ex: compile debug 01,02,03,10,11 or compile release 01,02,03,04     *', [TConsoleColor.Green]);
+    Console.WriteColorLine('* Ex: compile debug 01, 02, 03, 10, 11 or compile release 01,02,03,04 *', [TConsoleColor.Green]);
     Console.WriteColorLine('* Ex: compile debug ApServer32, ApLoadBalancer32                      *', [TConsoleColor.Green]);
     Console.WriteColorLine('*=====================================================================*', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 01 - ApServer [ApServer32]                                          *', [TConsoleColor.Blue]);
@@ -75,6 +75,7 @@ var
     Console.WriteColorLine('* 17 - Build Sass [compile sass]                                      *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 18 - Pack Integracao [pintegration32]                               *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 19 - Pack Integracao [pintegration64]                               *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 20 - All                                                            *', [TConsoleColor.Blue]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
   end;
 
@@ -100,6 +101,7 @@ var
       17 : Console.WriteColorLine('* 17 - Compiling Build Sass [compile sass]                                      *', [TConsoleColor.Yellow]);
       18 : Console.WriteColorLine('* 18 - Compiling Pack Integracao [pintegration32]                               *', [TConsoleColor.Yellow]);
       19 : Console.WriteColorLine('* 19 - Compiling Pack Integracao [pintegration64]                               *', [TConsoleColor.Yellow]);
+      20 : Console.WriteColorLine('* 20 - All                                                                      *', [TConsoleColor.Yellow]);
     end;
 
     case ASystemId of
@@ -131,6 +133,26 @@ var
           ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
           ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
           ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
+        end;
+      20 :
+        begin
+          ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [DirectoryRepository]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand);
+          ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Source\buildWebDispatcher.bat', [DirectoryRepository]), ASubCommand);
+          ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand);
+          ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
+          ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand);
+          ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand);
         end
       else
         Console.WriteColor('Command not executed', [TConsoleColor.Red]);
@@ -180,6 +202,8 @@ var
         Result := 18
       else  if (AnsiSameText(ANameSystem, 'pintegration64')) then
         Result := 19
+      else if (AnsiSameText(ANameSystem, 'All')) then
+        Result := 20
     end;
   end;
 
@@ -211,7 +235,7 @@ begin
       if AnsiSameText(Command, 'compile') then
       begin
         if Length(InputArray) = 3 then
-          SystemArray := InputArray[2].Split([','])
+          SystemArray := InputArray[2].Trim.Split([','])
         else if Length(InputArray) > 3 then
         begin
           for c := 2 to High(InputArray) do
