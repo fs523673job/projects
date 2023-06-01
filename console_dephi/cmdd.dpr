@@ -39,6 +39,7 @@ var
     Console.WriteColorLine('First parameter must be the repository directory. Ex: cmdd.exe c:\apdata_x64', [TConsoleColor.Green]);
     Console.WriteColorLine('Digit "exit" or "break" to finalize application', [TConsoleColor.Green]);
     Console.WriteColorLine('Digit "setdir" to set directory for repository. Ex: setdir c:\apdata_x64', [TConsoleColor.Green]);
+    Console.WriteColorLine('Digit "getdir" to get directory for repository. ' + DirectoryRepository , [TConsoleColor.Green]);
     Console.WriteColorLine('Digit "compile [debug|release|meleak] [system number|system name] to compile system', [TConsoleColor.Green]);
     Console.WriteColorLine('Digit "menu" to options', [TConsoleColor.Green]);
   end;
@@ -219,7 +220,7 @@ begin
     while True do
     begin
       Console.Write('>');
-      InputArray := Console.ReadLine.Split([' ', sLineBreak]);
+      InputArray := Console.ReadLine.Replace(',', ', ').Split([' ', sLineBreak]);
       Finalize(SystemArray);
 
       if Length(InputArray) >= 1 then
@@ -249,7 +250,7 @@ begin
         end;
       end;
 
-      case IndexStr(Command, ['EXIT', 'BREAK', 'CLEAR', 'CLS', 'MENU', 'SETDIR', 'COMPILE']) of
+      case IndexStr(Command, ['EXIT', 'BREAK', 'CLEAR', 'CLS', 'MENU', 'SETDIR', 'COMPILE', 'GETDIR']) of
         0    : Exit;
         1    : Break;
         2..3 :
@@ -283,6 +284,10 @@ begin
             else
               ExecuteCommand(ConvertNameSystem(SubCommand));
           end;
+        7 :
+          begin
+            Console.WriteColorLine(Format('> current directory %s', [DirectoryRepository]), [TConsoleColor.DarkGreen]);
+          end
         else
         begin
           if not (ExecuteConsoleOutput(Command, SubCommand)) then
