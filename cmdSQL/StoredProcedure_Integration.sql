@@ -431,7 +431,10 @@ begin
 	  print '[' + @sqlcommand + '] ' + ERROR_MESSAGE()
 	end catch
 	
-	set @NewCriteria = @FieldPrimaryKey + ' = ' + trim(cast(@FieldKeyValue as char(15)))
+	if @FieldKeyValue = 0
+		set @NewCriteria = @FieldPrimaryKey + ' = -1 '
+	else
+		set @NewCriteria = @FieldPrimaryKey + ' = ' + trim(cast(@FieldKeyValue as char(15)))
 
 	declare localCursor CURSOR LOCAL FOR
 		SELECT --FK.name AS Ds_Nome_FK,
@@ -458,7 +461,10 @@ begin
 
 	while @@FETCH_STATUS = 0
 	begin
-	    set @NewCriteria = @RefField + ' = ' + trim(cast(@FieldKeyValue as char(15)))
+		if @FieldKeyValue = 0
+			set @NewCriteria = @RefField + ' = -1 '
+		else
+			set @NewCriteria = @RefField + ' = ' + trim(cast(@FieldKeyValue as char(15)))
 
 		set @sqlcommand = 'DELETE FROM [' + @RefTable + '] WHERE ' + @NewCriteria
 
@@ -487,9 +493,7 @@ begin
 
 	set @DeleteOrder = @DeleteOrder + 1
 
-	set @NewCriteria = @FieldPrimaryKey + ' = ' + trim(cast(@FieldKeyValue as char(15)))
-
-	set @sqlcommand = 'DELETE FROM [' + @TableName + '] WHERE ' + @NewCriteria
+	set @sqlcommand = 'DELETE FROM [' + @TableName + '] WHERE ' + @Criteria
 	
     begin try
 		if (@OnlyStrCmd is null) or (@OnlyStrCmd = 0)

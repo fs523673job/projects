@@ -95,7 +95,7 @@ exec sp_infoApDataPkLimit 'EstruturasADProps'
 exec sp_infoApDataPkLimit 'DefSisIntegracaoAD'
 
 exec sp_deleteCascate 'ConDependentes', '= 1037', 1                          /*0 - Deletar, 1 - Mostra os Comandos - Excluir todos os registros relacionados em todas tabelas*/
-exec sp_deleteCascateRegistry 'ConDependentes', 'DEP_CdiContratado = 617', 1 /*0 - Deletar, 1 - Mostra os Comandos - Excluir todos os registros relacionados em todas tabelas*/
+exec sp_deleteCascateRegistry 'ConDependentes', 'DEP_CdiConDependente = 1037', 0 /*0 - Deletar, 1 - Mostra os Comandos - Excluir todos os registros relacionados em todas tabelas*/
 exec sp_deleteCascateRegistry 'FormulariosWFCampos', 'FWC_CdiFormularioWFCampo = 100505', 0 
 exec sp_deleteCascateRegistry 'CrachasExtras', 'CEX_CdiCrachaExtra = 9000010', 0
 exec sp_deleteCascate 'CrachasExtras', '= 9000010', 0
@@ -152,5 +152,9 @@ exec sp_deleteOptionByApDataRange 'LogsIntegracoesServidores', 1, 1
 
 SELECT FLOOR(RAND()*(100-1+1)+1) as keyid;
 
-select top 1 CEX_CdiCrachaExtra, CEX_CosCrachaBase, CEX_DtdValidadeInicio, CEX_DtdValidadeFim  from CrachasExtras order by 1 desc
-delete from CrachasExtras where CEX_CdiCrachaExtra = (select top 1 CEX_CdiCrachaExtra from CrachasExtras order by 1 desc)
+select top 100 DEP_CdiConDependente, DEP_DtdNascimentoData, DEP_DtdApresCertNascimento, DEP_DtdEmissaoRg, DPF_DtdConteudoData_01
+  from ConDependentes 
+  left join ConDependentesFlexiveis on (DEP_CdiConDependente = DPF_CdiConDependente)
+  order by 1 desc
+
+exec sp_deleteCascateRegistry 'ConDependentes', 'DEP_CdiConDependente = 1037', 0
