@@ -1,4 +1,4 @@
-use INTEGRATION_BETA
+http://172.27.10.50/use INTEGRATION_BETA
 GO
 
 drop procedure sp_deleteCascate 
@@ -919,6 +919,7 @@ begin
 
 		/*#### OBJETO - 551 Tabela DLLsIntegracoes, DLLsIntegracoesMetodos*/
 		exec sp_Execute_Insert 'dbo', 01, 'DLLsIntegracoes', 'BBV_CdiDLLIntegracao, BBV_D1sDLLIntegracao, BBV_CosCaminhoArquivoDLL', '50001, ''(TESTES) - DLL INTEGRACAO INTERFACE'', ''C:\Apdata_x64\Aplicacoes\ApIntegrationInterface\bin\Win32\Debug\ApIntegrationInterface.dll''', 1
+		--exec sp_Execute_Update 'dbo', 01, 'DLLsIntegracoes', 'BBV_CosCaminhoArquivoDLL = ''C:\Apdata_x64\Aplicacoes\ApIntegrationInterface\bin\Win32\Debug\ApIntegrationInterface.dll''', 'BBV_CdiDLLIntegracao = 50001'
 		exec sp_Execute_Insert 'dbo', 01, 'DLLsIntegracoesMetodos', 'BBW_CdiDLLIntegracaoMetodo, BBW_CdiDLLIntegracao, BBW_CosDLLIntegracaoMetodo, BBW_D1sDLLIntegracaoMetodo', '50001, 50001, ''TreatTransactionEvent'', ''TreatTransactionEvent''', 1
 
 		/*#### OBJETO - 559 - Tabela - TransacoesIntegracoes*/
