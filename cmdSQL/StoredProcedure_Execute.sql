@@ -99,6 +99,7 @@ exec sp_deleteCascateRegistry 'ConDependentes', 'DEP_CdiConDependente = 1037', 0
 exec sp_deleteCascateRegistry 'FormulariosWFCampos', 'FWC_CdiFormularioWFCampo = 100505', 0 
 exec sp_deleteCascateRegistry 'CrachasExtras', 'CEX_CdiCrachaExtra = 9000010', 0
 exec sp_deleteCascate 'CrachasExtras', '= 9000010', 0
+exec sp_deleteCascate 'EstruturasAD', '= 1002', 1
 
 exec sp_Simple_Generate_Inserts_From_Selects 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD = 5', 'BBO_CdiServidorIntegracaoBD,BBO_CdiServidorIntegracao,BBO_D1sServidorIntegracaoBD,BBO_CdiModeloIntegracao,BBO_CdiTipoIntegracao,BBO_CdiBaseDado,BBO_CdiTipoConexaoBaseDado,BBO_DssNomeServidor'
 exec sp_Simple_Generate_Inserts_From_Selects 'ServidoresIntegracoes'

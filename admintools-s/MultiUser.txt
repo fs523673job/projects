@@ -1,0 +1,81 @@
+Hinweise zu MultiUser
+=====================
+© 2005-2016 Dr. J. Rathlev, D-24222 Schwentinental
+  Mail: kontakt(a)rathlev-home.de
+
+Das Programm bietet die Möglichkeit, automatisch mehrere Benutzer (z.B. für
+Kurse) im ADS anzulegen:
+
+- Der Name des Benutzers wird automatisch in der Form "x..xnn" generiert. Dabei
+  ist "x..x" der gleichlautende Namensteils für alle neuen Benutzer und "nn"
+  eine fortlaufende Nummer (01,02,..,25).
+  Dieser Name wird sowohl bei "Anmeldename" als auch bei "Nachname" eingetragen.
+
+- Für jeden Benutzer wird automatisch ein individuelles Passwort aus 6 Zeichen
+  generiert. Es hat immer die Form "xaxann" (x = Konsonant, a = Vokal, n = Ziffer).
+
+- Die neuen Benutzer können in einer beliebigen Organisationseinheit der Domäne
+  angesiedelt werden.
+
+- Die neuen Benutzer können direkt verschiedenenen Gruppen zugewiesen werden.
+
+- Zusätzlich werden für alle Benutzer folgende Hinweise eingetragen:
+  - Anzeigename wird zusammengesetzt aus "Name des Kurses" + "Benutzer" + Nummer
+  - Name des Kurses (unter "Beschreibung", bzw. "Description")
+  - Name des Instituts (unter "Organisation>Abteilung", bzw. "Organisation>Department")
+  - Jedes Konto erhält ein Ablaufdatum (i.d.R. Semesterende)
+  - Die Benutzer haben kein Recht, ihr Passwort zu ändern
+  - Falls erforderlich, kann der Pfad für ein serverbasiertes Profil angegeben
+    werden (Platzhalter für den Namen des Benutzers: %username%).
+  - Falls erforderlich, kann der Pfad für ein Basisverzeichnis (HomeDir) angegeben
+    werden (Platzhalter für den Namen des Benutzers: %username%).
+
+- Die Zugangsdaten (Anmeldename und Passwort) können in Form von Etiketten
+  ausgedruckt werden. Das Format der Etiketten ist einstellbar.
+
+- Für einen nachfolgenden Kurs können neue Passworte generiert werden.
+
+- Für bereits bestehende Benutzer werden nur dir Passwörter geändert. Alle
+  anderen Daten bleiben unverändert.
+
+Bedienung:
+----------
+Nach dem erstmaligen Starten des Programms muss zunächst der Name der Domäne
+eingegeben werden und durch Klick auf die Schaltfläche eine Verbindung
+zu ihr hergestellt werden. Der Benutzer muss Administrator-Rechte besitzen.
+Bei nachfolgende Programmstarts wird diese Verbindung immer automatisch
+erstellt.
+
+Die einmal zu einem Kurs gemachten Einstellungen werden automatisch gespeichert
+und durch Auswahl des Kursnamens zur Anzeige gebracht.
+
+Bedeutung der Schaltflächen am unteren Rand:
+--------------------------------------------
+
+Neu:            Alle Felder löschen, um einen neuen Kurs anzulegen
+---
+
+Neue Passworte: Für alle Benutzer des Kurses werden neue Passwörter generiert.
+--------------  Das Eintragen auf dem Konto erfolgt erst nach Klick auf
+                "Konten anlegen".
+
+Konten anlegen: Die Benutzerkonten werden neu angelegt. Bei existierenden Konten
+--------------  werden nur die Passwörter neu gesetzt.
+
+Infos drucken:  Ausdrucken der Benutzerinfos (Anmeldename, Passwort) für die
+-------------   Kursteilnehmer.
+
+Schriftart:     Einstellen der Druckerschrift (Standard: Arial 12)
+----------
+
+Layout:         Einstellen des Etikettenlayouts (Standard: 80x50 mm², 2 Spalten,
+------          5 Reihen)
+
+Info:           Info zu Programmversion
+----
+
+Beenden:        Programm beenden
+-------
+
+J. Rathlev, 14.12.2016
+
