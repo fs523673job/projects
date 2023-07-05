@@ -21,7 +21,7 @@ cd /d %REPO_PATH%
 git add --all
 
 :: Criando uma mensagem de commit com a data e hora atuais
-set DATE_TIME=%date:~10,4%-%date:~4,2%-%date:~7,2% %time:~0,2%:%time:~3,2%:%time:~6,2%
+set DATE_TIME=%date:~6,4%-%date:~3,2%-%date:~0,2% %time:~0,2%:%time:~3,2%:%time:~6,2%
 set COMMIT_MSG=Commit realizado em %DATE_TIME%
 
 :: Realizando o commit
