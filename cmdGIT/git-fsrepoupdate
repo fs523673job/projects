@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# nome do stash
+stash_name=$1
+
+# repo para fazer o pull
+repo_url=$2
+
+# check se o nome do stash foi fornecido
+if [ -z "$stash_name" ]
+then
+    echo "Por favor, forneça o nome do stash"
+    exit 1
+fi
+
+# adiciona todas as mudanças ao índice
+git add .
+
+# cria o stash
+git stash save "$stash_name"
+
+# realiza o pull
+if [ -z "$repo_url" ]
+then
+    # Se o URL do repositório não foi fornecido, faz pull no repositório atual
+    git pull
+else
+    git pull $repo_url
+fi
+
+# aplica o stash com --index opção
+# --index tenta recriar o estado do index (stage)
+# use `head -n 1` para obter apenas a primeira linha, que é o stash mais recente que corresponde ao nome
+stash_to_apply=$(git stash list | grep $stash_name | head -n 1 | awk -F: '{print $1}')
+if [ -z "$stash_to_apply" ]
+then
+    echo "Nenhum stash com o nome $stash_name foi encontrado"
+    exit 1
+fi
+git stash apply --index "$stash_to_apply"

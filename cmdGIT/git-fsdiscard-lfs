@@ -1,0 +1,16 @@
+#!/bin/bash
+rm Aplicacoes/Shared/GenVersionRes.exe
+rm Aplicacoes/ApServer/Source/ApServerPatch.zip
+rm Aplicacoes/ApServer/Source/ApServerPatchBlob.zip
+rm PackageInstall.exe
+
+git reset -q HEAD -- Aplicacoes/Shared/GenVersionRes.exe
+git reset -q HEAD -- Aplicacoes/ApServer/Source/ApServerPatch.zip
+git reset -q HEAD -- Aplicacoes/ApServer/Source/ApServerPatchBlob.zip
+git reset -q HEAD -- PackageInstall.exe
+
+git checkout -- Aplicacoes/ApServer/Source/ApServerPatch.zip
+git checkout -- Aplicacoes/ApServer/Source/ApServerPatchBlob.zip
+git checkout -- PackageInstall.exe
+git checkout -- Aplicacoes/Shared/GenVersionRes.exe
+
