@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# nome da branch de destino
+dest_branch=$1
+
+# diretório temporário
+temp_dir=$2
+
+# lista de arquivos para copiar
+file_list=("${@:3}")
+
+# verifica se a branch de destino e o diretório temporário foram fornecidos
+if [ -z "$dest_branch" ] || [ -z "$temp_dir" ]
+then
+    echo "Por favor, forneça a branch de destino e o diretório temporário"
+    exit 1
+fi
+
+# verifica se há alterações não commitadas
+if ! git diff --quiet
+then
+    # salva o stash atual
+    git stash save "stash_automatico"
+else
+    echo "Nenhuma alteração local para salvar"
+fi
+
+# obtém a branch atual
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+# muda para a branch de destino
+git checkout $dest_branch
+
+# copia os arquivos para o diretório temporário
+for file in "${file_list[@]}"
+do
+    if [ -f "$file" ]
+    then
+		echo "$file $temp_dir"
+        cp "$file" "$temp_dir"
+    else
+        echo "Arquivo $file não encontrado"
+    fi
+done
+
+# volta para a branch original
+git checkout $current_branch
+
+# copia os arquivos do diretório temporário para suas localizações correspondentes
+for file in "${file_list[@]}"
+do
+    temp_file_path="$temp_dir/$(basename $file)"
+    if [ -f "$temp_file_path" ]
+    then
+	    echo "$temp_file_path $(dirname $file)"
+        cp "$temp_file_path" "$(dirname $file)"
+    else
+        echo "Arquivo temporário $temp_file_path não encontrado"
+    fi
+done
