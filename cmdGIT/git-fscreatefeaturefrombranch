@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# nome do SHA e da feature
+sha_to_find=$1
+feature_name=$2
+
+# verifica se o SHA e o nome da feature foram fornecidos
+if [ -z "$sha_to_find" ] || [ -z "$feature_name" ]
+then
+    echo "Por favor, forneça o SHA para pesquisar e o nome da feature"
+    exit 1
+fi
+
+# procura o SHA em todas as branches
+branch_with_sha=$(git branch -a --contains $sha_to_find)
+
+# verifica se o SHA foi encontrado
+if [ -z "$branch_with_sha" ]
+then
+    echo "Nenhum branch com o SHA $sha_to_find foi encontrado"
+    exit 1
+fi
+
+# cria a nova branch usando os primeiros 7 caracteres do SHA
+git branch ${sha_to_find:0:7} $sha_to_find
+
+# cria a feature sem acompanhar a branch original
+git branch --no-track feature/$feature_name refs/heads/${sha_to_find:0:7}
+
+# deleta a branch temporária
+git branch -d ${sha_to_find:0:7}
+
+# muda para a feature
+git checkout feature/$feature_name
+
+# push da feature para o repositório remoto
+git push --porcelain --progress origin refs/heads/feature/$feature_name:refs/heads/feature/$feature_name
+
+# define a branch remota como upstream
+git branch --set-upstream-to=refs/remotes/origin/feature/$feature_name feature/$feature_name

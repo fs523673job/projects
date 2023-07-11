@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# nome da entrada (pode ser SHA ou nome de branch) e nome da feature
+input=$1
+feature_name=$2
+
+# verifica se a entrada e o nome da feature foram fornecidos
+if [ -z "$input" ] || [ -z "$feature_name" ]
+then
+    echo "Por favor, forneça a entrada (SHA ou nome de branch) e o nome da feature"
+    exit 1
+fi
+
+# verifica se a entrada é um SHA
+if [[ "$input" =~ ^[0-9a-f]{5,40}$ ]]
+then
+    # a entrada é um SHA
+    # procura o SHA em todas as branches
+    branch_with_sha=$(git branch -a --contains $input)
+
+    # verifica se o SHA foi encontrado
+    if [ -z "$branch_with_sha" ]
+    then
+        echo "Nenhum branch com o SHA $input foi encontrado"
+        exit 1
+    fi
+
+    # cria a nova branch usando os primeiros 7 caracteres do SHA
+    git branch ${input:0:7} $input
+else
+    # a entrada é um nome de branch
+    # procura a branch em todas as branches
+    branch_exists=$(git branch -a | grep $input)
+
+    # verifica se a branch foi encontrada
+    if [ -z "$branch_exists" ]
+    then
+        echo "Nenhum branch com o nome $input foi encontrado"
+        exit 1
+    fi
+
+    # cria a nova branch usando os primeiros 7 caracteres do nome da branch
+    # e remove a parte "origin/" do nome
+    git branch ${input:7:7} ${input}
+fi
+
+# cria a feature sem acompanhar a branch original
+git branch --no-track feature/$feature_name refs/heads/${input:7:7}
+
+# deleta a branch temporária
+git branch -D ${input:7:7}
+
+# muda para a feature
+git checkout feature/$feature_name
+
+# push da feature para o repositório remoto
+git push --porcelain --progress origin refs/heads/feature/$feature_name:refs/heads/feature/$feature_name
+
+# define a branch remota como upstream
+git branch --set-upstream-to=refs/remotes/origin/feature/$feature_name feature/$feature_name
