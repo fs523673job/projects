@@ -1,41 +1,35 @@
 @echo off
 setlocal
 
-:: Verifica se um argumento foi passado
-if "%~1"=="" (
-    echo Uso: %~0 aplicativo
-    exit /b
-)
+:: Define a versão
+set "VRS=%1"
 
 :: Define o aplicativo para ser executado
-set "APP=%~1"
+set "APP=%~2"
 
 :: Define a arquitetura 
-set "ARQ=%~2"
+set "ARQ=%~3"
 
-set "APP_PATH=C:\Apdata_X64\Aplicacoes\%APP%\bin\Win32\%ARQ%\%APP%.exe"
+:: Define o build 
+set "BLD=%~4"
 
-:: Mapeia os nomes dos aplicativos para seus caminhos
-if /I "%APP%"=="ApTools" (
-    set "APP_PATH=C:\Apdata_X64\Aplicacoes\ApTools\bin\Win32\ARQ\ApTools.exe"
-) else if /I "%APP%"=="ApServer" (
-    set "APP_PATH=C:\Caminho\Para\ApServer.exe"
-) else (
-    echo Aplicativo desconhecido: %APP%
+:: Define o Params Executável
+set "PRN=%~5"
+
+:: Define o caminho para o executável
+set "APP_PATH=C:\%VRS%\Aplicacoes\%APP%\bin\%ARQ%\%BLD%\%APP%.exe"
+
+if not exist "%APP_PATH%" (
+    echo O executavel %APP_PATH% nao existe.
+    echo Possiveis causas: Nao foi compilado
+    echo Deseja compilar o aplicativo novamente? [S/N]
+    choice /C SN /N
+    if errorlevel 2 exit /b
+	call cmdd
     exit /b
 )
 
-:: Verifica se um segundo argumento foi passado e ajusta o caminho do aplicativo
-if not "%~2"=="" (
-    if /I "%~2"=="Tokyo" (
-        set "APP_PATH=C:\Apdata_TX64\Aplicacoes\%APP%\bin\Win32\Debug\%APP%.exe"
-    ) else (
-        echo Cidade desconhecida: %~2
-        exit /b
-    )
-)
-
-:: Executa o aplicativo
-start "" "%APP_PATH%"
+:: Executa o aplicativo com os parâmetros
+start "" "%APP_PATH%" %PRN%
 
 endlocal
