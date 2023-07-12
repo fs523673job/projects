@@ -25,11 +25,12 @@ if not exist "%APP_PATH%" (
     echo Deseja compilar o aplicativo novamente? [S/N]
     choice /C SN /N
     if errorlevel 2 exit /b
-	call cmdd
+    call cmdd
     exit /b
 )
 
 :: Executa o aplicativo com os parâmetros
+echo "%APP_PATH%" %PRN%
 start "" "%APP_PATH%" %PRN%
 
 endlocal
