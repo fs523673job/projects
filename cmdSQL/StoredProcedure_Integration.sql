@@ -1332,7 +1332,7 @@ begin
 
 			declare @EstruturasADKey int
 			exec sp_takeKeyForInsertion 'EstruturasAD', @EstruturasADKey OUTPUT
-			exec sp_Execute_Insert_Key 'dbo', 01, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey/*1002*/, 0, '''(TESTE) BASIC FIELDS FOR AD CONFIGURATION'', null, null, null, null, null, null, null, 1, 0, 0, ''LDAP://OU=Transitorio'', 0, 0', 1 
+			exec sp_Execute_Insert_Key 'dbo', 01, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey/*1002*/, 0, '''(TESTE) BASIC FIELDS FOR AD CONFIGURATION'', null, null, null, null, null, null, null, 1, 0, 0, ''LDAP://OU=ProdutoTestes'', 0, 0', 1 
 
 			declare @EstruturasADPropsKey int
 			exec sp_takeKeyForInsertion 'EstruturasADProps', @EstruturasADPropsKey OUTPUT
