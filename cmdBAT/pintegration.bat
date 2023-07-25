@@ -5,8 +5,8 @@ setlocal
 
 :: Defina aqui os valores padrão para cada argumento
 set "VRS_DEFAULT=Apdata_X64"
-set "APP_DEFAULT=ApServer"
-set "NAME_DEFAULT=ApServer"
+set "APP_DEFAULT=ApIntegrationServer"
+set "NAME_DEFAULT=ApIntegrationServer"
 
 :: Check if a version argument was passed in
 if "%~1"=="" (

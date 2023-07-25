@@ -1,6 +1,8 @@
 @echo off
 setlocal
 
+::Executar o ApIntegrationServer
+
 :: Defina aqui os valores padrão para cada argumento
 set "VRS_DEFAULT=Apdata_X64"
 set "APP_DEFAULT=ApIntegrationServer"
