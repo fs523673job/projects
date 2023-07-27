@@ -2,8 +2,8 @@
 
 interface
 
-function ExecuteConsoleOutput(const ACommand, AParameters: String): Boolean;
-function ExecuteConsoleOutputEx(const ACommand, AParameters: String): Boolean;
+function ExecuteConsoleOutput(const ACommand, AParameters, ASystemName: String): Boolean;
+function ExecuteConsoleOutputEx(const ACommand, AParameters, ASystemName: String): Boolean;
 
 implementation
 
@@ -14,7 +14,7 @@ uses
   System.Console
   ;
 
-function ExecuteConsoleOutput(const ACommand, AParameters: String): Boolean;
+function ExecuteConsoleOutput(const ACommand, AParameters, ASystemName: String): Boolean;
 const
   CReadBuffer = 2400;
 var
@@ -75,7 +75,7 @@ begin
   end;
 end;
 
-function ExecuteConsoleOutputEx(const ACommand, AParameters: String): Boolean;
+function ExecuteConsoleOutputEx(const ACommand, AParameters, ASystemName: String): Boolean;
 const
   CReadBuffer = 255;
 var
@@ -92,44 +92,56 @@ var
 begin
   Result := False;
 
-  SecAtrrs.nLength              := SizeOf(SecAtrrs);
-  SecAtrrs.bInheritHandle       := True;
-  SecAtrrs.lpSecurityDescriptor := nil;
-
-  CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SecAtrrs, 0);
+  Console.WriteLine(StringOfChar('*', 80));
+  Console.WriteColorLine('Inicializando a compilação do ' + ASystemName, [TConsoleColor.Yellow]);
+  Console.WriteLine();
   try
-    FillChar(StartupInfo, SizeOf(StartupInfo), 0);
-    StartupInfo.cb         := SizeOf(StartupInfo);
-    StartupInfo.dwFlags     := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
-    StartupInfo.wShowWindow := SW_HIDE;
-    StartupInfo.hStdInput   := GetStdHandle(STD_INPUT_HANDLE); // don't redirect stdin
-    StartupInfo.hStdOutput  := StdOutPipeWrite;
-    StartupInfo.hStdError   := StdOutPipeWrite;
+    SecAtrrs.nLength              := SizeOf(SecAtrrs);
+    SecAtrrs.bInheritHandle       := True;
+    SecAtrrs.lpSecurityDescriptor := nil;
 
-    WorkDir := ExtractFileDir(ACommand);
-    Handle  := CreateProcess(nil, PChar('cmd.exe /c ' + ACommand + ' ' + AParameters), nil, nil, True, 0, nil, PChar(WorkDir), StartupInfo, ProcessInfo);
+    CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SecAtrrs, 0);
+    try
+      FillChar(StartupInfo, SizeOf(StartupInfo), 0);
+      StartupInfo.cb         := SizeOf(StartupInfo);
+      StartupInfo.dwFlags     := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+      StartupInfo.wShowWindow := SW_HIDE;
+      StartupInfo.hStdInput   := GetStdHandle(STD_INPUT_HANDLE); // don't redirect stdin
+      StartupInfo.hStdOutput  := StdOutPipeWrite;
+      StartupInfo.hStdError   := StdOutPipeWrite;
 
-    CloseHandle(StdOutPipeWrite);
+      WorkDir := ExtractFileDir(ACommand);
+      Handle  := CreateProcess(nil, PChar('cmd.exe /c ' + ACommand + ' ' + AParameters), nil, nil, True, 0, nil, PChar(WorkDir), StartupInfo, ProcessInfo);
 
-    if Handle then
-      try
-        Result := True;
-        repeat
-          WasOK := Windows.ReadFile(StdOutPipeRead, pCommandLine, CReadBuffer, BytesRead, nil);
-          if BytesRead > 0 then
-          begin
-            pCommandLine[BytesRead] := #0;
-            OemToAnsi(pCommandLine, pCommandLine);
-            Console.WriteLine(String(pCommandLine));
-          end;
-        until not WasOK or (BytesRead = 0);
-        WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
-      finally
-        CloseHandle(ProcessInfo.hThread);
-        CloseHandle(ProcessInfo.hProcess);
-      end;
+      CloseHandle(StdOutPipeWrite);
+
+      if Handle then
+        try
+          Result := True;
+          repeat
+            WasOK := Windows.ReadFile(StdOutPipeRead, pCommandLine, CReadBuffer, BytesRead, nil);
+            if BytesRead > 0 then
+            begin
+              pCommandLine[BytesRead] := #0;
+              OemToAnsi(pCommandLine, pCommandLine);
+              if (Pos('ERROR', UpperCase(String(pCommandLine))) > 0) then
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Red])
+              else
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.White]);
+            end;
+          until not WasOK or (BytesRead = 0);
+          WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+        finally
+          CloseHandle(ProcessInfo.hThread);
+          CloseHandle(ProcessInfo.hProcess);
+        end;
+    finally
+      CloseHandle(StdOutPipeRead);
+    end;
   finally
-    CloseHandle(StdOutPipeRead);
+    Console.WriteLine();
+    Console.WriteColorLine('Finalizando a compilação do ' + ASystemName, [TConsoleColor.Yellow]);
+    Console.WriteLine(StringOfChar('*', 80));
   end;
 end;
 

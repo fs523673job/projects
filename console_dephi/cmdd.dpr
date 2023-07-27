@@ -22,9 +22,9 @@ var
   SystemArray         : TArray<string>;
   DirectoryRepository : String;
 
-  procedure ExecuteInternal(const ACommand: String; const AParameters: String = '');
+  procedure ExecuteInternal(const ACommand: String; const AParameters: String; const ASystemName: String);
   begin
-    if not ExecuteConsoleOutputEx(ACommand, Aparameters) then
+    if not ExecuteConsoleOutputEx(ACommand, Aparameters, ASystemName) then
       Console.WriteColorLine('Command not executed', [TConsoleColor.Red])
     else
     begin
@@ -83,77 +83,55 @@ var
   procedure ExecuteCommand(const ASystemId: Integer; const ASubCommand: String = '');
   begin
     case ASystemId of
-      01 : Console.WriteColorLine('* 01 - Compiling ApServer [ApServer32]                                          *', [TConsoleColor.Yellow]);
-      02 : Console.WriteColorLine('* 02 - Compiling ApServer [ApServer64]                                          *', [TConsoleColor.Yellow]);
-      03 : Console.WriteColorLine('* 03 - Compiling ApTools                                                        *', [TConsoleColor.Yellow]);
-      04 : Console.WriteColorLine('* 04 - Compiling ApWebDispatcher [Only Copy Jenkins]                            *', [TConsoleColor.Yellow]);
-      05 : Console.WriteColorLine('* 05 - Compiling ApLoadBalancer [ApLoadBalancer32]                              *', [TConsoleColor.Yellow]);
-      06 : Console.WriteColorLine('* 06 - Compiling ApLoadBalancer [ApLoadBalancer64]                              *', [TConsoleColor.Yellow]);
-      07 : Console.WriteColorLine('* 07 - Compiling ApESocialMsg                                                   *', [TConsoleColor.Yellow]);
-      08 : Console.WriteColorLine('* 08 - Compiling ApScripter [ApScripter32]                                      *', [TConsoleColor.Yellow]);
-      09 : Console.WriteColorLine('* 09 - Compiling ApScripter [ApScripter64]                                      *', [TConsoleColor.Yellow]);
-      10 : Console.WriteColorLine('* 10 - Compiling ApIntegrationServer [ApIntegrationServer32]                    *', [TConsoleColor.Yellow]);
-      11 : Console.WriteColorLine('* 11 - Compiling ApIntegrationServer [ApIntegrationServer64]                    *', [TConsoleColor.Yellow]);
-      12 : Console.WriteColorLine('* 12 - Compiling ApIntegrationInterface [ApIntegrationInterface32]              *', [TConsoleColor.Yellow]);
-      13 : Console.WriteColorLine('* 13 - Compiling ApIntegrationInterface [ApIntegrationInterface64]              *', [TConsoleColor.Yellow]);
-      14 : Console.WriteColorLine('* 14 - Compiling ApManager                                                      *', [TConsoleColor.Yellow]);
-      15 : Console.WriteColorLine('* 15 - Compiling ApUsers                                                        *', [TConsoleColor.Yellow]);
-      16 : Console.WriteColorLine('* 16 - Compiling Generate Messages [compile messages]                           *', [TConsoleColor.Yellow]);
-      17 : Console.WriteColorLine('* 17 - Compiling Build Sass [compile sass]                                      *', [TConsoleColor.Yellow]);
-      18 : Console.WriteColorLine('* 18 - Compiling Pack Integracao [pintegration32]                               *', [TConsoleColor.Yellow]);
-      19 : Console.WriteColorLine('* 19 - Compiling Pack Integracao [pintegration64]                               *', [TConsoleColor.Yellow]);
-      20 : Console.WriteColorLine('* 20 - All                                                                      *', [TConsoleColor.Yellow]);
-    end;
-
-    case ASystemId of
-      01 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-      02 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-      03 : ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand);
-      04 : ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Source\buildWebDispatcher.bat', [DirectoryRepository]), ASubCommand);
-      05 : ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-      06 : ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-      07 : ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand);
-      08 : ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-      09 : ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-      10 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-      11 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-      12 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-      13 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-      14 : ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand);
-      15 : ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand);
-      16 : ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]));
-      17 : ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [DirectoryRepository]));
+      01 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApServer');
+      02 : ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApServer');
+      03 : ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand, 'ApTools');
+      04 : ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Source\buildWebDispatcher.bat', [DirectoryRepository]), ASubCommand, 'ApWebDispatcher');
+      05 : ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApLoadBalancer');
+      06 : ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApLoadBalancer');
+      07 : ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand, 'ApESocialMsg');
+      08 : ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApScripter');
+      09 : ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApScripter');
+      10 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationServer');
+      11 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationServer');
+      12 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationInterface');
+      13 : ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationInterface');
+      14 : ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand, 'ApManager');
+      15 : ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand, 'ApUsers');
+      16 : ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]), '', 'GenerateMessages');
+      17 : ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [DirectoryRepository]), '', 'GenerateSass');
       18 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
+          ExecuteCommand(01, ASubCommand);
+          ExecuteCommand(10, ASubCommand);
+          ExecuteCommand(12, ASubCommand);
         end;
       19 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
+          ExecuteCommand(02, ASubCommand);
+          ExecuteCommand(11, ASubCommand);
+          ExecuteCommand(13, ASubCommand);
         end;
       20 :
         begin
-          ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [DirectoryRepository]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand);
-          ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Source\buildWebDispatcher.bat', [DirectoryRepository]), ASubCommand);
-          ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand);
-          ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]));
-          ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand);
-          ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand);
+          ExecuteCommand(16, ASubCommand);
+          ExecuteCommand(17, ASubCommand);
+
+          ExecuteCommand(01, ASubCommand);
+          ExecuteCommand(02, ASubCommand);
+          ExecuteCommand(03, ASubCommand);
+          ExecuteCommand(04, ASubCommand);
+          ExecuteCommand(05, ASubCommand);
+          ExecuteCommand(06, ASubCommand);
+          ExecuteCommand(07, ASubCommand);
+          ExecuteCommand(08, ASubCommand);
+          ExecuteCommand(09, ASubCommand);
+          ExecuteCommand(10, ASubCommand);
+          ExecuteCommand(11, ASubCommand);
+          ExecuteCommand(12, ASubCommand);
+          ExecuteCommand(13, ASubCommand);
+          ExecuteCommand(14, ASubCommand);
+          ExecuteCommand(15, ASubCommand);
         end
       else
         Console.WriteColor('Command not executed', [TConsoleColor.Red]);
@@ -290,7 +268,7 @@ begin
           end
         else
         begin
-          if not (ExecuteConsoleOutput(Command, SubCommand)) then
+          if not (ExecuteConsoleOutput(Command, SubCommand, 'Native Command' )) then
           begin
             Console.WriteColor('Command not executed', [TConsoleColor.Red]);
             Console.WriteLine();
