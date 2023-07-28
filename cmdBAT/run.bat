@@ -7,17 +7,20 @@ set "VRS=%1"
 :: Define o aplicativo para ser executado
 set "APP=%~2"
 
+:: Define o diretorio do app
+set "DIR=%~3"
+
 :: Define a arquitetura 
-set "ARQ=%~3"
+set "ARQ=%~4"
 
 :: Define o build 
-set "BLD=%~4"
+set "BLD=%~5"
 
 :: Define o Params Executável
-set "PRN=%~5"
+set "PRN=%~6"
 
 :: Define o caminho para o executável
-set "APP_PATH=C:\%VRS%\Aplicacoes\%APP%\bin\%ARQ%\%BLD%\%APP%.exe"
+set "APP_PATH=C:\%VRS%\Aplicacoes\%DIR%\bin\%ARQ%\%BLD%\%APP%.exe"
 
 if not exist "%APP_PATH%" (
     echo O executavel %APP_PATH% nao existe.
