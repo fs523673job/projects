@@ -2,7 +2,7 @@
 
 setlocal
 
-:: Define a versão do delphi
+:: Pega os parâmetros passados
 set "vrsDelphi=%1" 
 set "typeBuild=%2"
 set "dirBase=%3"
@@ -58,12 +58,14 @@ echo.
 echo %date% %time% ==== Step 03 - Begin Build %app_source%.dproj
 echo.
 
+:: Executa o msbuild da microsoft 
 msbuild /m /v:m %app_source%.dproj -fl1 -flp1:logfile=%warning_path%;warningsonly /t:build /p:Platform=%arquitetura%;Config=%typeBuild%;DCC_Warnings=true;DCC_Hints=true;DCC_Message_Directive=false;DCC_Inlining=off;DCC_RangeChecking=true;DCC_IntegerOverflowCheck=true;DCC_IOChecking=true;DCC_DebugInfoInExe=false;DCC_DynamicBase=false
 if errorlevel 1 goto FAILBUILD
 
 echo %date% %time% ==== Step 03 - End Build %app_source%.dproj
 echo.
 
+:: Map2dbd Delphi
 echo %date% %time% ==== Step 04 - Generate DBG File %bpl_path%\map2dbg.exe
 
 %bpl_path%\map2dbg.exe %app_exe%
@@ -71,6 +73,7 @@ echo %date% %time% ==== Step 04 - Generate DBG File %bpl_path%\map2dbg.exe
 echo.
 echo %date% %time% ==== Step 04 - Generate PDB File %bpl_path%\cv2pdb.exe
 
+::Cv2Pdb Delphi
 %bpl_path%\cv2pdb.exe %app_base%.dbg %app_base%.pdb
  
 echo.
@@ -87,12 +90,12 @@ if %errorlevel% == 0 (
 
 echo %date% %time% ==== Step 07 - Verify Add Eureka %ecc32exe%
 
+::Adicionando o eureka
 if %addEureka% == 1 (
 	if exist %app_exe% "%ecc32exe%" --el_config=%app_source%.eof --el_alter_exe=%app_source%.dproj;%app_exe% --el_nostats --el_injectjcl
 	if errorlevel 1 goto FAILEDEUREKA
 )
 
-goto ENDSUCESS
 
 :FAILDELETE
 set status=1
@@ -112,34 +115,32 @@ echo.
 
 if %status% == 1 (
 	echo Error ao apagar arquivos
-	goto ENDBUILD
+	goto ENDERROR
 )
 
 if %status% == 2 (
 	echo Error na compilacao
-	goto ENDBUILD
+	goto ENDERROR
 )
 
 if %status% == 3 (
 	echo Error verifique os hints e warnings
-	goto ENDBUILD
+	goto ENDERROR
 )
 
 if %status% == 4 (
 	echo Error ao adicionar o eureka
-	goto ENDBUILD
+	goto ENDERROR
 )
 
-:ENDBUILD
+goto ENDSUCESS
 
+:ENDBUILD
 echo.
-color 04
 echo Fim do script de compilacao com erros
 
 :ENDSUCESS
-
 echo.
-color 0A
 echo Fim do script de compilacao
 
 endlocal
