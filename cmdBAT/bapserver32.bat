@@ -8,7 +8,7 @@ set "dirBase=ApData_X64"
 set "dirApp=ApServer"
 set "arquitetura=Win32"
 set "appName=ApServer"
-set "addEureka=0"
+set "addEureka=1"
 
 set "PRN_DEFAULT=localhost /start"
 
