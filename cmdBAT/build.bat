@@ -20,17 +20,33 @@ set "warning_path=C:\%dirBase%\Aplicacoes\%dirApp%\bin\%arquitetura%\%typeBuild%
 set "bpl_path=C:\%dirBase%\ApBPL"
 set "ecc32exe=C:\%dirBase%\ApComps\EurekaLog7\Bin\ecc32.exe"
 
-::Definindo variáveis de ambiente Alexandria
-@set BDS=C:\Program Files (x86)\Embarcadero\Studio\22.0
-@set BDSINCLUDE=C:\Program Files (x86)\Embarcadero\Studio\22.0\include
-@set BDSCOMMONDIR=C:\Users\Public\Documents\Embarcadero\Studio\22.0
-@set FrameworkDir=C:\Windows\Microsoft.NET\Framework\v4.0.30319
-@set FrameworkVersion=v4.5
-@set FrameworkSDKDir=
-@set PATH=%FrameworkDir%;%FrameworkSDKDir%;C:\Program Files (x86)\Embarcadero\Studio\22.0\bin;C:\Program Files (x86)\Embarcadero\Studio\22.0\bin64;C:\Program Files\CMake\;%PATH%
-@set LANGDIR=EN
-@set PLATFORM=
-@set PlatformSDK=
+if %vrsDelphi% == "Alexandria" (
+	::Definindo variáveis de ambiente Alexandria
+	@set BDS=C:\Program Files (x86)\Embarcadero\Studio\22.0
+	@set BDSINCLUDE=C:\Program Files (x86)\Embarcadero\Studio\22.0\include
+	@set BDSCOMMONDIR=C:\Users\Public\Documents\Embarcadero\Studio\22.0
+	@set FrameworkDir=C:\Windows\Microsoft.NET\Framework\v4.0.30319
+	@set FrameworkVersion=v4.5
+	@set FrameworkSDKDir=
+	@set PATH=%FrameworkDir%;%FrameworkSDKDir%;C:\Program Files (x86)\Embarcadero\Studio\22.0\bin;C:\Program Files (x86)\Embarcadero\Studio\22.0\bin64;C:\Program Files\CMake\;%PATH%
+	@set LANGDIR=EN
+	@set PLATFORM=
+	@set PlatformSDK=
+)
+
+if %vrsDelphi% == "Tokio" (
+	::Definindo variáveis de ambiente Alexandria
+	@set BDS=%ProgramFiles(x86)%\Embarcadero\Studio\19.0
+	@set BDSINCLUDE=%ProgramFiles(x86)%\Embarcadero\Studio\19.0\include
+	@set BDSCOMMONDIR=C:\Users\Public\Documents\Embarcadero\Studio\19.0
+	@set FrameworkDir=C:\Windows\Microsoft.NET\Framework64\v4.0.30319
+	@set FrameworkVersion=v4.0.30319
+	@set FrameworkSDKDir=
+	@set PATH=%ProgramFiles%\nodejs;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\amd64;%FrameworkDir%;%ProgramFiles(x86)%\Embarcadero\Studio\19.0\bin;%ProgramFiles(x86)%\Embarcadero\Studio\19.0\bin64;%SystemRoot%\system32;%SystemRoot%;%ProgramW6432%\Git\cmd;%ProgramW6432%\mingw64\bin;%ProgramW6432%\Git\usr\bin;%ProgramData%\Oracle\Java\javapath;;%X64_CERTIFICATE_PATH%\bin;%X64_CERTIFICATE_PATH%\bin
+	@set LANGDIR=EN
+	@set PLATFORM=
+	@set PlatformSDK=
+)
 
 set status=0
 
