@@ -12,6 +12,7 @@ set "addEureka=1"
 
 set "PRN_DEFAULT=localhost /start"
 
+echo "C:\github\fs523673job\projects\cmdBAT\build.bat" %vrsDelphi% %typeBuild% %dirBase% %dirApp% %arquitetura% %appName% %addEureka%
 :: Chama o primeiro script com os valores padrão
 call "C:\github\fs523673job\projects\cmdBAT\build.bat" %vrsDelphi% %typeBuild% %dirBase% %dirApp% %arquitetura% %appName% %addEureka%  
 
