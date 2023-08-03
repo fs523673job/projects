@@ -106,8 +106,7 @@ if %addEureka% == 1 (
 	if errorlevel 1 goto FAILEDEUREKA
 )
 
-echo.
-echo Fim do script de compilacao
+goto ENDSUCESS
 
 :FAILDELETE
 set status=1
@@ -149,6 +148,11 @@ if %status% == 4 (
 
 echo.
 echo Scritp finalizado com erros
+
+:ENDSUCESS
+
+echo.
+echo Fim do script de compilacao
 
 
 endlocal

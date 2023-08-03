@@ -28,11 +28,9 @@ var
   dRunning   : DWord;
 begin
   Result := False;
-
   saSecurity.nLength              := SizeOf(TSecurityAttributes);
   saSecurity.bInheritHandle       := True;
   saSecurity.lpSecurityDescriptor := nil;
-
   if CreatePipe(hRead, hWrite, @saSecurity, 0) then
   begin
     try
@@ -43,7 +41,6 @@ begin
       suiStartup.hStdError   := hWrite;
       suiStartup.dwFlags     := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
       suiStartup.wShowWindow := SW_HIDE;
-
       if CreateProcess(nil, PChar(ACommand + ' ' + AParameters), @saSecurity, @saSecurity, True, NORMAL_PRIORITY_CLASS, nil, nil, suiStartup, piProcess) then
       begin
         Result := True;
@@ -58,7 +55,6 @@ begin
               if (windows.ReadFile(hRead, pBuffer[0], CReadBuffer, dRead, nil)) then
               begin
                 pBuffer[dRead] := #0;
-
                 OemToAnsi(pBuffer, pBuffer);
                 Console.WriteLine(String(pBuffer));
               end;
@@ -74,7 +70,6 @@ begin
     end;
   end;
 end;
-
 function ExecuteConsoleOutputEx(const ACommand, AParameters, ASystemName: String): Boolean;
 const
   CReadBuffer = 255;
@@ -91,7 +86,6 @@ var
   Handle          : Boolean;
 begin
   Result := False;
-
   Console.WriteLine(StringOfChar('*', 80));
   Console.WriteColorLine('Inicializando a compilação do ' + ASystemName, [TConsoleColor.Yellow]);
   Console.WriteLine();
@@ -99,7 +93,6 @@ begin
     SecAtrrs.nLength              := SizeOf(SecAtrrs);
     SecAtrrs.bInheritHandle       := True;
     SecAtrrs.lpSecurityDescriptor := nil;
-
     CreatePipe(StdOutPipeRead, StdOutPipeWrite, @SecAtrrs, 0);
     try
       FillChar(StartupInfo, SizeOf(StartupInfo), 0);
@@ -109,12 +102,9 @@ begin
       StartupInfo.hStdInput   := GetStdHandle(STD_INPUT_HANDLE); // don't redirect stdin
       StartupInfo.hStdOutput  := StdOutPipeWrite;
       StartupInfo.hStdError   := StdOutPipeWrite;
-
       WorkDir := ExtractFileDir(ACommand);
       Handle  := CreateProcess(nil, PChar('cmd.exe /c ' + ACommand + ' ' + AParameters), nil, nil, True, 0, nil, PChar(WorkDir), StartupInfo, ProcessInfo);
-
       CloseHandle(StdOutPipeWrite);
-
       if Handle then
         try
           Result := True;
@@ -126,6 +116,12 @@ begin
               OemToAnsi(pCommandLine, pCommandLine);
               if (Pos('ERROR', UpperCase(String(pCommandLine))) > 0) then
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Red])
+              else if (Pos('LINES', UpperCase(String(pCommandLine))) > 0) and (Pos('SECONDS', UpperCase(String(pCommandLine))) > 0) and (Pos('BYTES CODE', UpperCase(String(pCommandLine))) > 0) and (Pos('BYTES DATA', UpperCase(String(pCommandLine))) > 0) then
+                Console.WriteColorLine(String('BUILD [OK] -> ' + pCommandLine), [TConsoleColor.Green])
+              else if (Pos('Fim do script de compilacao', String(pCommandLine)) > 0) then
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Green])
+              else if (Pos('Scritp finalizado com erros', String(pCommandLine)) > 0) then
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.DarkYellow])
               else
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.White]);
             end;
@@ -144,5 +140,4 @@ begin
     Console.WriteLine(StringOfChar('*', 80));
   end;
 end;
-
 end.

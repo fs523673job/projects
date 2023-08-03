@@ -1001,8 +1001,9 @@ begin
 		/*REST*/ exec sp_Execute_Insert 'dbo', 24, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10024, ''(TESTES) REST MOCK POSTMAN GET COMPLEXY ARRAY 2''', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 25, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10025, ''(TESTES) REST ALTER DA TRANSACAO E O TIPO EDICAO''', 1
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 26, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10026, ''(TESTES) SOAP ADMISSAO - INCLUSAO DEPENDENTES''', 1
-		/*SOAP*/ exec sp_Execute_Insert 'dbo', 26, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10027, ''(TESTES) SOAP ADMISSAO''', 1
-		/*SOAP*/ exec sp_Execute_Insert 'dbo', 26, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10028, ''(TESTES) SOAP TRANSF HIERARQUIA''', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 27, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10027, ''(TESTES) SOAP ADMISSAO''', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 28, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10028, ''(TESTES) SOAP TRANSF HIERARQUIA''', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 29, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao, BBR_QtiSegundosVerNovoEvento, BBR_DsbComandoSQLNovoEvento, BBR_DsbComandoSQLProcessando, BBR_DsbComandoSQLSucesso, BBR_DsbComandoSQLFalha', '10029, ''(TESTES) MONITORAMENTO BASE'', 20, 0xEFBBBF73656C656374202A2066726F6D20496E746567726174696F6E4D6F6E69746F726163616F207768657265207374617475735F203D2031, 0xEFBBBF75706461746520496E746567726174696F6E4D6F6E69746F726163616F20736574207374617475735F203D20322077686572652069645F696E746567726174696F6E6D6F6E69746F726163616F203D203A69645F696E746567726174696F6E6D6F6E69746F726163616F, 0xEFBBBF75706461746520496E746567726174696F6E4D6F6E69746F726163616F20736574207374617475735F203D20332077686572652069645F696E746567726174696F6E6D6F6E69746F726163616F203D203A69645F696E746567726174696F6E6D6F6E69746F726163616F, 0xEFBBBF75706461746520496E746567726174696F6E4D6F6E69746F726163616F20736574207374617475735F203D20342077686572652069645F696E746567726174696F6E6D6F6E69746F726163616F203D203A69645F696E746567726174696F6E6D6F6E69746F726163616F', 1
 
 		/*#### OBJETO - 555 */
 		/*##### ModelosIntegracoesCmds*/
@@ -1038,8 +1039,9 @@ begin
 		/*REST*/ exec sp_Execute_Insert_ThreeKey 'dbo', 29, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL_Transacao, BBS_CdiComandoSQL_TipoEdicao, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao',/*values*/ 10030, 0,  @SQL_CdiComandoSQL, 18, @SQL_CdiComandoSQL, 19, '10025, ''(TESTES) 1 REST ALTER DA TRANSACAO E O TIPO EDICAO'',  1, 30841, 257', 1 
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 30, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao',/*values*/ '10031, 10026, ''(TESTES) ADMISSAO - INCLUSAO DEPENDENTES'', 1, 16012', 1
 		/*REST*/ exec sp_Execute_Insert 'dbo', 31, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_NuiTipoEdicao',/*values*/ '10032, 10025, ''(TESTES) 2 REST ALTER DA TRANSACAO E O TIPO EDICAO'',  1, 30842, 407', 1 
-		/*SOAP*/ exec sp_Execute_Insert 'dbo', 30, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao',/*values*/ '10033, 10027, ''(TESTES) ADMISSAO - INCLUSAO'', 1, 15952', 1
-		/*SOAP*/ exec sp_Execute_Insert 'dbo', 30, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao',/*values*/ '10034, 10028, ''(TESTES) SOAP TRANSF HIERARQUIA'', 1, 29642', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 32, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao',/*values*/ '10033, 10027, ''(TESTES) ADMISSAO - INCLUSAO'', 1, 15952', 1
+		/*SOAP*/ exec sp_Execute_Insert 'dbo', 33, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao',/*values*/ '10034, 10028, ''(TESTES) SOAP TRANSF HIERARQUIA'', 1, 29642', 1
+		/*MONI*/ exec sp_Execute_Insert 'dbo', 34, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao',/*values*/ '10035, 10029, ''(TESTES) MONITORAMENTO BASE INS CARGO'', 1, 19232', 1
 
 		/*##### ModelosIntegracoesCmdsCpos*/
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 001, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String, BBP_OplConteudoFixo', '10001, 10001, ''consultaCEP;cep'', 9, ''03510030'', 1', 1        
@@ -1273,6 +1275,10 @@ begin
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 230, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10231, 10034,''nivelhierarquia'',''TRS_NuiNivelHierarquia'', 3', 1
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 231, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10232, 10034,''TRS_VlnSalario'',''TRS_VlnSalario'', 8', 1
 		/*SOAP*/ exec sp_Execute_Insert 'dbo', 232, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10233, 10034,''marcadorPontoId'',''TRS_CdiMarcadorPonto'', 8', 1
+		/*MONI*/ exec sp_Execute_Insert 'dbo', 233, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10234, 10035,''id_cargo'',''CAR_CdiCargo'', 3', 1
+		/*MONI*/ exec sp_Execute_Insert 'dbo', 233, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10235, 10035,''desc_cargo'',''CAR_Ds1Cargo'', 9', 1
+		/*MONI*/ exec sp_Execute_Insert 'dbo', 233, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10236, 10035,''id_pais'',''CAR_CdiPais'', 3', 1
+		/*MONI*/ exec sp_Execute_Insert 'dbo', 233, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo', '10237, 10035,''id_areaatuacao'',''CAR_CdiAreaAtuacao_Inicial'', 3', 1
 
 		/*##### ModelosIntegracoesCmdsRets*/
 		/*REST*/ exec sp_Execute_Insert 'dbo', 01, 'ModelosIntegracoesCmdsRets', 'JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem', '10002, 10016, ''userid'', ''data;userid''', 1
@@ -1305,6 +1311,7 @@ begin
 		exec sp_Execute_Insert 'dbo', 22, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '22, 1, ''(TESTES) SOAP ADMISSAO - INCLUSAO DEPENDENTES'', 10026, 2, 10, 0, ''''', 1
 		exec sp_Execute_Insert 'dbo', 23, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '23, 1, ''(TESTES) REST ADD DATE/HOUR IN OBJ 3129'', 10021, 2, 10, 0, ''''', 1
 		exec sp_Execute_Insert 'dbo', 24, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '24, 1, ''(TESTES) SOAP ADMISSAO - EX_EMS'', 10027, 1, 6, 1, ''''', 1
+		exec sp_Execute_Insert 'dbo', 25, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor, BBO_CdsUsuario_Banco, BBO_CosSenha_Banco', '25, 1, ''(TESTES) MONITORAMENTO DE BASE'', 10029, 4, 1, 1, ''APDDBTY09T2:INTEGRATION_BETA'', ''apdata'', ''0E6B70606C7B68''', 1
 
 		/*OUTROS AJUSTES PARA TESTES*/
 		exec sp_Execute_Update 'dbo', 01, 'FormulariosWFSobreps', 'BRH_CdiOpcao_Desativado = 0', 'BRH_CdiFormularioWF = 407'
@@ -1563,6 +1570,35 @@ begin
   print @insert_fields;
 end
 GO
+
+/**********************************************************************
+    12 - SELECT INTO 
+***********************************************************************/
+
+create or alter procedure sp_Create_Aux_Table(@newRecs int = 15)
+as
+begin
+	drop table IntegrationMonitoracao
+
+	create table IntegrationMonitoracao(
+		id_integrationmonitoracao int,
+		id_cargo int,
+		id_pais int,
+		id_areaatuacao int,
+		status_ int,
+		datatransacao datetime,
+		evento int,
+		error varchar(256),
+		desc_cargo varchar(256)
+	)
+
+	declare @count int = 1
+	while @count < @newRecs
+	begin
+	end
+end
+GO
+
 
 /**********************************************************************
     12 - STRING SPLIT (COMPATIBILIDADE DE FUNCAO)

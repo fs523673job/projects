@@ -26,7 +26,11 @@ var
   procedure ExecuteInternal(const ACommand: String; const AParameters: String; const ASystemName: String);
   begin
     if not ExecuteConsoleOutputEx(ACommand, Aparameters, ASystemName) then
-      Console.WriteColorLine('Command not executed', [TConsoleColor.Red])
+    begin
+      Console.Write('compile>');
+      Console.WriteColorLine('not executed!', [TConsoleColor.Red]);
+      Console.WriteLine('');
+    end
     else
     begin
       Console.Write('compile>');
@@ -42,6 +46,8 @@ var
     Console.WriteColorLine('Digit "setdir" to set directory for repository. Ex: setdir c:\apdata_x64', [TConsoleColor.Green]);
     Console.WriteColorLine('Digit "getdir" to get directory for repository. ' + DirectoryRepository , [TConsoleColor.Green]);
     Console.WriteColorLine('Digit "compile [debug|release|meleak] [system number|system name] to compile system', [TConsoleColor.Green]);
+    Console.WriteColorLine('Digit "getnc" to get new compile directive. ' + DirectoryRepository , [TConsoleColor.Green]);
+    Console.WriteColorLine('Digit "setnc" to set new compile directive. ' + DirectoryRepository , [TConsoleColor.Green]);
     Console.WriteColorLine('Digit "menu" to options', [TConsoleColor.Green]);
   end;
 
@@ -51,8 +57,8 @@ var
     Console.WriteColorLine('* Set compiler type                                                   *', [TConsoleColor.Green]);
     Console.WriteColorLine('* DEBUG or RELEASE or MEMLEAK                                         *', [TConsoleColor.Green]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
-    Console.WriteColorLine('* You can to set directory for repository                             *', [TConsoleColor.Green]);
-    Console.WriteColorLine('* Ex: setdir c:\apdata_x64                                            *', [TConsoleColor.Green]);
+    Console.WriteColorLine('* You can to set dir or new build                                     *', [TConsoleColor.Green]);
+    Console.WriteColorLine('* Ex: setdir c:\apdata_x64; gerdir; setnc true; getnc                 *', [TConsoleColor.Green]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
     Console.WriteColorLine('* You can type the systems in sequence to compile                     *', [TConsoleColor.Green]);
     Console.WriteColorLine('* Ex: compile debug 01, 02, 03, 10, 11 or compile release 01,02,03,04 *', [TConsoleColor.Green]);
@@ -77,8 +83,14 @@ var
     Console.WriteColorLine('* 17 - Build Sass [compile sass]                                      *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 18 - Pack Integracao [pintegration32]                               *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 19 - Pack Integracao [pintegration64]                               *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 20 - All                                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 20 - ApADIntegratorWS                                               *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 21 - All                                                            *', [TConsoleColor.Blue]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
+  end;
+
+  procedure ShowHelp;
+  begin
+
   end;
 
   procedure ExecuteCommand(const ASystemId: Integer; const ASubCommand: String = '');
@@ -87,17 +99,23 @@ var
       01 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('"Alexandria" "%s" "ApData_X64" "Win32" "ApServer" "1"', [ASubCommand]) , 'ApServer 32')
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApServer Win32 ApServer 1', [ASubCommand]) , 'ApServer 32')
           else
             ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApServer 32');
         end;
       02 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApServer 64');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApServer Win64 ApServer 1', [ASubCommand]) , 'ApServer 64')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApServer 64');
         end;
       03 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand, 'ApTools');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApTools Win32 ApTools 1', [ASubCommand]) , 'ApServer 32')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand, 'ApTools');
         end;
       04 :
         begin
@@ -105,47 +123,80 @@ var
         end;
       05 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApLoadBalancer 32');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApLoadBalancer Win32 ApLoadBalancerServer 1', [ASubCommand]) , 'ApLoadBalancerServer 32')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApLoadBalancer 32');
         end;
       06 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApLoadBalancer 64');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApLoadBalancer Win64 ApLoadBalancerServer 1', [ASubCommand]) , 'ApLoadBalancerServer 64')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApLoadBalancer 64');
         end;
       07 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand, 'ApESocialMsg');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApESocialMsg Win32 ApESocialMsg 1', [ASubCommand]) , 'ApESocialMsg 32')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand, 'ApESocialMsg');
         end;
       08 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApScripter 32');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApScripter Win32 ApScripter 1', [ASubCommand]) , 'ApScripter 32')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApScripter 32');
         end;
       09 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApScripter 64');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApScripter Win64 ApScripter 1', [ASubCommand]) , 'ApScripter 64')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApScripter 64');
         end;
       10 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationServer 32');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationServer Win32 ApIntegrationServer 1', [ASubCommand]) , 'ApIntegrationServer 32')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationServer 32');
         end;
       11 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationServer 64');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationServer Win64 ApIntegrationServer 1', [ASubCommand]) , 'ApIntegrationServer 64')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationServer 64');
         end;
       12 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationInterface 32');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationInterface Win32 ApIntegrationInterface 0', [ASubCommand]) , 'ApIntegrationServer 32')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationInterface 32');
         end;
       13 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationInterface 64');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationInterface Win64 ApIntegrationInterface 0', [ASubCommand]) , 'ApIntegrationServer 64')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationInterface 64');
         end;
       14 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand, 'ApManager');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApManager Win32 ApManager 1', [ASubCommand]) , 'ApManager 32')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand, 'ApManager');
         end;
       15 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand, 'ApUsers');
+          if NewBuild then
+            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApUsers Win32 ApUsers 1', [ASubCommand]) , 'ApManager 32')
+          else
+            ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand, 'ApUsers');
         end;
       16 :
         begin
@@ -169,6 +220,10 @@ var
         end;
       20 :
         begin
+          ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApADIntegratorWS Win32 ApADIntegratorWS 1', [ASubCommand]) , 'ApADIntegratorWS ISAPI')
+        end;
+      21 :
+        begin
           ExecuteCommand(16, ASubCommand);
           ExecuteCommand(17, ASubCommand);
 
@@ -187,9 +242,10 @@ var
           ExecuteCommand(13, ASubCommand);
           ExecuteCommand(14, ASubCommand);
           ExecuteCommand(15, ASubCommand);
+          ExecuteCommand(20, ASubCommand);
         end
       else
-        Console.WriteColor('Command not executed', [TConsoleColor.Red]);
+        Console.WriteColor('not executed!', [TConsoleColor.Red]);
     end;
   end;
 
@@ -249,6 +305,11 @@ begin
   else
     DirectoryRepository := 'c:\apdata_x64';
 
+  if (ParamStr(2) <> '') then
+    NewBuild := ParamStr(2).ToUpper() = 'TRUE'
+  else
+    NewBuild := True;
+
   try
     while True do
     begin
@@ -283,7 +344,7 @@ begin
         end;
       end;
 
-      case IndexStr(Command, ['EXIT', 'BREAK', 'CLEAR', 'CLS', 'MENU', 'SETDIR', 'COMPILE', 'GETDIR', 'SETNEWBUILD', 'GETNEWBUILD']) of
+      case IndexStr(Command, ['EXIT', 'BREAK', 'CLEAR', 'CLS', 'MENU', 'SETDIR', 'COMPILE', 'GETDIR', 'SETNC', 'GETNC', 'HELP']) of
         0    : Exit;
         1    : Break;
         2..3 :
@@ -331,6 +392,10 @@ begin
         9 :
           begin
             Console.WriteColorLine(Format('> current set new build %s', [BoolToStr(NewBuild, True)]), [TConsoleColor.DarkGreen]);
+          end;
+        10 :
+          begin
+            ShowHelp;
           end;
         else
         begin
