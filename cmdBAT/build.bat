@@ -16,11 +16,12 @@ set "studioVer=22.0"
 set "localPath=C:\Program Files (x86)\Embarcadero\Studio\22.0\bin;C:\Program Files (x86)\Embarcadero\Studio\22.0\bin64;C:\Program Files\CMake\;%PATH%"
 
 :: Caminhos
-set "app_exe=C:\%dirBase%\Aplicacoes\%dirApp%\bin\%arquitetura%\%typeBuild%\%appName%.exe
-set "app_base=C:\%dirBase%\Aplicacoes\%dirApp%\bin\%arquitetura%\%typeBuild%\%appName%
+set "app_exe=C:\%dirBase%\Aplicacoes\%dirApp%\Bin\%arquitetura%\%typeBuild%\%appName%.exe
+set "app_dll=C:\%dirBase%\Aplicacoes\%dirApp%\Bin\%arquitetura%\%typeBuild%\%appName%.dll
+set "app_base=C:\%dirBase%\Aplicacoes\%dirApp%\Bin\%arquitetura%\%typeBuild%\%appName%
 set "app_source=C:\%dirBase%\Aplicacoes\%dirApp%\Source\%appName%
-set "app_lib=C:\%dirBase%\Aplicacoes\%dirApp%\lib\%arquitetura%"
-set "warning_path=C:\%dirBase%\Aplicacoes\%dirApp%\bin\%arquitetura%\%typeBuild%\Warnings.log"
+set "app_lib=C:\%dirBase%\Aplicacoes\%dirApp%\lib\%arquitetura%\%typeBuild%"
+set "warning_path=C:\%dirBase%\Aplicacoes\%dirApp%\Bin\%arquitetura%\%typeBuild%\Warnings.log"
 set "bpl_path=C:\%dirBase%\ApBPL"
 set "ecc32exe=C:\%dirBase%\ApComps\EurekaLog7\Bin\ecc32.exe"
 
@@ -62,6 +63,11 @@ if exist %app_exe% (
 	if errorlevel 1 goto FAILDELETE
 )
 
+if exist %app_dll% (
+	rm -f %app_dll%
+	if errorlevel 1 goto FAILDELETE
+)
+
 echo.
 
 echo %date% %time% ==== Step 03 - Begin Build %app_source%.dproj
@@ -78,7 +84,13 @@ echo.
 :: Map2dbd Delphi
 echo %date% %time% ==== Step 04 - Generate DBG File %bpl_path%\map2dbg.exe
 
-%bpl_path%\map2dbg.exe %app_exe%
+if exist %app_exe% (
+	%bpl_path%\map2dbg.exe %app_exe%
+)
+
+if exit %app_dll% (
+	%bpl_path%\map2dbg.exe %app_dll%
+)	
 
 echo.
 echo %date% %time% ==== Step 04 - Generate PDB File %bpl_path%\cv2pdb.exe
@@ -96,7 +108,6 @@ if %errorlevel% == 0 (
 	C:\%dirBase%\BlameApServerHints.exe %warning_path%
 	goto FAILWARNING
 )
-
 
 echo %date% %time% ==== Step 07 - Verify Add Eureka %ecc32exe%
 

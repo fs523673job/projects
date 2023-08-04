@@ -23,9 +23,13 @@ var
   DirectoryRepository : String;
   NewBuild            : Boolean;
 
-  procedure ExecuteInternal(const ACommand: String; const AParameters: String; const ASystemName: String);
+  function ExecuteInternal(const ACommand: String; const AParameters: String; const ASystemName: String): String;
   begin
-    if not ExecuteConsoleOutputEx(ACommand, Aparameters, ASystemName) then
+    //Command debugger
+    Console.Write('compile>');
+    Console.WriteColorLine(Format('%s %s', [ACommand, AParameters]), [TConsoleColor.Green]);
+
+    if not ExecuteConsoleOutputEx(ACommand, Aparameters, ASystemName, Result) then
     begin
       Console.Write('compile>');
       Console.WriteColorLine('not executed!', [TConsoleColor.Red]);
@@ -55,7 +59,7 @@ var
   begin
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
     Console.WriteColorLine('* Set compiler type                                                   *', [TConsoleColor.Green]);
-    Console.WriteColorLine('* DEBUG or RELEASE or MEMLEAK                                         *', [TConsoleColor.Green]);
+    Console.WriteColorLine('* Debug or Release or Memleak                                         *', [TConsoleColor.Green]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
     Console.WriteColorLine('* You can to set dir or new build                                     *', [TConsoleColor.Green]);
     Console.WriteColorLine('* Ex: setdir c:\apdata_x64; gerdir; setnc true; getnc                 *', [TConsoleColor.Green]);
@@ -79,12 +83,17 @@ var
     Console.WriteColorLine('* 13 - ApIntegrationInterface [ApIntegrationInterface64]              *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 14 - ApManager                                                      *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 15 - ApUsers                                                        *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 16 - Generate Messages [compile messages]                           *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 17 - Build Sass [compile sass]                                      *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 18 - Pack Integracao [pintegration32]                               *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 19 - Pack Integracao [pintegration64]                               *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 20 - ApADIntegratorWS                                               *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 21 - All                                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 16 - ApADIntegratorWS                                               *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 17 - Generate Messages [compile messages]                           *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 18 - Build Sass [compile sass]                                      *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 19 - Pack Integracao [pintegration32]                               *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 20 - Pack Integracao [pintegration64]                               *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 21 - Pack Servidores [pservers32]                                   *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 22 - Pack Servidores [pservers64]                                   *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 23 - Pack Dlls [pdlls32]                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 24 - Pack Dlls [pdlls64]                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 25 - Pack Clients [pclients]                                        *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 26 - All                                                            *', [TConsoleColor.Blue]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
   end;
 
@@ -93,161 +102,332 @@ var
 
   end;
 
-  procedure ExecuteCommand(const ASystemId: Integer; const ASubCommand: String = '');
+  function ExecuteCommand(const ASystemId: Integer; const ASubCommand: String = ''): String;
+  var
+    strListMsg: TStringList;
+    c : Integer;
   begin
     case ASystemId of
       01 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApServer Win32 ApServer 1', [ASubCommand]) , 'ApServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApServer Win32 ApServer 1', [ASubCommand]) , 'ApServer 32')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApServer 32');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApServer 32');
         end;
       02 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApServer Win64 ApServer 1', [ASubCommand]) , 'ApServer 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApServer Win64 ApServer 1', [ASubCommand]) , 'ApServer 64')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApServer 64');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApServer 64');
         end;
       03 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApTools Win32 ApTools 1', [ASubCommand]) , 'ApServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApTools Win32 ApTools 1', [ASubCommand]) , 'ApServer 32')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand, 'ApTools');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand, 'ApTools');
         end;
       04 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Source\buildWebDispatcher.bat', [DirectoryRepository]), ASubCommand, 'ApWebDispatcher');
+          Result := ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Source\buildWebDispatcher.bat', [DirectoryRepository]), ASubCommand, 'ApWebDispatcher');
         end;
       05 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApLoadBalancer Win32 ApLoadBalancerServer 1', [ASubCommand]) , 'ApLoadBalancerServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApLoadBalancer Win32 ApLoadBalancerServer 1', [ASubCommand]) , 'ApLoadBalancerServer 32')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApLoadBalancer 32');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApLoadBalancer 32');
         end;
       06 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApLoadBalancer Win64 ApLoadBalancerServer 1', [ASubCommand]) , 'ApLoadBalancerServer 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApLoadBalancer Win64 ApLoadBalancerServer 1', [ASubCommand]) , 'ApLoadBalancerServer 64')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApLoadBalancer 64');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApLoadBalancer 64');
         end;
       07 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApESocialMsg Win32 ApESocialMsg 1', [ASubCommand]) , 'ApESocialMsg 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApESocialMsg Win32 ApESocialMsg 1', [ASubCommand]) , 'ApESocialMsg 32')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand, 'ApESocialMsg');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand, 'ApESocialMsg');
         end;
       08 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApScripter Win32 ApScripter 1', [ASubCommand]) , 'ApScripter 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApScripter Win32 ApScripter 1', [ASubCommand]) , 'ApScripter 32')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApScripter 32');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApScripter 32');
         end;
       09 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApScripter Win64 ApScripter 1', [ASubCommand]) , 'ApScripter 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApScripter Win64 ApScripter 1', [ASubCommand]) , 'ApScripter 64')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApScripter 64');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApScripter 64');
         end;
       10 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationServer Win32 ApIntegrationServer 1', [ASubCommand]) , 'ApIntegrationServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationServer Win32 ApIntegrationServer 1', [ASubCommand]) , 'ApIntegrationServer 32')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationServer 32');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationServer 32');
         end;
       11 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationServer Win64 ApIntegrationServer 1', [ASubCommand]) , 'ApIntegrationServer 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationServer Win64 ApIntegrationServer 1', [ASubCommand]) , 'ApIntegrationServer 64')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationServer 64');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationServer 64');
         end;
       12 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationInterface Win32 ApIntegrationInterface 0', [ASubCommand]) , 'ApIntegrationServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationInterface Win32 ApIntegrationInterface 0', [ASubCommand]) , 'ApIntegrationServer 32')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationInterface 32');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationInterface 32');
         end;
       13 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationInterface Win64 ApIntegrationInterface 0', [ASubCommand]) , 'ApIntegrationServer 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationInterface Win64 ApIntegrationInterface 0', [ASubCommand]) , 'ApIntegrationServer 64')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationInterface 64');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationInterface 64');
         end;
       14 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApManager Win32 ApManager 1', [ASubCommand]) , 'ApManager 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApManager Win32 ApManager 1', [ASubCommand]) , 'ApManager 32')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand, 'ApManager');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand, 'ApManager');
         end;
       15 :
         begin
           if NewBuild then
-            ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApUsers Win32 ApUsers 1', [ASubCommand]) , 'ApManager 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApUsers Win32 ApUsers 1', [ASubCommand]) , 'ApManager 32')
           else
-            ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand, 'ApUsers');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand, 'ApUsers');
         end;
       16 :
         begin
-          ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]), '', 'GenerateMessages');
+          Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApADIntegratorWS Win32 ApADIntegratorWS 1', [ASubCommand]) , 'ApADIntegratorWS ISAPI')
         end;
       17 :
         begin
-          ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [DirectoryRepository]), '', 'GenerateSass');
+          Result := ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]), '', 'GenerateMessages');
         end;
       18 :
         begin
-          ExecuteCommand(01, ASubCommand);
-          ExecuteCommand(10, ASubCommand);
-          ExecuteCommand(12, ASubCommand);
+          Result := ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [DirectoryRepository]), '', 'GenerateSass');
         end;
       19 :
         begin
-          ExecuteCommand(02, ASubCommand);
-          ExecuteCommand(11, ASubCommand);
-          ExecuteCommand(13, ASubCommand);
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(01, ASubCommand));
+            strListMsg.Add(ExecuteCommand(10, ASubCommand));
+            strListMsg.Add(ExecuteCommand(12, ASubCommand));
+
+            Console.WriteLine(StringOfChar('*', 80));
+            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('', [TConsoleColor.White]);
+
+            for c := 0 to strListMsg.Count - 1 do
+            begin
+              if (strListMsg[c] <> '') then
+                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
+            end;
+
+            Console.WriteColor('', [TConsoleColor.White]);
+            Console.WriteLine(StringOfChar('*', 80));
+          finally
+            strListMsg.Free;
+          end;
         end;
       20 :
         begin
-          ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApADIntegratorWS Win32 ApADIntegratorWS 1', [ASubCommand]) , 'ApADIntegratorWS ISAPI')
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(02, ASubCommand));
+            strListMsg.Add(ExecuteCommand(11, ASubCommand));
+            strListMsg.Add(ExecuteCommand(13, ASubCommand));
+
+            Console.WriteLine(StringOfChar('*', 80));
+            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('', [TConsoleColor.White]);
+
+            for c := 0 to strListMsg.Count - 1 do
+            begin
+              if (strListMsg[c] <> '') then
+                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
+            end;
+
+            Console.WriteLine(StringOfChar('*', 80));
+          finally
+            strListMsg.Free;
+          end;
         end;
       21 :
         begin
-          ExecuteCommand(16, ASubCommand);
-          ExecuteCommand(17, ASubCommand);
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(01, ASubCommand));
+            strListMsg.Add(ExecuteCommand(05, ASubCommand));
+            strListMsg.Add(ExecuteCommand(10, ASubCommand));
+            strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
-          ExecuteCommand(01, ASubCommand);
-          ExecuteCommand(02, ASubCommand);
-          ExecuteCommand(03, ASubCommand);
-          ExecuteCommand(04, ASubCommand);
-          ExecuteCommand(05, ASubCommand);
-          ExecuteCommand(06, ASubCommand);
-          ExecuteCommand(07, ASubCommand);
-          ExecuteCommand(08, ASubCommand);
-          ExecuteCommand(09, ASubCommand);
-          ExecuteCommand(10, ASubCommand);
-          ExecuteCommand(11, ASubCommand);
-          ExecuteCommand(12, ASubCommand);
-          ExecuteCommand(13, ASubCommand);
-          ExecuteCommand(14, ASubCommand);
-          ExecuteCommand(15, ASubCommand);
-          ExecuteCommand(20, ASubCommand);
+            Console.WriteLine(StringOfChar('*', 80));
+            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('', [TConsoleColor.White]);
+
+            for c := 0 to strListMsg.Count - 1 do
+            begin
+              if (strListMsg[c] <> '') then
+                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
+            end;
+
+            Console.WriteLine(StringOfChar('*', 80));
+          finally
+            strListMsg.Free;
+          end;
+        end;
+      22 :
+         begin
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(02, ASubCommand));
+            strListMsg.Add(ExecuteCommand(06, ASubCommand));
+            strListMsg.Add(ExecuteCommand(11, ASubCommand));
+            strListMsg.Add(ExecuteCommand(16, ASubCommand));
+
+            Console.WriteLine(StringOfChar('*', 80));
+            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('', [TConsoleColor.White]);
+
+            for c := 0 to strListMsg.Count - 1 do
+            begin
+              if (strListMsg[c] <> '') then
+                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
+            end;
+
+            Console.WriteLine(StringOfChar('*', 80));
+          finally
+            strListMsg.Free;
+          end;
+        end;
+      23 :
+        begin
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(12, ASubCommand));
+            strListMsg.Add(ExecuteCommand(16, ASubCommand));
+
+            Console.WriteLine(StringOfChar('*', 80));
+            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('', [TConsoleColor.White]);
+
+            for c := 0 to strListMsg.Count - 1 do
+            begin
+              if (strListMsg[c] <> '') then
+                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
+            end;
+
+            Console.WriteLine(StringOfChar('*', 80));
+          finally
+            strListMsg.Free;
+          end;
+        end;
+      24 :
+        begin
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(13, ASubCommand));
+            strListMsg.Add(ExecuteCommand(16, ASubCommand));
+
+            Console.WriteLine(StringOfChar('*', 80));
+            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('', [TConsoleColor.White]);
+
+            for c := 0 to strListMsg.Count - 1 do
+            begin
+              if (strListMsg[c] <> '') then
+                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
+            end;
+
+            Console.WriteLine(StringOfChar('*', 80));
+          finally
+            strListMsg.Free;
+          end;
+        end;
+      25 :
+        begin
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(03, ASubCommand));
+            strListMsg.Add(ExecuteCommand(14, ASubCommand));
+            strListMsg.Add(ExecuteCommand(15, ASubCommand));
+
+            Console.WriteLine(StringOfChar('*', 80));
+            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('', [TConsoleColor.White]);
+
+            for c := 0 to strListMsg.Count - 1 do
+            begin
+              if (strListMsg[c] <> '') then
+                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
+            end;
+
+            Console.WriteLine(StringOfChar('*', 80));
+          finally
+            strListMsg.Free;
+          end;
+        end;
+      26 :
+        begin
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(17, ASubCommand));
+            strListMsg.Add(ExecuteCommand(18, ASubCommand));
+
+            strListMsg.Add(ExecuteCommand(01, ASubCommand));
+            strListMsg.Add(ExecuteCommand(02, ASubCommand));
+            strListMsg.Add(ExecuteCommand(03, ASubCommand));
+            strListMsg.Add(ExecuteCommand(04, ASubCommand));
+            strListMsg.Add(ExecuteCommand(05, ASubCommand));
+            strListMsg.Add(ExecuteCommand(06, ASubCommand));
+            strListMsg.Add(ExecuteCommand(07, ASubCommand));
+            strListMsg.Add(ExecuteCommand(08, ASubCommand));
+            strListMsg.Add(ExecuteCommand(09, ASubCommand));
+            strListMsg.Add(ExecuteCommand(10, ASubCommand));
+            strListMsg.Add(ExecuteCommand(11, ASubCommand));
+            strListMsg.Add(ExecuteCommand(12, ASubCommand));
+            strListMsg.Add(ExecuteCommand(13, ASubCommand));
+            strListMsg.Add(ExecuteCommand(14, ASubCommand));
+            strListMsg.Add(ExecuteCommand(15, ASubCommand));
+            strListMsg.Add(ExecuteCommand(16, ASubCommand));
+
+            Console.WriteLine(StringOfChar('*', 80));
+            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('', [TConsoleColor.White]);
+
+            for c := 0 to strListMsg.Count - 1 do
+            begin
+              if (strListMsg[c] <> '') then
+                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
+            end;
+
+            Console.WriteLine(StringOfChar('*', 80));
+          finally
+            strListMsg.Free;
+          end;
         end
       else
         Console.WriteColor('not executed!', [TConsoleColor.Red]);
     end;
   end;
+
 
   function ConvertNameSystem(const ANameSystem: String): Integer;
   begin
@@ -284,16 +464,28 @@ var
         Result := 14
       else if (AnsiSameText(ANameSystem, 'ApUsers')) then
         Result := 15
-      else if (AnsiSameText(ANameSystem, 'Messages')) then
+      else if (AnsiSameText(ANameSystem, 'ApADIntegratorWS')) then
         Result := 16
-      else if (AnsiSameText(ANameSystem, 'Sass')) then
+      else if (AnsiSameText(ANameSystem, 'Messages')) then
         Result := 17
-      else if (AnsiSameText(ANameSystem, 'pintegration32')) then
+      else if (AnsiSameText(ANameSystem, 'Sass')) then
         Result := 18
-      else  if (AnsiSameText(ANameSystem, 'pintegration64')) then
+      else if (AnsiSameText(ANameSystem, 'pintegration32')) then
         Result := 19
-      else if (AnsiSameText(ANameSystem, 'All')) then
+      else if (AnsiSameText(ANameSystem, 'pintegration64')) then
         Result := 20
+      else if (AnsiSameText(ANameSystem, 'pservers32')) then
+        Result := 21
+      else if (AnsiSameText(ANameSystem, 'pservers64')) then
+        Result := 22
+      else if (AnsiSameText(ANameSystem, 'pdlls32')) then
+        Result := 23
+      else if (AnsiSameText(ANameSystem, 'pdlls64')) then
+        Result := 24
+      else if (AnsiSameText(ANameSystem, 'pclients')) then
+        Result := 25
+      else if (AnsiSameText(ANameSystem, 'All')) then
+        Result := 26
     end;
   end;
 

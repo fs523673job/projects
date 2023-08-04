@@ -3,7 +3,7 @@
 interface
 
 function ExecuteConsoleOutput(const ACommand, AParameters, ASystemName: String): Boolean;
-function ExecuteConsoleOutputEx(const ACommand, AParameters, ASystemName: String): Boolean;
+function ExecuteConsoleOutputEx(const ACommand, AParameters, ASystemName: String; out AMessages: String): Boolean;
 
 implementation
 
@@ -70,7 +70,8 @@ begin
     end;
   end;
 end;
-function ExecuteConsoleOutputEx(const ACommand, AParameters, ASystemName: String): Boolean;
+
+function ExecuteConsoleOutputEx(const ACommand, AParameters, ASystemName: String; out AMessages: String): Boolean;
 const
   CReadBuffer = 255;
 var
@@ -86,6 +87,7 @@ var
   Handle          : Boolean;
 begin
   Result := False;
+  AMessages := '';
   Console.WriteLine(StringOfChar('*', 80));
   Console.WriteColorLine('Inicializando a compilação do ' + ASystemName, [TConsoleColor.Yellow]);
   Console.WriteLine();
@@ -115,13 +117,22 @@ begin
               pCommandLine[BytesRead] := #0;
               OemToAnsi(pCommandLine, pCommandLine);
               if (Pos('ERROR', UpperCase(String(pCommandLine))) > 0) then
-                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Red])
+              begin
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Red]);
+                AMessages := AMessages + #13#10 + Format('% - Erro - Verifique novamente', [ASystemName]);
+              end
               else if (Pos('LINES', UpperCase(String(pCommandLine))) > 0) and (Pos('SECONDS', UpperCase(String(pCommandLine))) > 0) and (Pos('BYTES CODE', UpperCase(String(pCommandLine))) > 0) and (Pos('BYTES DATA', UpperCase(String(pCommandLine))) > 0) then
                 Console.WriteColorLine(String('BUILD [OK] -> ' + pCommandLine), [TConsoleColor.Green])
               else if (Pos('Fim do script de compilacao', String(pCommandLine)) > 0) then
-                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Green])
+              begin
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Green]);
+                AMessages := AMessages + #13#10 + Format('% - Compilado sem erros', [ASystemName]);
+              end
               else if (Pos('Scritp finalizado com erros', String(pCommandLine)) > 0) then
-                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.DarkYellow])
+              begin
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.DarkYellow]);
+                AMessages := AMessages + #13#10 + Format('% - Compilado com erros', [ASystemName]);
+              end
               else
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.White]);
             end;
