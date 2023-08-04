@@ -88,7 +88,7 @@ if exist %app_exe% (
 	%bpl_path%\map2dbg.exe %app_exe%
 )
 
-if exit %app_dll% (
+if exist %app_dll% (
 	%bpl_path%\map2dbg.exe %app_dll%
 )	
 
