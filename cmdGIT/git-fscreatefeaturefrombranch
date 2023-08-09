@@ -38,3 +38,9 @@ git push --porcelain --progress origin refs/heads/feature/$feature_name:refs/hea
 
 # define a branch remota como upstream
 git branch --set-upstream-to=refs/remotes/origin/feature/$feature_name feature/$feature_name
+
+echo "NAME_FEATURE=$feature_name"
+echo "NAME_BRANCH=$branch_to_find"
+echo "SHA_ORIGEM=$(git rev-parse --short $branch_to_find)"
+
+
