@@ -101,6 +101,11 @@ echo %date% %time% ==== Step 04 - Generate PDB File %bpl_path%\cv2pdb.exe
 echo.
 echo %date% %time% ==== Step 06 - Verify Warnings
 
+if exist %warning_path% (
+	rm -f %warning_path%
+	if errorlevel 1 goto FAILDELETE
+)
+ 
 ::pesquisa a palavara warning, o comando grep retorna zero quando encontrar
 grep -ich warning %warning_path%
 if %errorlevel% == 0 (
