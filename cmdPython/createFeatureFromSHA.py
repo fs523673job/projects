@@ -33,10 +33,10 @@ def main():
     os.chdir(r'c:/apdata_x64')
 
     # Chama o script bash e obtém a saída
-    branch_name = input("Digite o nome da branch: ")
+    sha_to_find = input("Digite o nome da SHA: ")
     feature_name = input("Digite o nome da feature: ")
 
-    args = ['C:/Program Files/Git/bin/git.exe', 'fscreatefeaturefrombranch', branch_name, feature_name]
+    args = ['C:/Program Files/Git/bin/git.exe', 'fscreatefeaturefromsha', sha_to_find, feature_name]
 
     result = subprocess.run(args, capture_output=True, text=True)
     print("Saída completa do Bash:\n", result.stdout)
