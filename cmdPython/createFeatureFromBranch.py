@@ -2,7 +2,8 @@ import fdb
 import subprocess
 import os
 
-def insert_into_firebird(input_name, input_sha, branch_name):
+
+def insert_into_firebird(input_name, input_sha, branch_name, regex_search):
     # Configurações de conexão com o banco Firebird
     DB_HOST = 'localhost'
     DB_NAME = r'C:\github\bases\firebird\TESTDB_F30.FDB'
@@ -10,7 +11,8 @@ def insert_into_firebird(input_name, input_sha, branch_name):
     DB_PASSWORD = 'masterkey'
 
     # Conexão com o banco de dados
-    con = fdb.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+    con = fdb.connect(host=DB_HOST, database=DB_NAME,
+                      user=DB_USER, password=DB_PASSWORD)
     cur = con.cursor()
     cur.execute("SELECT COUNT(*) FROM FEATURE_CRIADAS")
     count = cur.fetchone()[0]
@@ -19,11 +21,11 @@ def insert_into_firebird(input_name, input_sha, branch_name):
     # SQL para inserir os dados
     sql = """
     INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM) 
-    VALUES (?, ?, ?)
+    VALUES (?, ?, ?, ?)
     """
 
     # Executa a SQL
-    cur.execute(sql, (input_name, input_sha, branch_name))
+    cur.execute(sql, (input_name, input_sha, branch_name, regex_search))
     con.commit()
     con.close()
 
@@ -35,8 +37,10 @@ def main():
     # Chama o script bash e obtém a saída
     branch_name = input("Digite o nome da branch: ")
     feature_name = input("Digite o nome da feature: ")
+    regex_search = input("Digite o regex de busca: ")
 
-    args = ['C:/Program Files/Git/bin/git.exe', 'fscreatefeaturefrombranch', branch_name, feature_name]
+    args = ['C:/Program Files/Git/bin/git.exe',
+            'fscreatefeaturefrombranch', branch_name, feature_name]
 
     result = subprocess.run(args, capture_output=True, text=True)
     print("Saída completa do Bash:\n", result.stdout)
@@ -50,9 +54,11 @@ def main():
     print("Data extraído do Bash:", data)
 
     if 'NAME_FEATURE' in data and 'NAME_BRANCH' in data and 'SHA_ORIGEM' in data:
-        insert_into_firebird(data['NAME_FEATURE'], data['NAME_BRANCH'], data['SHA_ORIGEM'])
+        insert_into_firebird(
+            data['NAME_FEATURE'], data['NAME_BRANCH'], data['SHA_ORIGEM'], regex_search)
     else:
         print("Erro: Não foi possível obter todas as informações necessárias da saída do script Bash.")
+
 
 if __name__ == '__main__':
     main()
