@@ -20,18 +20,22 @@ def preencher_valor_automatico(campo: str, tag: str) -> str:
 
 def preencher_campos(conteudo_modelo: str) -> str:
     campos_tags = [match for match in re.findall(
-        r'(\w+=%\w+|\w+=%s)', conteudo_modelo)]
+        r'([^\n=]+=%s)', conteudo_modelo)]
 
     for campo_tag in campos_tags:
         campo, tag = campo_tag.split('=')
-        valor = preencher_valor_automatico(campo, tag)
+        valor = preencher_valor_automatico(campo.strip(), tag)
         conteudo_modelo = conteudo_modelo.replace(
             campo_tag, f"{campo}={valor}", 1)
 
     return conteudo_modelo
 
 
-def salvar_arquivo_preenchido(conteudo_preenchido: str, nome_arquivo_destino: str):
+def salvar_arquivo_preenchido(conteudo_preenchido: str, nome_arquivo_destino: str = None):
+    if not nome_arquivo_destino:
+        chamado = re.search(r'Chamado=(\S+)', conteudo_preenchido)
+        nome_arquivo_destino = chamado.group(
+            1) if chamado else "chamado_desconhecido"
     caminho_destino = f"C:\\Users\\flsantos\\OneDrive - Apdata do Brasil Software Ltda\\Chamados\\NewChamados\\{nome_arquivo_destino}.txt"
     with open(caminho_destino, 'w', encoding='utf-8') as arquivo:
         arquivo.write(conteudo_preenchido)
