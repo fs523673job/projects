@@ -1,5 +1,4 @@
 #!/bin/bash
-git checkout .
-git checkout -- .
 git reset --hard
 git clean -fxd -e *.bpl -e *.tds -e *.drc -e *.map -e *.rar -e *.ini -e *.dll -e *.txt -e *.xml -e *.log -e *.snl -e *.lnk -e *.config -e *.config*
+git checkout -- .

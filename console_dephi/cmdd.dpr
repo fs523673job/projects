@@ -125,7 +125,7 @@ var
       03 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApTools Win32 ApTools 1', [ASubCommand]) , 'ApServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApTools Win32 ApTools 0', [ASubCommand]) , 'ApServer 32')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand, 'ApTools');
         end;
