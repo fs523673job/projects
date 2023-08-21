@@ -150,7 +150,7 @@ var
       07 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApESocialMsg Win32 ApESocialMsg 1', [ASubCommand]) , 'ApESocialMsg 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApESocialMsg Win32 ApESocialMsg 0', [ASubCommand]) , 'ApESocialMsg 32')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand, 'ApESocialMsg');
         end;
@@ -199,20 +199,20 @@ var
       14 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApManager Win32 ApManager 1', [ASubCommand]) , 'ApManager 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApManager Win32 ApManager 0', [ASubCommand]) , 'ApManager 32')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand, 'ApManager');
         end;
       15 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApUsers Win32 ApUsers 1', [ASubCommand]) , 'ApManager 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApUsers Win32 ApUsers 0', [ASubCommand]) , 'ApManager 32')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand, 'ApUsers');
         end;
       16 :
         begin
-          Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApADIntegratorWS Win32 ApADIntegratorWS 1', [ASubCommand]) , 'ApADIntegratorWS ISAPI')
+          Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApADIntegratorWS Win32 ApADIntegratorWS 0', [ASubCommand]) , 'ApADIntegratorWS ISAPI')
         end;
       17 :
         begin
@@ -231,7 +231,7 @@ var
             strListMsg.Add(ExecuteCommand(12, ASubCommand));
 
             Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
             Console.WriteColor('', [TConsoleColor.White]);
 
             for c := 0 to strListMsg.Count - 1 do
@@ -240,6 +240,7 @@ var
                 Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
             end;
 
+            Console.WriteLine();
             Console.WriteColor('', [TConsoleColor.White]);
             Console.WriteLine(StringOfChar('*', 80));
           finally
@@ -255,7 +256,7 @@ var
             strListMsg.Add(ExecuteCommand(13, ASubCommand));
 
             Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
             Console.WriteColor('', [TConsoleColor.White]);
 
             for c := 0 to strListMsg.Count - 1 do
@@ -264,6 +265,7 @@ var
                 Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
             end;
 
+            Console.WriteLine();
             Console.WriteLine(StringOfChar('*', 80));
           finally
             strListMsg.Free;
@@ -279,7 +281,7 @@ var
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
             Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
             Console.WriteColor('', [TConsoleColor.White]);
 
             for c := 0 to strListMsg.Count - 1 do
@@ -288,6 +290,7 @@ var
                 Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
             end;
 
+            Console.WriteLine();
             Console.WriteLine(StringOfChar('*', 80));
           finally
             strListMsg.Free;
@@ -303,7 +306,7 @@ var
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
             Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
             Console.WriteColor('', [TConsoleColor.White]);
 
             for c := 0 to strListMsg.Count - 1 do
@@ -312,6 +315,7 @@ var
                 Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
             end;
 
+            Console.WriteLine();
             Console.WriteLine(StringOfChar('*', 80));
           finally
             strListMsg.Free;
@@ -325,7 +329,7 @@ var
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
             Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('RESUMO DA COMPILACAOS', [TConsoleColor.Yellow]);
             Console.WriteColor('', [TConsoleColor.White]);
 
             for c := 0 to strListMsg.Count - 1 do
@@ -334,6 +338,7 @@ var
                 Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
             end;
 
+            Console.WriteLine();
             Console.WriteLine(StringOfChar('*', 80));
           finally
             strListMsg.Free;
@@ -347,7 +352,7 @@ var
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
             Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
             Console.WriteColor('', [TConsoleColor.White]);
 
             for c := 0 to strListMsg.Count - 1 do
@@ -356,6 +361,7 @@ var
                 Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
             end;
 
+            Console.WriteLine();
             Console.WriteLine(StringOfChar('*', 80));
           finally
             strListMsg.Free;
@@ -409,15 +415,16 @@ var
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
             Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
+            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
             Console.WriteColor('', [TConsoleColor.White]);
 
             for c := 0 to strListMsg.Count - 1 do
             begin
               if (strListMsg[c] <> '') then
-                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
+                Console.WriteColor(strListMsg[c], [TConsoleColor.Blue]);
             end;
 
+            Console.WriteLine();
             Console.WriteLine(StringOfChar('*', 80));
           finally
             strListMsg.Free;

@@ -20,7 +20,7 @@ def insert_into_firebird(input_name, input_sha, branch_name, regex_search):
 
     # SQL para inserir os dados
     sql = """
-    INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM) 
+    INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM, REGEX_SEARCH) 
     VALUES (?, ?, ?, ?)
     """
 

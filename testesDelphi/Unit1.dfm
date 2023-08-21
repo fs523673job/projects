@@ -16,17 +16,28 @@ object Form1: TForm1
     Top = 312
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'Exec'
     TabOrder = 0
     OnClick = Button1Click
   end
   object Memo1: TMemo
-    Left = 8
-    Top = 8
-    Width = 593
+    Left = 0
+    Top = 0
+    Width = 628
     Height = 298
+    Align = alTop
     Lines.Strings = (
-      'Memo1')
+      'Select Campo1, Campo2'
+      '  From Tabela'
+      '  Where  Condicao = Conteudo1'
+      '           or Condicao = Conteudo2 '
+      
+        '        and (select field1, field2 from tabela2 where field3 = f' +
+        'ield4)'
+      ' /*tag seguranca*/')
     TabOrder = 1
+    ExplicitLeft = 8
+    ExplicitTop = 8
+    ExplicitWidth = 593
   end
 end

@@ -119,20 +119,22 @@ begin
               if (Pos('ERROR', UpperCase(String(pCommandLine))) > 0) then
               begin
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Red]);
-                AMessages := AMessages + #13#10 + Format('% - Erro - Verifique novamente', [ASystemName]);
+                AMessages := AMessages + #13#10 + Format('%s - Erro - Verifique novamente', [ASystemName]);
               end
               else if (Pos('LINES', UpperCase(String(pCommandLine))) > 0) and (Pos('SECONDS', UpperCase(String(pCommandLine))) > 0) and (Pos('BYTES CODE', UpperCase(String(pCommandLine))) > 0) and (Pos('BYTES DATA', UpperCase(String(pCommandLine))) > 0) then
                 Console.WriteColorLine(String('BUILD [OK] -> ' + pCommandLine), [TConsoleColor.Green])
               else if (Pos('Fim do script de compilacao', String(pCommandLine)) > 0) then
               begin
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Green]);
-                AMessages := AMessages + #13#10 + Format('% - Compilado sem erros', [ASystemName]);
+                AMessages := AMessages + #13#10 + Format('%s - Compilado sem erros', [ASystemName]);
               end
-              else if (Pos('Scritp finalizado com erros', String(pCommandLine)) > 0) then
+              else if (Pos('ERROS', UpperCase(String(pCommandLine))) > 0) then
               begin
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.DarkYellow]);
-                AMessages := AMessages + #13#10 + Format('% - Compilado com erros', [ASystemName]);
+                AMessages := AMessages + #13#10 + Format('%s - Compilado com erros', [ASystemName]);
               end
+              else if (Pos('WARNING', UpperCase(String(pCommandLine))) > 0) then
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Yellow])
               else
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.White]);
             end;

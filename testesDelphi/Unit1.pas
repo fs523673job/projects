@@ -39,36 +39,43 @@ function TSQLAnalyzer.ModifySQL(const ASQL: string): string;
 var
   TagPos, WherePos, ParenthesisCount, i: Integer;
   BeforeTag, AfterTag: string;
-  InSingleQuote, InDoubleQuote: Boolean;
+  InSingleQuote, InDoubleQuote, AlreadyHasParenthesis: Boolean;
 begin
   Result := ASQL;
 
   TagPos := Pos(TAG_SECURITY, ASQL);
-  if TagPos = 0 then
-    Exit;
+  if TagPos = 0 then Exit; // Tag not found
 
   BeforeTag := Trim(Copy(ASQL, 1, TagPos - 1));
   AfterTag := Copy(ASQL, TagPos, MaxInt);
 
   WherePos := LastDelimiter('WHERE', BeforeTag);
-  if WherePos = 0 then
-   Exit;
+  if WherePos = 0 then Exit; // WHERE not found
 
   InSingleQuote := False;
   InDoubleQuote := False;
   ParenthesisCount := 0;
+  AlreadyHasParenthesis := False;
 
   for i := WherePos to Length(BeforeTag) do
   begin
     case BeforeTag[i] of
       '''': InSingleQuote := not InSingleQuote;
       '"': InDoubleQuote := not InDoubleQuote;
-      '(': if not InSingleQuote and not InDoubleQuote then Inc(ParenthesisCount);
+      '(':
+      begin
+        if not InSingleQuote and not InDoubleQuote then
+        begin
+          Inc(ParenthesisCount);
+          if (i > WherePos) and (i < WherePos + 10) then AlreadyHasParenthesis := True;
+        end;
+      end;
       ')': if not InSingleQuote and not InDoubleQuote then Dec(ParenthesisCount);
     end;
   end;
 
-  if ParenthesisCount = 0 then
+  // Se não houver parênteses desequilibrados após o WHERE e não houver parênteses logo após o WHERE, adicione os parênteses externos
+  if (ParenthesisCount = 0) and (not AlreadyHasParenthesis) then
   begin
     BeforeTag := Copy(BeforeTag, 1, WherePos + 5) + ' (' +
                  Copy(BeforeTag, WherePos + 6, MaxInt) + ')';
