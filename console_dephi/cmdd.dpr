@@ -22,6 +22,36 @@ var
   SystemArray         : TArray<string>;
   DirectoryRepository : String;
   NewBuild            : Boolean;
+  StrList             : TStringList;
+
+  procedure PrintResumeComp(const AStrListMsg: TStringList);
+  const
+    COMPSEMERROR = 'Compilado sem erros';
+    COMPERROR = 'Compilado com erros';
+  var
+    c1: Integer;
+  begin
+    Console.WriteLine(StringOfChar('*', 80));
+    Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
+    Console.WriteColor('', [TConsoleColor.White]);
+
+    for c1 := 0 to AStrListMsg.Count - 1 do
+    begin
+      if (AStrListMsg[c] <> '') then
+      begin
+        if (Pos(COMPSEMERROR, AStrListMsg[c1]) > 0)  then
+          Console.WriteColor(AStrListMsg[c1], [TConsoleColor.Blue])
+        else if (Pos(COMPERROR, AStrListMsg[c1]) > 0)  then
+          Console.WriteColor(AStrListMsg[c1], [TConsoleColor.Red])
+        else
+          Console.WriteColor(AStrListMsg[c1], [TConsoleColor.Yellow])
+      end
+    end;
+
+    Console.WriteLine();
+    Console.WriteColor('', [TConsoleColor.White]);
+    Console.WriteLine(StringOfChar('*', 80));
+  end;
 
   function ExecuteInternal(const ACommand: String; const AParameters: String; const ASystemName: String): String;
   begin
@@ -105,7 +135,6 @@ var
   function ExecuteCommand(const ASystemId: Integer; const ASubCommand: String = ''): String;
   var
     strListMsg: TStringList;
-    c : Integer;
   begin
     case ASystemId of
       01 :
@@ -230,22 +259,12 @@ var
             strListMsg.Add(ExecuteCommand(10, ASubCommand));
             strListMsg.Add(ExecuteCommand(12, ASubCommand));
 
-            Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
-            Console.WriteColor('', [TConsoleColor.White]);
-
-            for c := 0 to strListMsg.Count - 1 do
-            begin
-              if (strListMsg[c] <> '') then
-                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
-            end;
-
-            Console.WriteLine();
-            Console.WriteColor('', [TConsoleColor.White]);
-            Console.WriteLine(StringOfChar('*', 80));
+            PrintResumeComp(strListMsg);
           finally
             strListMsg.Free;
           end;
+
+          Result := 'compile pack 19';
         end;
       20 :
         begin
@@ -255,21 +274,12 @@ var
             strListMsg.Add(ExecuteCommand(11, ASubCommand));
             strListMsg.Add(ExecuteCommand(13, ASubCommand));
 
-            Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
-            Console.WriteColor('', [TConsoleColor.White]);
-
-            for c := 0 to strListMsg.Count - 1 do
-            begin
-              if (strListMsg[c] <> '') then
-                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
-            end;
-
-            Console.WriteLine();
-            Console.WriteLine(StringOfChar('*', 80));
+            PrintResumeComp(strListMsg);
           finally
             strListMsg.Free;
           end;
+
+          Result := 'compile pack 20';
         end;
       21 :
         begin
@@ -280,21 +290,12 @@ var
             strListMsg.Add(ExecuteCommand(10, ASubCommand));
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
-            Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
-            Console.WriteColor('', [TConsoleColor.White]);
-
-            for c := 0 to strListMsg.Count - 1 do
-            begin
-              if (strListMsg[c] <> '') then
-                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
-            end;
-
-            Console.WriteLine();
-            Console.WriteLine(StringOfChar('*', 80));
+            PrintResumeComp(strListMsg);
           finally
             strListMsg.Free;
           end;
+
+          Result := 'compile pack 21';
         end;
       22 :
          begin
@@ -305,21 +306,12 @@ var
             strListMsg.Add(ExecuteCommand(11, ASubCommand));
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
-            Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
-            Console.WriteColor('', [TConsoleColor.White]);
-
-            for c := 0 to strListMsg.Count - 1 do
-            begin
-              if (strListMsg[c] <> '') then
-                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
-            end;
-
-            Console.WriteLine();
-            Console.WriteLine(StringOfChar('*', 80));
+            PrintResumeComp(strListMsg);
           finally
             strListMsg.Free;
           end;
+
+          Result := 'compile pack 22';
         end;
       23 :
         begin
@@ -328,21 +320,12 @@ var
             strListMsg.Add(ExecuteCommand(12, ASubCommand));
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
-            Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('RESUMO DA COMPILACAOS', [TConsoleColor.Yellow]);
-            Console.WriteColor('', [TConsoleColor.White]);
-
-            for c := 0 to strListMsg.Count - 1 do
-            begin
-              if (strListMsg[c] <> '') then
-                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
-            end;
-
-            Console.WriteLine();
-            Console.WriteLine(StringOfChar('*', 80));
+            PrintResumeComp(strListMsg);
           finally
             strListMsg.Free;
           end;
+
+          Result := 'compile pack 23';
         end;
       24 :
         begin
@@ -351,21 +334,12 @@ var
             strListMsg.Add(ExecuteCommand(13, ASubCommand));
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
-            Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
-            Console.WriteColor('', [TConsoleColor.White]);
-
-            for c := 0 to strListMsg.Count - 1 do
-            begin
-              if (strListMsg[c] <> '') then
-                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
-            end;
-
-            Console.WriteLine();
-            Console.WriteLine(StringOfChar('*', 80));
+            PrintResumeComp(strListMsg);
           finally
             strListMsg.Free;
           end;
+
+          Result := 'compile pack 24';
         end;
       25 :
         begin
@@ -375,20 +349,12 @@ var
             strListMsg.Add(ExecuteCommand(14, ASubCommand));
             strListMsg.Add(ExecuteCommand(15, ASubCommand));
 
-            Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('ATENÇÃO PARA OS SEGUINTES SISTEMAS', [TConsoleColor.Yellow]);
-            Console.WriteColor('', [TConsoleColor.White]);
-
-            for c := 0 to strListMsg.Count - 1 do
-            begin
-              if (strListMsg[c] <> '') then
-                Console.WriteColor(strListMsg[c], [TConsoleColor.Red]);
-            end;
-
-            Console.WriteLine(StringOfChar('*', 80));
+            PrintResumeComp(strListMsg);
           finally
             strListMsg.Free;
           end;
+
+          Result := 'compile pack 25';
         end;
       26 :
         begin
@@ -414,21 +380,12 @@ var
             strListMsg.Add(ExecuteCommand(15, ASubCommand));
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
 
-            Console.WriteLine(StringOfChar('*', 80));
-            Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
-            Console.WriteColor('', [TConsoleColor.White]);
-
-            for c := 0 to strListMsg.Count - 1 do
-            begin
-              if (strListMsg[c] <> '') then
-                Console.WriteColor(strListMsg[c], [TConsoleColor.Blue]);
-            end;
-
-            Console.WriteLine();
-            Console.WriteLine(StringOfChar('*', 80));
+            PrintResumeComp(strListMsg);
           finally
             strListMsg.Free;
           end;
+
+          Result := 'compile pack 26';
         end
       else
         Console.WriteColor('not executed!', [TConsoleColor.Red]);
@@ -565,17 +522,24 @@ begin
           end;
         6    :
           begin
-            if (Length(SystemArray) > 0) then
-            begin
-              for c := 0 to Length(SystemArray) - 1 do
+            StrList := TStringList.Create;
+            try
+              if (Length(SystemArray) > 0) then
               begin
-                SystemType := SystemArray[c].ToUpper;
-                Console.WriteColorLine(Format('compile> compiling %.2d/%.2d', [c + 1, Length(SystemArray)]), [TConsoleColor.DarkGreen]);
-                ExecuteCommand(ConvertNameSystem(SystemType), SubCommand);
-              end;
-            end
-            else
-              ExecuteCommand(ConvertNameSystem(SubCommand));
+                for c := 0 to Length(SystemArray) - 1 do
+                begin
+                  SystemType := SystemArray[c].ToUpper;
+                  Console.WriteColorLine(Format('compile> compiling %.2d/%.2d', [c + 1, Length(SystemArray)]), [TConsoleColor.DarkGreen]);
+                  StrList.Add(ExecuteCommand(ConvertNameSystem(SystemType), SubCommand));
+                end;
+              end
+              else
+                StrList.Add(ExecuteCommand(ConvertNameSystem(SubCommand)));
+
+              PrintResumeComp(StrList);
+            finally
+              StrList.Free;
+            end;
           end;
         7 :
           begin
