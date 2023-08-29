@@ -111,21 +111,21 @@ var
       01 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApServer Win32 ApServer 1', [ASubCommand]) , 'ApServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApServer Win32 ApServer 0', [ASubCommand]) , 'ApServer 32')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApServer 32');
         end;
       02 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApServer Win64 ApServer 1', [ASubCommand]) , 'ApServer 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApServer Win64 ApServer 0', [ASubCommand]) , 'ApServer 64')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApServer 64');
         end;
       03 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApTools Win32 ApTools 0', [ASubCommand]) , 'ApServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('Alexandria %s ApData_X64 ApTools Win32 ApTools 0', [ASubCommand]) , 'Aptools')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand, 'ApTools');
         end;
@@ -157,42 +157,42 @@ var
       08 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApScripter Win32 ApScripter 1', [ASubCommand]) , 'ApScripter 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApScripter Win32 ApScripter 0', [ASubCommand]) , 'ApScripter 32')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApScripter 32');
         end;
       09 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApScripter Win64 ApScripter 1', [ASubCommand]) , 'ApScripter 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApScripter Win64 ApScripter 0', [ASubCommand]) , 'ApScripter 64')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApScripter 64');
         end;
       10 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationServer Win32 ApIntegrationServer 1', [ASubCommand]) , 'ApIntegrationServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationServer Win32 ApIntegrationServer 0', [ASubCommand]) , 'ApIntegrationServer 32')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationServer 32');
         end;
       11 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationServer Win64 ApIntegrationServer 1', [ASubCommand]) , 'ApIntegrationServer 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationServer Win64 ApIntegrationServer 0', [ASubCommand]) , 'ApIntegrationServer 64')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationServer 64');
         end;
       12 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationInterface Win32 ApIntegrationInterface 0', [ASubCommand]) , 'ApIntegrationServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationInterface Win32 ApIntegrationInterface 0', [ASubCommand]) , 'ApIntegrationInterface 32')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationInterface 32');
         end;
       13 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationInterface Win64 ApIntegrationInterface 0', [ASubCommand]) , 'ApIntegrationServer 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApIntegrationInterface Win64 ApIntegrationInterface 0', [ASubCommand]) , 'ApIntegrationInterface 64')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationInterface 64');
         end;
@@ -206,7 +206,7 @@ var
       15 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApUsers Win32 ApUsers 0', [ASubCommand]) , 'ApManager 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('Alexandria %s ApData_X64 ApUsers Win32 ApUsers 0', [ASubCommand]) , 'ApUsers 32')
           else
             Result := ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand, 'ApUsers');
         end;

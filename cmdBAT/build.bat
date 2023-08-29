@@ -163,7 +163,7 @@ if %status% == 4 (
 )
 
 echo.
-echo Scritp finalizado com erros
+echo Script finalizado com erros
 
 :ENDSUCESS
 
