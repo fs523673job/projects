@@ -37,7 +37,7 @@ var
 
     for c1 := 0 to AStrListMsg.Count - 1 do
     begin
-      if (AStrListMsg[c] <> '') then
+      if (AStrListMsg[c1] <> '') then
       begin
         if (Pos(COMPSEMERROR, AStrListMsg[c1]) > 0)  then
           Console.WriteColor(AStrListMsg[c1], [TConsoleColor.Blue])
