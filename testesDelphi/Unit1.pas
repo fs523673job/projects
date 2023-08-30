@@ -20,7 +20,8 @@ type
   TSQLAnalyzer = class
   private
     const
-      TAG_SECURITY = '/*tag seguranca*/';
+      TAG_SECURITY_START = '/*AutoEmployeeFilter=';
+      TAG_SECURITY_END = '*/';
   public
     function ModifySQL(const ASQL: string): string;
   end;
@@ -35,22 +36,31 @@ implementation
 
 { TSQLAnalyzer }
 
+{ TSQLAnalyzer }
+
 function TSQLAnalyzer.ModifySQL(const ASQL: string): string;
 var
-  TagPos, WherePos, ParenthesisCount, i: Integer;
-  BeforeTag, AfterTag: string;
+  TagStartPos, TagEndPos, WherePos, ParenthesisCount, i: Integer;
+  BeforeTag, InsideTag, AfterTag: string;
   InSingleQuote, InDoubleQuote, AlreadyHasParenthesis: Boolean;
 begin
   Result := ASQL;
 
-  TagPos := Pos(TAG_SECURITY, ASQL);
-  if TagPos = 0 then Exit; // Tag not found
+  TagStartPos := Pos(TAG_SECURITY_START, ASQL);
+  if TagStartPos = 0 then
+    Exit;
 
-  BeforeTag := Trim(Copy(ASQL, 1, TagPos - 1));
-  AfterTag := Copy(ASQL, TagPos, MaxInt);
+  TagEndPos := Pos(TAG_SECURITY_END, ASQL);
+  if TagEndPos = 0 then
+    Exit;
+
+  BeforeTag := TrimRight(Copy(ASQL, 1, TagStartPos - 1)); // TrimRight para remover espaços e quebras de linha à direita
+  InsideTag := Copy(ASQL, TagStartPos, TagEndPos - TagStartPos + 2); // +2 to include '*/'
+  AfterTag := TrimLeft(Copy(ASQL, TagEndPos + 2, MaxInt)); // +2 to skip '*/' and TrimLeft para remover espaços e quebras de linha à esquerda
 
   WherePos := LastDelimiter('WHERE', BeforeTag);
-  if WherePos = 0 then Exit; // WHERE not found
+  if WherePos = 0 then
+    Exit;
 
   InSingleQuote := False;
   InDoubleQuote := False;
@@ -81,7 +91,14 @@ begin
                  Copy(BeforeTag, WherePos + 6, MaxInt) + ')';
   end;
 
-  Result := BeforeTag + ' ' + AfterTag;
+  // Verificar se já existe uma quebra de linha antes ou depois da TAG_SECURITY
+  if not (BeforeTag.EndsWith(sLineBreak) or InsideTag.StartsWith(sLineBreak)) then
+    BeforeTag := BeforeTag + sLineBreak;
+
+  if not (InsideTag.EndsWith(sLineBreak) or AfterTag.StartsWith(sLineBreak)) then
+    InsideTag := InsideTag + sLineBreak;
+
+  Result := BeforeTag + InsideTag + AfterTag;
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);

@@ -34,10 +34,9 @@ object Form1: TForm1
       
         '        and (select field1, field2 from tabela2 where field3 = f' +
         'ield4)'
-      ' /*tag seguranca*/')
+      ' /*AutoEmployeeFilter=Contratatados*/'
+      'Order by 1')
     TabOrder = 1
-    ExplicitLeft = 8
-    ExplicitTop = 8
-    ExplicitWidth = 593
+    ExplicitWidth = 624
   end
 end
