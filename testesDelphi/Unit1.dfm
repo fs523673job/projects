@@ -10,10 +10,11 @@ object Form1: TForm1
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnCreate = FormCreate
   TextHeight = 15
   object Button1: TButton
-    Left = 8
-    Top = 312
+    Left = 81
+    Top = 304
     Width = 75
     Height = 25
     Caption = 'Exec'
@@ -38,5 +39,22 @@ object Form1: TForm1
       'Order by 1')
     TabOrder = 1
     ExplicitWidth = 624
+  end
+  object Button4: TButton
+    Left = 0
+    Top = 304
+    Width = 75
+    Height = 25
+    Caption = 'Clear'
+    TabOrder = 2
+  end
+  object ComboBox1: TComboBox
+    Left = 162
+    Top = 304
+    Width = 183
+    Height = 23
+    Style = csOwnerDrawFixed
+    TabOrder = 3
+    OnChange = ComboBox1Change
   end
 end
