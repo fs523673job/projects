@@ -46,6 +46,13 @@ def gravar_no_banco(dados):
     con.commit()
     con.close()
 
+def atualizar_ou_adicionar_linha(linhas, tag, valor):
+    for i, linha in enumerate(linhas):
+        if tag in linha:
+            linhas[i] = f"{tag} {valor}\n"
+            return
+    linhas.append(f"{tag} {valor}\n")
+
 def duplicar_e_preencher_arquivo(PT_Nome, Descricao):
     diretorio = r"C:\Users\flsantos\OneDrive - Apdata do Brasil Software Ltda\Chamados"
     origem = os.path.join(diretorio, "Modelo_Chamado.Txt")
@@ -54,10 +61,15 @@ def duplicar_e_preencher_arquivo(PT_Nome, Descricao):
     if not os.path.exists(destino):
         shutil.copy(origem, destino)
 
-        with open(destino, 'a', encoding='utf-8') as arquivo:
-            arquivo.write(f"\nChamado: {PT_Nome}\n")
-            arquivo.write(f"Descricao: {Descricao}\n")
-            arquivo.write(f"Data Início Análise: {datetime.now().strftime('%d/%m/%Y')}\n")
+    with open(destino, 'r', encoding='utf-8') as arquivo:
+        linhas = arquivo.readlines()
+
+    atualizar_ou_adicionar_linha(linhas, "Chamado:", PT_Nome)
+    atualizar_ou_adicionar_linha(linhas, "Descricao:", Descricao)
+    atualizar_ou_adicionar_linha(linhas, "Data Início Análise:", datetime.now().strftime('%d/%m/%Y'))
+
+    with open(destino, 'w', encoding='utf-8') as arquivo:
+        arquivo.writelines(linhas)
 
 def main():
     acao = input("Qual é a ação? (Inicio Chamado [I], Atualizar Chamado [A], Finalizar Chamado [F]): ")
