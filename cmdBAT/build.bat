@@ -10,8 +10,8 @@ set "dirApp=%4"
 set "arquitetura=%5"
 set "appName=%6"
 set "addEureka=%7" 
-set "delphiAlexandria=Alexandria"
-set "dephiTokyo=Tokyo"
+set "delphiAlexandria=alexandria"
+set "dephiTokyo=tokyo"
 set "studioVer=22.0"
 set "localPath=C:\Program Files (x86)\Embarcadero\Studio\22.0\bin;C:\Program Files (x86)\Embarcadero\Studio\22.0\bin64;C:\Program Files\CMake\;%PATH%"
 
@@ -24,11 +24,6 @@ set "app_lib=C:\%dirBase%\Aplicacoes\%dirApp%\lib\%arquitetura%\%typeBuild%"
 set "warning_path=C:\%dirBase%\Aplicacoes\%dirApp%\Bin\%arquitetura%\%typeBuild%\Warnings.log"
 set "bpl_path=C:\%dirBase%\ApBPL"
 set "ecc32exe=C:\%dirBase%\ApComps\EurekaLog7\Bin\ecc32.exe"
-
-if /I %dephiTokyo% == %vrsDelphi% (
-	set studioVer="19.0"
-	set localPath="%ProgramFiles%\nodejs;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\amd64;%FrameworkDir%;%ProgramFiles(x86)%\Embarcadero\Studio\19.0\bin;%ProgramFiles(x86)%\Embarcadero\Studio\19.0\bin64;%SystemRoot%\system32;%SystemRoot%;%ProgramW6432%\Git\cmd;%ProgramW6432%\mingw64\bin;%ProgramW6432%\Git\usr\bin;%ProgramData%\Oracle\Java\javapath;%X64_CERTIFICATE_PATH%\bin;%X64_CERTIFICATE_PATH%\bin"
-)
 
 ::Definindo variáveis de ambiente Alexandria
 @set BDS=C:\Program Files (x86)\Embarcadero\Studio\%studioVer%
@@ -44,32 +39,35 @@ if /I %dephiTokyo% == %vrsDelphi% (
 
 set status=0
 
+if /I %dephiTokyo% == %vrsDelphi% (
+	set studioVer="19.0"
+	set localPath="%ProgramFiles%\nodejs;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\amd64;%FrameworkDir%;%ProgramFiles(x86)%\Embarcadero\Studio\19.0\bin;%ProgramFiles(x86)%\Embarcadero\Studio\19.0\bin64;%SystemRoot%\system32;%SystemRoot%;%ProgramW6432%\Git\cmd;%ProgramW6432%\mingw64\bin;%ProgramW6432%\Git\usr\bin;%ProgramData%\Oracle\Java\javapath;%X64_CERTIFICATE_PATH%\bin;%X64_CERTIFICATE_PATH%\bin"
+)
+
 :: Deleta pasta de dcus
 echo %date% %time% ==== Step 01 - Cleaning dcu from %app_lib%
 
 if exist %app_lib% (
-	rm -rf %app_lib%
+	del /q  %app_lib%\*.dcu
 	if errorlevel 1 goto FAILDELETE
 )
 
 echo.
 
 :: Delete o app antigo
-
 echo %date% %time% ==== Step 02 - Cleaning App from %app_exe%
 
 if exist %app_exe% (
-	rm -f %app_exe%
+	del /q %app_exe%
 	if errorlevel 1 goto FAILDELETE
 )
 
 if exist %app_dll% (
-	rm -f %app_dll%
+	del /q %app_dll%
 	if errorlevel 1 goto FAILDELETE
 )
 
 echo.
-
 echo %date% %time% ==== Step 03 - Begin Build %app_source%.dproj
 echo.
 

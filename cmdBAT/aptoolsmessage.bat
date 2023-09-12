@@ -1,8 +1,11 @@
 @echo off
 setlocal
 
-::Executar o ApToolsMessage
-C:\ApToolsMensagem\ApTools_Mensagem.exe
-close
+:: Define o caminho para o executável
+set "APP_PATH=C:\ApToolsMensagem\ApTools_Mensagem.exe"
+
+:: Executa o aplicativo com os parâmetros
+echo "%APP_PATH%"
+start "" "%APP_PATH%"
 
 endlocal
