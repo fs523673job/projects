@@ -1,8 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo Calling with: LoadBalancer32
-call "C:\github\fs523673job\projects\cmdBAT\aploadbalanceronly32.bat"
+echo Calling with: LoadBalancer64
+call "C:\github\fs523673job\projects\cmdBAT\aploadbalanceronly64.bat"
 
 :: O primeiro argumento (opcional) será o número de vezes que o script será executado. 
 :: Se não for fornecido, assumiremos o valor 3 como padrão.
@@ -20,7 +20,7 @@ if not "%~2"=="" (
 )
 
 set "APP_DEFAULT=ApServer"
-set "ARQ_DEFAULT=Win32"
+set "ARQ_DEFAULT=Win64"
 set "BLD_DEFAULT=Debug"
 
 :: Valor inicial para o spawndebug
