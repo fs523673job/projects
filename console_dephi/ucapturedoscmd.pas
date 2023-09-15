@@ -85,8 +85,10 @@ var
   BytesRead       : Cardinal;
   WorkDir         : string;
   Handle          : Boolean;
+  CompError       : Boolean;
 begin
   Result := False;
+  CompError := False;
   AMessages := '';
   Console.WriteLine(StringOfChar('*', 80));
   Console.WriteColorLine('Inicializando a compilação do ' + ASystemName, [TConsoleColor.Yellow]);
@@ -119,19 +121,19 @@ begin
               if (Pos('ERROR', UpperCase(String(pCommandLine))) > 0) then
               begin
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Red]);
-                AMessages := AMessages + #13#10 + Format('%s - Erro - Verifique novamente', [ASystemName]);
+                CompError := True;
               end
               else if (Pos('LINES', UpperCase(String(pCommandLine))) > 0) and (Pos('SECONDS', UpperCase(String(pCommandLine))) > 0) and (Pos('BYTES CODE', UpperCase(String(pCommandLine))) > 0) and (Pos('BYTES DATA', UpperCase(String(pCommandLine))) > 0) then
                 Console.WriteColorLine(String('BUILD [OK] -> ' + pCommandLine), [TConsoleColor.Green])
               else if (Pos('Fim do script de compilacao', String(pCommandLine)) > 0) then
               begin
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Green]);
-                AMessages := AMessages + #13#10 + Format('%s - Compilado sem erros', [ASystemName]);
+                AMessages := Format('%s - Compilado sem erros', [ASystemName]);
               end
               else if (Pos('ERROS', UpperCase(String(pCommandLine))) > 0) then
               begin
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.DarkYellow]);
-                AMessages := AMessages + #13#10 + Format('%s - Compilado com erros', [ASystemName]);
+                CompError := True;
               end
               else if (Pos('WARNING', UpperCase(String(pCommandLine))) > 0) then
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Yellow])
@@ -148,6 +150,9 @@ begin
       CloseHandle(StdOutPipeRead);
     end;
   finally
+    if CompError then
+      AMessages := Format('%s - Erros Encontrados Na Compilacao', [ASystemName]);
+
     Console.WriteLine();
     Console.WriteColorLine('Finalizando a compilação do ' + ASystemName, [TConsoleColor.Yellow]);
     Console.WriteLine(StringOfChar('*', 80));

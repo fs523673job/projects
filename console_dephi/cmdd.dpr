@@ -13,6 +13,9 @@ uses
   ucapturedoscmd in 'ucapturedoscmd.pas'
   ;
 
+const
+  CRLF = #13#10;
+
 var
   c                   : Integer;
   Command             : String;
@@ -36,17 +39,18 @@ var
     Console.WriteLine(StringOfChar('*', 80));
     Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
     Console.WriteColor('', [TConsoleColor.White]);
+    Console.WriteLine();
 
     for c1 := 0 to AStrListMsg.Count - 1 do
     begin
       if (AStrListMsg[c1] <> '') then
       begin
         if (Pos(COMPSEMERROR, AStrListMsg[c1]) > 0)  then
-          Console.WriteColor(AStrListMsg[c1], [TConsoleColor.Blue])
+          Console.WriteColorLine(AStrListMsg[c1], [TConsoleColor.Blue])
         else if (Pos(COMPERROR, AStrListMsg[c1]) > 0)  then
-          Console.WriteColor(AStrListMsg[c1], [TConsoleColor.Red])
+          Console.WriteColorLine(AStrListMsg[c1], [TConsoleColor.Red])
         else
-          Console.WriteColor(AStrListMsg[c1], [TConsoleColor.Yellow])
+          Console.WriteColorLine(AStrListMsg[c1], [TConsoleColor.Yellow])
       end
     end;
 

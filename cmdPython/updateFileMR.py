@@ -31,22 +31,25 @@ def atualizar_arquivo_com_link(diretorio: str, chamado_numero: str, link: str):
     with open(arquivo_nome, 'r', encoding='utf-8') as arquivo:
         linhas = arquivo.readlines()
 
+    linhas_originais = linhas.copy()
+
     for i, linha in enumerate(linhas):
         if "MR:" in linha:
             # Se já tiver um link após "MR:", não alterar o arquivo
-            if "http" in linha:
-                print(f"Arquivo {arquivo_nome} já tem um link após 'MR:'. Não será alterado.")
-                return
-            linhas[i] = f"MR: {link}\n"
-            break
-        elif "Colateral (PT):" in linha:
+            if "http" not in linha:
+                linhas[i] = f"MR: {link}\n"
+                break
+        elif "Colateral (PT):" in linha and not any("MR:" in l for l in linhas[i:]):
             linhas.insert(i + 1, f"MR: {link}\n")
             break
 
-    with open(arquivo_nome, 'w', encoding='utf-8') as arquivo:
-        arquivo.writelines(linhas)
-
-    print(f"Arquivo {arquivo_nome} atualizado com sucesso!")
+    # Verificar se houve alterações comparando as listas de linhas
+    if linhas != linhas_originais:
+        with open(arquivo_nome, 'w', encoding='utf-8') as arquivo:
+            arquivo.writelines(linhas)
+        print(f"Arquivo {arquivo_nome} atualizado com sucesso!")
+    else:
+        print(f"Nenhuma alteração necessária para o arquivo {arquivo_nome}.")
 
 def main():
     # Diretório onde os arquivos estão localizados
