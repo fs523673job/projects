@@ -23,11 +23,18 @@ $password = Read-Host "Digite a senha"
 
 if (-not $bindings) {
     # Criando o diretório virtual sob "Default Web Site"
-    $virtualDirPath = "IIS:\Sites\Default Web Site\$siteName"
-    New-Item $virtualDirPath -type VirtualDirectory -physicalPath $physicalPath -ErrorAction SilentlyContinue
+    $virtualDir = New-Item "IIS:\Sites\Default Web Site\$siteName" -type VirtualDirectory -physicalPath $physicalPath -ErrorAction SilentlyContinue
+    if (-not $virtualDir) {
+        Write-Host "Falha ao criar o diretorio virtual."
+        exit
+    }
 } else {
     # Criando o site com o binding fornecido
-    New-Item "IIS:\Sites\$siteName" -physicalPath $physicalPath -bindings $bindings -ErrorAction SilentlyContinue
+    $site = New-Item "IIS:\Sites\$siteName" -physicalPath $physicalPath -bindings $bindings -ErrorAction SilentlyContinue
+    if (-not $site) {
+        Write-Host "Falha ao criar o site."
+        exit
+    }
 }
 
 # Configurando a autenticação para o site/diretório virtual
@@ -39,8 +46,8 @@ $virtualDirConfigPath = if ($bindings) { "/system.applicationHost/sites/site[@na
 Set-WebConfiguration -filter $virtualDirConfigPath -value @{userName=$username; password=$password}
 
 # Criando o aplicativo dentro do site/diretório virtual
-if (-not (Test-Path "$virtualDirPath\$appName")) {
-    New-Item "$virtualDirPath\$appName" -type Application -physicalPath $appPhysicalPath
+if (-not (Test-Path "IIS:\Sites\$siteName\$appName")) {
+    New-Item "IIS:\Sites\$siteName\$appName" -type Application -physicalPath $appPhysicalPath
 }
 
 # Configurando as credenciais do caminho físico para o aplicativo
