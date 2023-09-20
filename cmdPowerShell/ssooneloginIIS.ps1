@@ -22,16 +22,16 @@ $username = Read-Host "Digite o nome de usuario para conectar"
 $password = Read-Host "Digite a senha"
 
 if (-not $bindings) {
-    # Criando o diretório virtual sob "Default Web Site"
-    $virtualDir = New-Item "IIS:\Sites\Default Web Site\$siteName" -type VirtualDirectory -physicalPath $physicalPath -ErrorAction SilentlyContinue
-    if (-not $virtualDir) {
-        Write-Host "Falha ao criar o diretório virtual."
-        exit
+    # Verificar se o diretório virtual já existe
+    if (-not (Test-Path "IIS:\Sites\Default Web Site\$siteName")) {
+        New-Item "IIS:\Sites\Default Web Site\$siteName" -type VirtualDirectory -physicalPath $physicalPath
     }
-    
-    # Criando o aplicativo dentro do diretório virtual
-    New-Item "IIS:\Sites\Default Web Site\$siteName\$appName" -type Application -physicalPath $appPhysicalPath
-    
+
+    # Verificar se o aplicativo já existe
+    if (-not (Test-Path "IIS:\Sites\Default Web Site\$siteName\$appName")) {
+        New-Item "IIS:\Sites\Default Web Site\$siteName\$appName" -type Application -physicalPath $appPhysicalPath
+    }
+
     # Configurando a autenticação para o diretório virtual
     Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/virtualDirectory[@path='/`$siteName']" -name "userName" -value $username
     Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/virtualDirectory[@path='/`$siteName']" -name "password" -value $password
@@ -40,19 +40,19 @@ if (-not $bindings) {
     Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/application[@path='/`$siteName/`$appName']" -name "userName" -value $username
     Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/application[@path='/`$siteName/`$appName']" -name "password" -value $password
 } else {
-    # Criando o site com o binding fornecido
-    $site = New-Item "IIS:\Sites\$siteName" -physicalPath $physicalPath -bindings $bindings -ErrorAction SilentlyContinue
-    if (-not $site) {
-        Write-Host "Falha ao criar o site."
-        exit
+    # Verificar se o site já existe
+    if (-not (Test-Path "IIS:\Sites\$siteName")) {
+        New-Item "IIS:\Sites\$siteName" -physicalPath $physicalPath -bindings $bindings
     }
 
     # Configurando a autenticação para o site
     Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name=`"$siteName`"]/anonymousAuthentication" -name "userName" -value $username
     Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name=`"$siteName`"]/anonymousAuthentication" -name "password" -value $password
     
-    # Criando o aplicativo dentro do site
-    New-Item "IIS:\Sites\$siteName\$appName" -type Application -physicalPath $appPhysicalPath
+    # Verificar se o aplicativo já existe dentro do site
+    if (-not (Test-Path "IIS:\Sites\$siteName\$appName")) {
+        New-Item "IIS:\Sites\$siteName\$appName" -type Application -physicalPath $appPhysicalPath
+    }
 }
 
 Write-Host "Site/diretorio virtual e aplicativo criados com sucesso!"
