@@ -27,18 +27,16 @@ if (-not $bindings) {
         New-Item "IIS:\Sites\Default Web Site\$siteName" -type VirtualDirectory -physicalPath $physicalPath
     }
 
+    # Configurando a autenticação para o diretório virtual
+    Set-WebConfiguration -Filter "/system.applicationHost/sites/site[@name='Default Web Site']/virtualDirectory[@path='/`$siteName']" -PSPath IIS:\ -Value @{userName=$username;password=$password;logonMethod="ClearText"}
+    
     # Verificar se o aplicativo já existe
     if (-not (Test-Path "IIS:\Sites\Default Web Site\$siteName\$appName")) {
         New-Item "IIS:\Sites\Default Web Site\$siteName\$appName" -type Application -physicalPath $appPhysicalPath
     }
 
-    # Configurando a autenticação para o diretório virtual
-    Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/virtualDirectory[@path='/`$siteName']" -name "userName" -value $username
-    Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/virtualDirectory[@path='/`$siteName']" -name "password" -value $password
-    
     # Configurando a autenticação para o aplicativo
-    Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/application[@path='/`$siteName/`$appName']" -name "userName" -value $username
-    Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/application[@path='/`$siteName/`$appName']" -name "password" -value $password
+    Set-WebConfiguration -Filter "/system.applicationHost/sites/site[@name='Default Web Site']/application[@path='/`$siteName/`$appName']" -PSPath IIS:\ -Value @{userName=$username;password=$password;logonMethod="ClearText"}
 } else {
     # Verificar se o site já existe
     if (-not (Test-Path "IIS:\Sites\$siteName")) {
