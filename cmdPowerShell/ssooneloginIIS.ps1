@@ -6,8 +6,9 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 Import-Module WebAdministration
 
-# Nome fixo do site
+# Nome fixo do site e do aplicativo
 $siteName = "559"
+$appName = ".net"
 
 # Solicitar informações do usuário
 $basePhysicalPath = Read-Host "Digite a base do caminho fisico (por exemplo, C:\Apdata_X64)"
@@ -37,12 +38,8 @@ Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name=`
 $virtualDirConfigPath = if ($bindings) { "/system.applicationHost/sites/site[@name=`"$siteName`"]/virtualDirectoryDefaults" } else { "/system.applicationHost/sites/site[@name='Default Web Site']/virtualDirectory[@path='/`$siteName']" }
 Set-WebConfiguration -filter $virtualDirConfigPath -value @{userName=$username; password=$password}
 
-# Solicitar nome para o aplicativo
-$appName = Read-Host "Digite o nome do aplicativo"
-
-# Verificar se o aplicativo já existe
+# Criando o aplicativo dentro do site/diretório virtual
 if (-not (Test-Path "$virtualDirPath\$appName")) {
-    # Criando o aplicativo dentro do site/diretório virtual
     New-Item "$virtualDirPath\$appName" -type Application -physicalPath $appPhysicalPath
 }
 
