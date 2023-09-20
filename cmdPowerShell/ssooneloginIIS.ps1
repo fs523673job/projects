@@ -33,8 +33,8 @@ if (-not $bindings) {
 Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name=`"$siteName`"]/anonymousAuthentication" -name "userName" -value $username -ErrorAction SilentlyContinue
 Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name=`"$siteName`"]/anonymousAuthentication" -name "password" -value $password -ErrorAction SilentlyContinue
 
-# Configurando as credenciais do caminho físico
-$virtualDirConfigPath = if ($bindings) { "/system.applicationHost/sites/site[@name=`"$siteName`"]/virtualDirectoryDefaults" } else { "/system.applicationHost/sites/site[@name='Default Web Site']/application[@path='/`$siteName']/virtualDirectoryDefaults" }
+# Configurando as credenciais do caminho físico para o diretório virtual
+$virtualDirConfigPath = if ($bindings) { "/system.applicationHost/sites/site[@name=`"$siteName`"]/virtualDirectoryDefaults" } else { "/system.applicationHost/sites/site[@name='Default Web Site']/virtualDirectory[@path='/`$siteName']" }
 Set-WebConfiguration -filter $virtualDirConfigPath -value @{userName=$username; password=$password}
 
 # Solicitar nome para o aplicativo
@@ -46,4 +46,8 @@ if (-not (Test-Path "$virtualDirPath\$appName")) {
     New-Item "$virtualDirPath\$appName" -type Application -physicalPath $appPhysicalPath
 }
 
-Write-Host "Site/diretório virtual e aplicativo criados com sucesso!"
+# Configurando as credenciais do caminho físico para o aplicativo
+$appConfigPath = "$virtualDirConfigPath/application[@path='/`$appName']"
+Set-WebConfiguration -filter $appConfigPath -value @{userName=$username; password=$password}
+
+Write-Host "Site/diretorio virtual e aplicativo criados com sucesso!"
