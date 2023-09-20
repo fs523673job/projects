@@ -6,8 +6,10 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 Import-Module WebAdministration
 
+# Nome fixo do site
+$siteName = "559"
+
 # Solicitar informações do usuário
-$siteName = Read-Host "Digite o nome do site"
 $basePhysicalPath = Read-Host "Digite a base do caminho fisico (por exemplo, C:\Apdata_X64)"
 
 # Complementar os caminhos
@@ -31,10 +33,14 @@ if (-not $bindings) {
 Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name=`"$siteName`"]/anonymousAuthentication" -name "userName" -value $username -ErrorAction SilentlyContinue
 Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name=`"$siteName`"]/anonymousAuthentication" -name "password" -value $password -ErrorAction SilentlyContinue
 
+# Configurando as credenciais do caminho físico
+Set-WebConfiguration -filter "/system.applicationHost/sites/site[@name=`"$siteName`"]/virtualDirectoryDefaults" -name "userName" -value $username
+Set-WebConfiguration -filter "/system.applicationHost/sites/site[@name=`"$siteName`"]/virtualDirectoryDefaults" -name "password" -value $password
+
 # Solicitar nome para o aplicativo
 $appName = Read-Host "Digite o nome do aplicativo"
 
 # Criando o aplicativo dentro do site/diretório virtual
 New-Item "$virtualDirPath\$appName" -type Application -physicalPath $appPhysicalPath
 
-Write-Host "Site/diretório virtual e aplicativo criados com sucesso!"
+Write-Host "Site/diretorio virtual e aplicativo criados com sucesso!"
