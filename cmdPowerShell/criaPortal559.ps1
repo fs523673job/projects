@@ -28,13 +28,22 @@ if (-not $bindings) {
     # Configurar a identidade do diretório virtual
     Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/virtualDirectory[@path='/`$siteName']" -name "userName" -value $username
     Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/virtualDirectory[@path='/`$siteName']" -name "password" -value $password
-
+	
     # Criar ou atualizar o aplicativo
     New-Item "IIS:\Sites\Default Web Site\$siteName\$appName" -type Application -physicalPath $appPhysicalPath -Force
 
     # Configurar a identidade do aplicativo
     Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/application[@path='/`$siteName/`$appName']" -name "userName" -value $username
     Set-WebConfigurationProperty -filter "/system.applicationHost/sites/site[@name='Default Web Site']/application[@path='/`$siteName/`$appName']" -name "password" -value $password
+	
+	# Configurando as credenciais do caminho físico
+	$virtualDirConfigPath = "/system.applicationHost/sites/site[@name='Default Web Site']/application[@path='/`$siteName/`$appName']/virtualDirectoryDefaults" 
+	Set-WebConfiguration -filter $virtualDirConfigPath -value @{userName=$username; password=$password}
+	
+	$virtualDirConfigPath = "/system.applicationHost/sites/site[@name='Default Web Site']/virtualDirectory[@path='/`$siteName']/virtualDirectoryDefaults" 
+	Set-WebConfiguration -filter $virtualDirConfigPath -value @{userName=$username; password=$password}
+	
+
 } else {
     # Criar ou atualizar o site
     New-Item "IIS:\Sites\$siteName" -physicalPath $physicalPath -bindings $bindings -Force
@@ -47,4 +56,4 @@ if (-not $bindings) {
     New-Item "IIS:\Sites\$siteName\$appName" -type Application -physicalPath $appPhysicalPath -Force
 }
 
-Write-Host "Site/diretório virtual e aplicativo criados com sucesso!"
+Write-Host "Site/diretorio virtual e aplicativo criados com sucesso!"
