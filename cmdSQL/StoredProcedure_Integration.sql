@@ -1596,41 +1596,8 @@ begin
 	)
 
 	declare @count int = 1
-	while @count < @newRecs
-	begin
-	end
-
---select * from Logs order by 1 desc
-
-create table IntegrationMonitoracao(
-  id_integrationmonitoracao int,
-  id_cargo int,
-  id_pais int,
-  id_areaatuacao int,
-  status_ int,
-  datatransacao datetime,
-  evento int,
-  error varchar(256),
-  desc_cargo varchar(256)
-)
-
-select * from IntegrationMonitoracao order by status_ desc
-update IntegrationMonitoracao set status_ = 1 
-drop table IntegrationMonitoracao 
-
-insert into IntegrationMonitoracao(id_integrationmonitoracao, id_cargo, id_pais, id_areaatuacao, datatransacao, evento, error, desc_cargo, status_) values (16, 1, 1, 1, '20230618 12:00:00 AM', 1, '', 'Novo Cargo 10', 1)
-insert into IntegrationMonitoracao(id_integrationmonitoracao, id_cargo, id_pais, id_areaatuacao, datatransacao, evento, error, desc_cargo, status_) values (17, 1, 1, 1, GETDATE(), 1, '', 'Novo Cargo 10', 1)
-
-select * from ModelosIntegracoes where BBR_CdiModeloIntegracao = 10029
-select * from ModelosIntegracoesCmds where BBS_CdiModeloIntegracao = 10029
-select * from ModelosIntegracoesCmdsCpos where BBP_CdiModeloIntegracaoCmd = 10035
-select * from ModsIntsMonitsBasesEventos
-
-exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao = 25', 'BBO_CdiServidorIntegracaoBD,BBO_CdiServidorIntegracao,BBO_CdsUsuario_Banco,BBO_CosSenha_Banco, BBO_DssNomeServidor,BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado,BBO_CdiModeloIntegracao,BBO_NuiMinutosReprcIntegracao,BBO_CdiTipoIntegracao,BBO_D1sServidorIntegracaoBD'
-
-end
+end;
 GO
-
 
 /**********************************************************************
     12 - STRING SPLIT (COMPATIBILIDADE DE FUNCAO)

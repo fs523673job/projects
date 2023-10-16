@@ -44,8 +44,8 @@ if action == "abertura":
     descricao = input("Digite a descrição: ")
     chamadodesvio = input("Digite o chamado desvio: ")
     while True:
-        tipodesvio = input("Digite o tipo de desvio (reuniao, ajuda, chamados, emergencial, outros): ").lower()
-        if tipodesvio in ['reuniao', 'ajuda', 'chamados', 'emergencial', 'outros']:
+        tipodesvio = input("Digite o tipo de desvio (reuniao, ajuda, outros, desvio, emergencial): ").lower()
+        if tipodesvio in ['reuniao', 'ajuda', 'outros', 'desvio', 'emergencial']:
             break
         else:
             print("Tipo de desvio inválido. Tente novamente.")
