@@ -16,6 +16,11 @@ call update.bat
 cd /d %REPO_PATH%\cmdGIT
 call update.bat
 
+:: Executando o script update.bat em cmdGIT
+cd /d %REPO_PATH%\cmdScripter
+call update.bat
+
+
 :: Adicionando todas as mudanças no repositório
 cd /d %REPO_PATH%
 git add --all

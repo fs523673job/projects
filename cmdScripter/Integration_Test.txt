@@ -1,0 +1,13 @@
+// Objeto 4687
+// Classe de Processo IntegraByIntegrationCmds
+// ---------------------------------------------------------------------------
+
+SELECTEDLOG  = 10012
+PREPARE PROCESS PARAMETERS = TRUE
+10012;Matricula;IDContratado = 2
+EXECUTE PROCESS = IntegraByIntegrationCmds
+ 
+Shell = ping -n 5 127.0.0.1
+
+Begin SQL
+End SQL
