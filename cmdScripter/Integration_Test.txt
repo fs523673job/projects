@@ -2,9 +2,18 @@
 // Classe de Processo IntegraByIntegrationCmds
 // ---------------------------------------------------------------------------
 
-SELECTEDLOG  = 10012
+SELECTEDLOG  = 10001
 PREPARE PROCESS PARAMETERS = TRUE
-10012;Matricula;IDContratado = 2
+EXECUTE PROCESS = IntegraByIntegrationCmds
+ 
+Shell = ping -n 5 127.0.0.1
+
+Begin SQL
+End SQL
+
+SELECTEDLOG  = 10011
+PREPARE PROCESS PARAMETERS = TRUE
+10011;keyid = 2
 EXECUTE PROCESS = IntegraByIntegrationCmds
  
 Shell = ping -n 5 127.0.0.1
