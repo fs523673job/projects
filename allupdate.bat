@@ -35,4 +35,6 @@ git commit -m "%COMMIT_MSG%"
 :: Empurrando as mudanças para o servidor
 git push
 
+pause
+
 endlocal

@@ -1,0 +1,21 @@
+// Objeto 4687
+// Classe de Processo IntegraByIntegrationCmds
+// ---------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10001
+
+SELECTEDLOG  = 10001
+EXECUTE PROCESS = IntegraByIntegrationCmds
+ 
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10001
+
+Shell = ping -n 5 127.0.0.1
