@@ -2,21 +2,302 @@
 // Classe de Processo IntegraByIntegrationCmds
 // ---------------------------------------------------------------------------
 
+Shell = echo Iniciando Integracao 10001
+
 SELECTEDLOG  = 10001
-PREPARE PROCESS PARAMETERS = TRUE
 EXECUTE PROCESS = IntegraByIntegrationCmds
  
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10001
+
 Shell = ping -n 5 127.0.0.1
 
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10002
+
+SELECTEDLOG  = 10002
+EXECUTE PROCESS = IntegraByIntegrationCmds
+ 
 Begin SQL
-End SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10002
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10003
+
+SELECTEDLOG  = 10003
+EXECUTE PROCESS = IntegraByIntegrationCmds
+ 
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10003
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10004
+
+SELECTEDLOG  = 10004
+EXECUTE PROCESS = IntegraByIntegrationCmds
+ 
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10004
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10008
+
+SELECTEDLOG  = 10008
+EXECUTE PROCESS = IntegraByIntegrationCmds
+ 
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10008
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10010
+
+SELECTEDLOG  = 10010
+EXECUTE PROCESS = IntegraByIntegrationCmds
+ 
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10010
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10011
 
 SELECTEDLOG  = 10011
 PREPARE PROCESS PARAMETERS = TRUE
-10011;keyid = 2
+10011;keyid;keyid = 7
 EXECUTE PROCESS = IntegraByIntegrationCmds
- 
-Shell = ping -n 5 127.0.0.1
 
 Begin SQL
-End SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10011
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10014
+
+SELECTEDLOG  = 10014
+PREPARE PROCESS PARAMETERS = TRUE
+10011;keyid;keyid = 7
+EXECUTE PROCESS = IntegraByIntegrationCmds
+
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10014
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10015
+
+SELECTEDLOG  = 10015
+PREPARE PROCESS PARAMETERS = TRUE
+10011;keyid;keyid = 7
+EXECUTE PROCESS = IntegraByIntegrationCmds
+
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10015
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10016
+
+SELECTEDLOG  = 10016
+PREPARE PROCESS PARAMETERS = TRUE
+10011;keyid;keyid = 7
+EXECUTE PROCESS = IntegraByIntegrationCmds
+
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10016
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10017
+
+SELECTEDLOG  = 10017
+PREPARE PROCESS PARAMETERS = TRUE
+10011;keyid;keyid = 7
+EXECUTE PROCESS = IntegraByIntegrationCmds
+
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10017
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10023
+
+SELECTEDLOG  = 10023
+PREPARE PROCESS PARAMETERS = TRUE
+10011;keyid;keyid = 7
+EXECUTE PROCESS = IntegraByIntegrationCmds
+
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10023
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10028
+
+SELECTEDLOG  = 10028
+PREPARE PROCESS PARAMETERS = TRUE
+10011;keyid;keyid = 7
+EXECUTE PROCESS = IntegraByIntegrationCmds
+
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10028
+
+Shell = ping -n 5 127.0.0.1
+
+//----------------------------------------------------------------------------
+
+Shell = echo Iniciando Integracao 10029
+
+SELECTEDLOG  = 10029
+PREPARE PROCESS PARAMETERS = TRUE
+10011;keyid;keyid = 7
+EXECUTE PROCESS = IntegraByIntegrationCmds
+
+Begin SQL
+select 
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+Execute SQL
+
+Existe conteudo em BCN_DsbErro %@ResultField1%
+
+Shell = echo Finalizando Integracao 10029
+
+Shell = ping -n 5 127.0.0.1
+
+
+
+
+
+

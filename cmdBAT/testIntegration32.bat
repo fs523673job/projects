@@ -1,0 +1,1 @@
+"C:\Apdata_X64\Aplicacoes\ApScripter\Bin\Win32\Debug\ApScripter.exe" "C:\github\fs523673job\projects\cmdScripter\Integration_Test.txt"
