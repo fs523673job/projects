@@ -14,7 +14,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10001
 
@@ -34,7 +34,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10002
 
@@ -54,7 +54,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10003
 
@@ -74,7 +74,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10004
 
@@ -94,7 +94,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10008
 
@@ -114,7 +114,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10010
 
@@ -136,7 +136,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10011
 
@@ -158,7 +158,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10014
 
@@ -180,7 +180,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10015
 
@@ -202,7 +202,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10016
 
@@ -224,7 +224,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10017
 
@@ -246,7 +246,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10023
 
@@ -268,7 +268,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10028
 
@@ -290,7 +290,7 @@ select
   where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL
 
-Existe conteudo em BCN_DsbErro %@ResultField1%
+Shell = echo Existe conteudo em BCN_DsbErro %@ResultField1%
 
 Shell = echo Finalizando Integracao 10029
 
