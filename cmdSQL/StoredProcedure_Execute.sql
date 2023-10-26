@@ -159,3 +159,11 @@ select top 100 DEP_CdiConDependente, DEP_DtdNascimentoData, DEP_DtdApresCertNasc
   order by 1 desc
 
 exec sp_deleteCascateRegistry 'ConDependentes', 'DEP_CdiConDependente = 1037', 0
+
+select 
+  BCN_CdiLogIntegracaoServidor,
+  BCN_CdiLogIntegracao,
+  BCN_CdiServidorIntegracao,
+  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+  from LogsIntegracoesServidores 
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)

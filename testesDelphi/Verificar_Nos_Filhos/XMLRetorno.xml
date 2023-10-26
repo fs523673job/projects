@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<root>
+	<element>
+		<dataArray>
+			<element>
+				<code>367</code>
+				<data>
+					<element>
+						<afastamentoDefinitivo>false</afastamentoDefinitivo>
+						<afastamentoINSS>true</afastamentoINSS>
+						<alerta>false</alerta>
+						<atestadoExterno>true</atestadoExterno>
+						<cat/>
+						<cidade>null</cidade>
+						<cidadeUnidadeAtendimento>null</cidadeUnidadeAtendimento>
+						<cidCodigo>Z290</cidCodigo>
+						<cidDescricao>Z290 - Isolamento</cidDescricao>
+						<classificacaoInterna>
+							<id>795</id>
+						</classificacaoInterna>
+						<dataRetorno>2021-04-05</dataRetorno>
+						<dataTermino>2021-04-04</dataTermino>
+						<horaRetorno>null</horaRetorno>
+						<horaSaida>null</horaSaida>
+						<id>12480</id>
+						<inicioAfastamento>2021-03-30</inicioAfastamento>
+						<inscricaoProfissionalExterno>37339</inscricaoProfissionalExterno>
+						<justificativaAtualizacao>null</justificativaAtualizacao>
+						<justificativaCancelamento>null</justificativaCancelamento>
+						<maior15Dias>false</maior15Dias>
+						<mesmoMotivoAnterior>true</mesmoMotivoAnterior>
+						<motivoAfastamento>03</motivoAfastamento>
+						<nomeProfissionalExterno>Penny Auer IV</nomeProfissionalExterno>
+						<nomeUnidadeAtendimento>null</nomeUnidadeAtendimento>
+						<numeroProcessoBeneficio>null</numeroProcessoBeneficio>
+						<numeroServico>000000542935</numeroServico>
+						<observacoes>Convenio: AMBULATORIO GUABIROTUBA</observacoes>
+						<observacoesEsocial>null</observacoesEsocial>
+						<orgaoProfissionalExterno>1</orgaoProfissionalExterno>
+						<origemRetificacao>null</origemRetificacao>
+						<pessoa>
+							<area1>
+								<codigo>71</codigo>
+								<descricao>71-CURITIBA</descricao>
+								<id>71</id>
+								<paisDocumento>
+									<id>1</id>
+									<sigla>BR</sigla>
+								</paisDocumento>
+								<status>A</status>
+							</area1>
+							<cpf>215.717.858-92</cpf>
+							<funcionarioTerceiro>F</funcionarioTerceiro>
+							<id>3265</id>
+							<matriculaEmpresa>409812</matriculaEmpresa>
+							<nome>Tom Fahey</nome>
+						</pessoa>
+						<previsao>null</previsao>
+						<profissionalAtestado>null</profissionalAtestado>
+						<profissionalAtestadoPaisDocumento>null</profissionalAtestadoPaisDocumento>
+						<responsavelAtualizacao/>
+						<responsavelCancelamento/>
+						<responsavelRegistro>
+							<id>1</id>
+							<matriculaEmpresa>141</matriculaEmpresa>
+							<nome>Gertrude Terry</nome>
+						</responsavelRegistro>
+						<status>CO</status>
+						<tipoAcidenteTransito>null</tipoAcidenteTransito>
+						<tipoProcesso>null</tipoProcesso>
+						<totalDiasAfastado>6</totalDiasAfastado>
+						<ufOrgaoProfissionalExterno>PR</ufOrgaoProfissionalExterno>
+						<unidadeAtendimento>null</unidadeAtendimento>
+					</element>
+					<element>
+						<afastamentoDefinitivo>false</afastamentoDefinitivo>
+						<afastamentoINSS>false</afastamentoINSS>
+						<alerta>false</alerta>
+						<atestadoExterno>false</atestadoExterno>
+						<cat/>
+						<cidade>Curitiba</cidade>
+						<cidadeUnidadeAtendimento>null</cidadeUnidadeAtendimento>
+						<cidCodigo>null</cidCodigo>
+						<cidDescricao>null</cidDescricao>
+						<classificacaoInterna>
+							<id>85</id>
+						</classificacaoInterna>
+						<dataRetorno>null</dataRetorno>
+						<dataTermino>null</dataTermino>
+						<horaRetorno>null</horaRetorno>
+						<horaSaida>null</horaSaida>
+						<id>411</id>
+						<inicioAfastamento>2022-08-01</inicioAfastamento>
+						<inscricaoProfissionalExterno>219</inscricaoProfissionalExterno>
+						<justificativaAtualizacao>afastamento INSS</justificativaAtualizacao>
+						<justificativaCancelamento>null</justificativaCancelamento>
+						<maior15Dias>true</maior15Dias>
+						<mesmoMotivoAnterior>true</mesmoMotivoAnterior>
+						<motivoAfastamento>03</motivoAfastamento>
+						<nomeProfissionalExterno>null</nomeProfissionalExterno>
+						<nomeUnidadeAtendimento>null</nomeUnidadeAtendimento>
+						<numeroProcessoBeneficio>null</numeroProcessoBeneficio>
+						<numeroServico>000000542952</numeroServico>
+						<observacoes>null</observacoes>
+						<observacoesEsocial>null</observacoesEsocial>
+						<orgaoProfissionalExterno>1</orgaoProfissionalExterno>
+						<origemRetificacao>null</origemRetificacao>
+						<pessoa>
+							<area1>
+								<codigo>71</codigo>
+								<descricao>71-CURITIBA</descricao>
+								<id>71</id>
+								<paisDocumento>
+									<id>1</id>
+									<sigla>BR</sigla>
+								</paisDocumento>
+								<status>A</status>
+							</area1>
+							<cpf>817.955.569-00</cpf>
+							<funcionarioTerceiro>F</funcionarioTerceiro>
+							<id>769</id>
+							<matriculaEmpresa>210692</matriculaEmpresa>
+							<nome>Patti Schulist</nome>
+						</pessoa>
+						<previsao>null</previsao>
+						<profissionalAtestado>
+							<id>80</id>
+							<nome>Marta Torphy IV</nome>
+						</profissionalAtestado>
+						<profissionalAtestadoPaisDocumento>null</profissionalAtestadoPaisDocumento>
+						<responsavelAtualizacao/>
+						<responsavelCancelamento/>
+						<responsavelRegistro>
+							<id>432</id>
+							<matriculaEmpresa>210692</matriculaEmpresa>
+							<nome>Erick VonRueden</nome>
+						</responsavelRegistro>
+						<status>CO</status>
+						<tipoAcidenteTransito>null</tipoAcidenteTransito>
+						<tipoProcesso>null</tipoProcesso>
+						<totalDiasAfastado>15</totalDiasAfastado>
+						<ufOrgaoProfissionalExterno>PR</ufOrgaoProfissionalExterno>
+						<unidadeAtendimento>
+							<descricao>AMBULATÃƒÆ’Ã¢â‚¬Å“RIO GUABIROTUBA</descricao>
+							<id>5</id>
+						</unidadeAtendimento>
+					</element>
+					<message>OK</message>
+					<page>1</page>
+					<totalItens>2</totalItens>
+					<totalPages>1</totalPages>
+				</data>
+			</element>
+		</dataArray>
+	</element>
+	<element>
+		<OriginalContextJson>{dataArray:[{code:367,data:[{afastamentoDefinitivo:false,afastamentoINSS:true,alerta:false,atestadoExterno:true,cat:{},cidade:null,cidadeUnidadeAtendimento:null,cidCodigo:Z290,cidDescricao:Z290 - Isolamento,classificacaoInterna:{id:795},dataRetorno:2021-04-05,dataTermino:2021-04-04,horaRetorno:null,horaSaida:null,id:12480,inicioAfastamento:2021-03-30,inscricaoProfissionalExterno:37339,justificativaAtualizacao:null,justificativaCancelamento:null,maior15Dias:false,mesmoMotivoAnterior:true,motivoAfastamento:03,nomeProfissionalExterno:Penny Auer IV,nomeUnidadeAtendimento:null,numeroProcessoBeneficio:null,numeroServico:000000542935,observacoes:Convenio: AMBULATORIO GUABIROTUBA,observacoesEsocial:null,orgaoProfissionalExterno:1,origemRetificacao:null,pessoa:{area1:{codigo:71,descricao:71-CURITIBA,id:71,paisDocumento:{id:1,sigla:BR},status:A},cpf:215.717.858-92,funcionarioTerceiro:F,id:3265,matriculaEmpresa:409812,nome:Tom Fahey},previsao:null,profissionalAtestado:null,profissionalAtestadoPaisDocumento:null,responsavelAtualizacao:{},responsavelCancelamento:{},responsavelRegistro:{id:1,matriculaEmpresa:141,nome:Gertrude Terry},status:CO,tipoAcidenteTransito:null,tipoProcesso:null,totalDiasAfastado:6,ufOrgaoProfissionalExterno:PR,unidadeAtendimento:null},{afastamentoDefinitivo:false,afastamentoINSS:false,alerta:false,atestadoExterno:false,cat:{},cidade:Curitiba,cidadeUnidadeAtendimento:null,cidCodigo:null,cidDescricao:null,classificacaoInterna:{id:85},dataRetorno:null,dataTermino:null,horaRetorno:null,horaSaida:null,id:411,inicioAfastamento:2022-08-01,inscricaoProfissionalExterno:219,justificativaAtualizacao:afastamento INSS,justificativaCancelamento:null,maior15Dias:true,mesmoMotivoAnterior:true,motivoAfastamento:03,nomeProfissionalExterno:null,nomeUnidadeAtendimento:null,numeroProcessoBeneficio:null,numeroServico:000000542952,observacoes:null,observacoesEsocial:null,orgaoProfissionalExterno:1,origemRetificacao:null,pessoa:{area1:{codigo:71,descricao:71-CURITIBA,id:71,paisDocumento:{id:1,sigla:BR},status:A},cpf:817.955.569-00,funcionarioTerceiro:F,id:769,matriculaEmpresa:210692,nome:Patti Schulist},previsao:null,profissionalAtestado:{id:80,nome:Marta Torphy IV},profissionalAtestadoPaisDocumento:null,responsavelAtualizacao:{},responsavelCancelamento:{},responsavelRegistro:{id:432,matriculaEmpresa:210692,nome:Erick VonRueden},status:CO,tipoAcidenteTransito:null,tipoProcesso:null,totalDiasAfastado:15,ufOrgaoProfissionalExterno:PR,unidadeAtendimento:{descricao:AMBULATÃƒÆ’Ã¢â‚¬Å“RIO GUABIROTUBA,id:5}}],message:OK,page:1,totalItens:2,totalPages:1}]}</OriginalContextJson>
+	</element>
+</root>
+
+
