@@ -20,7 +20,6 @@ call update.bat
 cd /d %REPO_PATH%\cmdScripter
 call update.bat
 
-
 :: Adicionando todas as mudanças no repositório
 cd /d %REPO_PATH%
 git add --all
@@ -34,6 +33,9 @@ git commit -m "%COMMIT_MSG%"
 
 :: Empurrando as mudanças para o servidor
 git push
+
+:: Verificando se há alguma modificação que não foi commitada
+git status -s
 
 pause
 
