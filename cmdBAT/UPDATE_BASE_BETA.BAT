@@ -9,10 +9,10 @@ echo excluindo arquivo anterior
 echo.
 
 
-if exist "C:\Bases_Local\Oficial_55900.BAK" (
-	del "C:\Bases_Local\Oficial_55900.BAK"
+if exist "C:\Bases_Local\Oficial_31202.BAK" (
+	del "C:\Bases_Local\Oficial_31202.BAK"
 	echo.
-	echo arquivo deletado Oficial_55900.BAK
+	echo arquivo deletado Oficial_31202.BAK
 	echo.
 )
 
@@ -27,7 +27,7 @@ echo.
 echo copiando arquivo em \\192.168.10.209\BackupsOficiais
 echo.
 
-COPY \\192.168.10.209\BackupsOficiais\Oficial_55900.BAK "C:\Bases_Local"
+COPY \\192.168.10.209\BackupsOficiais\Oficial_31202.BAK "C:\Bases_Local"
 echo.
 echo copia finalizada
 echo.
@@ -37,7 +37,7 @@ echo iniciando restauracao da base de dados
 echo.
 
 sqlcmd -S APDDBTY09T2 -U "sa" -P "18|=S1=aHbU{T1Tn" -i "C:\github\fs523673job\projects\cmdSQL\SET_OFFLINE.SQL"
-sqlcmd -S APDDBTY09T2 -U "sa" -P "18|=S1=aHbU{T1Tn" -i "C:\github\fs523673job\projects\cmdSQL\PREPARE_BASE.sql"
+sqlcmd -S APDDBTY09T2 -U "sa" -P "18|=S1=aHbU{T1Tn" -i "C:\github\fs523673job\projects\cmdSQL\PREPARE_BASE_BETA.sql"
 
 echo.
 echo restauracao da base de dados finalizada
