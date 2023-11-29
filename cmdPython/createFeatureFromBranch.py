@@ -40,28 +40,37 @@ def extract_feature_number(feature_name: str) -> str:
     return ""
 
 
-def update_feature_file(feature_name: str, file_path: str):
+def update_feature_file(feature_name: str):
     feature_number = extract_feature_number(feature_name)
     if not feature_number:
         print("Erro: Não foi possível extrair o número da feature.")
         return
 
-    updated = False
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
+    file_path = fr"C:\Users\flsantos\OneDrive - Apdata do Brasil Software Ltda\Chamados\{feature_number}.txt"
 
-    with open(file_path, 'w') as file:
-        for line in lines:
-            if line.startswith("Features Criadas:"):
-                line = f"Features Criadas: {feature_name}\n"
-                updated = True
-            file.write(line)
+    try:
+        updated = False
+        with open(file_path, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
 
-    if not updated:
-        with open(file_path, 'a') as file:
-            file.write(f"Features Criadas: {feature_name}\n")
+        with open(file_path, 'w', encoding='utf-8') as file:
+            for line in lines:
+                if line.startswith("Features Criadas:"):
+                    line = f"Features Criadas: {feature_name}\n"
+                    updated = True
+                file.write(line)
 
-    print(f"Arquivo '{file_path}' atualizado com sucesso.")
+        if not updated:
+            with open(file_path, 'a', encoding='utf-8') as file:
+                file.write(f"Features Criadas: {feature_name}\n")
+
+        print(f"Arquivo '{file_path}' atualizado com sucesso.")
+    except UnicodeDecodeError as e:
+        print(f"Erro ao decodificar o arquivo: {e}")
+    except FileNotFoundError:
+        print(f"Erro: Arquivo {file_path} não encontrado.")
+    except Exception as e:
+        print(f"Erro desconhecido: {e}")
 
 
 def main():
@@ -87,7 +96,7 @@ def main():
 
     if 'NAME_FEATURE' in data and 'NAME_BRANCH' in data and 'SHA_ORIGEM' in data:
         insert_into_firebird(data['NAME_FEATURE'], data['NAME_BRANCH'], data['SHA_ORIGEM'], regex_search, feature_desc, feature_type)
-        update_feature_file(data['NAME_FEATURE'], 'caminho/para/seu/arquivo.txt')  # Atualiza o arquivo
+        update_feature_file(data['NAME_FEATURE'])  # Atualiza o arquivo
     else:
         print("Erro: Não foi possível obter todas as informações necessárias da saída do script Bash.")
 
