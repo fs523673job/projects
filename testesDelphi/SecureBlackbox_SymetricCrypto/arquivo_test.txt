@@ -1,0 +1,367 @@
+Chamado: 706418
+Descrição: Pendencia Solicitação de melhoria de segurança nas pastas do servidor 
+Data Início Análise: [16:42 05/12/2023]
+Data Final: []
+Data Programada: []
+Versão de Desenvolvimento: 
+Versão do Cliente:
+Features Criadas:
+Chamados Auxilio/Complementares/Irmãos:
+Oficializado: Não
+CheckList: Não
+Enviado Para Testes: Não
+Emergencial: Sim
+Analista: 
+Devolvido Caixa: Não
+Interrupções:
+Refazer Depois:
+Pré-Requisitos (PT's):
+Colateral (PT):
+MR:
+Palavras Chaves: Criptografia, Criptografia Simétrica, SecureBlackbox
+
+Base Dados: [Banco] - [Senha Banco] - [Senha Sistema]
+
+
+*******************************************************************************************************************************************************************
+*https://www.conventionalcommits.org/en/v1.0.0/#specification*
+
+==> Conventional Commits 
+
+types:->
+	build         : changes to build system or external dependencies
+	chore         : changes for housekeeping (avoiding this will force more meaningful message)
+	ci            : changes to CI configuration files and scripts
+	docs          : changes to the documentation
+	feat          : addition of some new features
+	fix           : a bug fix
+	cut           : removing the capability or functions
+	perf          : a code change that improves performance
+	refactor      : a code change that neither fixes a bug nor adds a feature
+	revert        : reverting an accidental commit
+	style         : changes to the code that do not affect the meaning
+	test          : adding missing tests or correcting existing tests
+
+==> New Descr. Commit
+
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+
+==> Descr. do Commit
+
+PT: 706418 Equipe: INFRA Modulo: Núcleo Global<feat>
+
+Descricao: 
+PT: 706418 - Pendencia Solicitação de melhoria de segurança nas pastas do servidor 
+
+Problema:
+Não há. 
+
+Solucao:
+Criptografar todos os arquivos que o apserver gera. 
+
+Chamados Complementares:
+
+Compilar:
+
+********************************************************************************************************************************************************************
+
+==> Testes Básicos
+
+[NA]: Conferir a alteração no Git 
+[NA]: Compilar ao menos uma vez após o desenvolvimento [em todoas as versões]
+[NA]: Testar o SQL no programa do parser
+[NA]: Testado Oracle
+[NA]: Testado SQLServer
+[NA]: Não alterar pontos centrais/importantes do sistema para teste sem antes ter conhecimento da sua funcionalidade
+[NA]: Verificar se não tem “IFS” iguais no código
+[NA]: Quando usar o resultado de Query em mais de um ponto sempre verificar a possibilidade de dar um First
+[NA]: Ao realizar copias de trechos de código sempre verificar as lógicas aplicadas
+[NA]: Apagar as dcus referente ao seu projeto, para verificar se não esqueceu nenhuma unit que não possui .pas
+[NA]: Quando realizar alterações de clients testar todos os clients apagando as dcus
+[NA]: Quando for desenvolver coisa novas, sempre pensar em responsabilidade de cada método
+[NA]: Ao criar sobreposição, certificar que todos os pontos onde é utilizado a tabela seja colocado um coalesce do campo
+[NA]: Ao  criar grids, verificar  a necessidade de adicionar filtros
+[NA]: Quando criar filtros em grids verificar testar a ordenação das colunas e verificar se é necessário sobrescrever o método GetOrderClause
+[]: Não seja precipitado em suas conclusões. Mantenha a calma. Quando o código voltar ou por qualquer motivo, pense muito a respeito verifique e seja criativo
+[]: Fazer as perguntas para o desenvolvimento
+
+==> Testes Para MR
+
+[NA]: Conferir se há a necessidade de criar sua classe em uma nova unit. Verificar por assunto
+[NA]: Quando utilizar strips de strings verificar a possibilidade de utilizar: ExtractString, SplitString, Split
+
+==> Ideias para depuração
+
+[] - Verificar os pacotes que são enviado. (O conteúdo do buffer que será enviado ao Server é o que ele está esperando!)
+
+==> Questionário para ajuste
+
+Questionário para chamados de ajuste
+
+1 - Qual o ID e o nome do objeto/rotina/módulo/sistema ou grupo?
+
+2 - Qual era a situação antes do ajuste? Qual erro o cliente visualizava? Quais os impactos no processo? Qual a origem do erro?
+
+3 - Qual a situação após o ajuste? O que esse ajuste afetou no processo?
+
+4 – Após esse ajuste, é necessária alguma parametrização? Se sim, descreva como deve ser feita.
+
+5 - Essa correção foi contemplada em qual versão e build?
+
+6 - Essa correção é destinada a algum país específico ou é global?
+
+7 - Houve alteração de base?
+
+8 - Trata-se de um ajuste crítico que precisa ser puxado para a versão do cliente? Se a resposta anterior for Sim, para qual versão o commit deve ser puxado?
+
+9 – Trata-se de um ajuste para o eSocial? Se sim, refere-se ao leiaute 1.0 ou ao leiaute 2.5?
+
+10 - A não conformidade foi detectada em testes internos ou pelo cliente?
+
+********************************************************************************************************************************************************************
+==> Descr.: (Descrição do Problema)
+
+No Workout, por questão de segurança o cliente TecBan está solicitando que todos os documentos salvos na pasta de Workout no servidor,
+que esses arquivos sejam criptografados, que só possam ser visualizados pelo Global Antares.
+
+Por questão de segurança, a area de TI que tem acesso ao servidor, não pode visualizar os arquivos das pastas.
+
+Esse processo tem que acontecer para qualquer documento que serão que serão gravados na pasta do Workout no servidor, como relatórios, objetos, grid e outros.
+
+Essa melhoria precisa ser como segurança nas pastas do servidor, não pode ter nenhum impacto nos processos atuais gerados pelo global antares (Visualização e Download de arquivos).
+
+Esse tema de segurança dos arquivos nas pastas do servidor, foi solicitado uma reunião pelo cliente TecBan e o Diretor Vagner Santana participou junto com eles e a Gerente do Projeto Sidneia.
+
+==> Simulação (Analista)
+
+Situação atual
+
+Ao executar processos no sistema que geram arquivos no diretório WorkOut, seja na pasta de um usuário ou na WFReports, como relatórios (exceto nos que tem criptografia parametrizada 
+no próprio relatório) ou logs de uma auditoria, esses arquivos são gravados sem nenhum tipo de criptografia, permitindo a visualização dos dados por usuários que tenham acesso à pasta.
+
+Dessa forma, pode ocorrer a visualização de dados por um usuário que tenha acesso ao diretório por, por exemplo, ser da equipe de T.I do cliente, porém não deveria visualizar relatórios 
+que tenham dados como salário de funcionários ou relatório bancário.
+
+Situação proposta:
+
+Para garantir maior segurança para a aplicação e para o cliente, todo arquivo gerado para ser salvo na pasta WorkOut deverá ser criptografado.
+
+Benefícios
+
+Gravando os arquivos criptografados impedirá que usuários tenham o acesso a dados indevidamente e protegerá os dados em caso de ataque cibernético devido a falha de segurança.
+
+"Requisitos Funcionais"
+
+'RF01' – Os usuários devem ter acesso a relatórios, objetos de auditoria ou qualquer outro objeto que gere arquivos no WorkOut;
+'RF02' – Ao receber arquivos a serem salvos no diretório do WorkOut, seja na pasta de um usuário ou na WFReports, o sistema deve criptografar os dados e gravar os arquivos com os dados criptografados;
+'RF03' – A criptografia precisa ser imperceptível ao usuário quando a leitura dos arquivos for realizada seja por download ou abertura;
+'RF04' – A parametrização deverá ser segmentada para cada tipo de arquivo. Para isso, serão criados dois parâmetros no Objeto 451 – Definições do Sistema: ‘Gerar Relatórios Criptografados’ e ‘Gerar Resultado de Processos Criptografados’.
+'RF05' – A opção para compactar os arquivos precisará ser implementado com a da criptografia. Para isso, será criado o parâmetro ‘Gerar Arquivos Compactados no Servidor (WorkOut)’ será criado no Objeto 451 – Definições do Sistema. 
+	   Quando este parâmetro estiver marcado, o sistema deverá compactar os arquivos enviados para o WorkOut.
+FR06 – Foi indicado pelo diretor Alex que fosse considerada a opção de implementar a mesma criptografia da senha do banco de dados nos arquivos.
+
+"Requisitos Inversos"
+
+'RI01' – O processo de geração de relatórios, execução de objetos de auditoria ou qualquer outro objeto que gere arquivos no WorkOut não será alterado;
+'RI02' – A visualização de um relatório ao final do processo de geração não será alterado (Deverá exibir o relatório gerado sem os dados estarem criptografados);
+'RI03' – O download de um relatório ao final do processo de geração não será alterado (Deverá ser salvo localmente com os dados puros, ou seja, sem criptografia).
+'RI04' – A manipulação de arquivos do diretório WorkIn não será alterada.
+
+"Requisitos não Funcionais"
+
+'RNF01' – Os usuários devem ter acesso ao objeto 2506 – Acesso ao Gerenciador de Impressão;
+'RNF02' – Os usuários devem ter acesso ao seu respectivo diretório de usuário.
+
+Versão
+
+A implementação solicitada deverá ser liberada na versão 5.59.8 em diante, ou a partir da versão em que o cliente solicitante estiver utilizando.
+
+"Regras de Negócio"
+
+'RN01' – Criptografia de arquivos salvos no WorkOut
+         Ao ocorrer a execução de um processo que gere arquivos no WorkOut, seja na pasta de um usuário ou na WFReports, o sistema deverá criptografar os dados desses arquivos, exceto os relatórios que já estejam configurados para serem gerados com criptografia, assim fazendo com que as informações somente possam ser visualizadas pelo sistema.
+'RN02' – Visualização dos arquivos criptografados no WorkOut de um usuário
+         Para que possa visualizar os arquivos gerados no WorkOut de um usuário e que esteja criptografado, o usuário deverá acessar o objeto 2506 – Acesso ao Gerenciador de Impressão (Atalho F7 pelo ApTools).
+         Caso o acesso ao objeto seja pelo ApTools, o usuário deverá clicar 2 vezes sobre o usuário desejado e clicar 2 vezes sobre o arquivo apresentado.
+         Caso o acesso ao objeto seja pela Web, o usuário deverá clicar no botão com ícone de lupa, abrindo o arquivo desejado.
+         No momento em que o usuário solicitar a abertura do arquivo desejado (Arquivo no WorkOut do usuário), o sistema deverá descriptografar os dados somente para exibir em tela, mantendo o arquivo original no WorkOut criptografado.
+'RN03' – Download dos arquivos criptografados no WorkOut de um usuário
+         Para que possa efetuar o download dos arquivos criptografados gerados no WorkOut de um usuário, o usuário deverá acessar o objeto 2506 – Acesso ao Gerenciador de Impressão (Atalho F7 pelo ApTools).
+         Caso o acesso ao objeto seja pelo ApTools, o usuário deverá clicar 2 vezes sobre o usuário desejado, clicar com o botão direito do mouse no arquivo desejado e clicar em ‘Download relatório’ ou ‘Download de todos os relatórios’.
+         Caso o acesso ao objeto seja pela Web, o usuário deverá clicar no botão cujo ícone represente a extensão em que deverá ocorrer o download.
+'RN04' – Descriptografar os arquivos no uso das opções ‘Imprimir o Relatório a partir do Servidor’ e ‘Imprimir o Relatório a partir do Cliente’ pelo objeto 2506 – Acesso ao Gerenciador de Impressão no ApTools
+         Ao acessar o objeto 2506 – Acesso ao Gerenciador de Impressão através do ApTools, clicar 2 vezes no diretório de usuário desejado e clicar com botão direito do mouse no arquivo desejado, apresentará algumas opções, dentre elas, ‘Imprimir o Relatório a partir do Servidor’ e ‘Imprimir o Relatório a partir do Cliente’.
+         Pelo fato dos arquivos estarem gravados no WorkOut do usuário criptografado, ao clicar no registro com o botão direito e selecionar uma das opções citadas, o sistema deverá descriptografar o respectivo arquivo para que seja realizado a impressão do mesmo.
+'RN05' – Descriptografar os arquivos no uso das opções ‘Envia arquivo para servidor ftp’, ‘Envia arquivo por e-mail’ e ‘Envia arquivo por integração’ pelo objeto 2506 – Acesso ao Gerenciador de Impressão no ApTools
+         Ao acessar o objeto 2506 – Acesso ao Gerenciador de Impressão através do ApTools, clicar 2 vezes no diretório de usuário desejado e clicar com botão direito do mouse no arquivo desejado, apresentará algumas opções, dentre elas, ‘Envia arquivo para servidor ftp’, ‘Envia arquivo por e-mail’ e ‘Envia arquivo por integração’.
+         Pelo fato dos arquivos estarem gravados no WorkOut do usuário criptografado, ao clicar no registro com o botão direito e selecionar uma das opções citadas, o sistema deverá descriptografar o respectivo arquivo e realizar o envio para o respectivo destino conforme a opção clicada.
+'RN06' – Visualização dos arquivos criptografados no WorkOut na pasta WFReports
+         Para que possa visualizar os arquivos gerados no WorkOut na pasta WFReports e que esteja criptografado, o usuário deverá acessar o objeto 1404 – Painel de Solicitações Gerais ou 3179 – Pendências Individuais (Para o 3179 somente será visualizado lançamentos que o usuário for aprovador).
+         Tendo acesso a um dos objetos citados e também ao lançamento desejado, o usuário deverá abrir o lançamento, clicar em 'Relatórios Gerados' e clicar no botão com ícone de lupa, abrindo o arquivo desejado.
+         No momento em que o usuário solicitar a abertura do arquivo desejado (Arquivo no WorkOut na pasta WFReports), o sistema deverá descriptografar os dados somente para exibir em tela, mantendo o arquivo original no WorkOut criptografado.
+'RN07' – Download dos arquivos criptografados no WorkOut na pasta WFReports
+         Para que possa efetuar o download dos arquivos criptografados gerados no WorkOut na pasta WFReports, o usuário deverá acessar o objeto 1404 – Painel de Solicitações Gerais ou 3179 – Pendências Individuais (Para o 3179 somente será visualizado lançamentos que o usuário for aprovador).
+         Tendo acesso a um dos objetos citados e também ao lançamento desejado, o usuário deverá abrir o lançamento, clicar em 'Relatórios Gerados' e clicar no botão cujo ícone represente a extensão em que deverá ocorrer o download ou clicar em 'Baixar todos os relatórios', baixando todos os relatórios gerados no respectivo lançamento dentro de um arquivo compactado.
+         No momento em que o usuário solicitar o download, o sistema deverá descriptografar os dados e baixar o arquivo.
+
+"Casos de Uso"
+'UC01' – Executar processo que gera arquivo no WorkOut (Relatório, auditoria, etc)
+
+"Fluxos principais"
+
+'P01' – O usuário executa processo que gera arquivos no diretório WorkOut (Geração de relatório, auditoria, aprovação de lançamento cuja etapa posterior gere relatórios ou na própria aprovação, etc);
+'P02' – O sistema processa e gera o arquivo a ser gravado no WorkOut (E01);
+'P03' – O sistema separa o arquivo que será criptografado;
+'P04' – O caso de uso é finalizado.
+
+"Fluxos alternativo"
+N/A
+
+"Fluxos de exceção"
+
+'E01'– O arquivo gerado é um relatório que já é configurado para ser criptografado;
+'E02'– O sistema não realiza nova criptografia e reserva para gravação no WorkOut;
+'E03'– O sistema continua o processamento em P04.
+'UC02' – Criptografar arquivo a ser gravado no WorkOut
+
+"Fluxos principais"
+
+'P01' – O sistema coleta o arquivo separado para ser criptografado;
+'P02' – O sistema criptografa o arquivo;
+'P03' – O sistema reserva para gravação no WorkOut;
+'P04' – O caso de uso é finalizado.
+
+"Fluxos alternativos"
+N/A
+
+"Fluxos de exceção"
+N/A
+'UC03' – Gravar arquivo criptografado no diretório do usuário executor no WorkOut
+
+"Fluxos principais"
+
+'P01' – O sistema coleta o arquivo já criptografado e reservado para gravação;
+'P02' – O sistema verifica a origem do arquivo;
+'P03' – O sistema grava no respectivo diretório dentro do WorkOut (Se o arquivo foi gerado pela execução de um processo por um usuário, o mesmo será gravado na pasta do usuário. Caso o arquivo tenha sido gerado por um lançamento de workflow, o mesmo será gravado na pasta WFReports para o respectivo lançamento);
+'P04' – O caso de uso é finalizado.
+
+"Fluxos alternativos"
+N/A
+
+"Fluxos de exceção"
+N/A
+'UC04' – Visualizar arquivo criptografado do WorkOut pelo objeto 2506
+
+"Fluxos principais"
+
+'P01' – O usuário acessa o objeto 2506 – Acesso ao Gerenciador de Impressão e seleciona o diretório do usuário desejado, caso esteja pelo ApTools (Não há necessidade de selecionar diretório caso esteja pela Web);
+'P02' – O usuário clica 2 vezes sobre o arquivo que deseja visualizar, caso esteja pelo ApTools, ou clica no botão com ícone de lupa, caso esteja pela Web (E01);
+'P03' – O sistema descriptografa o arquivo em memória, mantendo o arquivo original da mesma forma;
+'P04' – O sistema exibe o arquivo solicitado pelo usuário em tela, com os dados reais;
+'P05' – O caso de uso é finalizado.
+
+"Fluxos alternativos"
+N/A
+
+"Fluxos de exceção"
+
+'E01' – O sistema identifica que o arquivo selecionado em P02 não tem informações;
+'E02' – O sistema exibirá uma mensagem indicando que não há informações;
+'E03' – O sistema continua o processamento em P05.
+'UC05' – Baixar arquivo criptografado do WorkOut pelo objeto 2506
+
+"Fluxos principais"
+
+'P01' – O usuário acessa o objeto 2506 – Acesso ao Gerenciador de Impressão e seleciona o diretório do usuário desejado, caso esteja pelo ApTools (Não há necessidade de selecionar diretório caso esteja pela Web);
+'P02' – O usuário clica com o botão direito do mouse que deseja baixar e na sequência em ‘Download Relatório’ ou ‘Download de todos os relatórios’, caso esteja pelo ApTools, ou clicar no botão com ícone da extensão desejada do download, caso esteja pela Web (E01);
+'P03' – O sistema descriptografa o arquivo em memória, mantendo o arquivo original da mesma forma;
+'P04' – O Sistema permite o download do arquivo descriptografado localmente;
+'P05' – O usuário salva o arquivo;
+'P06' – O caso de uso é finalizado.
+
+"Fluxos alternativos"
+N/A
+
+"Fluxos de exceção"
+'E01' – O sistema identifica que o arquivo selecionado em P02 não tem informações;
+'E02' – O sistema exibirá uma mensagem indicando que não há informações;
+'E03' – O sistema continua o processamento em P05.
+'UC06' – Visualizar arquivos gerados por lançamento pelo objeto 1404 ou 3179
+
+"Fluxos principais"
+'P01' – O usuário acessa o objeto 1404 – Painel de Solicitações Gerais ou 3179 – Pendências Individuais;
+'P02' – O usuário acessa o lançamento que deseja e tenha acesso;
+'P03' – O usuário acessa a aba ‘Relatórios Gerados’;
+'P04' – O usuário clica no botão com ícone de lupa (E01);
+'P05' – O sistema descriptografa o arquivo em memória, mantendo o arquivo original da mesma forma;
+'P06' – O sistema exibe o arquivo solicitado pelo usuário em tela, com os dados reais;
+'P07' – O caso de uso é finalizado.
+
+"Fluxos alternativos"
+N/A
+
+"Fluxos de exceção"
+'E01' – O sistema não exibiu o botão para abertura do arquivo, pois o mesmo não tem páginas;
+'E02' – O usuário não conseguirá abrir o arquivo por não ter informações;
+'E03' – O sistema continua o processamento em P07.
+'UC07' – Baixar arquivos gerados por lançamento pelo objeto 1404 ou 3179
+
+"Fluxos principais"
+
+'P01' – O usuário acessa o objeto 1404 – Painel de Solicitações Gerais ou 3179 – Pendências Individuais;
+'P02' – O usuário acessa o lançamento que deseja e tenha acesso;
+'P03' – O usuário acessa a aba ‘Relatórios Gerados’;
+'P04' – O usuário clica no botão com ícone da extensão que deseja o download do arquivo ou clica em ‘Baixar todos os relatórios’ (E01);
+'P05' – O sistema descriptografa o arquivo em memória, mantendo o arquivo original da mesma forma;
+'P06' – O Sistema permite o download do arquivo descriptografado localmente;
+'P07' – O usuário salva o arquivo;
+'P08' – O caso de uso é finalizado.
+
+"Fluxos alternativos"
+N/A
+
+"Fluxos de exceção"
+'E01' – O sistema não exibiu o botão para download do arquivo, pois o mesmo não tem páginas;
+'E02' – O usuário não conseguirá baixar o arquivo por não ter informações;
+'E03' – O sistema continua o processamento em P07.
+'UC08' – Descriptografar arquivo do Workout
+
+"Fluxos principais"
+
+'P01' – O sistema é informado do arquivo a ser descriptografado;
+'P02' – O sistema descriptografa o arquivo em memória;
+'P03' – O caso de uso é finalizado.
+
+"Fluxos alternativos"
+N/A
+
+"Fluxos de exceção"
+N/A
+
+==> Minha Simulação
+
+********************************************************************************************************************************************************************
+
+==> Solução.: (Breve descriação da solução aplicada)
+
+** Diário do Chamado ***********************************************************************************************************************************************
+
+** Debugger ********************************************************************************************************************************************************
+
+** Documentação das Framework **************************************************************************************************************************************
+
+** Planos de Testes ************************************************************************************************************************************************
+
+** Outras Informações **********************************************************************************************************************************************
+
+** Comandos Utilizados *********************************************************************************************************************************************
+
+** Aprendizado *****************************************************************************************************************************************************
+
+** Chave do Registro ***********************************************************************************************************************************************
+
+********************************************************************************************************************************************************************
