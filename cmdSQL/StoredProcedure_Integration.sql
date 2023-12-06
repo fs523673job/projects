@@ -53,6 +53,8 @@ drop procedure sp_getNewCriteria
 GO
 drop function fn_getPKFieldName 
 GO
+drop procedure sp_Create_Aux_Table
+GO
 
 /*** FUNÇÕES UTILITÁRIAS **********************************************/
 /*** PROCEDURES UTILITÁRIAS *******************************************/
@@ -1361,6 +1363,8 @@ begin
 			exec sp_Execute_Insert_ThreeKey 'dbo', 06, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 5, @EstruturasADKey, 0, @SQL_CdiComandoSQL, 10, '0, 3, 0', 1
 			exec sp_Execute_Insert_ThreeKey 'dbo', 07, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 6, @EstruturasADKey, 0, @SQL_CdiComandoSQL, 11, '0, 0, 0', 1
 		/*ADINTEGRATOR - ACTIVE DIRECTORY*/
+
+		exec sp_Create_Aux_Table;
 	commit;
 end
 GO

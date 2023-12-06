@@ -56,7 +56,11 @@ def update_feature_file(feature_name: str):
         with open(file_path, 'w', encoding='utf-8') as file:
             for line in lines:
                 if line.startswith("Features Criadas:"):
-                    line = f"Features Criadas: {feature_name}\n"
+                    existing_features = line.strip().split(": ")[1]
+                    if existing_features:
+                        line = f"Features Criadas: {existing_features}, {feature_name}\n"
+                    else:
+                        line = f"Features Criadas: {feature_name}\n"
                     updated = True
                 file.write(line)
 
