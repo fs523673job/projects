@@ -52,6 +52,8 @@ object Form1: TForm1
     Width = 225
     Height = 17
     Caption = 'Salvar Criptografia Para Novo Arquivo '
+    Checked = True
+    State = cbChecked
     TabOrder = 2
   end
   object seContentFile: TSynEdit

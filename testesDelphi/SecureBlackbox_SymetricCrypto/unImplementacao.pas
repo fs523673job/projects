@@ -12,6 +12,9 @@ uses
   SBTypes
   ;
 
+const
+  ENCRYPTED_EXTENSION = '.APC';
+
 function EncryptSymetricFile(var AFilePath: String; const ACreateNewFile: Boolean = False): Boolean;
 function DecryptSymetricFile(var AFilePath: String; const ACreateNewFile: Boolean = False): Boolean;
 
@@ -54,10 +57,11 @@ begin
 
             if ACreateNewFile then
             begin
-              newExt := ExtractFileExt(AFilePath);
-              if not newExt.IsEmpty and (newExt.Length = 4) then
-                newExt[2] := 'E';
-              AFilePath := ChangeFileExt(AFilePath, newExt);
+              if (DeleteFile(AFilePath)) then
+              begin
+                newExt := ExtractFileExt(AFilePath) + ENCRYPTED_EXTENSION;
+                AFilePath := ChangeFileExt(AFilePath, newExt);
+              end;
             end;
 
             msFileOut.SaveToFile(AFilePath);
@@ -118,8 +122,12 @@ begin
             if ACreateNewFile then
             begin
               newExt := ExtractFileExt(AFilePath);
-              if not newExt.IsEmpty and (newExt.Length = 4) then
-                newExt[2] := 'D';
+              if (newExt = ENCRYPTED_EXTENSION) then
+              begin
+                if (DeleteFile(AFilePath)) then
+                  newExt := StringReplace(newExt, ENCRYPTED_EXTENSION, '', [rfReplaceAll]);
+              end;
+
               AFilePath := ChangeFileExt(AFilePath, newExt);
             end;
 

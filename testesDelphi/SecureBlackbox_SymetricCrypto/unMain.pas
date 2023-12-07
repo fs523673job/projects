@@ -207,17 +207,17 @@ begin
         begin
           MeansureExecutionTime(EncryptSymetricFile, FilePath, ckAlterExtension.Checked, ExecOk, TimeExec);
           if (ExecOk) then
-            seContentFile.Lines.Add(Format('%d - Encrypt Seconds %f', [c, TimeExec.TotalSeconds]))
+            seContentFile.Lines.Insert(0, Format('%d - Encrypt Seconds %f', [c, TimeExec.TotalSeconds]))
           else
-            seContentFile.Lines.Add(Format('%d - Encrypt Fail', [c]));
+            seContentFile.Lines.Insert(0, Format('%d - Encrypt Fail', [c]));
 
           Application.ProcessMessages;
 
           MeansureExecutionTime(DecryptSymetricFile, FilePath, ckAlterExtension.Checked, ExecOk, TimeExec);
           if (ExecOk) then
-            seContentFile.Lines.Add(Format('%d - Decript Seconds %f', [c, TimeExec.TotalSeconds]))
+            seContentFile.Lines.Insert(0, Format('%d - Decript Seconds %f', [c, TimeExec.TotalSeconds]))
           else
-            seContentFile.Lines.Add(Format('%d - Decript Fail', [c]));
+            seContentFile.Lines.Insert(0, Format('%d - Decript Fail', [c]));
 
           Application.ProcessMessages;
         end;
