@@ -16,6 +16,7 @@ uses
   Vcl.StdCtrls,
   Vcl.Mask,
   Vcl.ExtCtrls,
+  SynEdit,
 
   unImplementacao
 
@@ -26,9 +27,14 @@ type
     leFilePath: TLabeledEdit;
     spFileName: TSpeedButton;
     OpenDialog: TOpenDialog;
-    btnExecute: TButton;
+    btnEncrypt: TButton;
+    ckAlterExtension: TCheckBox;
+    seContentFile: TSynEdit;
+    Label1: TLabel;
+    Button1: TButton;
     procedure spFileNameClick(Sender: TObject);
-    procedure btnExecuteClick(Sender: TObject);
+    procedure btnEncryptClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -53,17 +59,50 @@ begin
   end;
 end;
 
-procedure TForm1.btnExecuteClick(Sender: TObject);
+procedure TForm1.btnEncryptClick(Sender: TObject);
+var
+  FilePath: String;
 begin
- if FileExists(leFilePath.Text) then
- begin
-   if EncryptSymetricFile(leFilePath.Text) then
-     ShowMessage('Arquivo Criptografado')
-   else
-     ShowMessage('Falha ao criptografar o arquivo');
- end
- else
-   ShowMessage('Arquivo selecionado não encontrado');
+  FilePath := leFilePath.Text;
+
+  if FileExists(FilePath) then
+  begin
+    seContentFile.Lines.Clear;
+    seContentFile.Lines.LoadFromFile(FilePath);
+
+    if EncryptSymetricFile(FilePath, ckAlterExtension.Checked) then
+      ShowMessage('Arquivo Criptografado')
+    else
+      ShowMessage('Falha ao criptografar o arquivo');
+  end
+  else
+    ShowMessage('Arquivo selecionado não encontrado');
+
+  seContentFile.Lines.Clear;
+  seContentFile.Lines.LoadFromFile(FilePath);
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  FilePath: String;
+begin
+  FilePath := leFilePath.Text;
+
+  if FileExists(FilePath) then
+  begin
+    seContentFile.Lines.Clear;
+    seContentFile.Lines.LoadFromFile(FilePath);
+
+    if DecryptSymetricFile(FilePath, ckAlterExtension.Checked) then
+      ShowMessage('Arquivo Descriptografado')
+    else
+      ShowMessage('Falha ao descriptografar o arquivo');
+  end
+  else
+    ShowMessage('Arquivo selecionado não encontrado');
+
+  seContentFile.Lines.Clear;
+  seContentFile.Lines.LoadFromFile(FilePath);
 end;
 
 
