@@ -22,20 +22,16 @@ var
   factory: TElSymmetricCryptoFactory;
   crypto: TElSymmetricCrypto;
   km: TElSymmetricKeyMaterial;
-  keyStr, ivStr: String;
   sbbyteKey: ByteArray;
   sbbyteIV: ByteArray;
   msFileIn, msFileOut: TMemoryStream;
   newExt: String;
 begin
-  keyStr := '@@apdatasimfilekey';
-  ivStr := '@@apdatasimfileIV';
+  sbbyteKey := [64, 64, 97, 112, 100, 97, 116, 97, 115, 105, 109, 102, 105, 108, 101, 107, 101, 121]; // '@@apdatasimfilekey'
+  sbbyteIV := [64, 64, 97, 112, 100, 97, 116, 97, 115, 105, 109, 102, 105, 108, 101, 73, 86];         // '@@apdatasimfileIV'
 
   SetLength(sbbyteKey, 32);
   SetLength(sbbyteIV, 16);
-
-  Move(keyStr[1], sbbyteKey[0], Min(Length(keyStr), 32));
-  Move(ivStr[1], sbbyteIV[0], Min(Length(ivStr), 16));
 
   Result := True;
   try
@@ -61,7 +57,7 @@ begin
               newExt := ExtractFileExt(AFilePath);
               if not newExt.IsEmpty and (newExt.Length = 4) then
                 newExt[2] := 'E';
-              AFilePath := ChangeFileExt(AFilePath,newExt);
+              AFilePath := ChangeFileExt(AFilePath, newExt);
             end;
 
             msFileOut.SaveToFile(AFilePath);
@@ -89,20 +85,16 @@ var
   factory: TElSymmetricCryptoFactory;
   crypto: TElSymmetricCrypto;
   km: TElSymmetricKeyMaterial;
-  keyStr, ivStr: String;
   sbbyteKey: ByteArray;
   sbbyteIV: ByteArray;
   msFileIn, msFileOut: TMemoryStream;
   newExt: String;
 begin
-  keyStr := '@@apdatasimfilekey';
-  ivStr := '@@apdatasimfileIV';
+  sbbyteKey := [64, 64, 97, 112, 100, 97, 116, 97, 115, 105, 109, 102, 105, 108, 101, 107, 101, 121]; // '@@apdatasimfilekey'
+  sbbyteIV := [64, 64, 97, 112, 100, 97, 116, 97, 115, 105, 109, 102, 105, 108, 101, 73, 86];         // '@@apdatasimfileIV'
 
   SetLength(sbbyteKey, 32);
   SetLength(sbbyteIV, 16);
-
-  Move(keyStr[1], sbbyteKey[0], Min(Length(keyStr), 32));
-  Move(ivStr[1], sbbyteIV[0], Min(Length(ivStr), 16));
 
   Result := True;
   try

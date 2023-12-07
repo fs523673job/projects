@@ -76,6 +76,8 @@ begin
 
       seContentFile.Lines.Clear;
       seContentFile.Lines.LoadFromFile(FilePath);
+
+      leFilePath.Text := FilePath;
     end
     else
       ShowMessage('Falha ao criptografar o arquivo');
@@ -101,6 +103,8 @@ begin
 
       seContentFile.Lines.Clear;
       seContentFile.Lines.LoadFromFile(FilePath);
+
+      leFilePath.Text := FilePath;
     end
     else
       ShowMessage('Falha ao descriptografar o arquivo');
