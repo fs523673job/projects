@@ -71,15 +71,17 @@ begin
     seContentFile.Lines.LoadFromFile(FilePath);
 
     if EncryptSymetricFile(FilePath, ckAlterExtension.Checked) then
-      ShowMessage('Arquivo Criptografado')
+    begin
+      ShowMessage('Arquivo Criptografado');
+
+      seContentFile.Lines.Clear;
+      seContentFile.Lines.LoadFromFile(FilePath);
+    end
     else
       ShowMessage('Falha ao criptografar o arquivo');
   end
   else
     ShowMessage('Arquivo selecionado não encontrado');
-
-  seContentFile.Lines.Clear;
-  seContentFile.Lines.LoadFromFile(FilePath);
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -94,15 +96,17 @@ begin
     seContentFile.Lines.LoadFromFile(FilePath);
 
     if DecryptSymetricFile(FilePath, ckAlterExtension.Checked) then
-      ShowMessage('Arquivo Descriptografado')
+    begin
+      ShowMessage('Arquivo Descriptografado');
+
+      seContentFile.Lines.Clear;
+      seContentFile.Lines.LoadFromFile(FilePath);
+    end
     else
       ShowMessage('Falha ao descriptografar o arquivo');
   end
   else
     ShowMessage('Arquivo selecionado não encontrado');
-
-  seContentFile.Lines.Clear;
-  seContentFile.Lines.LoadFromFile(FilePath);
 end;
 
 
