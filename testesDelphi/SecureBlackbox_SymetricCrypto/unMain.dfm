@@ -94,14 +94,41 @@ object Form1: TForm1
       '')
     SelectedColor.Alpha = 0.400000005960464500
   end
-  object Button1: TButton
+  object btnDescriptografar: TButton
     Left = 175
     Top = 409
     Width = 161
     Height = 25
     Caption = 'Descriptografar'
     TabOrder = 4
-    OnClick = Button1Click
+    OnClick = btnDescriptografarClick
+  end
+  object ckLoadFile: TCheckBox
+    Left = 248
+    Top = 51
+    Width = 113
+    Height = 17
+    Caption = 'Carregar arquivo'
+    TabOrder = 5
+  end
+  object btStress: TButton
+    Left = 342
+    Top = 409
+    Width = 219
+    Height = 25
+    Caption = 'Stress Encryp/Decript'
+    TabOrder = 6
+    OnClick = btStressClick
+  end
+  object edtCount: TEdit
+    Left = 567
+    Top = 409
+    Width = 53
+    Height = 25
+    Alignment = taRightJustify
+    NumbersOnly = True
+    TabOrder = 7
+    Text = '100'
   end
   object OpenDialog: TOpenDialog
     Left = 424

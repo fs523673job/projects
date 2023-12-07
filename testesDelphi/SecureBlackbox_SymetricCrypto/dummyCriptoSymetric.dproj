@@ -5,8 +5,8 @@
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>1</TargetedPlatforms>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>dummyCriptoSymetric.dpr</MainSource>
     </PropertyGroup>
@@ -34,6 +34,12 @@
         <Cfg_1>true</Cfg_1>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win64)'!=''">
+        <Cfg_1_Win64>true</Cfg_1_Win64>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
         <Cfg_2>true</Cfg_2>
         <CfgParent>Base</CfgParent>
@@ -45,9 +51,15 @@
         <Cfg_2>true</Cfg_2>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win64)'!=''">
+        <Cfg_2_Win64>true</Cfg_2_Win64>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
+        <DCC_DcuOutput>.\$(Platform)\$(Config)\dcus</DCC_DcuOutput>
+        <DCC_ExeOutput>.\$(Platform)\$(Config)\app</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
@@ -73,6 +85,11 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <DCC_UsePackage>soapserver;FireDACIBDriver;SSLBBoxSrvIndy10D24;vclwinx;cxExportRS25;SMIMECAdESBBoxD24;rbDBE1621;DAVBBoxCliD24;fmx;dxFireDACServerModeRS25;vclie;DbxCommonDriver;bindengine;VCLRESTComponents;FireDACCommonODBC;IndyIPCommon;TeeImage;cxPivotGridOLAPRS25;dxPScxSchedulerLnkRS25;appanalytics;IndyProtocols;vclx;PKISSHBBoxD24;dbxcds;vcledge;dxdbtrRS25;dxCoreRS25;cxPivotGridRS25;dxPScxGridLnkRS25;HTTPBBoxCliD24;LDAPBBoxD24;dxBarRS25;FireDACSqliteDriver;DbxClientDriver;ppWPToolsPack;soapmidas;dxSkinsdxDLPainterRS25;TMSScripter_IDE;TeeUI;dbexpress;dxPSdxMapControlLnkRS25;TeePro;rbDB1621;SSLBBoxCliIndy10D24;inet;EHS_XE7_R;dxWizardControlRS25;dxADOServerModeRS25;vcltouch;SSLBBoxSrvD24;ipstudiowin;dxRibbonRS25;FTPSBBoxSrvD24;cxTreeListdxBarPopupMenuRS25;dxServerModeRS25;acQueryBuilderD25;fmxdae;XMLBBoxD24;CustomIPTransport;dxtrmdRS25;SAMLBBoxD24;rbDIDE1621;cxLibraryRS25;dxSkinsdxRibbonPainterRS25;MailBBoxD24;PGPSSHBBoxD24;TeeImport;OmniThreadLibraryRuntime;cxGridRS25;IndySystem;lmdrtl;dxSpellCheckerRS25;SSHBBoxSrvD24;PKIPDFBBoxD24;PGPTLSBBoxD24;acQueryBuilderSDD25;dxHttpIndyRequestRS25;dxTileControlRS25;rbDAD1621;vclFireDAC;FireDACCommon;rbADO1621;TMSScripter_VCL;bindcompdbx;TeeLanguage;dxThemeRS25;rtl;FireDACMySQLDriver;SMIMEBBoxD24;PGPLDAPBBoxD24;dxTabbedMDIRS25;cxPageControlRS25;XMLBBoxSecD24;dxGaugeControlRS25;ApBasicControls;DBXSqliteDriver;dxPSRichEditControlLnkRS25;acSqlTextEditorD25;TeeGL;lmdrteldb;dxBarExtItemsRS25;PKIBBoxD24;vclimg;inetdbxpress;FireDAC;xmlrtl;cxTreeListRS25;dxPSPrVwRibbonRS25;SqlDir;rbTCUI1621;ZIPBBoxD24;OfficeBBoxD24;dsnap;cxPivotGridChartRS25;cxSchedulerRS25;dxDBXServerModeRS25;PGPMIMEBBoxD24;WPTools7;dxGDIPlusRS25;fmxobj;bindcompvclsmp;dxRichEditControlCoreRS25;ASiCBBoxD24;rbIDE1621;acQueryBuilderDbExD25;dxPSCoreRS25;dxFlowChartRS25;TMSScripter_Memo;SFTPBBoxSrvD24;dxBarExtDBItemsRS25;ApLibrary;MIMEBBoxD24;BaseBBoxD24;dxLayoutControlRS25;dxPScxCommonRS25;acQueryBuilderADOD25;FireDACCommonDriver;cxDataRS25;dxSkinsdxNavBarPainterRS25;dxPScxExtCommonRS25;dxPsPrVwAdvRS25;dxRichEditControlRS25;IndyIPClient;dxSpreadSheetReportDesignerRS25;bindcompvclwinx;dxPSdxGaugeControlLnkRS25;bindcompfmx;dxNavBarRS25;dxRibbonCustomizationFormRS25;cxVerticalGridRS25;inetdb;dxDockingRS25;rbRCL1621;HTTPBBoxSrvD24;Tee;dxPSDBTeeChartRS25;dxPSdxPDFViewerLnkRS25;vclactnband;dxPSdxLCLnkRS25;TMSScripter;fmxFireDAC;SFTPBBoxCliD24;acQueryBuilderFireDACD25;officeXPrt;lmdrtelcore;dxPSdxFCLnkRS25;dxorgcRS25;DBXMySQLDriver;dxSkinsdxBarPainterRS25;ApLibServer;VclSmp;dxPSLnksRS25;dxPSdxSpreadSheetLnkRS25;EurekaLogCore;fmxase;dxmdsRS25;cxSchedulerGridRS25;dbrtl;dxPSdxOCLnkRS25;rbTC1621;TeeDB;PGPBBoxD24;FireDACMSAccDriver;dxPSdxDBTVLnkRS25;dxPScxTLLnkRS25;SSHBBoxCliD24;dxSkinsCoreRS25;vcldsnap;DBXInterBaseDriver;dxPDFViewerRS25;dxOfficeCoreRS25;SSLBBoxCliD24;ipstudiowinclient;vcldb;dxSpreadSheetConditionalFormattingDialogsRS25;dxdborRS25;cxEditorsRS25;dxPSdxDBOCLnkRS25;ApInterfaces;SynEditDR;FTPSBBoxCliD24;CloudBBoxD24;TeeWorld;bindcomp;lmdrtelpro;IndyCore;RESTBackendComponents;DAVBBoxSrvD24;cxSchedulerRibbonStyleEventEditorRS25;rbCIDE1621;dxPSTeeChartRS25;BCEditorR;dxComnRS25;dxSpreadSheetRS25;FireDACADSDriver;RaizeComponentsVclDb;LockBox;dxPScxVGridLnkRS25;RESTComponents;dxPScxPivotGridLnkRS25;IndyIPServer;vcl;dsnapxml;adortl;dsnapcon;TMSScripter_Legacy;acCriteriaBuilderD25;EDIBBoxD24;dxSkinscxSchedulerPainterRS25;dxMapControlRS25;dxBarDBNavRS25;FireDACPgDriver;tethering;bindcompvcl;CloudService;PDFBBoxD24;lmdrtrtlx;dxSkinscxPCPainterRS25;soaprtl;RaizeComponentsVcl;cxSchedulerTreeBrowserRS25;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
+        <BT_BuildType>Debug</BT_BuildType>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -90,6 +107,9 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
+        <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
@@ -98,6 +118,11 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
+        <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -967,7 +992,7 @@
             </Deployment>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
+                <Platform value="Win64">True</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
