@@ -120,7 +120,7 @@ begin
 
       if (ExecOk) then
       begin
-        ShowMessage('Arquivo Criptografado - ' + IntToStr(TimeExec.Seconds));
+        ShowMessage(Format('Arquivo Criptografado - [%f Seconds][%s]', [TimeExec.TotalSeconds, TimeExec.ToString]));
 
         if ckLoadFile.Checked then
         begin
@@ -162,7 +162,7 @@ begin
 
       if ExecOk then
       begin
-        ShowMessage('Arquivo Descriptografado - ' + IntToStr(TimeExec.Seconds));
+        ShowMessage(Format('Arquivo Descriptografado - [%f Seconds][%s]', [TimeExec.TotalSeconds, TimeExec.ToString]));
 
         if ckLoadFile.Checked then
         begin
@@ -207,7 +207,7 @@ begin
         begin
           MeansureExecutionTime(EncryptSymetricFile, FilePath, ckAlterExtension.Checked, ExecOk, TimeExec);
           if (ExecOk) then
-            seContentFile.Lines.Insert(0, Format('%d - Encrypt Seconds %f', [c, TimeExec.TotalSeconds]))
+            seContentFile.Lines.Insert(0, Format('%d - Encrypt [Seconds %f][%s]', [c, TimeExec.TotalSeconds, TimeExec.ToString]))
           else
             seContentFile.Lines.Insert(0, Format('%d - Encrypt Fail', [c]));
 
@@ -215,7 +215,7 @@ begin
 
           MeansureExecutionTime(DecryptSymetricFile, FilePath, ckAlterExtension.Checked, ExecOk, TimeExec);
           if (ExecOk) then
-            seContentFile.Lines.Insert(0, Format('%d - Decript Seconds %f', [c, TimeExec.TotalSeconds]))
+            seContentFile.Lines.Insert(0, Format('%d - Decript [Seconds %f][%s]', [c, TimeExec.TotalSeconds, TimeExec.ToString]))
           else
             seContentFile.Lines.Insert(0, Format('%d - Decript Fail', [c]));
 
@@ -226,7 +226,7 @@ begin
         Stopwatch.Stop;
       end;
 
-      seContentFile.Lines.Add(Format('Final Time %f seconds', [Stopwatch.Elapsed.TotalSeconds]));
+      seContentFile.Lines.Insert(0, Format('Final Time [%f seconds][%f minuts][%s]', [Stopwatch.Elapsed.TotalSeconds, Stopwatch.Elapsed.TotalMinutes, Stopwatch.Elapsed.ToString]));
     finally
       EnableDisable(True);
     end;
