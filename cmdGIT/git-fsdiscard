@@ -1,4 +1,28 @@
 #!/bin/bash
-git reset --hard
+# Limpa os arquivos não rastreados, exceto os especificados
 git clean -fxd -e *.bpl -e *.tds -e *.drc -e *.map -e *.rar -e *.ini -e *.dll -e *.txt -e *.xml -e *.log -e *.snl -e *.lnk -e *.config -e *.config*
+
+# Reseta para o estado do último commit
+git reset --hard
+
+# Descarta as mudanças nos arquivos não rastreados
 git checkout -- .
+
+# Salva a saída do git status -s em uma variável
+status_output=$(git status -s)
+
+# Verifica se há alguma saída do git status -s
+if [[ -n $status_output ]]; then
+    # Exibe os arquivos presentes no git status -s
+    echo "Arquivos para deletar:"
+    echo "$status_output"
+    
+    # Deleta os arquivos presentes no git status -s
+    git status -s | awk '{print $2}' | xargs rm -f
+    
+    # Adiciona as mudanças ao stage
+    git add .
+
+    # Descarta as mudanças do stage (os arquivos deletados)
+    git reset HEAD -- .
+fi
