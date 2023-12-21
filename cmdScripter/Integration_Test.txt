@@ -14,7 +14,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -37,7 +37,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -60,7 +60,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -83,7 +83,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -106,7 +106,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -129,7 +129,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -154,7 +154,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -177,7 +177,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -200,7 +200,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -223,7 +223,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -246,7 +246,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -290,7 +290,7 @@ select
   BCN_CdiServidorIntegracao,
   case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
   from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
+  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
 Execute SQL  
 
 Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
@@ -301,26 +301,26 @@ Shell = ping -n 5 127.0.0.1
 
 //----------------------------------------------------------------------------
 
-Shell = echo Iniciando Integracao 10029
+//Shell = echo Iniciando Integracao 10029
 
-SELECTEDLOG  = 10029
-EXECUTE PROCESS = IntegraByIntegrationCmds
+//SELECTEDLOG  = 10029
+//EXECUTE PROCESS = IntegraByIntegrationCmds
 
-Begin SQL
-select 
-  BCN_CdiLogIntegracaoServidor,
-  BCN_CdiLogIntegracao,
-  BCN_CdiServidorIntegracao,
-  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
-  from LogsIntegracoesServidores 
-  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)Execute SQL
-Execute SQL  
+//Begin SQL
+//select 
+//  BCN_CdiLogIntegracaoServidor,
+//  BCN_CdiLogIntegracao,
+//  BCN_CdiServidorIntegracao,
+//  case when (BCN_DsbErro is null) then 0 else 1 end as TemErro
+//  from LogsIntegracoesServidores 
+//  where BCN_CdiLogIntegracaoServidor = (select max(BCN_CdiLogIntegracaoServidor) from LogsIntegracoesServidores)
+//Execute SQL  
 
-Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
+//Shell = echo Log Integracao Servidor [%@ResultField1%] Log Integracao [%@ResultField2%] Servidor Integracao [%@ResultField3%] Existe conteudo em BCN_DsbErro %@ResultField4%
 
-Shell = echo Finalizando Integracao 10029
+//Shell = echo Finalizando Integracao 10029
 
-Shell = ping -n 5 127.0.0.1
+//Shell = ping -n 5 127.0.0.1
 
 
 

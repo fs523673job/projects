@@ -20,7 +20,7 @@ echo excluindo arquivo anterior
 echo.
 
 if exist "C:\Bases_Local\%database%" (
-	del "C:\Bases_Local\%database%"
+	::del "C:\Bases_Local\%database%"
 	echo.
 	echo arquivo deletado %database%
 	echo.
@@ -37,7 +37,7 @@ echo.
 echo copiando arquivo em \\192.168.10.209\BackupsOficiais\%database%
 echo.
 
-COPY \\192.168.10.209\BackupsOficiais\%database% "C:\Bases_Local"
+::COPY \\192.168.10.209\BackupsOficiais\%database% "C:\Bases_Local"
 echo.
 echo copia finalizada
 echo.
@@ -46,8 +46,8 @@ echo.
 echo iniciando restauracao da base de dados %database%
 echo.
 
-sqlcmd -S APDDBTY09T2 -U "sa" -P "18|=S1=aHbU{T1Tn" -i "C:\github\fs523673job\projects\cmdSQL\SET_OFFLINE.SQL"
-sqlcmd -S APDDBTY09T2 -U "sa" -P "18|=S1=aHbU{T1Tn" -i "C:\github\fs523673job\projects\cmdSQL\PREPARE_BASE.sql" -v fileName="%database%"
+sqlcmd -S APDNSON0096 -U "sa" -P "18|=S1=aHbU{T1Tn" -i "C:\github\fs523673job\projects\cmdSQL\SET_OFFLINE.SQL"
+sqlcmd -S APDNSON0096 -U "sa" -P "18|=S1=aHbU{T1Tn" -i "C:\github\fs523673job\projects\cmdSQL\PREPARE_BASE.sql" -v fileName="%database%"
 
 echo.
 echo restauracao da base de dados finalizada
@@ -60,7 +60,7 @@ echo.
 echo iniciando restauracao de dados default
 echo.
 
-sqlcmd -S APDDBTY09T2 -U "sa" -P "18|=S1=aHbU{T1Tn" -i "C:\Users\flsantos\OneDrive - Apdata do Brasil Software Ltda\Chamados\sqls\StoredProcedure_Integration.sql" -o "C:\Bases_Local\logData.txt"
+sqlcmd -S APDNSON0096 -U "sa" -P "18|=S1=aHbU{T1Tn" -i "C:\github\fs523673job\projects\cmdSQL\StoredProcedure_Integration.sql" -o "C:\Bases_Local\logData.txt"
 
 GOTO END
 
