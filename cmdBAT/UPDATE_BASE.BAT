@@ -20,7 +20,7 @@ echo excluindo arquivo anterior
 echo.
 
 if exist "C:\Bases_Local\%database%" (
-	::del "C:\Bases_Local\%database%"
+	del "C:\Bases_Local\%database%"
 	echo.
 	echo arquivo deletado %database%
 	echo.
@@ -37,7 +37,7 @@ echo.
 echo copiando arquivo em \\192.168.10.209\BackupsOficiais\%database%
 echo.
 
-::COPY \\192.168.10.209\BackupsOficiais\%database% "C:\Bases_Local"
+COPY \\192.168.10.209\BackupsOficiais\%database% "C:\Bases_Local"
 echo.
 echo copia finalizada
 echo.

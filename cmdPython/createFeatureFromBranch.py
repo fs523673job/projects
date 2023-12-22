@@ -37,7 +37,9 @@ def extract_feature_number(feature_name: str) -> str:
     parts = feature_name.split('_')
     if len(parts) >= 2:
         return parts[1]
-    return ""
+    else:
+        print(f"Erro: O formato da feature '{feature_name}' não contém o número esperado.")
+        return ""
 
 
 def update_feature_file(feature_name: str):

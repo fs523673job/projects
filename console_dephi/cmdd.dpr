@@ -122,16 +122,17 @@ var
     Console.WriteColorLine('* 14 - ApManager                                                      *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 15 - ApUsers                                                        *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 16 - ApADIntegratorWS                                               *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 17 - Generate Messages [compile messages]                           *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 18 - Build Sass [compile sass]                                      *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 19 - Pack Integracao [pintegration32]                               *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 20 - Pack Integracao [pintegration64]                               *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 21 - Pack Servidores [pservers32]                                   *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 22 - Pack Servidores [pservers64]                                   *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 23 - Pack Dlls [pdlls32]                                            *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 24 - Pack Dlls [pdlls64]                                            *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 25 - Pack Clients [pclients]                                        *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 26 - All                                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 17 - ApDeveloper                                                    *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 18 - Generate Messages [compile messages]                           *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 19 - Build Sass [compile sass]                                      *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 20 - Pack Integracao [pintegration32]                               *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 21 - Pack Integracao [pintegration64]                               *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 22 - Pack Servidores [pservers32]                                   *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 23 - Pack Servidores [pservers64]                                   *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 24 - Pack Dlls [pdlls32]                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 25 - Pack Dlls [pdlls64]                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 26 - Pack Clients [pclients]                                        *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 27 - All                                                            *', [TConsoleColor.Blue]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
   end;
 
@@ -253,13 +254,17 @@ var
         end;
       17 :
         begin
-          Result := ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]), '', 'GenerateMessages');
+          Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApDeveloper Win32 ApDeveloper 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApDeveloper 32')
         end;
       18 :
         begin
-          Result := ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [DirectoryRepository]), '', 'GenerateSass');
+          Result := ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]), '', 'GenerateMessages');
         end;
       19 :
+        begin
+          Result := ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [DirectoryRepository]), '', 'GenerateSass');
+        end;
+      20 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -274,7 +279,7 @@ var
 
           Result := 'compile pack 19';
         end;
-      20 :
+      21 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -289,7 +294,7 @@ var
 
           Result := 'compile pack 20';
         end;
-      21 :
+      22 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -305,7 +310,7 @@ var
 
           Result := 'compile pack 21';
         end;
-      22 :
+      23 :
          begin
           strListMsg := TStringList.Create;
           try
@@ -321,7 +326,7 @@ var
 
           Result := 'compile pack 22';
         end;
-      23 :
+      24 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -335,7 +340,7 @@ var
 
           Result := 'compile pack 23';
         end;
-      24 :
+      25 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -349,7 +354,7 @@ var
 
           Result := 'compile pack 24';
         end;
-      25 :
+      26 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -364,12 +369,12 @@ var
 
           Result := 'compile pack 25';
         end;
-      26 :
+      27 :
         begin
           strListMsg := TStringList.Create;
           try
-            strListMsg.Add(ExecuteCommand(17, ASubCommand));
             strListMsg.Add(ExecuteCommand(18, ASubCommand));
+            strListMsg.Add(ExecuteCommand(19, ASubCommand));
 
             strListMsg.Add(ExecuteCommand(01, ASubCommand));
             strListMsg.Add(ExecuteCommand(02, ASubCommand));
@@ -387,6 +392,7 @@ var
             strListMsg.Add(ExecuteCommand(14, ASubCommand));
             strListMsg.Add(ExecuteCommand(15, ASubCommand));
             strListMsg.Add(ExecuteCommand(16, ASubCommand));
+            strListMsg.Add(ExecuteCommand(17, ASubCommand));
 
             PrintResumeComp(strListMsg);
           finally
@@ -438,26 +444,28 @@ var
         Result := 15
       else if (AnsiSameText(ANameSystem, 'ApADIntegratorWS')) then
         Result := 16
-      else if (AnsiSameText(ANameSystem, 'Messages')) then
+      else if (AnsiSameText(ANameSystem, 'ApDeveloper')) then
         Result := 17
-      else if (AnsiSameText(ANameSystem, 'Sass')) then
+      else if (AnsiSameText(ANameSystem, 'Messages')) then
         Result := 18
-      else if (AnsiSameText(ANameSystem, 'pintegration32')) then
+      else if (AnsiSameText(ANameSystem, 'Sass')) then
         Result := 19
-      else if (AnsiSameText(ANameSystem, 'pintegration64')) then
+      else if (AnsiSameText(ANameSystem, 'pintegration32')) then
         Result := 20
-      else if (AnsiSameText(ANameSystem, 'pservers32')) then
+      else if (AnsiSameText(ANameSystem, 'pintegration64')) then
         Result := 21
-      else if (AnsiSameText(ANameSystem, 'pservers64')) then
+      else if (AnsiSameText(ANameSystem, 'pservers32')) then
         Result := 22
-      else if (AnsiSameText(ANameSystem, 'pdlls32')) then
+      else if (AnsiSameText(ANameSystem, 'pservers64')) then
         Result := 23
-      else if (AnsiSameText(ANameSystem, 'pdlls64')) then
+      else if (AnsiSameText(ANameSystem, 'pdlls32')) then
         Result := 24
-      else if (AnsiSameText(ANameSystem, 'pclients')) then
+      else if (AnsiSameText(ANameSystem, 'pdlls64')) then
         Result := 25
-      else if (AnsiSameText(ANameSystem, 'All')) then
+      else if (AnsiSameText(ANameSystem, 'pclients')) then
         Result := 26
+      else if (AnsiSameText(ANameSystem, 'All')) then
+        Result := 27
     end;
   end;
 
