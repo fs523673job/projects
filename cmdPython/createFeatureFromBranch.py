@@ -50,30 +50,38 @@ def update_feature_file(feature_name: str):
 
     file_path = fr"C:\Users\flsantos\OneDrive - Apdata do Brasil Software Ltda\Chamados\{feature_number}.txt"
 
+    # Verifica se o arquivo existe antes de tentar abrir
+    if not os.path.exists(file_path):
+        print(f"Erro: Arquivo {file_path} não encontrado.")
+        return
+
     try:
         updated = False
-        with open(file_path, 'r', encoding='utf-8') as file:
+
+        # 'r+' para leitura e escrita
+        with open(file_path, 'r+', encoding='utf-8') as file:
             lines = file.readlines()
 
-        with open(file_path, 'w', encoding='utf-8') as file:
+            # Volta ao início do arquivo para começar a escrever
+            file.seek(0)
+            file.truncate()  # Limpa o arquivo
+
             for line in lines:
                 if line.startswith("Features Criadas:"):
-                    existing_features = line.strip().split(": ")[1]
-                    if existing_features:
-                        line = f"Features Criadas: {existing_features}, {feature_name}\n"
-                    else:
-                        line = f"Features Criadas: {feature_name}\n"
+                    parts = line.strip().split(": ")
+                    existing_features = parts[1] if len(parts) > 1 else ""
+                    updated_features = f"{existing_features}, {feature_name}" if existing_features else feature_name
+                    line = f"Features Criadas: {updated_features}\n"
                     updated = True
                 file.write(line)
 
-        if not updated:
-            with open(file_path, 'a', encoding='utf-8') as file:
+            if not updated:
                 file.write(f"Features Criadas: {feature_name}\n")
 
         print(f"Arquivo '{file_path}' atualizado com sucesso.")
     except UnicodeDecodeError as e:
         print(f"Erro ao decodificar o arquivo: {e}")
-    except FileNotFoundError:
+    except FileNotFoundError:  # Embora já tenhamos verificado a existência do arquivo, isso é por precaução.
         print(f"Erro: Arquivo {file_path} não encontrado.")
     except Exception as e:
         print(f"Erro desconhecido: {e}")

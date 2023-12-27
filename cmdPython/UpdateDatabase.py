@@ -26,14 +26,25 @@ def delete_file_if_exists(path):
         print(f"Arquivo deletado: {path}")
 
 def copy_file_with_progress(src, dest):
-    with open(src, 'rb') as fsrc:
-        with open(dest, 'wb') as fdst:
-            shutil.copyfileobj(fsrc, fdst, length=16*1024*1024)  # Copy with 16MB chunks
+    # Make sure the source file exists before trying to copy
+    if not os.path.exists(src):
+        print("O arquivo fonte não existe.")
+        return
+
+    filesize = os.path.getsize(src)
+    with open(src, 'rb') as fsrc, open(dest, 'wb') as fdst, tqdm(
+            total=filesize, unit='B', unit_scale=True, desc="Copiando") as bar:
+        while True:
+            buffer = fsrc.read(1024 * 1024)  # Read 1MB at a time
+            if not buffer:
+                break
+            fdst.write(buffer)
+            bar.update(len(buffer))
 
 def main():
-    # User Inputs
+    # Solicitando entrada do usuário
     restaurar = input("Restaurar Base Dados e adicionar dados default (*no* apenas restauracao) [yes, no]: ").lower()
-    base_beta = input("Restaruar Base Beta [yes, no]: ").lower()
+    base_beta = input("Restaurar Base Beta [yes, no]: ").lower()
 
     # Set database based on user input
     global database
@@ -45,10 +56,10 @@ def main():
     delete_file_if_exists(os.path.join(BASES_LOCAL_PATH, "logData.txt"))
 
     # Copying file
-    print(f"Copiando arquivo de '\\192.168.10.209\BackupsOficiais\{database}'")
-    source_path = f"\\\\192.168.10.209\\BackupsOficiais\\{database}"
+    source_path = rf"\\192.168.10.209\BackupsOficiais\{database}"
     destination_path = os.path.join(BASES_LOCAL_PATH, database)
-
+    print(f"Copiando arquivo de '{source_path}'")
+    
     # Show progress bar while copying
     print("Iniciando copia do arquivo...")
     copy_file_with_progress(source_path, destination_path)
