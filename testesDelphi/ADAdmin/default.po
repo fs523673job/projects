@@ -1,0 +1,1052 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2016-01-31 15:55\n"
+"PO-Revision-Date: 2016-01-31 15:55\n"
+"Last-Translator: Somebody <your.email@address.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: dxgettext 2.0.2\n"
+
+#. CsvImportDialog..Caption
+#: CsvImportDialog.dfm:5
+#. CsvImportDialog..Caption
+#: CsvImportDlg.dfm:5
+msgid "Import CSV data"
+msgstr ""
+
+#. CsvImportDialog..Panel1..Label3..Caption
+#: CsvImportDialog.dfm:29
+#. CsvImportDialog..Panel1..Label3..Caption
+#: CsvImportDlg.dfm:29
+msgid "Import file:"
+msgstr ""
+
+#. CsvImportDialog..OKBtn..Caption
+#: CsvImportDialog.dfm:47
+#. CsvImportDialog..OKBtn..Caption
+#: CsvImportDlg.dfm:47
+#. PrefDialog..OKBtn..Caption
+#: DuPrefs.dfm:28
+#. PrefDialog..OKBtn..Caption
+#: sourcesDuPrefs.dfm:28
+msgid "OK"
+msgstr ""
+
+#. CsvImportDialog..CancelBtn..Caption
+#: CsvImportDialog.dfm:118
+#. CsvImportDialog..CancelBtn..Caption
+#: CsvImportDlg.dfm:116
+#. PrefDialog..CancelBtn..Caption
+#: DuPrefs.dfm:97
+#. PrefDialog..CancelBtn..Caption
+#: sourcesDuPrefs.dfm:97
+msgid "Cancel"
+msgstr ""
+
+#. CsvImportDialog..gbDelim..Caption
+#: CsvImportDialog.dfm:201
+#. CsvImportDialog..gbDelim..Caption
+#: CsvImportDlg.dfm:197
+msgid "Column separator"
+msgstr ""
+
+#. CsvImportDialog..gbDelim..rbSpace..Caption
+#: CsvImportDialog.dfm:208
+#. CsvImportDialog..gbDelim..rbSpace..Caption
+#: CsvImportDlg.dfm:204
+msgid "Space"
+msgstr ""
+
+#. CsvImportDialog..gbDelim..rbTab..Caption
+#: CsvImportDialog.dfm:217
+#. CsvImportDialog..gbDelim..rbTab..Caption
+#: CsvImportDlg.dfm:213
+msgid "Tab"
+msgstr ""
+
+#. CsvImportDialog..gbDelim..rbSemi..Caption
+#: CsvImportDialog.dfm:228
+#. CsvImportDialog..gbDelim..rbSemi..Caption
+#: CsvImportDlg.dfm:224
+msgid "Semicolon"
+msgstr ""
+
+#. CsvImportDialog..gbDelim..rbComma..Caption
+#: CsvImportDialog.dfm:237
+#. CsvImportDialog..rgDecimal....Items.Strings
+#: CsvImportDialog.dfm:347
+#. CsvImportDialog..gbDelim..rbComma..Caption
+#: CsvImportDlg.dfm:233
+#. CsvImportDialog..rgDecimal....Items.Strings
+#: CsvImportDlg.dfm:343
+msgid "Comma"
+msgstr ""
+
+#. CsvImportDialog..gbDelim..rbOtherDel..Caption
+#: CsvImportDialog.dfm:246
+#. CsvImportDialog..gbQuote..rbOtherQuote..Caption
+#: CsvImportDialog.dfm:299
+#. CsvImportDialog..gbDelim..rbOtherDel..Caption
+#: CsvImportDlg.dfm:242
+#. CsvImportDialog..gbQuote..rbOtherQuote..Caption
+#: CsvImportDlg.dfm:295
+msgid "Other"
+msgstr ""
+
+#. CsvImportDialog..gbDelim..rbSlash..Caption
+#: CsvImportDialog.dfm:262
+#. CsvImportDialog..gbDelim..rbSlash..Caption
+#: CsvImportDlg.dfm:258
+msgid "Slash"
+msgstr ""
+
+#. CsvImportDialog..gbQuote..Caption
+#: CsvImportDialog.dfm:272
+msgid "Quote character"
+msgstr ""
+
+#. CsvImportDialog..gbQuote..rbNoQuote..Caption
+#: CsvImportDialog.dfm:279
+#. CsvImportDialog..gbQuote..rbNoQuote..Caption
+#: CsvImportDlg.dfm:275
+msgid "None"
+msgstr ""
+
+#. CsvImportDialog..gbQuote..rbQuote..Caption
+#: CsvImportDialog.dfm:290
+msgid "Double quote"
+msgstr ""
+
+#. CsvImportDialog..gbLine..Caption
+#: CsvImportDialog.dfm:316
+#. CsvImportDialog..gbLine..Caption
+#: CsvImportDlg.dfm:312
+msgid "Read data from"
+msgstr ""
+
+#. CsvImportDialog..gbLine..Label4..Caption
+#: CsvImportDialog.dfm:323
+#. CsvImportDialog..gbLine..Label4..Caption
+#: CsvImportDlg.dfm:319
+msgid "Line:"
+msgstr ""
+
+#. CsvImportDialog..rgDecimal..Caption
+#: CsvImportDialog.dfm:342
+#. CsvImportDialog..rgDecimal..Caption
+#: CsvImportDlg.dfm:338
+msgid "Decimal separator"
+msgstr ""
+
+#. CsvImportDialog..rgDecimal....Items.Strings
+#: CsvImportDialog.dfm:346
+#. CsvImportDialog..rgDecimal....Items.Strings
+#: CsvImportDlg.dfm:342
+msgid "Point"
+msgstr ""
+
+#. CsvImportDialog..GroupBox1..Caption
+#: CsvImportDialog.dfm:356
+#. CsvImportDialog..GroupBox1..Caption
+#: CsvImportDlg.dfm:352
+msgid "Select column "
+msgstr ""
+
+#. CsvImportDialog..GroupBox1..edCol1..EditLabel.Caption
+#: CsvImportDialog.dfm:365
+#. CsvImportDialog..GroupBox1..edCol1..EditLabel.Caption
+#: CsvImportDlg.dfm:361
+msgid "Mail address"
+msgstr ""
+
+#. CsvImportDialog..gbQuote..Caption
+#: CsvImportDlg.dfm:268
+msgid "Field delimiter"
+msgstr ""
+
+#. CsvImportDialog..gbQuote..rbQuote..Caption
+#: CsvImportDlg.dfm:286
+msgid "Quote sign"
+msgstr ""
+
+#. frmDomUser..Caption
+#: DUMain.dfm:4
+#. frmDomUser..gbxUser..Caption
+#: DUMain.dfm:105
+#. frmMultiUser..gbxUser..Caption
+#: MultiMain.dfm:175
+#. frmDomUser..Caption
+#: sourcesDUMain.dfm:4
+#. frmDomUser..gbxUser..Caption
+#: sourcesDUMain.dfm:105
+msgid "New Domain User"
+msgstr ""
+
+#. frmDomUser..Label6..Caption
+#: DUMain.dfm:24
+#. frmMultiUser..Label6..Caption
+#: MultiMain.dfm:25
+#. frmDelUser..pnTop..Label6..Caption
+#: RemUserMain.dfm:32
+#. frmDomUser..Label6..Caption
+#: sourcesDUMain.dfm:24
+#: RemUserMain.pas:279
+msgid "Domain:"
+msgstr ""
+
+#. frmDomUser..btnInfo..Hint
+#: DUMain.dfm:31
+#. frmMultiUser..btnInfo..Hint
+#: MultiMain.dfm:56
+#. frmDelUser..pnBottom..btnInfo..Hint
+#: RemUserMain.dfm:447
+#. frmDomUser..btnInfo..Hint
+#: sourcesDUMain.dfm:31
+msgid "Info"
+msgstr ""
+
+#. frmDomUser..btnPref..Hint
+#: DUMain.dfm:60
+#. frmDomUser..btnPref..Hint
+#: sourcesDUMain.dfm:60
+msgid "Preferences"
+msgstr ""
+
+#. frmDomUser..btnConnect..Hint
+#: DUMain.dfm:84
+#. frmMultiUser..btnConnect..Hint
+#: MultiMain.dfm:133
+#. frmDelUser..pnTop..btnConnect..Hint
+#: RemUserMain.dfm:46
+#. frmDomUser..btnConnect..Hint
+#: sourcesDUMain.dfm:84
+msgid "Connect to domain"
+msgstr ""
+
+#. frmDomUser..btnConnect..Caption
+#: DUMain.dfm:85
+#. frmMultiUser..btnConnect..Caption
+#: MultiMain.dfm:134
+#. frmDomUser..btnConnect..Caption
+#: sourcesDUMain.dfm:85
+msgid "&Connect"
+msgstr ""
+
+#. frmDomUser..gbxUser..Label1..Caption
+#: DUMain.dfm:112
+#. frmDelUser..pnCenter..gbUserProperties..Label2..Caption
+#: RemUserMain.dfm:126
+#. frmDomUser..gbxUser..Label1..Caption
+#: sourcesDUMain.dfm:112
+msgid "Account Name:"
+msgstr ""
+
+#. frmDomUser..gbxUser..Label2..Caption
+#: DUMain.dfm:119
+#. frmDelUser..pnCenter..gbUserProperties..Label3..Caption
+#: RemUserMain.dfm:133
+#. frmDomUser..gbxUser..Label2..Caption
+#: sourcesDUMain.dfm:119
+msgid "First Name:"
+msgstr ""
+
+#. frmDomUser..gbxUser..Label3..Caption
+#: DUMain.dfm:126
+#. frmDelUser..pnCenter..gbUserProperties..Label10..Caption
+#: RemUserMain.dfm:168
+#. frmDomUser..gbxUser..Label3..Caption
+#: sourcesDUMain.dfm:126
+msgid "Last Name:"
+msgstr ""
+
+#. frmDomUser..gbxUser..Label4..Caption
+#: DUMain.dfm:133
+#. frmDelUser..pnCenter..gbUserProperties..Label4..Caption
+#: RemUserMain.dfm:161
+#. frmDomUser..gbxUser..Label4..Caption
+#: sourcesDUMain.dfm:133
+msgid "Full Name:"
+msgstr ""
+
+#. frmDomUser..gbxUser..Label5..Caption
+#: DUMain.dfm:140
+#. frmDelUser..pnCenter..gbUserProperties..Label5..Caption
+#: RemUserMain.dfm:140
+#. frmDomUser..gbxUser..Label5..Caption
+#: sourcesDUMain.dfm:140
+msgid "Description:"
+msgstr ""
+
+#. frmDomUser..gbxUser..Label7..Caption
+#: DUMain.dfm:147
+#. frmDelUser..pnCenter..gbUserProperties..Label7..Caption
+#: RemUserMain.dfm:147
+#. frmDomUser..gbxUser..Label7..Caption
+#: sourcesDUMain.dfm:147
+msgid "Room Nr.:"
+msgstr ""
+
+#. frmDomUser..gbxUser..Label8..Caption
+#: DUMain.dfm:154
+#. frmDelUser..pnCenter..gbUserProperties..Label8..Caption
+#: RemUserMain.dfm:154
+#. frmDomUser..gbxUser..Label8..Caption
+#: sourcesDUMain.dfm:154
+msgid "Phone:"
+msgstr ""
+
+#. frmDomUser..gbxUser..btnExit..Hint
+#: DUMain.dfm:161
+#. frmMultiUser..btnExit..Hint
+#: MultiMain.dfm:32
+#. frmDelUser..pnBottom..btnExit..Hint
+#: RemUserMain.dfm:422
+#. frmDomUser..gbxUser..btnExit..Hint
+#: sourcesDUMain.dfm:161
+msgid "Quit program"
+msgstr ""
+
+#. frmDomUser..gbxUser..chbDisabled..Caption
+#: DUMain.dfm:244
+#. frmDelUser..pnCenter..gbUserProperties..laDisabled..Caption
+#: RemUserMain.dfm:185
+#. frmDomUser..gbxUser..chbDisabled..Caption
+#: sourcesDUMain.dfm:244
+msgid "Account disabled"
+msgstr ""
+
+#. frmDomUser..gbxUser..gbxOU..Caption
+#: DUMain.dfm:255
+#. frmMultiUser..gbxUser..gbxOU..Caption
+#: MultiMain.dfm:235
+#. frmDomUser..gbxUser..gbxOU..Caption
+#: sourcesDUMain.dfm:255
+msgid "Add"
+msgstr ""
+
+#. frmDomUser..gbxUser..gbxOU..rbtGlobal..Caption
+#: DUMain.dfm:262
+#. frmMultiUser..gbxUser..gbxOU..rbtGlobal..Caption
+#: MultiMain.dfm:242
+#. frmDomUser..gbxUser..gbxOU..rbtGlobal..Caption
+#: sourcesDUMain.dfm:262
+msgid "as Global User"
+msgstr ""
+
+#. frmDomUser..gbxUser..gbxOU..rbtOU..Caption
+#: DUMain.dfm:273
+#. frmMultiUser..gbxUser..gbxOU..rbtOU..Caption
+#: MultiMain.dfm:253
+#. frmDomUser..gbxUser..gbxOU..rbtOU..Caption
+#: sourcesDUMain.dfm:273
+msgid "in Organizational Unit"
+msgstr ""
+
+#. frmDomUser..gbxUser..gbxAg..Caption
+#: DUMain.dfm:297
+#. frmMultiUser..gbxUser..gbxAg..Caption
+#: MultiMain.dfm:276
+#. frmDomUser..gbxUser..gbxAg..Caption
+#: sourcesDUMain.dfm:297
+msgid "Member of"
+msgstr ""
+
+#. frmDomUser..gbxUser..gbxAg..lbxAg..Hint
+#: DUMain.dfm:304
+#. frmMultiUser..gbxUser..gbxAg..lbxAg..Hint
+#: MultiMain.dfm:283
+#. frmDomUser..gbxUser..gbxAg..lbxAg..Hint
+#: sourcesDUMain.dfm:304
+msgid "Domain groups"
+msgstr ""
+
+#. frmDomUser..gbxUser..btnPwd..Caption
+#: DUMain.dfm:318
+#. PrefDialog..gbxPassword..Caption
+#: DuPrefs.dfm:216
+#. frmMultiUser..gbxUser..lvwUser......Caption
+#: MultiMain.dfm:307
+#. frmDomUser..gbxUser..btnPwd..Caption
+#: sourcesDUMain.dfm:318
+#. PrefDialog..gbxPassword..Caption
+#: sourcesDuPrefs.dfm:216
+msgid "Password"
+msgstr ""
+
+#. frmDomUser..gbxUser..gbxProfile..Caption
+#: DUMain.dfm:335
+#. frmMultiUser..gbxUser..gbxProfile..Caption
+#: MultiMain.dfm:404
+#. frmDomUser..gbxUser..gbxProfile..Caption
+#: sourcesDUMain.dfm:335
+msgid "Server Based Profiles"
+msgstr ""
+
+#. frmDomUser..gbxUser..gbxProfile..Label9..Caption
+#: DUMain.dfm:342
+#. PrefDialog..gbxProfile..Label9..Caption
+#: DuPrefs.dfm:266
+#. frmMultiUser..gbxUser..gbxProfile..Label4..Caption
+#: MultiMain.dfm:411
+#. frmDomUser..gbxUser..gbxProfile..Label9..Caption
+#: sourcesDUMain.dfm:342
+#. PrefDialog..gbxProfile..Label9..Caption
+#: sourcesDuPrefs.dfm:266
+msgid "Profile Path:"
+msgstr ""
+
+#. frmDomUser..gbxUser..gbxProfile..Label10..Caption
+#: DUMain.dfm:349
+#. PrefDialog..gbxProfile..Label10..Caption
+#: DuPrefs.dfm:273
+#. frmMultiUser..gbxUser..gbxProfile..Label7..Caption
+#: MultiMain.dfm:418
+#. frmDomUser..gbxUser..gbxProfile..Label10..Caption
+#: sourcesDUMain.dfm:349
+#. PrefDialog..gbxProfile..Label10..Caption
+#: sourcesDuPrefs.dfm:273
+msgid "Home Directory:"
+msgstr ""
+
+#. frmDomUser..gbxUser..gbxProfile..Label11..Caption
+#: DUMain.dfm:357
+#. PrefDialog..gbxProfile..Label11..Caption
+#: DuPrefs.dfm:281
+#. frmMultiUser..gbxUser..gbxProfile..Label8..Caption
+#: MultiMain.dfm:426
+#. frmDomUser..gbxUser..gbxProfile..Label11..Caption
+#: sourcesDUMain.dfm:357
+#. PrefDialog..gbxProfile..Label11..Caption
+#: sourcesDuPrefs.dfm:281
+msgid "Drive:"
+msgstr ""
+
+#. frmDomUser..gbxUser..btnMakeUser..Hint
+#: DUMain.dfm:421
+#. frmDomUser..gbxUser..btnMakeUser..Hint
+#: sourcesDUMain.dfm:421
+msgid "Create new domain user account"
+msgstr ""
+
+#. frmDomUser..gbxUser..btnMakeUser..Caption
+#: DUMain.dfm:422
+#. frmDomUser..gbxUser..btnMakeUser..Caption
+#: sourcesDUMain.dfm:422
+msgid "Create &Account"
+msgstr ""
+
+#. frmDomUser..gbxUser..btnNew..Hint
+#: DUMain.dfm:442
+#. frmMultiUser..btnNew..Hint
+#: MultiMain.dfm:529
+#. frmDomUser..gbxUser..btnNew..Hint
+#: sourcesDUMain.dfm:442
+msgid "Clear all fields"
+msgstr ""
+
+#. frmDomUser..gbxUser..btnNew..Caption
+#: DUMain.dfm:443
+#. frmDomUser..gbxUser..btnNew..Caption
+#: sourcesDUMain.dfm:443
+msgid "&Clear Fields"
+msgstr ""
+
+#. PrefDialog..Caption
+#: DuPrefs.dfm:5
+#. PrefDialog..Caption
+#: sourcesDuPrefs.dfm:5
+msgid "Preferences for new Domain user"
+msgstr ""
+
+#. PrefDialog..gbxDesc..Caption
+#: DuPrefs.dfm:163
+#. PrefDialog..gbxDesc..Caption
+#: sourcesDuPrefs.dfm:163
+msgid "Global Preferences"
+msgstr ""
+
+#. PrefDialog..gbxDesc..Label1..Caption
+#: DuPrefs.dfm:170
+#. PrefDialog..gbxDesc..Label1..Caption
+#: sourcesDuPrefs.dfm:170
+msgid "Default Text for Description (e.g. Inst. of "
+"....):"
+msgstr ""
+
+#. PrefDialog..gbxDesc..Label2..Caption
+#: DuPrefs.dfm:177
+#. PrefDialog..gbxDesc..Label2..Caption
+#: sourcesDuPrefs.dfm:177
+msgid "Default Text for Room Nr. (e.g. LS 19/):"
+msgstr ""
+
+#. PrefDialog..gbxDesc..Label5..Caption
+#: DuPrefs.dfm:184
+#. PrefDialog..gbxDesc..Label5..Caption
+#: sourcesDuPrefs.dfm:184
+msgid "Default Text for Phone Nr. (e.g. 880-):"
+msgstr ""
+
+#. PrefDialog..gbxPassword..Label3..Caption
+#: DuPrefs.dfm:223
+#. PrefDialog..gbxPassword..Label3..Caption
+#: sourcesDuPrefs.dfm:223
+msgid "Template for Generated Passwords:"
+msgstr ""
+
+#. PrefDialog..gbxPassword..Label4....Caption
+#: DuPrefs.dfm:235
+#. PrefDialog..gbxPassword..Label4....Caption
+#: sourcesDuPrefs.dfm:235
+msgid "Note: If there is no password specified using the password dialog and "
+"the account is enabled the program generates a password using the "
+"above template. The user has to specify his own password on first "
+"logon. \"#\" is the placeholder for the account "
+"name."
+msgstr ""
+
+#. PrefDialog..gbxPassword..cbNoExpire..Caption
+#: DuPrefs.dfm:243
+#. PrefDialog..gbxPassword..cbNoExpire..Caption
+#: sourcesDuPrefs.dfm:243
+msgid "The final password never expires"
+msgstr ""
+
+#. PrefDialog..gbxProfile..Caption
+#: DuPrefs.dfm:259
+#. PrefDialog..gbxProfile..Caption
+#: sourcesDuPrefs.dfm:259
+msgid "Server Based User Profiles"
+msgstr ""
+
+#. frmMultiUser..Caption
+#: MultiMain.dfm:4
+msgid "Domain users"
+msgstr ""
+
+#. frmMultiUser..btnLayout..Hint
+#: MultiMain.dfm:85
+msgid "Label layout"
+msgstr ""
+
+#. frmMultiUser..btnFont..Hint
+#: MultiMain.dfm:109
+msgid "Printer font"
+msgstr ""
+
+#. frmMultiUser..btnMakeUser..Hint
+#: MultiMain.dfm:154
+msgid "Create new domain users"
+msgstr ""
+
+#. frmMultiUser..btnMakeUser..Caption
+#: MultiMain.dfm:155
+msgid "&Create Accounts"
+msgstr ""
+
+#. frmMultiUser..gbxUser..Label1..Caption
+#: MultiMain.dfm:182
+msgid "User:"
+msgstr ""
+
+#. frmMultiUser..gbxUser..Label5..Caption
+#: MultiMain.dfm:189
+msgid "Name of Course:"
+msgstr ""
+
+#. frmMultiUser..gbxUser..Label2..Caption
+#: MultiMain.dfm:204
+msgid "Count:"
+msgstr ""
+
+#. frmMultiUser..gbxUser..Label3..Caption
+#: MultiMain.dfm:211
+msgid "Organization:"
+msgstr ""
+
+#. frmMultiUser..gbxUser..lvwUser......Caption
+#: MultiMain.dfm:299
+msgid "Nr."
+msgstr ""
+
+#. frmMultiUser..gbxUser..lvwUser......Caption
+#: MultiMain.dfm:303
+msgid "Name"
+msgstr ""
+
+#. frmMultiUser..gbxUser..Panel1..rbSummer..Caption
+#: MultiMain.dfm:364
+msgid "Summer Term"
+msgstr ""
+
+#. frmMultiUser..gbxUser..Panel1..rbWinter..Caption
+#: MultiMain.dfm:374
+msgid "Winter Term"
+msgstr ""
+
+#. frmMultiUser..gbxUser..Panel2..rbNoExpire..Caption
+#: MultiMain.dfm:498
+msgid "no Expiration"
+msgstr ""
+
+#. frmMultiUser..gbxUser..Panel2..rbExpire..Caption
+#: MultiMain.dfm:507
+msgid "valid until"
+msgstr ""
+
+#. frmMultiUser..btnNew..Caption
+#: MultiMain.dfm:530
+msgid "&New"
+msgstr ""
+
+#. frmMultiUser..btnGenPwd..Hint
+#: MultiMain.dfm:564
+msgid "Create new passwords"
+msgstr ""
+
+#. frmMultiUser..btnGenPwd..Caption
+#: MultiMain.dfm:565
+msgid "New &Passwords"
+msgstr ""
+
+#. frmMultiUser..btnPrint..Hint
+#: MultiMain.dfm:603
+msgid "Print account infos"
+msgstr ""
+
+#. frmMultiUser..btnPrint..Caption
+#: MultiMain.dfm:604
+msgid "Print &Labels"
+msgstr ""
+
+#. frmMultiUser..btnDelCourse..Caption
+#: MultiMain.dfm:629
+msgid "&Delete course"
+msgstr ""
+
+#. frmDelUser..Caption
+#: RemUserMain.dfm:5
+#: RemUserMain.pas:212
+#: RemUserMain.pas:214
+#: RemUserMain.pas:215
+#. Domänen-Benutzer löschen'
+#: RemUserMain.pas:352
+msgid "Delete Domain User"
+msgstr ""
+
+#. frmDelUser..pnTop..Label1..Caption
+#: RemUserMain.dfm:39
+msgid "Show Users beneath this Organzational "
+"Unit:"
+msgstr ""
+
+#. frmDelUser..pnCenter..lvUser......Caption
+#: RemUserMain.dfm:100
+msgid "Username"
+msgstr ""
+
+#. frmDelUser..pnCenter..gbUserProperties..Caption
+#: RemUserMain.dfm:119
+msgid "User properties"
+msgstr ""
+
+#. frmDelUser..pnCenter..gbUserProperties..btToggleAccount..Caption
+#: RemUserMain.dfm:263
+#: RemUserMain.pas:576
+msgid "Disable account"
+msgstr ""
+
+#. frmDelUser..pnCenter..gbUserProperties..btnDelete..Caption
+#: RemUserMain.dfm:281
+msgid "&Remove User from ADS"
+msgstr ""
+
+#. frmDelUser..pnCenter..gbUserProperties..cbUserData..Caption
+#: RemUserMain.dfm:306
+msgid "Delete User Data"
+msgstr ""
+
+#. frmDelUser..pnCenter..gbRemUser..Label9..Caption
+#: RemUserMain.dfm:343
+msgid "Root Directory for User Data:"
+msgstr ""
+
+#. frmDelUser..pnCenter..gbRemUser..Label13..Caption
+#: RemUserMain.dfm:351
+msgid "Scan Subdirectory Levels:"
+msgstr ""
+
+#. frmDelUser..pnCenter..gbRemUser..Label12..Caption
+#: RemUserMain.dfm:359
+msgid "Located User Directories:"
+msgstr ""
+
+#. frmDelUser..pnCenter..gbRemUser..btnSearch..Caption
+#: RemUserMain.dfm:382
+msgid "&Locate User data"
+msgstr ""
+
+#. frmDelUser..pnBottom..btObsoleteUsers..Hint
+#: RemUserMain.dfm:477
+msgid "Compare to mail list (csv) and mark discarded "
+"users"
+msgstr ""
+
+#. frmDelUser..pnBottom..btObsoleteUsers..Caption
+#: RemUserMain.dfm:478
+msgid "Compare to mail list"
+msgstr ""
+
+#. frmDelUser..pnBottom..leMailList..EditLabel.Caption
+#: RemUserMain.dfm:518
+msgid "Mail list file:"
+msgstr ""
+
+#. frmDelUser..pnBottom..btMlFile..Hint
+#: RemUserMain.dfm:527
+msgid "Select mail list file"
+msgstr ""
+
+#. frmDelUser..OpenDialog..DefaultExt
+#: RemUserMain.dfm:957
+msgid "csv"
+msgstr ""
+
+#. frmDelUser..OpenDialog..Filter
+#: RemUserMain.dfm:958
+msgid "CSV files|*.csv|Text files|*.txt|all "
+"files|*.*"
+msgstr ""
+
+#: DUMain.pas:175
+#: DUMain.pas:177
+#: DUMain.pas:178
+#: sourcesDUMain.pas:175
+#: sourcesDUMain.pas:177
+#: sourcesDUMain.pas:178
+msgid "Create Domain User"
+msgstr ""
+
+#. 'Domänen-Benutzer'
+#: DUMain.pas:186
+#. 'Domänen-Benutzer'
+#: sourcesDUMain.pas:186
+msgid "Domain user"
+msgstr ""
+
+#. 'COM-Initialisierung fehlgeschlagen!'
+#: DUMain.pas:243
+#. 'COM-Initialisierung fehlgeschlagen!'
+#: MultiMain.pas:533
+#. 'COM-Initialisierung fehlgeschlagen!'
+#: RemUserMain.pas:286
+#. 'COM-Initialisierung fehlgeschlagen!'
+#: sourcesDUMain.pas:243
+msgid "COM Initializing failed!"
+msgstr ""
+
+#. ' - Neuen Domänen-Benutzer eintragen';
+#: DUMain.pas:292
+#. ' - Neuen Domänen-Benutzer eintragen';
+#: sourcesDUMain.pas:292
+msgid " - Add New User to Domain"
+msgstr ""
+
+#. 'Fehler bei der Anmeldung an '
+#: DUMain.pas:363
+#. 'Fehler bei der Anmeldung an '
+#: MultiMain.pas:686
+#. 'Fehler bei der Anmeldung an '
+#: RemUserMain.pas:410
+#. 'Fehler bei der Anmeldung an '
+#: sourcesDUMain.pas:363
+msgid "Error connecting to "
+msgstr ""
+
+#. 'Keine Verbindung zur Domäne';
+#: DUMain.pas:364
+#. 'Keine Verbindung zur Domäne';
+#: MultiMain.pas:687
+#. 'Keine Verbindung zur Domäne';
+#: RemUserMain.pas:411
+#. 'Keine Verbindung zur Domäne';
+#: sourcesDUMain.pas:364
+msgid "No connection to domain"
+msgstr ""
+
+#. prüfen, ob der Benutzer bereits eingetragen ist
+#: DUMain.pas:518
+#. prüfen, ob der Benutzer bereits eingetragen ist
+#: sourcesDUMain.pas:518
+msgid "User %s (%s%s)\n"
+"is already registered!"
+msgstr ""
+
+#. 'Der Benutzer %s (%s@%s)'+sLineBreak+'ist bereits eingetragen!'
+#: DUMain.pas:594
+#. 'Der Benutzer %s (%s@%s)'+sLineBreak+'ist bereits eingetragen!'
+#: sourcesDUMain.pas:594
+msgid "Add new user: %s%s\n"
+"to: %s"
+msgstr ""
+
+#. Arbeitsgruppen zuordnen
+#: DUMain.pas:656
+#. Arbeitsgruppen zuordnen
+#: sourcesDUMain.pas:656
+msgid "A new user was added to %s:\n"
+"%s (%s%s)"
+msgstr ""
+
+#. 'Geben Sie bitte einen Anmeldenamen an!'
+#: DUMain.pas:664
+#. 'Geben Sie bitte einen Anmeldenamen an!'
+#: sourcesDUMain.pas:664
+msgid "Please specify an account name!"
+msgstr ""
+
+#. 'Passwort eingeben'
+#: DUMain.pas:698
+#. 'Passwort eingeben'
+#: sourcesDUMain.pas:698
+msgid "Specify a password"
+msgstr ""
+
+#. 'Es muss ein vollständiger lokaler Pfad angegeben werden!'
+#: DUMain.pas:720
+#. 'Es muss ein vollständiger lokaler Pfad angegeben werden!'
+#: MultiMain.pas:1321
+#. 'Es muss ein vollständiger lokaler Pfad angegeben werden!'
+#: sourcesDUMain.pas:720
+msgid "Specify a full local path!"
+msgstr ""
+
+#. 'Es muss ein vollständiger UNC-Pfad angegeben werden!'
+#: DUMain.pas:727
+#. 'Es muss ein vollständiger UNC-Pfad angegeben werden!'
+#: MultiMain.pas:1328
+#. 'Es muss ein vollständiger UNC-Pfad angegeben werden!'
+#: sourcesDUMain.pas:727
+msgid "Specify a full UNC path!"
+msgstr ""
+
+#. 'ADS-Benutzer für Kurse anlegen';
+#: MultiMain.pas:381
+#: MultiMain.pas:383
+#: MultiMain.pas:384
+msgid "Create ADS users for study course"
+msgstr ""
+
+#: MultiMain.pas:530
+#: MultiMain.pas:1289
+msgid " Printer: "
+msgstr ""
+
+#. 'Neuen Kurs: %s anlegen?'
+#: MultiMain.pas:828
+msgid "Create new course: %s"
+msgstr ""
+
+#. 'als Domänenbenutzer'
+#: MultiMain.pas:917
+msgid "as domain user"
+msgstr ""
+
+#. 'in Organisationseinheit: '
+#: MultiMain.pas:918
+msgid "to organizational unit: "
+msgstr ""
+
+#: MultiMain.pas:921
+msgid "Course: "
+msgstr ""
+
+#: MultiMain.pas:922
+msgid "Add user names: %s01..%u\n"
+"%s?"
+msgstr ""
+
+#: MultiMain.pas:976
+msgid "User "
+msgstr ""
+
+#. Benutzer bereits vorhanden, nur Passwort ändern
+#: MultiMain.pas:989
+#. additional attributes
+#: MultiMain.pas:1041
+msgid "Setting password"
+msgstr ""
+
+#. Speichern
+#: MultiMain.pas:1005
+#. Speichern
+#: MultiMain.pas:1057
+msgid "Setting password credentials"
+msgstr ""
+
+#. Speichern
+#: MultiMain.pas:1031
+msgid "Setting user name"
+msgstr ""
+
+#. Arbeitsgruppen zuordnen
+#: MultiMain.pas:1070
+msgid "Setting group"
+msgstr ""
+
+#. Commit the changes to the server.
+#: MultiMain.pas:1121
+msgid "Setting security descriptor"
+msgstr ""
+
+#. 'Es konnten keine Änderungen durchgeführt werden!'
+#: MultiMain.pas:1132
+msgid "Unable to make changes!"
+msgstr ""
+
+#: MultiMain.pas:1133
+msgid "New passwords were set for %u user accounts!"
+msgstr ""
+
+#. 'Für %u Benutzerkonten wurden neue Passwörter festgelegt!';
+#: MultiMain.pas:1137
+msgid "%u new user accounts were created"
+msgstr ""
+
+#. 'Es wurden %u neue Benutzerkonten angelegt';
+#: MultiMain.pas:1141
+msgid "and new passwords were set for %u user "
+"accounts!"
+msgstr ""
+
+#. 'Geben Sie bitte einen Anmeldenamen an!'
+#: MultiMain.pas:1146
+msgid "Please specify a user name!"
+msgstr ""
+
+#. 'Sommersemester %s'
+#: MultiMain.pas:1236
+msgid "Summer term %s"
+msgstr ""
+
+#. 'Wintersemster ';
+#: MultiMain.pas:1238
+msgid "Winter term %s"
+msgstr ""
+
+#. 'Benutzername: '
+#: MultiMain.pas:1247
+msgid "User name: "
+msgstr ""
+
+#. 'Passwort: '
+#: MultiMain.pas:1248
+msgid "Password: "
+msgstr ""
+
+#. 'Kurs: %s löschen?'
+#: MultiMain.pas:1373
+msgid "Delete course: %s?"
+msgstr ""
+
+#: RemUserMain.pas:279
+msgid "Connect to"
+msgstr ""
+
+#. Organisationseinheiten suchen
+#: RemUserMain.pas:377
+msgid " Default container"
+msgstr ""
+
+#: RemUserMain.pas:572
+msgid "Enable account"
+msgstr ""
+
+#. 'Basisverzeichnis für Benutzer'
+#: RemUserMain.pas:635
+msgid "Root Directory for Users"
+msgstr ""
+
+#. 'Benutzerdaten werden gesucht'
+#: RemUserMain.pas:729
+msgid "Searching for user data"
+msgstr ""
+
+#. 'Keine Benutzerdaten gefunden!'
+#: RemUserMain.pas:733
+msgid "No user data found!"
+msgstr ""
+
+#. 'Verzeichnis nicht gefunden:'
+#: RemUserMain.pas:736
+msgid "Directory not found!"
+msgstr ""
+
+#: RemUserMain.pas:801
+msgid "Remove user %s from ADS\n"
+"and delete selected user data in\n"
+"%s?"
+msgstr ""
+
+#. 'Benutzer %s aus ADS entfernen?';
+#: RemUserMain.pas:804
+msgid "Remove user %s from ADS"
+msgstr ""
+
+#. 'Der Benutzer: %s wurde aus dem ADS entfernt!';
+#: RemUserMain.pas:834
+msgid "User: %s was removed from ADS!"
+msgstr ""
+
+#: RemUserMain.pas:836
+msgid "Deleting user data"
+msgstr ""
+
+#. 'Folgende Benutzerdaten wurden gelöscht:'
+#: RemUserMain.pas:838
+msgid "Following user data were deleted:"
+msgstr ""
+
+#. '  Verzeichnis: '
+#: RemUserMain.pas:843
+msgid "  Directory: "
+msgstr ""
+
+#. ' Unterverzeichnis'
+#: RemUserMain.pas:849
+msgid " Subdirectory"
+msgstr ""
+
+#. ' Unterverzeichnisse';
+#: RemUserMain.pas:850
+msgid " Subdirectories"
+msgstr ""
+
+#. 'keine Unterverzeichnisse gefunden'
+#: RemUserMain.pas:852
+msgid "No subdirectories found"
+msgstr ""
+
+#. ' Datei'
+#: RemUserMain.pas:855
+msgid " file"
+msgstr ""
+
+#. ' Dateien';
+#: RemUserMain.pas:856
+msgid " files"
+msgstr ""
+
+#: RemUserMain.pas:872
+msgid "User: %s \n"
+"could not be removed from ADS!"
+msgstr ""
+

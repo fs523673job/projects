@@ -1,0 +1,25 @@
+Authenticate ADS User (Vers. 2.5)
+=================================
+© 2009-2016 Dr. J. Rathlev, D-24222 Schwentinental
+  Mail: kontakt(a)rathlev-home.de
+  
+Aufruf:
+   AuthAds <domain> <username> <password> [<group>] [<coded password>]
+
+     Das Programm prüft, ob in der Domäne <domain> der Benutzer <username> mit
+     dem Kennwort <password> authentifiziert werden kann.
+     Optional kann die Gruppenzugehörigkeit zu <group> geprüft werden.
+     Wenn <password> = base64 ist, wird der Parameter <coded password> benötigt.
+     Er stellt das base64-(bzw. mime-)kodierte Passwort dar. In diesem Fall
+     muss der Parameter <group> immer angegeben werden. Falls keine Gruppe
+     geprüft werden soll, muss hier eine Leerstring ("") stehen.
+
+     Rückgabewert (Exitcode=ErrorLevel):
+     0 : OK
+     1 : falsche oder fehlende Parameter (z.B. -? für Hilfe)
+     2 : Domäne nicht gefunden
+     3 : Authentifizierung fehlgeschlagen
+     4 : keine Gruppenzugehörigkeit festgestellt
+
+J. Rathlev, 14.12.2016
+    

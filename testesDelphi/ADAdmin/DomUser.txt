@@ -1,0 +1,46 @@
+Kurzhinweise zu DomUser
+=======================
+© 2005-2016 Dr. J. Rathlev, D-24222 Schwentinental
+  Mail: kontakt(a)rathlev-home.de
+
+Das Programm bietet die Möglichkeit Domänen-Benutzer im ADS anzulegen. Gegenüber
+der Original-Windows-Konsole gibt es einige Erweiterungen, bzw. Veränderungen:
+
+- Der vollständige Name wird in der Form "Nachname, Vorname" zusammengesetzt.
+
+- Der neue Benutzer kann in einer beliebigen Organisationseinheit der Domäne
+  angesiedelt werden.
+- Der neue Benutzer kann direkt verschiedenenen Gruppen zugewiesen werden.
+
+- Für die sonstigen Angaben (Beschreibung, Raum) können Vorgabewerte
+  definiert werden.
+  
+- Zusätzlich können folgende Informationen eingetragen werden:
+  - Der Pfad für ein serverbasiertes Profil 
+    (Platzhalter für den Namen des Benutzers: %username%).
+  - Der Pfad für ein Basisverzeichnis (HomeDir)
+    (Platzhalter für den Namen des Benutzers: %username%).
+  
+- Die Passworteingabe kann auf verschiedene Weisen erfolgen:
+  - Das Konto ist zunächst gesperrt. Die Eingabe des Passwortes erfolgt bei
+    der Freischaltung des Kontos.
+  - Das Konto wird ohne Eingabe eines Passwortes freigegeben. Vom Programm wird
+    ein provisorisches Passwort (z.B. _<Anmeldename>_) generiert. Der Benutzer
+    muss bei der ersten Anmeldung ein neues Passwort eingeben.
+  - Es wird direkt das endgültige Passwort des Benutzers eingegeben. Es kann
+    dabei noch eingestellt werden, ob das Passwort dauerhaft gültig bleiben soll.
+
+Bedienung:
+----------
+Nach dem erstmaligen Starten des Programms muss zunächst der Name der Domäne
+eingegeben werden und durch Klick auf die Schaltfläche eine Verbindung
+zu ihr hergestellt werden. Der Benutzer muss Administrator-Rechte besitzen.
+Bei nachfolgende Programmstarts wird diese Verbindung immer automatisch
+erstellt.
+Anschließend fragt das Programm eine Liste der Organisationseinheiten (OU) und
+eine Liste der Gruppen ab. Für die neuen Benutzer kann aus diesen Listen
+die zuzuordnende OU und/oder die Gruppen ausgewählt werden.
+Über die Werkzeug-Schaltfläche wird ein Dialog für die Voreinstellungen
+aufgerufen.
+ 
+J. Rathlev, 14.12.2016
