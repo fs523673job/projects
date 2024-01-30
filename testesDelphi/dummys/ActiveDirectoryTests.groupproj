@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{08676137-01FE-4175-BD8C-2D1C86033997}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="RestAd\dummyRestAd.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="LdapAD\dummyLdap.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="dummyRestAd">
+        <MSBuild Projects="RestAd\dummyRestAd.dproj"/>
+    </Target>
+    <Target Name="dummyRestAd:Clean">
+        <MSBuild Projects="RestAd\dummyRestAd.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="dummyRestAd:Make">
+        <MSBuild Projects="RestAd\dummyRestAd.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="dummyLdap">
+        <MSBuild Projects="LdapAD\dummyLdap.dproj"/>
+    </Target>
+    <Target Name="dummyLdap:Clean">
+        <MSBuild Projects="LdapAD\dummyLdap.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="dummyLdap:Make">
+        <MSBuild Projects="LdapAD\dummyLdap.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="dummyRestAd;dummyLdap"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="dummyRestAd:Clean;dummyLdap:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="dummyRestAd:Make;dummyLdap:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

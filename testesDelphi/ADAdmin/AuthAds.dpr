@@ -507,7 +507,7 @@ begin
   else ShowHelp;
   writeln ('Exitcode = ',CheckResult);
 //  Readln;
-  ExitCode:=CheckResult;
+  ExitCode:=C;
   end;
 
 { ---------------------------------------------------------------- }

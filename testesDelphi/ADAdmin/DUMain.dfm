@@ -356,25 +356,6 @@ object frmDomUser: TfrmDomUser
         Alignment = taRightJustify
         Caption = 'Drive:'
       end
-      object hcbHomeDir: THistoryCombo
-        Left = 10
-        Top = 80
-        Width = 271
-        Height = 21
-        TabOrder = 0
-        OnExit = hcbHomeDirExit
-        MaxItems = 15
-      end
-      object hcbProfile: THistoryCombo
-        Left = 10
-        Top = 35
-        Width = 326
-        Height = 21
-        TabOrder = 1
-        OnCloseUp = hcbProfileExit
-        OnExit = hcbProfileExit
-        MaxItems = 15
-      end
       object cbHomeDrive: TComboBox
         Left = 290
         Top = 80
@@ -382,7 +363,7 @@ object frmDomUser: TfrmDomUser
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 2
+        TabOrder = 0
         Items.Strings = (
           ''
           'A:'
@@ -460,14 +441,5 @@ object frmDomUser: TfrmDomUser
       TabOrder = 14
       OnClick = btnNewClick
     end
-  end
-  object hcbDomain: THistoryCombo
-    Left = 10
-    Top = 30
-    Width = 236
-    Height = 21
-    TabOrder = 2
-    AutoUpdate = False
-    MaxItems = 15
   end
 end
