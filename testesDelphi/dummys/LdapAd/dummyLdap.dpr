@@ -78,6 +78,15 @@ begin
   Result := S;
 end;
 
+procedure WriteResult(const AContent: String; const AContentBoolean: Boolean);
+begin
+  Console.Write(AContent);
+  if AContentBoolean then
+    Console.WriteColorLine(BoolToStr(AContentBoolean, True), [TConsoleColor.Green])
+  else
+    Console.WriteColorLine(BoolToStr(AContentBoolean, True), [TConsoleColor.Red]);
+end;
+
 function UserExists(const Params: TArray<String>): Boolean;
 var
   ads: IADs;
@@ -86,7 +95,7 @@ begin
     Exit(False);
 
   Console.WriteLine('Domain: [%s], User: [%s], Password: [%s]', [Params[0], Params[1], Params[2]]);
-  Console.WriteLine('Connection with domain: %s', [BoolToStr((ADsGetObject(PWideChar('LDAP://' + Params[0]), IADs, Pointer(ADs)) = S_OK), True)]);
+  WriteResult('Connection with domain: ', (ADsGetObject(PWideChar('LDAP://' + Params[0]), IADs, Pointer(ADs)) = S_OK));
   Exit(ADsOpenObject(PWideChar('LDAP://' + Params[0]), PWideChar(Params[1]), PWideChar(Params[2]), ADS_SECURE_AUTHENTICATION, IAds, Pointer(ads)) = S_OK);
 end;
 
@@ -98,10 +107,10 @@ begin
     Exit(False);
 
   Console.WriteLine('Domain: [%s], User: [%s], Password: [%s]', [Params[0], Params[1], Params[2]]);
-  Console.WriteLine('Connection with domain: %s', [BoolToStr((ADsGetObject(PWideChar('LDAP://' + Params[0]), IADs, Pointer(ADs)) = S_OK), True)]);
+  WriteResult('Connection with domain: ', (ADsGetObject(PWideChar('LDAP://' + Params[0]), IADs, Pointer(ADs)) = S_OK));
 
   try
-    Exit(WinSSPI2.SSPLogonUser(Params[0], Params[1], Params[2]));
+    Exit(WinSSPI2.NTLM_CrendentialsCheck(Params[0], Params[1], Params[2]));
   except
     on e: Exception do
     begin
@@ -142,7 +151,7 @@ begin
       NameTranslated := '';
 
     Console.WriteLine('Domain: [%s], User: [%s], Password to set: [%s], Name Translated [%s]', [Params[0], Params[1], Params[2], NameTranslated]);
-    Console.WriteLine('Connection with domain: %s', [BoolToStr((ADsGetObject(PWideChar('LDAP://' + Params[0]), IADs, Pointer(ADs)) = S_OK), True)]);
+    WriteResult('Connection with domain: ', (ADsGetObject(PWideChar('LDAP://' + Params[0]), IADs, Pointer(ADs)) = S_OK));
 
     if ADsOpenObject(PChar('LDAP://' + NameTranslated), PChar(Ldap_User), PChar(Ldap_Pass), ADS_SECURE_AUTHENTICATION, IADsUser, Pointer(ADsUser)) = S_OK then
     begin
@@ -193,8 +202,8 @@ begin
       NameTranslated := '';
 
     Console.WriteLine('Domain: [%s], User: [%s], Password Actual: [%s], Password New: [%s], Name Translated [%s]', [Params[0], Params[1], Params[2], Params[3], NameTranslated]);
-    Console.WriteLine('Connection with domain: %s', [BoolToStr((ADsGetObject(PWideChar('LDAP://' + Params[0]), IADs, Pointer(ADs)) = S_OK), True)]);
-    Console.WriteLine('User exist: %s', [BoolToStr(ADsOpenObject(PWideChar('LDAP://' + Params[0]), PWideChar(Params[1]), PWideChar(Params[2]), ADS_SECURE_AUTHENTICATION, IAds, Pointer(ADs)) = S_OK, True)]);
+    WriteResult('Connection with domain: ', (ADsGetObject(PWideChar('LDAP://' + Params[0]), IADs, Pointer(ADs)) = S_OK));
+    WriteResult('User exist: : ', ADsOpenObject(PWideChar('LDAP://' + Params[0]), PWideChar(Params[1]), PWideChar(Params[2]), ADS_SECURE_AUTHENTICATION, IAds, Pointer(ADs)) = S_OK);
 
     if ADsOpenObject(PChar('LDAP://' + NameTranslated), PChar(Ldap_User), PChar(Ldap_Pass), ADS_SECURE_AUTHENTICATION, IADsUser, Pointer(ADsUser)) = S_OK then
     begin
@@ -237,57 +246,57 @@ var
   localParams: TArray<String>;
   testResult: Boolean;
 begin
-  Console.WriteColorLine('Start - Test', [TConsoleColor.Red]);
+  Console.WriteColorLine('Start - Test', [TConsoleColor.Yellow]);
   try
     Console.WriteColorLine('Setting User Ldap', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.LDAPUser, ConfigLdap.LDAPPass);
     testResult := SetUserLdap(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     Console.WriteColorLine('Setting Password', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, ConfigLdap.TestPass);
     testResult := SetPassword(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     Console.WriteColorLine('Verify User', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, ConfigLdap.TestPass);
     testResult := UserExists(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     Console.WriteColorLine('Setting Password', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, 'xghwu$Thyt@#56g3)');
     testResult := SetPassword(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     Console.WriteColorLine('Verify User', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, 'xghwu$Thyt@#56g3)');
     testResult := UserExists(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     Console.WriteColorLine('Authenticate User', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, 'xghwu$Thyt@#56g3)');
     testResult := AuthenticateUser(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     Console.WriteColorLine('Change Password', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, 'xghwu$Thyt@#56g3)', 'odkurP#ikjkdi98@)');
     testResult := ChangePassword(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     Console.WriteColorLine('Verify User', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, 'odkurP#ikjkdi98@)');
     testResult := UserExists(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     Console.WriteColorLine('Authenticate User', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, 'odkurP#ikjkdi98@)');
     testResult := AuthenticateUser(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
   finally
     if Assigned(localParams) then
       Finalize(localParams);
 
-    Console.WriteColorLine('End - Test', [TConsoleColor.Red]);
+    Console.WriteColorLine('End - Test', [TConsoleColor.Yellow]);
   end;
   Exit(True);
 end;
@@ -299,12 +308,12 @@ var
   passTemp: String;
   c: Integer;
 begin
-  Console.WriteColorLine('Start - Test - SetPassword', [TConsoleColor.Red]);
+  Console.WriteColorLine('Start - Test - SetPassword', [TConsoleColor.Yellow]);
   try
     Console.WriteColorLine('Setting User Ldap', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.LDAPUser, ConfigLdap.LDAPPass);
     testResult := SetUserLdap(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     for c := 1 to 10 do
     begin
@@ -314,23 +323,23 @@ begin
       Console.WriteColorLine('Setting Password', [TConsoleColor.Blue]);
       localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, passTemp);
       testResult := SetPassword(localParams);
-      Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+      WriteResult('Result: ', testResult);
 
       Console.WriteColorLine('Verify User', [TConsoleColor.Blue]);
       localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, passTemp);
       testResult := UserExists(localParams);
-      Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+      WriteResult('Result: ', testResult);
 
       Console.WriteColorLine('Authenticate User', [TConsoleColor.Blue]);
       localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, passTemp);
       testResult := AuthenticateUser(localParams);
-      Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+      WriteResult('Result: ', testResult);
     end;
   finally
     if Assigned(localParams) then
       Finalize(localParams);
 
-    Console.WriteColorLine('End - Test - SetPassword', [TConsoleColor.Red]);
+    Console.WriteColorLine('End - Test - SetPassword', [TConsoleColor.Yellow]);
   end;
   Exit(True);
 end;
@@ -345,12 +354,12 @@ var
   c: Integer;
 
 begin
-  Console.WriteColorLine('Start - Test - ChangePassword', [TConsoleColor.Red]);
+  Console.WriteColorLine('Start - Test - ChangePassword', [TConsoleColor.Yellow]);
   try
     Console.WriteColorLine('Setting User Ldap', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.LDAPUser, ConfigLdap.LDAPPass);
     testResult := SetUserLdap(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     Randomize;
     passOld := GeneratePassword(RandomRange(15, 25),[pmLower,pmUpper,pmNumbers,pmExtra]);
@@ -358,7 +367,7 @@ begin
     Console.WriteColorLine('Setting Password', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, passOld);
     testResult := SetPassword(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     for c := 1 to 10 do
     begin
@@ -368,17 +377,17 @@ begin
       Console.WriteColorLine('Change Password', [TConsoleColor.Blue]);
       localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, passOld, passNew);
       testResult := ChangePassword(localParams);
-      Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+      WriteResult('Result: ', testResult);
 
       Console.WriteColorLine('Verify User', [TConsoleColor.Blue]);
       localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, passNew);
       testResult := UserExists(localParams);
-      Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+      WriteResult('Result: ', testResult);
 
       Console.WriteColorLine('Authenticate User', [TConsoleColor.Blue]);
       localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, passNew);
       testResult := AuthenticateUser(localParams);
-      Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+      WriteResult('Result: ', testResult);
 
       passOld := passNew;
     end;
@@ -386,7 +395,7 @@ begin
     if Assigned(localParams) then
       Finalize(localParams);
 
-    Console.WriteColorLine('End - Test - SetPassword', [TConsoleColor.Red]);
+    Console.WriteColorLine('End - Test - SetPassword', [TConsoleColor.Yellow]);
   end;
   Exit(True);
 end;
@@ -398,33 +407,36 @@ var
   ldapAutenthicate: Boolean;
   ntlmAuthenthicate: Boolean;
   stopWatch: TStopWatch;
+  numLoop: Integer;
 begin
-  Console.WriteColorLine('Start - Test - TestLogin', [TConsoleColor.Red]);
+  Console.WriteColorLine('Start - Test - TestLogin', [TConsoleColor.Yellow]);
   try
-    Console.WriteColorLine('Setting User TestLogin', [TConsoleColor.Blue]);
+    Console.WriteColorLine('Setting User Ldap', [TConsoleColor.Blue]);
     localParams := TArray<String>.Create(ConfigLdap.LDAPUser, ConfigLdap.LDAPPass);
     testResult := SetUserLdap(localParams);
-    Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+    WriteResult('Result: ', testResult);
 
     stopWatch := TStopWatch.StartNew;
 
+    numLoop := 1;
     while True do
     begin
-      Console.WriteColorLine('Verify User', [TConsoleColor.Blue]);
+      Console.WriteColorLine(Format('%.2d - Verify User', [numLoop]), [TConsoleColor.Blue]);
       localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, ATestPass);
       testResult := UserExists(localParams);
-      Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+      WriteResult(Format('%.2d - Result: ', [numLoop]), testResult);
 
       ldapAutenthicate := testResult;
 
-      Console.WriteColorLine('Authenticate User', [TConsoleColor.Blue]);
+      Console.WriteColorLine(Format('%.2d - Authenticate User', [numLoop]), [TConsoleColor.Blue]);
       localParams := TArray<String>.Create(ConfigLdap.TestDomanin, ConfigLdap.TestUser, ATestPass);
       testResult := AuthenticateUser(localParams);
-      Console.WriteLine(Format('Result: %s', [BoolToStr(testResult, True)]));
+      WriteResult(Format('%.2d - Result: ', [numLoop]), testResult);
 
       ntlmAuthenthicate := testResult;
 
-      Console.WriteLine(Format('Authenticate Ldap: [%s], Authenticate Ntlm: [%s] - Time: %s', [BoolToStr(ldapAutenthicate, True), BoolToStr(ntlmAuthenthicate, True), stopWatch.ElapsedMilliseconds.ToString]));
+      WriteResult(Format('%.2d - Authenticate Ldap: ', [numLoop]), ldapAutenthicate);
+      WriteResult(Format('%.2d - Authenticate Ntlm: ', [numLoop]), ntlmAuthenthicate);
 
       if (ldapAutenthicate and ntlmAuthenthicate) then
         Break;
@@ -433,12 +445,14 @@ begin
         raise Exception.Create('Fail authenticate user');
 
       Sleep(1000);
+
+      Inc(numLoop);
     end;
   finally
     if Assigned(localParams) then
       Finalize(localParams);
 
-    Console.WriteColorLine('End - Test - TestLogin', [TConsoleColor.Red]);
+    Console.WriteColorLine('End - Test - TestLogin', [TConsoleColor.Yellow]);
   end;
   Exit(True);
 end;

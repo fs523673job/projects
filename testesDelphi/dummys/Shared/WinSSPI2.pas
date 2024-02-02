@@ -10,11 +10,12 @@ uses
   System.Diagnostics
   ;
 
-function SSPLogonUser(const ADomain, AUsername, APassword: string): Boolean;
+function NTLM_CrendentialsCheck(const ADomain, AUsername, APassword: string): Boolean;
+function Kerberos_CrendentialsCheck(const ADomain, AUsername, APassword: string): Boolean;
 
 implementation
 
-function SSPLogonUser(const ADomain, AUsername, APassword: string): Boolean;
+function NTLM_CrendentialsCheck(const ADomain, AUsername, APassword: string): Boolean;
 var
   pkgInfo: PSecPkgInfo;
   cbMaxMessage: Integer;
@@ -174,6 +175,90 @@ begin
     end;
   end;
 end;
+
+function Kerberos_CrendentialsCheck(const ADomain, AUsername, APassword: string): Boolean;
+var
+  pkgInfo: PSecPkgInfo;
+  cbMaxMessage: Integer;
+  AuthIdentity: TSecWinNTAuthIdentity;
+  ClientDesc, ServerDesc: TSecBufferDesc;
+  Client, Server: TSecBuffer;
+  pClientBuffer, pServerBuffer: Pointer;
+  StatusResult: TSecurityStatus;
+  hcredClient, hcredServer: TCredHandle;
+  hctxClient, hctxServer: TCtxthandle;
+  bClientContinue, bServerContinue: Boolean;
+  sft: PSecurityFunctionTable;
+
+const
+  SEC_PKG_NAME = 'Kerberos'; // Especifica o uso do pacote de segurança Kerberos
+begin
+  sft := InitSecurityInterface;
+  sft.QuerySecurityPackageInfoW(PSecWChar(PChar(SEC_PKG_NAME)), pkgInfo);
+
+  cbMaxMessage := pkgInfo.cbMaxToken;
+  GetMem(pClientBuffer, cbMaxMessage);
+  GetMem(pServerBuffer, cbMaxMessage);
+
+  try
+    // Define a identidade do usuário com as credenciais fornecidas
+    AuthIdentity.Domain := PChar(ADomain);
+    AuthIdentity.DomainLength := Length(ADomain);
+    AuthIdentity.User := PChar(AUsername);
+    AuthIdentity.UserLength := Length(AUsername);
+    AuthIdentity.Password := PChar(APassword);
+    AuthIdentity.PasswordLength := Length(APassword);
+    AuthIdentity.Flags := SEC_WINNT_AUTH_IDENTITY_UNICODE;
+
+    // Adquire manipuladores de credenciais para o cliente e o servidor
+    sft.AcquireCredentialsHandleW(nil, PSecWChar(PChar(SEC_PKG_NAME)), SECPKG_CRED_OUTBOUND, nil, @AuthIdentity, nil, nil, @hcredClient, nil); // cliente
+    sft.AcquireCredentialsHandleW(nil, PSecWChar(PChar(SEC_PKG_NAME)), SECPKG_CRED_INBOUND, nil, nil, nil, nil, @hcredServer, nil); // servidor
+
+    // Prepara os buffers para os tokens de autenticação
+    Client.BufferType := SECBUFFER_TOKEN;
+    Client.cbBuffer := cbMaxMessage;
+    Client.pvBuffer := pClientBuffer;
+    ClientDesc.ulVersion := SECBUFFER_VERSION;
+    ClientDesc.cBuffers := 1;
+    ClientDesc.pBuffers := @Client;
+
+    Server.BufferType := SECBUFFER_TOKEN;
+    Server.cbBuffer := cbMaxMessage;
+    Server.pvBuffer := pServerBuffer;
+    ServerDesc.ulVersion := SECBUFFER_VERSION;
+    ServerDesc.cBuffers := 1;
+    ServerDesc.pBuffers := @Server;
+
+    // Processo de autenticação
+    bClientContinue := True;
+    bServerContinue := True;
+    while bClientContinue or bServerContinue do
+    begin
+      if bClientContinue then
+      begin
+        StatusResult := sft.InitializeSecurityContextW(@hcredClient, nil, nil, 0, 0, SECURITY_NATIVE_DREP, nil, 0, @hctxClient, @ClientDesc, nil, nil);
+        bClientContinue := (StatusResult = SEC_I_CONTINUE_NEEDED);
+      end;
+
+      if bServerContinue then
+      begin
+        StatusResult := sft.AcceptSecurityContext(@hcredServer, nil, @ClientDesc, 0, SECURITY_NATIVE_DREP, @hctxServer, @ServerDesc, nil, nil);
+        bServerContinue := (StatusResult = SEC_I_CONTINUE_NEEDED);
+      end;
+    end;
+
+    // Verifique aqui se StatusResult é SEC_E_OK para confirmar autenticação bem-sucedida
+
+  finally
+    if Assigned(hcredClient.dwLower) or Assigned(hcredClient.dwUpper) then
+      sft.FreeCredentialsHandle(@hcredClient);
+    if Assigned(hcredServer.dwLower) or Assigned(hcredServer.dwUpper) then
+      sft.FreeCredentialsHandle(@hcredServer);
+
+    FreeMem(pClientBuffer, cbMaxMessage);
+    FreeMem(pServerBuffer, cbMaxMessage);
+  end
+
 
 
 end.
