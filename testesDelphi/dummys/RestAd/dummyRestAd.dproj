@@ -59,7 +59,8 @@
         <DCC_K>false</DCC_K>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>dummyRestAd</SanitizedProjectName>
-    <DCC_UnitSearchPath>modules\.dcp;modules\.dcu;$(DCC_UnitSearchPath);modules;modules\horse\src</DCC_UnitSearchPath></PropertyGroup>
+        <DCC_UnitSearchPath>modules\.dcp;modules\.dcu;modules;modules\horse\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_UsePackage>soapserver;FireDACIBDriver;fmx;DbxCommonDriver;bindengine;dbxcds;FireDACSqliteDriver;DbxClientDriver;soapmidas;dbexpress;inet;CustomIPTransport;FireDACCommon;bindcompdbx;rtl;DBXSqliteDriver;FireDAC;xmlrtl;dsnap;FireDACCommonDriver;bindcompfmx;fmxFireDAC;fmxase;dbrtl;DBXInterBaseDriver;bindcomp;RESTBackendComponents;RESTComponents;dsnapxml;tethering;CloudService;soaprtl;$(DCC_UsePackage)</DCC_UsePackage>
         <Android_LauncherIcon36>$(BDS)\bin\Artwork\Android\FM_LauncherIcon_36x36.png</Android_LauncherIcon36>

@@ -18,9 +18,10 @@ uses
   SynEditHighlighter,
   SynHighlighterXML,
   JsonValueToXML,
+  SynEditCodeFolding,
   ActiveX,
   XMLIntf,
-  XMLDoc, SynEditCodeFolding
+  XMLDoc
   ;
 
 type
@@ -29,7 +30,10 @@ type
     seJSON: TSynEdit;
     btnConvertJasonXML: TButton;
     seXML: TMemo;
+    edtFindNode: TEdit;
+    btnFindNodes: TButton;
     procedure btnConvertJasonXMLClick(Sender: TObject);
+    procedure btnFindNodesClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -70,5 +74,9 @@ begin
   seXML.Lines.Add(BeautifierXML(TJSonUtils.JsonToXML(TJSonUtils.ConvertJSONValueToJSONObject(seJSON.Text))));
 end;
 
+procedure TfrmMain.btnFindNodesClick(Sender: TObject);
+begin
+  ShowMessage(TJsonUtils.FindContentNode(seXML.Text, edtFindNode.Text));
+end;
 
 end.

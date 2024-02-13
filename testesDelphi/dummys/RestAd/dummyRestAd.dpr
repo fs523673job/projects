@@ -5,7 +5,8 @@ program dummyRestAd;
 {$R *.res}
 
 uses
-  System.SysUtils;
+  System.SysUtils
+  ;
 
 begin
   try

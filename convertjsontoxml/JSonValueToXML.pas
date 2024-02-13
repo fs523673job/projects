@@ -5,7 +5,11 @@ interface
 uses
   NativeXML,
   System.Json,
-  System.SysUtils
+  System.Classes,
+  System.SysUtils,
+  System.StrUtils,
+  System.Generics.Collections
+
   ;
 
 type
@@ -13,6 +17,7 @@ type
   public
     class function ConvertJSONValueToJSONObject(const AJSONContent: String): TJSONObject;
     class function JsonToXML(AJSONValue: TJSONValue): String;
+    class function FindContentNode(const AXml: String; const APathXml: String): String;
   end;
 
 implementation
@@ -45,6 +50,74 @@ begin
       Result := nil;
   except
     Result := nil;
+  end;
+end;
+
+class function TJSonUtils.FindContentNode(const AXml, APathXml: String): String;
+var
+  Response : TStringStream;
+  NativeXML: TNativeXml;
+  XMLListNodes : TList;
+  ArrayNodePaths: TArray<String>;
+  ArrayNodesName: TArray<String>;
+  NodeName: String;
+  NodePath: String;
+  XmlNode: TXmlNode;
+  c: Integer;
+begin
+  Response := TStringStream.Create;
+  try
+    NativeXML := TNativeXml.Create(nil);
+    try
+      XMLListNodes := TList.Create;
+      try
+        Response.Clear;
+        Response.WriteString(AXml);
+
+        NativeXML.DefaultReadEncoding := seUTF8;
+        NativeXML.LoadFromStream(Response);
+
+        NodeName := '';
+        NodePath := '';
+
+        ArrayNodePaths := APathXml.Split([';']);
+        ArrayNodesName := ArrayNodePaths[0].Split(['/']);
+
+        if Length(ArrayNodePaths) > 1 then
+          NodeName := ArrayNodePaths[1];
+
+        XmlNode := NativeXML.Root.FindNode(ArrayNodesName[0]);
+
+        if Assigned(XmlNode) then
+        begin
+          for c := 1 to High(ArrayNodesName) do
+          begin
+            if Assigned(XmlNode) then
+              XmlNode := XmlNode.FindNode(ArrayNodesName[c]);
+          end;
+
+          XmlNode.FindNodes(NodePath, XMLListNodes);
+
+          if XMLListNodes.Count - 1 >= 0 then
+          begin
+            for c := 0 to XMLListNodes.Count - 1 do
+            begin
+              XmlNode := TXmlNode(XMLListNodes.Items[c]).FindNode(NodeName);
+              if Assigned(XmlNode) then
+                Result := Result + #13#10 + TXmlNode(XMLListNodes.Items[c]).FullPath + ' ' + XMLNode.ValueUnicode
+            end;
+          end;
+        end
+        else
+          raise Exception.Create('No nao encontrado');
+      finally
+        XMLListNodes.Free;
+      end;
+    finally
+      NativeXML.Free;
+    end;
+  finally
+    Response.Free;
   end;
 end;
 
@@ -136,12 +209,12 @@ var
         begin
           if itemObj.Pairs[x].JsonValue is TJSONArray then
           begin
-            LocalNode := LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value);
-            AddJsonArray(LocalNode, TJSONArray(itemObj.Pairs[x].JsonValue))
+            auxNode := LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value);
+            AddJsonArray(auxNode, TJSONArray(itemObj.Pairs[x].JsonValue));
           end
           else if (itemObj.Pairs[x].JsonValue is TJSONObject) then
           begin
-            auxNode:= LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value);
+            auxNode := LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value);
             AddJsonObject(nil, auxNode, itemObj.Pairs[x].JsonValue);
           end
           else
