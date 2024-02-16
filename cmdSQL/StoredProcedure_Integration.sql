@@ -1766,5 +1766,9 @@ end
 GO
 */
 
-exec sp_StandardData_FixedValues 0 
-GO
+IF DB_NAME() = 'INTEGRATION_BETA'
+begin
+	exec sp_StandardData_FixedValues 0
+end;
+GO	
+

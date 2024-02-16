@@ -14,6 +14,31 @@ uses
   System.Console
   ;
 
+
+function HasDelphiIgnoredHintOrWarning(const AMessage: String): Boolean;
+var
+  MessageSanitized: String;
+begin
+  MessageSanitized := AMessage.ToLower;
+
+  if (Pos(('ApComps\ApLibrary\ApLibServer\RPCServer.pas').ToLower, MessageSanitized) > 0) and
+     (
+        (Pos(('Value assigned to ''qryTmp'' never used').ToLower, MessageSanitized) > 0) or
+        (Pos(('Variable ''aFileMajorNumber'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
+        (Pos(('Variable ''aFileMinorNumber'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
+        (Pos(('Variable ''AFileRelease'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0)  or
+        (Pos(('Variable ''aFileMajorNumber'' is declared but never used in').ToLower, MessageSanitized) > 0) or
+        (Pos(('Variable ''aFileMinorNumber'' is declared but never used in').ToLower, MessageSanitized) > 0) or
+        (Pos(('Variable ''AFileRelease'' is declared but never used in').ToLower, MessageSanitized) > 0)
+
+     ) then
+   begin
+     Exit(True);
+   end
+   else
+     Exit(False);
+end;
+
 function HasDelphiHintCode(const AMessage: String): Boolean;
 const
   HINT_CODES_DELPHI: array[0..18] of string = (
@@ -25,12 +50,13 @@ const
 var
   i: Integer;
 begin
-  Result := False;
   for i := Low(HINT_CODES_DELPHI) to High(HINT_CODES_DELPHI) do
   begin
     if Pos(HINT_CODES_DELPHI[i], AMessage) > 0 then
       Exit(True);
   end;
+
+  Exit(False);
 end;
 
 function HasDelphiWarningCode(const AMessage: String): Boolean;
@@ -49,12 +75,13 @@ const
 var
   i: Integer;
 begin
-  Result := False;
   for i := Low(WARNING_CODES_DELPHI) to High(WARNING_CODES_DELPHI) do
   begin
     if Pos(WARNING_CODES_DELPHI[i], AMessage) > 0 then
       Exit(True);
   end;
+
+  Exit(False);
 end;
 
 function ExecuteConsoleOutput(const ACommand, AParameters, ASystemName: String): Boolean;
@@ -184,13 +211,19 @@ begin
               end
               else if HasDelphiHintCode(String(pCommandLine)) then
               begin
-                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Yellow]);
-                Inc(CompHint);
+                if not HasDelphiIgnoredHintOrWarning(String(pCommandLine)) then
+                begin
+                  Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Yellow]);
+                  Inc(CompHint);
+                end;
               end
               else if HasDelphiWarningCode(String(pCommandLine)) then
               begin
-                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.DarkYellow]);
-                Inc(CompWarning);
+                if not HasDelphiIgnoredHintOrWarning(String(pCommandLine)) then
+                begin
+                  Console.WriteColorLine(String(pCommandLine), [TConsoleColor.DarkYellow]);
+                  Inc(CompWarning);
+                end;
               end
               else
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.White]);
