@@ -14,6 +14,49 @@ uses
   System.Console
   ;
 
+function HasDelphiHintCode(const AMessage: String): Boolean;
+const
+  HINT_CODES_DELPHI: array[0..18] of string = (
+    'H2077', 'H2135', 'H2164', 'H2219', 'H2235', 'H2244',
+    'H2365', 'H2368', 'H2369', 'H2384', 'H2440', 'H2443',
+    'H2444', 'H2445', 'H2456', 'H2457', 'H2505', 'H2509',
+    'H2596'
+  );
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := Low(HINT_CODES_DELPHI) to High(HINT_CODES_DELPHI) do
+  begin
+    if Pos(HINT_CODES_DELPHI[i], AMessage) > 0 then
+      Exit(True);
+  end;
+end;
+
+function HasDelphiWarningCode(const AMessage: String): Boolean;
+const
+  WARNING_CODES_DELPHI: array[0..66] of string = (
+    'W1000', 'W1001', 'W1002', 'W1003', 'W1004', 'W1005', 'W1006', 'W1007',
+    'W1009', 'W1010', 'W1011', 'W1013', 'W1014', 'W1015', 'W1016', 'W1017',
+    'W1018', 'W1021', 'W1022', 'W1023', 'W1024', 'W1029', 'W1031', 'W1032',
+    'W1034', 'W1035', 'W1036', 'W1037', 'W1039', 'W1040', 'W1041', 'W1042',
+    'W1043', 'W1044', 'W1045', 'W1046', 'W1047', 'W1048', 'W1049', 'W1050',
+    'W1051', 'W1055', 'W1057', 'W1058', 'W1059', 'W1060', 'W1061', 'W1062',
+    'W1063', 'W1064', 'W1066', 'W1067', 'W1068', 'W1069', 'W1070', 'W1071',
+    'W1072', 'W1073', 'W1074', 'W1201', 'W1202', 'W1203', 'W1204', 'W1205',
+    'W1206', 'W1207', 'W1208'
+  );
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := Low(WARNING_CODES_DELPHI) to High(WARNING_CODES_DELPHI) do
+  begin
+    if Pos(WARNING_CODES_DELPHI[i], AMessage) > 0 then
+      Exit(True);
+  end;
+end;
+
 function ExecuteConsoleOutput(const ACommand, AParameters, ASystemName: String): Boolean;
 const
   CReadBuffer = 2400;
@@ -86,9 +129,13 @@ var
   WorkDir         : string;
   Handle          : Boolean;
   CompError       : Boolean;
+  CompHint        : Integer;
+  CompWarning     : Integer;
 begin
   Result := False;
   CompError := False;
+  CompHint := 0;
+  CompWarning := 0;
   AMessages := '';
   Console.WriteLine(StringOfChar('*', 80));
   Console.WriteColorLine('Inicializando a compilação do ' + ASystemName, [TConsoleColor.Yellow]);
@@ -132,11 +179,19 @@ begin
               end
               else if (Pos('ERROS', UpperCase(String(pCommandLine))) > 0) then
               begin
-                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.DarkYellow]);
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Red]);
                 CompError := True;
               end
-              else if (Pos('WARNING', UpperCase(String(pCommandLine))) > 0) then
-                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Yellow])
+              else if HasDelphiHintCode(String(pCommandLine)) then
+              begin
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Yellow]);
+                Inc(CompHint);
+              end
+              else if HasDelphiWarningCode(String(pCommandLine)) then
+              begin
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.DarkYellow]);
+                Inc(CompWarning);
+              end
               else
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.White]);
             end;
@@ -152,6 +207,12 @@ begin
   finally
     if CompError then
       AMessages := Format('%s - Erros Encontrados Na Compilacao', [ASystemName]);
+
+    if CompHint > 0 then
+      AMessages := Format('%s - [Hints Encontrados %d]', [AMessages, CompHint]);
+
+    if CompWarning > 0 then
+      AMessages := Format('%s - [Warnings Encontrados %d]', [AMessages, CompWarning]);
 
     Console.WriteLine();
     Console.WriteColorLine('Finalizando a compilação do ' + ASystemName, [TConsoleColor.Yellow]);
