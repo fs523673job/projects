@@ -18,6 +18,8 @@ type
     class function ConvertJSONValueToJSONObject(const AJSONContent: String): TJSONObject;
     class function JsonToXML(AJSONValue: TJSONValue): String;
     class function FindContentNode(const AXml: String; const APathXml: String): String;
+    //
+    class function NewContentNode(const APathsXML: TStringList): String;
   end;
 
 implementation
@@ -249,5 +251,332 @@ begin
   end;
 end;
 
+
+type
+  TTagsXML = class(TObject)
+  private
+    FTagName                  : String;
+    FTagParent                : String;
+    FTagListOrigem            : TStringList;
+    FTagListDestino           : TStringList;
+    FCdiTransacao_Retorno     : Integer;
+    FNuiTipoEdicao_Retorno    : Integer;
+    FCdiModeloIntegracao_Ret  : Integer;
+    FDssCampoDestino          : String;
+    FDssCampoOrigem           : String;
+  public
+    constructor Create(const ATagName, ATagParent: String);
+    destructor Destroy; override;
+
+    procedure AddTags(const ATagOrigem: String; ATagDestino: String);
+
+    property TagName                  : String read FTagName;
+    property TagParent                : String read FTagParent;
+    property TagListOrigem            : TStringList read FTagListOrigem;
+    property TagListDestino           : TStringList read FTagListDestino;
+    property DssCampoDestino          : String read FDssCampoDestino write FDssCampoDestino;
+    property DssCampoOrigem           : String read FDssCampoOrigem write FDssCampoOrigem;
+    property CdiTransacao_Retorno     : Integer read FCdiTransacao_Retorno write FCdiTransacao_Retorno;
+    property NuiTipoEdicao_Retorno    : Integer read FNuiTipoEdicao_Retorno write FNuiTipoEdicao_Retorno;
+    property CdiModeloIntegracao_Ret  : Integer read FCdiModeloIntegracao_Ret write FCdiModeloIntegracao_Ret;
+  end;
+
+function NodeHasAllChildren(Node: TXmlNode; const ChildNames: TArray<String>): Boolean;
+var
+  ChildName: string;
+begin
+  Result := True;
+  for ChildName in ChildNames do
+  begin
+    if Node.FindNode(ChildName) = nil then
+    begin
+      Result := False;
+      Break;
+    end;
+  end;
+end;
+
+function FindNodeByNameAndChildren(Node: TXmlNode; const Name: string; const ChildNames: TArray<String>): TXmlNode;
+var
+  i: Integer;
+  Child: TXmlNode;
+begin
+  Result := nil;
+  if AnsiSameText(Node.Name, Name) and NodeHasAllChildren(Node, ChildNames) then
+    Exit(Node)
+  else
+  begin
+    for i := 0 to Node.NodeCount - 1 do
+    begin
+      Child := Node.Nodes[i];
+      Result := FindNodeByNameAndChildren(Child, Name, ChildNames);
+      if Assigned(Result) then
+        Break;
+    end;
+  end;
+end;
+
+class function TJSonUtils.NewContentNode(const APathsXML: TStringList): String;
+var
+  Response               : TStringStream;
+  XMLResponse            : TNativeXML;
+  XMLNode                : TXmlNode;
+  XMLListNodes           : TList;
+  StrMapXml              : TArray<String>;
+  StrTagsNames           : TArray<String>;
+  StrTagsChild           : TArray<String>;
+  StrTagsDeepChild       : TArray<String>;
+  c, i, x                : Integer;
+  XMLNodesStructuresRep  : TDictionary<String, TTagsXML>;
+  XMLNodesStructures     : TDictionary<String, TTagsXML>;
+  TagsStructureRepXML    : TTagsXML;
+  TagsStructureXML       : TTagsXML;
+  TagName                : String;
+  TagParent              : String;
+  PathTags               : String;
+  Key                    : String;
+  Key2                   : String;
+  ContentString          : String;
+  jsonObject             : TJSONObject;
+  ConcatXML              : Boolean;
+  FullPathXml            : String;
+  IndexPath              : Integer;
+begin
+  try
+    Response := TStringStream.Create;
+    try
+      try
+        XMLResponse  := TNativeXml.Create(nil);
+        XMLListNodes := TList.Create;
+        try
+          Response.Position := 0;
+          XMLResponse.DefaultReadEncoding := seUTF8;
+          XMLResponse.LoadFromStream(Response);
+
+          XMLNodesStructures    := TDictionary<String, TTagsXML>.Create;
+          XMLNodesStructuresRep := TDictionary<String, TTagsXML>.Create;
+
+          for IndexPath := 0 to Pred(APathsXML.Count) do
+          begin
+            PathTags := APathsXML[IndexPath];
+
+            //Retro-compatibilidade de mapeamento
+            PathTags := StringReplace(PathTags, 'ResponseArray', 'dataArray', [rfReplaceAll]);
+
+            StrMapXml := PathTags.Split([';']);
+
+            if (Length(StrMapXml) < 2) then
+              Continue;
+
+            if (Pos('/', StrMapXml[0]) > 0) then
+            begin
+              StrTagsNames     := StrMapXml[0].Split(['/']);
+              StrTagsChild     := Copy(StrTagsNames, 1, Length(StrTagsNames) - 1);
+              StrTagsDeepChild := Copy(StrMapXml, 1, Length(StrMapXml) - 1);
+
+              XMLNode := FindNodeByNameAndChildren(XMLResponse.Root, StrTagsNames[0], StrTagsChild);
+              if Assigned(XMLNode) then
+                FullPathXml := Format('%s/%s', [XMLNode.FullPath, String.Join('/', StrTagsChild)])
+              else
+                FullPathXml := StrMapXml[0];
+
+              XMLNodesStructuresRep.TryGetValue(FullPathXml, TagsStructureRepXML);
+
+              if not Assigned(TagsStructureRepXML) then
+              begin
+                TagName   := String.Join('/', StrTagsChild);
+                TagParent := StrTagsNames[0];
+
+                TagsStructureRepXML := TTagsXML.Create(TagName, TagParent);
+                TagsStructureRepXML.CdiTransacao_Retorno    := 0;
+                TagsStructureRepXML.NuiTipoEdicao_Retorno   := 0;
+                TagsStructureRepXML.CdiModeloIntegracao_Ret := 0;
+
+                XMLNodesStructuresRep.Add(FullPathXml, TagsStructureRepXML);
+              end;
+
+              TagsStructureRepXML.AddTags(String.Join(';', StrTagsDeepChild), Format('%s%.2d', ['Campo', IndexPath]));
+            end
+            else
+            begin
+              TagName   := StrTagsNames[Length(StrTagsNames) - 1];
+              TagParent := PathTags;
+
+              Delete(TagParent, Length(TagParent) - Length(TagName), Length(TagName) + 1);
+
+              XMLNodesStructures.TryGetValue(TagName, TagsStructureXML);
+
+              if not Assigned(TagsStructureXML) then
+              begin
+                TagsStructureXML := TTagsXML.Create(TagName, TagParent);
+                TagsStructureXML.CdiTransacao_Retorno    := 0;
+                TagsStructureXML.NuiTipoEdicao_Retorno   := 0;
+                TagsStructureXML.CdiModeloIntegracao_Ret := 0;
+
+                XMLNodesStructures.Add(TagName, TagsStructureXML);
+              end;
+
+              TagsStructureXML.AddTags(PathTags, Format('%s%.2d', ['Campo', IndexPath]));
+            end;
+          end;
+
+          if (XMLNodesStructuresRep.Count > 0) then
+          begin
+            for Key in XMLNodesStructuresRep.Keys do
+            begin
+              XMLNodesStructuresRep.TryGetValue(Key, TagsStructureRepXML);
+
+              if Assigned(TagsStructureRepXML) then
+              begin
+                XMLNode := XMLResponse.Root.FindNode(TagsStructureRepXML.TagParent);
+
+                if not Assigned(XMLNode) then
+                begin
+                  if AnsiSameText(XMLResponse.Root.Name, TagsStructureRepXML.TagParent) then
+                    XMLNode := XMLResponse.Root
+                  else
+                    Continue;
+                end;
+
+                XMLListNodes.Clear;
+
+                XMLNode.FindNodes(Format('%s/%s', [XMLNode.FullPath, TagsStructureRepXML.TagName]), XMLListNodes);
+
+                if (XMLListNodes.Count - 1 < 0) then
+                  XMLNode.FindNodes(Format('/%s/%s', [TagsStructureRepXML.TagParent, TagsStructureRepXML.TagName]), XMLListNodes);
+
+                for c := 0 to XMLListNodes.Count - 1 do
+                begin
+                  if (True) then
+                  begin
+                    for i := 0 to TagsStructureRepXML.TagListOrigem.Count - 1 do
+                    begin
+                      if (Pos(';', TagsStructureRepXML.TagListOrigem[i]) > 0) then
+                      begin
+                        StrTagsNames := TagsStructureRepXML.TagListOrigem[i].Split([';']);
+
+                        XMLNode := TXmlNode(XMLListNodes.Items[c]).FindNode(StrTagsNames[0]);
+
+                        if Assigned(XMLNode) then
+                        begin
+                          for x := 1 to Length(StrTagsNames) - 1 do
+                          begin
+                            XMLNode := XMLNode.FindNode(StrTagsNames[x]);
+
+                            if not Assigned(XMLNode) then
+                              Break;
+                          end;
+                        end;
+                      end
+                      else
+                      begin
+                        XMLNode := TXmlNode(XMLListNodes.Items[c]).FindNode(TagsStructureRepXML.TagListOrigem[i]);
+                        if Assigned(XMLNode) then
+                        begin
+                          if not AnsiSameText(XMLNode.FullPath, TXmlNode(XMLListNodes.Items[c]).FullPath + '/' + TagsStructureRepXML.TagListOrigem[i]) then
+                          begin
+                            XMLNode := TXmlNode(XMLListNodes.Items[c]).FindNode(TXmlNode(XMLListNodes.Items[c]).FullPath + '/' + TagsStructureRepXML.TagListOrigem[i]);
+                          end;
+                        end;
+                      end;
+
+                      if Assigned(XMLNode) then
+                      begin
+                        XMLNode.ValueUnicode;
+                      end;
+                    end;
+
+                    for Key2 in XMLNodesStructures.Keys do
+                    begin
+                      XMLNodesStructures.TryGetValue(Key2, TagsStructureXML);
+
+                      if Assigned(TagsStructureXML) then
+                      begin
+                        XMLNode := XMLResponse.Root.FindNode(TagsStructureXML.TagParent);
+
+                        if Assigned(XMLNode) then
+                          XMLNode := XMLNode.FindNode(TagsStructureXML.TagName);
+
+                        if Assigned(XMLNode) then
+                        begin
+                          XMLNode.ValueUnicode;
+                        end;
+                      end;
+                    end;
+                  end;
+                end;
+              end;
+            end;
+          end
+          else if (XMLNodesStructures.Count > 0) then
+          begin
+            for Key in XMLNodesStructures.Keys do
+            begin
+              XMLNodesStructures.TryGetValue(Key, TagsStructureXML);
+
+              if Assigned(TagsStructureXML) then
+              begin
+                XMLNode := XMLResponse.Root.FindNode(TagsStructureXML.TagParent);
+
+                if not Assigned(XMLNode) then
+                begin
+                  if AnsiSameStr(XMLResponse.Root.Name, TagsStructureXML.TagParent) then
+                    XMLNode := XMLResponse.Root.Nodes[0]
+                  else
+                    Continue;
+                end;
+
+                if (True) then
+                begin
+                  XMLNode := XMLResponse.Root.FindNode(TagsStructureXML.TagName);
+
+                  if not Assigned(XMLNode) then
+                  begin
+                    if AnsiSameStr(XMLResponse.Root.Name, TagsStructureXML.TagName) then
+                      XMLNode := XMLResponse.Root.Nodes[0]
+                    else
+                      Continue;
+                  end;
+
+                  XMLNode.ValueUnicode;
+                end;
+              end;
+            end;
+          end;
+        finally
+          XMLResponse.Free;
+          XMLListNodes.Free;
+        end;
+      finally
+      end;
+    finally
+      Response.Free;
+    end;
+  finally
+  end;
+end;
+
+{ TTagsXML }
+
+procedure TTagsXML.AddTags(const ATagOrigem: String; ATagDestino: String);
+begin
+  FTagListOrigem.Add(ATagOrigem);
+  FTagListDestino.Add(ATagDestino);
+end;
+
+constructor TTagsXML.Create(const ATagName, ATagParent: String);
+begin
+  FTagParent := ATagParent;
+  FTagName   := ATagName;
+
+  FTagListOrigem  := TStringList.Create;
+  FTagListDestino := TStringList.Create;
+end;
+
+destructor TTagsXML.Destroy;
+begin
+  FTagListOrigem.Free;
+  FTagListDestino.Free;
+end;
 
 end.

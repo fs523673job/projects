@@ -2,7 +2,7 @@ object frmMain: TfrmMain
   Left = 0
   Top = 0
   Caption = 'Json To Xml'
-  ClientHeight = 635
+  ClientHeight = 677
   ClientWidth = 1043
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,13 +12,13 @@ object frmMain: TfrmMain
   Font.Style = []
   DesignSize = (
     1043
-    635)
+    677)
   TextHeight = 13
   object seJSON: TSynEdit
     Left = 8
     Top = 8
     Width = 532
-    Height = 593
+    Height = 635
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1428,7 +1428,7 @@ object frmMain: TfrmMain
   end
   object btnConvertJasonXML: TButton
     Left = 8
-    Top = 607
+    Top = 649
     Width = 532
     Height = 25
     Anchors = [akRight, akBottom]
@@ -1442,26 +1442,27 @@ object frmMain: TfrmMain
     Left = 554
     Top = 8
     Width = 481
-    Height = 569
+    Height = 611
     Anchors = [akLeft, akTop, akRight, akBottom]
     Lines.Strings = (
       'seXML')
     ScrollBars = ssBoth
     TabOrder = 2
+    ExplicitWidth = 477
+    ExplicitHeight = 568
   end
   object edtFindNode: TEdit
-    Left = 552
-    Top = 580
+    Left = 553
+    Top = 621
     Width = 482
     Height = 21
     Anchors = [akRight, akBottom]
     TabOrder = 3
-    ExplicitLeft = 548
     ExplicitTop = 579
   end
   object btnFindNodes: TButton
     Left = 552
-    Top = 606
+    Top = 648
     Width = 481
     Height = 25
     Anchors = [akRight, akBottom]
