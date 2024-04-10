@@ -12,6 +12,7 @@ uses
 
 function LinearizeSQL(const ASQL: String): String;
 function ExtrairCondicoesWhereComOr(SQL: string): TStringList;
+function ExtrairOperadoresExternos(const Expr: string): string;
 
 implementation
 
@@ -127,5 +128,42 @@ begin
       Break; // Sai do loop se não houver mais comentários
   end;
 end;
+
+function ExtrairOperadoresExternos(const Expr: string): string;
+var
+  i, ParentesesNivel: Integer;
+  TempResult: string;
+begin
+  TempResult := ''; // Inicializa o resultado temporário
+  ParentesesNivel := 0; // Inicializa o contador de nível de parênteses
+
+  // Percorre cada caracter da string
+  for i := 1 to Length(Expr) do
+  begin
+    // Verifica se o caracter atual é um parêntese de abertura
+    if Expr[i] = '(' then
+      Inc(ParentesesNivel) // Incrementa o nível de parênteses
+    else if Expr[i] = ')' then
+      Dec(ParentesesNivel) // Decrementa o nível de parênteses
+    else if ParentesesNivel = 0 then
+      // Se não estiver dentro de parênteses, adiciona o caracter ao resultado temporário
+      TempResult := TempResult + Expr[i];
+  end;
+
+  // Remove espaços em branco extras do resultado temporário
+  Result := Trim(TempResult);
+
+  // Verifica se o resultado contém apenas operadores lógicos externos
+  // Neste exemplo, simplificamos verificando apenas a presença do operador "OR" fora dos parênteses
+  // Esta verificação pode ser expandida para outros operadores ou lógica conforme necessário
+  if (Pos('OR', UpperCase(Result)) > 0) and (Pos('AND', UpperCase(Result)) = 0) then
+    Result := 'OR'
+  else if (Pos('AND', UpperCase(Result)) > 0) and (Pos('OR', UpperCase(Result)) = 0) then
+    Result := 'AND'
+  else
+    // Se a string resultante não corresponder a um único operador lógico externo, limpa o resultado
+    Result := '';
+end;
+
 
 end.

@@ -47,6 +47,8 @@ begin
     begin
       SynEdit2.Lines.Add(Condition);
       SynEdit2.Lines.Add(StringOfChar('*', 100));
+      SynEdit2.Lines.Add(ExtrairOperadoresExternos(Condition));
+      SynEdit2.Lines.Add(StringOfChar('*', 100));
     end;
   finally
     Conditions.Free;
