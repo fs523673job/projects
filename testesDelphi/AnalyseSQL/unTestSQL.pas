@@ -11,11 +11,6 @@ uses
 
 
 function LinearizeSQL(const ASQL: String): String;
-function AnaliseSQLClausesOR(const ASQL: String): Boolean;
-function RegxAnaliseSQLClausesOR(const ASQL: String): Boolean;
-function NewAnaliseSQLClausesOR(const ASQL: String): String;
-function ExtractSQLConditions(SQL: string): TStringList;
-function ExtractSQLConditions_Where(const SQL: string): TStringList;
 function ExtrairCondicoesWhereComOr(SQL: string): TStringList;
 
 implementation
@@ -48,298 +43,6 @@ begin
       end;
     end;
   end;
-end;
-
-function AnaliseSQLClausesOR(const ASQL: string): Boolean;
-var
-  ParenthesisCount, i, j: Integer;
-  InSingleQuote, InDoubleQuote, InSubselect, InJoinCommand: Boolean;
-begin
-  Result := False;
-  ParenthesisCount := 0;
-  InSingleQuote := False;
-  InDoubleQuote := False;
-  InSubselect := False;
-  i := 1;
-
-  while (i < Length(ASQL)) do
-  begin
-    if (ASQL[i] = '''') then
-    begin
-      InSingleQuote := not InSingleQuote;
-    end
-    else if (ASQL[i] = '"') then
-    begin
-      InDoubleQuote := not InDoubleQuote;
-    end
-    else if (ASQL[i] = '(') then
-    begin
-      if not InSingleQuote and not InDoubleQuote then
-      begin
-        Inc(ParenthesisCount);
-        if InSubselect then
-          InSubselect := False;
-      end;
-    end
-    else if (ASQL[i] = ')') then
-    begin
-      if not InSingleQuote and not InDoubleQuote then
-      begin
-        Dec(ParenthesisCount);
-        if ParenthesisCount < 0 then
-          Exit;
-      end;
-    end
-    else if (ASQL.ToUpper[i] = 'S') then
-    begin
-      if not InSingleQuote and not InDoubleQuote and not InSubselect then
-      begin
-        if Copy(ASQL.ToUpper, i, 7) = 'SELECT ' then
-        begin
-          InSubselect := True;
-        end;
-      end;
-    end
-    else if (ASQL.ToUpper[i] in ['L', 'I', 'R']) then
-    begin
-      if not InSingleQuote and not InDoubleQuote and not InSubselect then
-      begin
-        //LEFT, INNER, RIGTH
-        if (Copy(ASQL.ToUpper, i, 4) = 'LEFT') or
-           (Copy(ASQL.ToUpper, i, 5) = 'RIGHT') or
-           (Copy(ASQL.ToUpper, i, 5) = 'INNER') then
-        begin
-          InJoinCommand := True;
-        end;
-      end;
-    end
-    else if (ASQL.ToUpper[i] = 'W') then
-    begin
-      if (Copy(ASQL.ToUpper, i, 5) = 'WHERE') then
-        InJoinCommand := False;
-    end
-    else if (ASQL.ToUpper[i] = 'O') then
-    begin
-      if (Copy(ASQL.ToUpper, i, 3) = 'OR ') and (not CharInSet(ASQL[i - 1], ['A'..'Z', 'a'..'z'])) and (not InJoinCommand) then
-      begin
-        j := i - 1;
-        while (j > 0) and CharInSet(ASQL[j], [' ', #9, #10, #13]) do
-          Dec(j);
-
-        if (j > 0) and (ASQL[j] <> ')') then
-        begin
-          Result := True;
-          Exit;
-        end;
-      end;
-    end;
-    Inc(i);
-  end;
-end;
-
-function RegxAnaliseSQLClausesOR(const ASQL: String): Boolean;
-const
-  RE0 = '\bWHERE\b(?:[^()]*?\bOR\b[^();]*?)+';
-  RE1 = '\bWHERE\b(?![^\(]*\)).*?\bOR\b.*?(?![^\(]*\))';
-var
-  Regex: TRegEx;
-  Match: TMatch;
-begin
-  Regex := TRegEx.Create(RE1);
-  Match := Regex.Match(ASQL);
-  Result := Match.Success;
-end;
-
-function NewAnaliseSQLClausesOR(const ASQL: String): String;
-const
-  TAG_SECURITY_START = '/*AUTOEMPLOYEEFILTER=';
-  TAG_SECURITY_END = '*/';
-var
-  TagStartPos: Integer;
-  IndexSQL   : Integer;
-begin
-  Result := 'Não Encontrado';
-
-  TagStartPos := Pos(TAG_SECURITY_START, ASQL);
-  IndexSQL    := TagStartPos;
-
-  while (IndexSQL > 0) do
-  begin
-    if (Copy(ASQL.ToUpper, IndexSQL, 5) = 'WHERE') then
-    begin
-      Result := Copy(ASQL.ToUpper, IndexSQL, TagStartPos);
-      Break;
-    end;
-
-    Dec(IndexSQL);
-  end;
-end;
-
-function ExtractSQLConditions(SQL: string): TStringList;
-var
-  InQuotes, InWhere, InSubQuery: Boolean;
-  CommentLevel: Integer;
-  Condition, Token: string;
-  I: Integer;
-begin
-  Result := TStringList.Create;
-  InQuotes := False;
-  InWhere := False;
-  InSubQuery := False;
-  CommentLevel := 0;
-  Condition := '';
-  Token := '';
-  I := 1;
-
-  while I <= Length(SQL) do
-  begin
-    // Ignorar conteúdo dentro de comentários
-    if (I < Length(SQL)) and (SQL[I] + SQL[I+1] = '/*') then
-    begin
-      Inc(CommentLevel);
-      Inc(I, 2);
-      Continue;
-    end
-    else if (CommentLevel > 0) and (I < Length(SQL)) and (SQL[I] + SQL[I+1] = '*/') then
-    begin
-      Dec(CommentLevel);
-      Inc(I, 2);
-      Continue;
-    end;
-
-    if CommentLevel > 0 then
-    begin
-      Inc(I);
-      Continue;
-    end;
-
-    // Trata strings literais
-    if SQL[I] = '''' then
-    begin
-      InQuotes := not InQuotes;
-      Inc(I);
-      Continue;
-    end;
-
-    if not InQuotes then
-    begin
-      // Identifica e ignora subqueries
-      if SQL[I] = '(' then
-        InSubQuery := True
-      else if SQL[I] = ')' then
-        InSubQuery := False;
-
-      if not InSubQuery then
-      begin
-        // Processa a cláusula WHERE
-        if InWhere then
-        begin
-          if SQL[I] in [' ', '(', ')', ';', ','] then
-          begin
-            if Token <> '' then
-            begin
-              Condition := Condition + Token + ' ';
-              Token := '';
-            end;
-
-            if SQL[I] = ';' then
-              Break;  // Final do comando SQL
-          end
-          else
-            Token := Token + SQL[I];
-        end
-        else if UpperCase(Copy(SQL, I, 6)) = 'WHERE ' then
-        begin
-          InWhere := True;
-          Inc(I, 5);  // Avança o índice para o final do 'WHERE '
-        end;
-      end;
-    end;
-    Inc(I);
-  end;
-
-  if Condition <> '' then
-    Result.Add(Condition);  // Adiciona a última condição encontrada
-end;
-
-function ExtractSQLConditions_Where(const SQL: string): TStringList;
-var
-  I: Integer;
-  InQuotes, InWhere: Boolean;
-  Token: string;
-  CommentDepth, ParenthesisLevel: Integer;
-begin
-  Result := TStringList.Create;
-  InQuotes := False;
-  InWhere := False;
-  Token := '';
-  CommentDepth := 0;
-  ParenthesisLevel := 0;
-
-  I := 1;
-  while I <= Length(SQL) do
-  begin
-    if CommentDepth = 0 then
-    begin
-      if (I <= Length(SQL) - 1) and (SQL[I] = '/') and (SQL[I + 1] = '*') then
-      begin
-        Inc(CommentDepth);
-        Inc(I);
-      end
-      else if (I <= Length(SQL) - 1) and (SQL[I] = '*') and (SQL[I + 1] = '/') then
-      begin
-        Dec(CommentDepth);
-        Inc(I);
-      end
-      else if not InQuotes and (SQL[I] = '(') then
-      begin
-        Inc(ParenthesisLevel);
-      end
-      else if not InQuotes and (SQL[I] = ')') then
-      begin
-        Dec(ParenthesisLevel);
-      end;
-    end
-    else if (SQL[I] = '*') and (I < Length(SQL)) and (SQL[I + 1] = '/') then
-    begin
-      Dec(CommentDepth);
-      Inc(I);
-    end;
-
-    if (CommentDepth = 0) and not InQuotes then
-    begin
-      if SQL[I] = '''' then
-      begin
-        InQuotes := not InQuotes;
-      end
-      else if UpperCase(Copy(SQL, I, 5)) = 'WHERE' then
-      begin
-        InWhere := True;
-        Inc(I, 4);  // Move past the 'WHERE' keyword
-      end
-      else if InWhere and (ParenthesisLevel = 0) and
-              ((UpperCase(Copy(SQL, I, 3)) = 'AND') or (UpperCase(Copy(SQL, I, 2)) = 'OR')) then
-      begin
-        if Token.Trim <> '' then
-        begin
-          Result.Add(Token.Trim);
-          Token := '';
-        end;
-        if UpperCase(Copy(SQL, I, 3)) = 'AND' then
-          Inc(I, 2)
-        else if UpperCase(Copy(SQL, I, 2)) = 'OR' then
-          Inc(I, 1);
-      end;
-    end;
-
-    if InWhere and (CommentDepth = 0) then
-      Token := Token + SQL[I];
-
-    Inc(I);
-  end;
-
-  if Token.Trim <> '' then
-    Result.Add(Token.Trim);
 end;
 
 function UltimaPosicaoSubString(const SubStr, InStr: string): Integer;
@@ -375,8 +78,8 @@ end;
 
 function ExtrairCondicoesWhereComOr(SQL: string): TStringList;
 var
-  PosicaoInicio, PosicaoFim, PosicaoComentario: Integer;
-  SQLLower, TempResult, SubStr: string;
+  PosicaoInicio, PosicaoFim, PosicaoComentario, PosicaoProximoComentario, PosicaoFimComentario: Integer;
+  SQLLower, TempResult, SubStr, CondicaoSemComentario: string;
 begin
   Result := TStringList.Create; // Cria a lista para armazenar as condições
   SQLLower := LowerCase(SQL); // Converte o SQL para minúsculas para facilitar a busca
@@ -385,27 +88,44 @@ begin
   PosicaoComentario := Pos('/*autoemployeefilter', SQLLower);
   while PosicaoComentario > 0 do
   begin
-    // Encontra a última posição do WHERE antes do comentário
+    // Encontra a posição do próximo comentário para limitar a busca do WHERE ao bloco atual
+    PosicaoProximoComentario := PosEx('/*autoemployeefilter', SQLLower, PosicaoComentario + Length('/*autoemployeefilter'));
+    if PosicaoProximoComentario = 0 then
+      PosicaoProximoComentario := MaxInt;
+
+    // Encontra a última posição do WHERE antes do comentário, limitando a busca ao bloco atual
     PosicaoInicio := UltimaPosicaoSubString('where', Copy(SQLLower, 1, PosicaoComentario));
-    if PosicaoInicio > 0 then
+    if (PosicaoInicio > 0) and (PosicaoInicio < PosicaoProximoComentario) then
     begin
       Inc(PosicaoInicio, Length('where'));
       PosicaoFim := PosEx('group by', SQLLower, PosicaoInicio);
-      if PosicaoFim = 0 then PosicaoFim := PosEx('order by', SQLLower, PosicaoInicio);
-      if PosicaoFim = 0 then PosicaoFim := PosicaoComentario;
+      if (PosicaoFim = 0) or (PosicaoFim > PosicaoProximoComentario) then
+        PosicaoFim := PosEx('order by', SQLLower, PosicaoInicio);
+      if (PosicaoFim = 0) or (PosicaoFim > PosicaoProximoComentario) then
+        PosicaoFim := PosicaoProximoComentario;
 
       if PosicaoFim > PosicaoInicio then
         TempResult := Trim(Copy(SQL, PosicaoInicio, PosicaoFim - PosicaoInicio))
       else
         TempResult := Trim(Copy(SQL, PosicaoInicio, PosicaoComentario - PosicaoInicio));
 
-      if ContemOrValido(TempResult) then
-        Result.Add(TempResult);
+      // Remove o comentário /*AutoEmployeeFilter*/ e qualquer texto após ele
+      PosicaoFimComentario := Pos('/*autoemployeefilter', LowerCase(TempResult));
+      if PosicaoFimComentario > 0 then
+        CondicaoSemComentario := Copy(TempResult, 1, PosicaoFimComentario - 1)
+      else
+        CondicaoSemComentario := TempResult;
+
+      if ContemOrValido(CondicaoSemComentario) then
+        Result.Add(Trim(CondicaoSemComentario));
     end;
 
     // Prepara para buscar a próxima ocorrência do comentário, se houver
-    SubStr := Copy(SQLLower, PosicaoComentario + Length('/*autoemployeefilter'), MaxInt);
-    PosicaoComentario := PosEx('/*autoemployeefilter', SQLLower, PosicaoComentario + Length('/*autoemployeefilter'));
+    if PosicaoProximoComentario <> MaxInt then
+      PosicaoComentario := PosEx('/*autoemployeefilter', SQLLower, PosicaoProximoComentario)
+    else
+      Break; // Sai do loop se não houver mais comentários
   end;
 end;
+
 end.
