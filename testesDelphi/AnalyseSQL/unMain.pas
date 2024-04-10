@@ -33,11 +33,14 @@ var
   SQL: String;
 begin
   SQL := LinearizeSQL(SynEdit1.Text);
-  if AnaliseSQLClausesOR(SQL) then
-    ShowMessage('AnaliseSQLClausesOR - Comando com OR inválido');
 
-  if RegxAnaliseSQLClausesOR(SQL) then
-    ShowMessage('RegEx - AnaliseSQLClausesOR - Comando com OR inválido');
+//  if AnaliseSQLClausesOR(SQL) then
+//    ShowMessage('AnaliseSQLClausesOR - Comando com OR inválido');
+
+//  if RegxAnaliseSQLClausesOR(SQL) then
+//    ShowMessage('RegEx - AnaliseSQLClausesOR - Comando com OR inválido');
+
+  ShowMessage(NewAnaliseSQLClausesOR(SQL));
 end;
 
 end.

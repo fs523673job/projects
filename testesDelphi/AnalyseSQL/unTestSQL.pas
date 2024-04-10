@@ -4,6 +4,7 @@ interface
 
 uses
   System.SysUtils,
+  System.StrUtils,
   System.Classes,
   System.RegularExpressions
   ;
@@ -12,7 +13,7 @@ uses
 function LinearizeSQL(const ASQL: String): String;
 function AnaliseSQLClausesOR(const ASQL: String): Boolean;
 function RegxAnaliseSQLClausesOR(const ASQL: String): Boolean;
-function NewAnaliseSQLClausesOR(const ASQL: String): Boolean;
+function NewAnaliseSQLClausesOR(const ASQL: String): String;
 
 implementation
 
@@ -146,37 +147,30 @@ begin
   Result := Match.Success;
 end;
 
-function NewAnaliseSQLClausesOR(const ASQL: String): Boolean;
+function NewAnaliseSQLClausesOR(const ASQL: String): String;
 const
   TAG_SECURITY_START = '/*AutoEmployeeFilter=';
   TAG_SECURITY_END = '*/';
 var
   TagStartPos: Integer;
+  LastEndPos : Integer;
+  IndexSQL   : Integer;
 begin
-  TagList := TList<string>.Create;
-  try
-    LastEndPos := 1;
+  Result := '';
 
-    repeat
-      TagStartPos := PosEx(TAG_SECURITY_START, ASQL, LastEndPos);
-      if TagStartPos = 0 then
-        Break;
+  TagStartPos := PosEx(TAG_SECURITY_START, ASQL, LastEndPos);
+  IndexSQL    := TagStartPos;
 
-      TagEndPos := PosEx(TAG_SECURITY_END, ASQL, TagStartPos);
-      if TagEndPos = 0 then
-        Break;
+  while (IndexSQL > 0) do
+  begin
+    if (Copy(ASQL.ToUpper, IndexSQL, 5) = 'WHERE') then
+    begin
+      Result := Copy(ASQL.ToUpper, IndexSQL, Length(ASQL));
+      Break;
+    end;
 
-      TagList.Add(Copy(ASQL, TagStartPos, TagEndPos - TagStartPos + 2));
-
-      LastEndPos := TagEndPos + 2;
-    until False;
-
-    Result := TagList.ToArray;
-  finally
-    TagList.Free;
+    Dec(IndexSQL);
   end;
-
-
 end;
 
 end.
