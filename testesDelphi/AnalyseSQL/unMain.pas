@@ -31,6 +31,8 @@ uses
 procedure TForm1.SpeedButton1Click(Sender: TObject);
 var
   SQL: String;
+  Conditions: TStringList;
+  Condition: String;
 begin
   SQL := LinearizeSQL(SynEdit1.Text);
 
@@ -40,7 +42,17 @@ begin
 //  if RegxAnaliseSQLClausesOR(SQL) then
 //    ShowMessage('RegEx - AnaliseSQLClausesOR - Comando com OR inválido');
 
-  ShowMessage(NewAnaliseSQLClausesOR(SQL));
+//  ShowMessage(NewAnaliseSQLClausesOR(SQL));
+
+//  Conditions := ExtractSQLConditions_Where(SQL);
+//  try
+//    for Condition in Conditions do
+//      ShowMessage(Condition);
+//  finally
+//    Conditions.Free;
+//  end;
+
+  ShowMessage(ExtrairCondicaoWhereComOr(SQL));
 end;
 
 end.
