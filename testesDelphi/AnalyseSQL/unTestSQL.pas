@@ -16,7 +16,7 @@ function RegxAnaliseSQLClausesOR(const ASQL: String): Boolean;
 function NewAnaliseSQLClausesOR(const ASQL: String): String;
 function ExtractSQLConditions(SQL: string): TStringList;
 function ExtractSQLConditions_Where(const SQL: string): TStringList;
-function ExtrairCondicaoWhereComOr(SQL: string): string;
+function ExtrairCondicoesWhereComOr(SQL: string): TStringList;
 
 implementation
 
@@ -373,20 +373,20 @@ begin
   Result := Result or (Pos(' or)', LowerCase(Condicao)) > 0);
 end;
 
-function ExtrairCondicaoWhereComOr(SQL: string): string;
+function ExtrairCondicoesWhereComOr(SQL: string): TStringList;
 var
   PosicaoInicio, PosicaoFim, PosicaoComentario: Integer;
-  SQLLower, TempResult: string;
+  SQLLower, TempResult, SubStr: string;
 begin
-  Result := ''; // Resultado padrão se não encontrar as condições especificadas
+  Result := TStringList.Create; // Cria a lista para armazenar as condições
   SQLLower := LowerCase(SQL); // Converte o SQL para minúsculas para facilitar a busca
 
-  // Procura pela presença do comentário específico no SQL
+  // Loop para encontrar todas as ocorrências do comentário
   PosicaoComentario := Pos('/*autoemployeefilter', SQLLower);
-  if PosicaoComentario > 0 then
+  while PosicaoComentario > 0 do
   begin
     // Encontra a última posição do WHERE antes do comentário
-    PosicaoInicio := UltimaPosicaoSubString('where', Copy(SQLLower, 1, PosicaoComentario - 1));
+    PosicaoInicio := UltimaPosicaoSubString('where', Copy(SQLLower, 1, PosicaoComentario));
     if PosicaoInicio > 0 then
     begin
       Inc(PosicaoInicio, Length('where'));
@@ -400,9 +400,12 @@ begin
         TempResult := Trim(Copy(SQL, PosicaoInicio, PosicaoComentario - PosicaoInicio));
 
       if ContemOrValido(TempResult) then
-        Result := TempResult;
+        Result.Add(TempResult);
     end;
+
+    // Prepara para buscar a próxima ocorrência do comentário, se houver
+    SubStr := Copy(SQLLower, PosicaoComentario + Length('/*autoemployeefilter'), MaxInt);
+    PosicaoComentario := PosEx('/*autoemployeefilter', SQLLower, PosicaoComentario + Length('/*autoemployeefilter'));
   end;
 end;
-
 end.

@@ -52,7 +52,13 @@ begin
 //    Conditions.Free;
 //  end;
 
-  ShowMessage(ExtrairCondicaoWhereComOr(SQL));
+  Conditions := ExtrairCondicoesWhereComOr(SQL);
+  try
+    for Condition in Conditions do
+      ShowMessage(Condition);
+  finally
+    Conditions.Free;
+  end;
 end;
 
 end.
