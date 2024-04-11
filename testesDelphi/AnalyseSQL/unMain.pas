@@ -41,18 +41,34 @@ begin
   SynEdit2.Lines.Clear;
 
   SQL := LinearizeSQL(SynEdit1.Text);
-  Conditions := ExtrairCondicoesWhereComOr(SQL);
+//  Conditions := ExtrairCondicoesWhereComOr(SQL);
+//  try
+//    for Condition in Conditions do
+//    begin
+//      SynEdit2.Lines.Add(Condition);
+//      SynEdit2.Lines.Add(StringOfChar('*', 100));
+//      SynEdit2.Lines.Add(ExtrairOperadoresExternos(Condition));
+//      SynEdit2.Lines.Add(StringOfChar('*', 100));
+//    end;
+//  finally
+//    Conditions.Free;
+//  end;
+
+  Conditions := RemoveAutoEmployeeFilters(SQL);
   try
     for Condition in Conditions do
     begin
       SynEdit2.Lines.Add(Condition);
       SynEdit2.Lines.Add(StringOfChar('*', 100));
-      SynEdit2.Lines.Add(ExtrairOperadoresExternos(Condition));
-      SynEdit2.Lines.Add(StringOfChar('*', 100));
+      //SynEdit2.Lines.Add(ExtrairOperadoresExternos(Condition));
+      //SynEdit2.Lines.Add(StringOfChar('*', 100));
     end;
   finally
     Conditions.Free;
   end;
+
+
+
 end;
 
 procedure TForm1.SpeedButton2Click(Sender: TObject);
