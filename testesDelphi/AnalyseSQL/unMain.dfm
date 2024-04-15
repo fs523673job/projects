@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 445
-  ClientWidth = 932
+  ClientHeight = 437
+  ClientWidth = 930
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,8 +14,8 @@ object Form1: TForm1
   object SynEdit1: TSynEdit
     Left = 0
     Top = 0
-    Width = 424
-    Height = 403
+    Width = 422
+    Height = 395
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -36,21 +36,30 @@ object Form1: TForm1
     Gutter.Font.Height = -13
     Gutter.Font.Name = 'Courier New'
     Gutter.Font.Style = []
+    Highlighter = SynSQLSyn1
     Lines.Strings = (
-      'Select CON_CdiCOntratado, CON_CdiSItuacao'
-      'From contratados'
-      'Where CON_CdiSItuacao = 1 or CON_CdiSItuacao = 9'
-      '/*AutoEmployeeFilter=Contratados*/'
-      'Order by 1')
+      'Select (Field1 + Field2) As Field, '
+      '  From Meses '
+      '  where MES_CdiMes = 1 '
+      '  and (select 1 '
+      '        from Contratados '
+      
+        #9#9' where CON_CdiContratado = 1 or CON_CdiContratado = 2 and CON_' +
+        'CdiContratado > 99'
+      '  '#9'   ) '
+      
+        '  and (Field1 < Field 3 or (Field4 > Field5) and Field2 < (Field' +
+        '1 or Field2) and MES_CdiMes < 10)'
+      '/*autoemployeefilter=XPTO*/')
     FontSmoothing = fsmNone
-    ExplicitWidth = 441
-    ExplicitHeight = 361
+    ExplicitWidth = 416
+    ExplicitHeight = 386
   end
   object SynEdit2: TSynEdit
-    Left = 424
+    Left = 422
     Top = 0
     Width = 508
-    Height = 403
+    Height = 395
     Align = alRight
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -74,17 +83,20 @@ object Form1: TForm1
     Lines.Strings = (
       '')
     FontSmoothing = fsmNone
+    ExplicitLeft = 416
+    ExplicitHeight = 386
   end
   object Panel1: TPanel
     Left = 0
-    Top = 403
-    Width = 932
+    Top = 395
+    Width = 930
     Height = 42
     Align = alBottom
     TabOrder = 2
-    ExplicitTop = 409
+    ExplicitTop = 386
+    ExplicitWidth = 924
     DesignSize = (
-      932
+      930
       42)
     object SpeedButton1: TSpeedButton
       Left = 0
@@ -116,5 +128,12 @@ object Form1: TForm1
       ParentFont = False
       OnClick = SpeedButton2Click
     end
+  end
+  object SynSQLSyn1: TSynSQLSyn
+    Options.AutoDetectEnabled = False
+    Options.AutoDetectLineLimit = 0
+    Options.Visible = False
+    Left = 320
+    Top = 184
   end
 end

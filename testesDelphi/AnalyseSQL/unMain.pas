@@ -14,6 +14,7 @@ type
     Panel1: TPanel;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
+    SynSQLSyn1: TSynSQLSyn;
     procedure SpeedButton1Click(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
   private
@@ -57,6 +58,8 @@ begin
   SQLSanitized := LinearizeSQL(SynEdit1.Text);
 
   SynEdit2.Lines.Add('Existe Or sem Fechamento: ' + IfThen(BoolToStr(AnaliseSQLClausesOR(SQLSanitized), True) = 'True', 'Sim', 'Não'));
+
+  SynEdit2.Lines.Add('(New) Existe Or sem Fechamento: ' + IfThen(BoolToStr(NewAnaliseSQLClausesOR(SQLSanitized), True) = 'True', 'Sim', 'Não'));
 end;
 
 procedure TForm1.SpeedButton2Click(Sender: TObject);
