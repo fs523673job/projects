@@ -11,7 +11,10 @@ uses
 
 
 function LinearizeSQL(const ASQL: String): String;
+
 function RemoveAutoEmployeeFilters(var SQLText: string): TStringList;
+function NewRemoveAutoEmployeeFilters(var SQLText: string): TStringList;
+
 function AnaliseSQLClausesOR(const ASQL: string): Boolean;
 function NewAnaliseSQLClausesOR(const ASQL: string): Boolean;
 
@@ -131,6 +134,105 @@ begin
   until RemovedTrecho.IsEmpty;
 end;
 
+function NewRemoveAutoEmployeeFilters(var SQLText: string): TStringList;
+type
+  TParenthesesSQL = record
+    IndexBegin : Integer;
+    IndexEnd   : Integer;
+    SQLSnipped : String;
+  end;
+
+var
+  Conditions   : TStringList;
+  Condition    : String;
+  SQLSanitized : String;
+
+  function RemoveSnippetInParentheses(var SQLText: string): TStringList;
+  var
+    SizeSQL, PosSQL     : Integer;
+    ParenthesesSQL      : TParenthesesSQL;
+    StackParenthesesPos : TStack<TParenthesesSQL>;
+  begin
+    SizeSQL := Length(SQLText);
+    Result := TStringList.Create;
+    StackParenthesesPos := TStack<TParenthesesSQL>.Create;
+    try
+      PosSQL := 1;
+      while PosSQL <= SizeSQL  do
+      begin
+        if CharInSet(SQLText[PosSQL], ['(', ')']) then
+        begin
+          if SQLText[PosSQL] = '(' then
+          begin
+            ParenthesesSQL.IndexBegin := PosSQL;
+            StackParenthesesPos.Push(ParenthesesSQL);
+          end
+          else if SQLText[PosSQL] = ')' then
+          begin
+            ParenthesesSQL := StackParenthesesPos.Pop();
+            ParenthesesSQL.IndexEnd := PosSQL;
+            ParenthesesSQL.SQLSnipped := Copy(SQLText, ParenthesesSQL.IndexBegin, (ParenthesesSQL.IndexEnd + 1) - ParenthesesSQL.IndexBegin);
+
+            Result.Add(ParenthesesSQL.SQLSnipped);
+
+            SQLText := StringReplace(SQLText, ParenthesesSQL.SQLSnipped, '', [rfReplaceAll]);
+
+            PosSQL  := 0;
+            SizeSQL := Length(SQLText);
+
+            StackParenthesesPos.Clear();
+          end;
+        end;
+
+        Inc(PosSQL);
+      end;
+    finally
+       StackParenthesesPos.Free;
+    end;
+  end;
+
+  function ContainsValidOR(const Condition: String): Boolean;
+  begin
+    Result := Pos(' OR ', Condition.ToUpper) > 0;
+    Result := Result or (Pos(')OR(', Condition.ToUpper) > 0);
+    Result := Result or (Pos(')OR', Condition.ToUpper) > 0);
+    Result := Result or (Pos('OR(', Condition.ToUpper) > 0);
+    Result := Result or (Pos(')OR ', Condition.ToUpper) > 0);
+    Result := Result or (Pos(' OR)', Condition.ToUpper) > 0);
+  end;
+
+  function ExtractInternalOperators(const Expr: string): String;
+  var
+    c, LevelParentheses: Integer;
+    TempResult: string;
+  begin
+    TempResult := '';
+    LevelParentheses := 0;
+
+    for c := 1 to Length(Expr) do
+    begin
+      if Expr[c] = '(' then
+        Inc(LevelParentheses)
+      else if Expr[c] = ')' then
+        Dec(LevelParentheses)
+      else if LevelParentheses = 0 then
+        TempResult := TempResult + Expr[c];
+    end;
+
+    if ContainsValidOR(TempResult) then
+      Result := 'OR'
+    else if LevelParentheses > 0 then
+      Result := 'PARENTHESES'
+    else
+      Result := '';
+  end;
+
+begin
+  SQLSanitized := LinearizeSQL(SQLText);
+  Result := RemoveSnippetInParentheses(SQLSanitized);
+  SQLText := SQLSanitized;
+end;
+
 function AnaliseSQLClausesOR(const ASQL: string): Boolean;
 
   function ContainsValidOR(const Condition: String): Boolean;
@@ -238,7 +340,6 @@ type
   TParenthesesSQL = record
     IndexBegin : Integer;
     IndexEnd   : Integer;
-    Caracter   : String;
     SQLSnipped : String;
   end;
 
@@ -252,9 +353,9 @@ var
     SizeSQL, PosSQL     : Integer;
     ParenthesesSQL      : TParenthesesSQL;
     StackParenthesesPos : TStack<TParenthesesSQL>;
-    LastParentheses     : String;
   begin
     SizeSQL := Length(SQLText);
+    Result := TStringList.Create;
     StackParenthesesPos := TStack<TParenthesesSQL>.Create;
     try
       PosSQL := 1;
@@ -263,35 +364,31 @@ var
         if CharInSet(SQLText[PosSQL], ['(', ')']) then
         begin
           if SQLText[PosSQL] = '(' then
-            ParenthesesSQL.IndexBegin := PosSQL
+          begin
+            ParenthesesSQL.IndexBegin := PosSQL;
+            StackParenthesesPos.Push(ParenthesesSQL);
+          end
           else if SQLText[PosSQL] = ')' then
           begin
-            if LastParentheses = '(' then
-            begin
-              ParenthesesSQL.IndexEnd   := PosSQL;
-              ParenthesesSQL.SQLSnipped := Copy(SQLText, StackParenthesesPos.Peek().IndexBegin, (ParenthesesSQL.IndexEnd + 1) - StackParenthesesPos.Peek().IndexBegin);
-            end;
-          end;
+            ParenthesesSQL := StackParenthesesPos.Pop();
+            ParenthesesSQL.IndexEnd := PosSQL;
+            ParenthesesSQL.SQLSnipped := Copy(SQLText, ParenthesesSQL.IndexBegin, (ParenthesesSQL.IndexEnd + 1) - ParenthesesSQL.IndexBegin);
 
-          LastParentheses := SQLText[PosSQL];
-          ParenthesesSQL.Caracter   := SQLText[PosSQL];
-          StackParenthesesPos.Push(ParenthesesSQL);
+            Result.Add(ParenthesesSQL.SQLSnipped);
+
+            SQLText := StringReplace(SQLText, ParenthesesSQL.SQLSnipped, '', [rfReplaceAll]);
+
+            PosSQL  := 0;
+            SizeSQL := Length(SQLText);
+
+            StackParenthesesPos.Clear();
+          end;
         end;
 
         Inc(PosSQL);
       end;
-
-      Result := TStringList.Create;
-
-      while StackParenthesesPos.Count > 0 do
-      begin
-        Result.Add(StackParenthesesPos.Peek().SQLSnipped);
-        SQLText := StringReplace(SQLText, StackParenthesesPos.Peek().SQLSnipped, '', [rfReplaceAll]);
-        StackParenthesesPos.Pop();
-      end;
-
     finally
-      StackParenthesesPos.Free;
+       StackParenthesesPos.Free;
     end;
   end;
 
@@ -307,43 +404,38 @@ var
 
   function ExtractInternalOperators(const Expr: string): String;
   var
-    c, LevelPrentheses: Integer;
+    c, LevelParentheses: Integer;
     TempResult: string;
   begin
     TempResult := '';
-    LevelPrentheses := 0;
+    LevelParentheses := 0;
 
     for c := 1 to Length(Expr) do
     begin
       if Expr[c] = '(' then
-        Inc(LevelPrentheses)
+        Inc(LevelParentheses)
       else if Expr[c] = ')' then
-        Dec(LevelPrentheses)
-      else if LevelPrentheses = 0 then
+        Dec(LevelParentheses)
+      else if LevelParentheses = 0 then
         TempResult := TempResult + Expr[c];
     end;
 
     if ContainsValidOR(TempResult) then
       Result := 'OR'
+    else if LevelParentheses > 0 then
+      Result := 'PARENTHESES'
     else
-      Result := ''; // Não encontrou "OR" válido fora dos parênteses
+      Result := '';
   end;
 
 begin
   SQLSanitized := LinearizeSQL(ASQL);
   Conditions := RemoveSnippetInParentheses(SQLSanitized);
   try
-    Result := ExtractInternalOperators(SQLSanitized).IsEmpty;
-    for Condition in Conditions do
-    begin
-      Result := not Condition.IsEmpty;
-      if Result then
-        Break;
-    end;
+    Result := not ExtractInternalOperators(SQLSanitized).IsEmpty;
   finally
     Conditions.Free;
   end;
-
 end;
 
 end.

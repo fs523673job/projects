@@ -42,24 +42,25 @@ var
 begin
   SynEdit2.Lines.Clear;
 
+//  SQLSanitized := LinearizeSQL(SynEdit1.Text);
+//
+//  Conditions := NewRemoveAutoEmployeeFilters(SQLSanitized);
+//  try
+//    for Condition in Conditions do
+//    begin
+//      SynEdit2.Lines.Add(Condition);
+//      SynEdit2.Lines.Add(StringOfChar('*', 100));
+//    end;
+//
+//    SynEdit2.Lines.Add(SQLSanitized);
+//    SynEdit2.Lines.Add(StringOfChar('*', 100));
+//  finally
+//    Conditions.Free;
+//  end;
+
   SQLSanitized := LinearizeSQL(SynEdit1.Text);
 
-  Conditions := RemoveAutoEmployeeFilters(SQLSanitized);
-  try
-    for Condition in Conditions do
-    begin
-      SynEdit2.Lines.Add(Condition);
-      SynEdit2.Lines.Add(StringOfChar('*', 100));
-    end;
-  finally
-    Conditions.Free;
-  end;
-
-  SQLSanitized := LinearizeSQL(SynEdit1.Text);
-
-  SynEdit2.Lines.Add('Existe Or sem Fechamento: ' + IfThen(BoolToStr(AnaliseSQLClausesOR(SQLSanitized), True) = 'True', 'Sim', 'Não'));
-
-  SynEdit2.Lines.Add('(New) Existe Or sem Fechamento: ' + IfThen(BoolToStr(NewAnaliseSQLClausesOR(SQLSanitized), True) = 'True', 'Sim', 'Não'));
+  SynEdit2.Lines.Add('Existe Or sem Fechamento: ' + IfThen(BoolToStr(NewAnaliseSQLClausesOR(SQLSanitized), True) = 'True', 'Sim', 'Não'));
 end;
 
 procedure TForm1.SpeedButton2Click(Sender: TObject);
