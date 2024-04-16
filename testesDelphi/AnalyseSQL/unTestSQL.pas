@@ -27,8 +27,10 @@ var
   prevCharIsSpace: Boolean;
   auxSQL: String;
 begin
-  auxSQL := StringReplace(ASQL.ToUpper, #$D#$A, ' ', [rfReplaceAll]);
-  auxSQL := StringReplace(ASQL.ToUpper, #9, ' ', [rfReplaceAll]);
+  auxSQL := StringReplace(ASQL.ToUpper,   #$D#$A, ' ', [rfReplaceAll]);
+  auxSQL := StringReplace(auxSQL.ToUpper, #9, ' ', [rfReplaceAll]);
+  for i := 6 downto 2 do
+    auxSQL := StringReplace(auxSQL.ToUpper, StringOfChar(' ', i), ' ', [rfReplaceAll]);
 
   prevCharIsSpace := False;
 
@@ -57,6 +59,10 @@ end;
 ***************************************************************************************************)
 
 function AnaliseSQLClausesOR_StringList(var SQLText: string): TStringList;
+
+const
+  SECURITY_TAG_BEGIN = '/*AUTOEMPLOYEEFILTER';
+
 type
   TExcerptStructure = record
     IndexBegin : Integer;
@@ -71,7 +77,7 @@ var
 
   function ExistSecurityTagInSnippedSQL(const ASQLSnipped: String; const AAnalysSnipped: TStringList): Boolean;
   begin
-    Result := (Pos('/*AUTOEMPLOYEEFILTER', ASQLSnipped.ToUpper) > 0);
+    Result := (Pos(SECURITY_TAG_BEGIN, ASQLSnipped.ToUpper) > 0);
     if Result  then
       AAnalysSnipped.Add(ASQLSnipped);
   end;
@@ -218,6 +224,9 @@ end;
 
 function AnaliseSQLClausesOR(const ASQL: string): Boolean;
 
+const
+  SECURITY_TAG_BEGIN = '/*AUTOEMPLOYEEFILTER';
+
 type
   TExcerptStructure = record
     IndexBegin : Integer;
@@ -232,7 +241,7 @@ var
 
   procedure AddExistSecurityTagInSnippedSQL(const ASQLSnipped: String; const AAnalysSnipped: TStringList);
   begin
-    if (Pos('/*AUTOEMPLOYEEFILTER', ASQLSnipped.ToUpper) > 0) then
+    if (Pos(SECURITY_TAG_BEGIN, ASQLSnipped.ToUpper) > 0) then
       AAnalysSnipped.Add(Copy(ASQLSnipped, 2, Length(ASQLSnipped) - 2));
   end;
 
@@ -285,6 +294,7 @@ var
     SizeSQL, PosSQL  : Integer;
     CaseWhenSQL      : TExcerptStructure;
     StackCaseWhenPos : TStack<TExcerptStructure>;
+    KeyWord          : String;
   begin
     SizeSQL := Length(SQLText);
     StackCaseWhenPos := TStack<TExcerptStructure>.Create;
@@ -292,15 +302,40 @@ var
       PosSQL := 1;
       while PosSQL <= SizeSQL  do
       begin
-        if Copy(SQLText, PosSQL, 4).ToUpper = 'CASE' then
+        if (SQLText[PosSQL] = '/') and (SQLText[PosSQL + 1] = '*') then
+         Inc(PosSQL)
+        else if (SQLText[PosSQL] = '*') and (SQLText[PosSQL + 1] = '/') then
+          Inc(PosSQL)
+        else if (SQLText[PosSQL] = '''') or (SQLText[PosSQL] = '"') then
         begin
-          CaseWhenSQL.IndexBegin := PosSQL;
+          Inc(PosSQL);
+          Continue
+        end
+        else if CharInSet(SQLText[PosSQL], ['<', '>', '/', '-', '+', '*', '=', '|', ',']) then
+        begin
+          Inc(PosSQL);
+          Continue;
+        end
+        else if SQLText[PosSQL] = ' ' then
+        begin
+          Inc(PosSQL);
+          KeyWord := EmptyStr;
+          Continue;
+        end
+        else
+          KeyWord := KeyWord + SQLText[PosSQL];
+
+        if (KeyWord.ToUpper = 'CASE') then
+        begin
+          KeyWord := EmptyStr;
+          CaseWhenSQL.IndexBegin := PosSQL - 3;
           StackCaseWhenPos.Push(CaseWhenSQL);
         end
-        else if (Copy(SQLText, PosSQL, 3).ToUpper = 'END') and (StackCaseWhenPos.Count > 0) then
+        else if (KeyWord.ToUpper = 'END') and (StackCaseWhenPos.Count > 0) then
         begin
+          KeyWord := EmptyStr;
           CaseWhenSQL := StackCaseWhenPos.Pop();
-          CaseWhenSQL.IndexEnd := PosSQL;
+          CaseWhenSQL.IndexEnd := PosSQL - 2;
           CaseWhenSQL.SQLSnipped := Copy(SQLText, CaseWhenSQL.IndexBegin, (CaseWhenSQL.IndexEnd + 3) - CaseWhenSQL.IndexBegin);
 
           if Assigned(AAnalysSnipped) then

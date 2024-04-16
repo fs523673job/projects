@@ -38,38 +38,47 @@ object Form1: TForm1
     Gutter.Font.Style = []
     Highlighter = SynSQLSyn1
     Lines.Strings = (
-      'Select (Field1 + Field2) As Field,'
-      'CASE'
       
-        '/* INDICADOR 42101025 DEVE SER SEMPRE PLANEJADO, ENQUANTO DEMAIS' +
-        ' DEVEM SER BASEADOS NO M'#202'S CORRENTE DA @DTDBASE*/'
+        'select CAV_NusCNPJ, CAV_CdiContratado, case when CAV_CdiRetencao' +
+        'ImpostoRenda = 3562  or CAV_CdiRetencaoImpostoRenda = 1889 then ' +
+        '561 else CAV_CdiRetencaoImpostoRenda end as CAV_CdiRetencaoImpos' +
+        'toRenda, CAV_CosOficialDIRF, '
+      '       SUM(CAV_VlnValor) as CAV_VlnValor'
+      'from ConAnuaisDIRFValores'
+      'where ('
+      '       0 = 1 and '
       
-        'WHEN @TIPO=1 AND DATEDIFF = 0 OR INDICADOR NOT LIKE '#39'42101025'#39' T' +
-        'HEN '#39'REAL'#39
+        '       Exists(select SUM(x.CAV_VlnValor) from ConAnuaisDIRFValor' +
+        'es x '
       
-        'WHEN @TIPO=1 AND DATEDIFF > 0 OR INDICADOR LIKE '#39'42101025'#39' THEN ' +
-        #39'PLANEJADO'#39
-      'WHEN @TIPO=0 THEN '#39'REAL'#39
+        '              where x.CAV_CdiContratado = ConAnuaisDIRFValores.C' +
+        'AV_CdiContratado and '
+      '                    x.CAV_DtiAno_Base = 2016 and '
       
-        'WHEN (Select (Field1 + Field2) From Tabela Where (select Field1,' +
-        ' Field2 from Contratados where CON_CdiContratado = 1 or CON_CdiC' +
-        'ontratado = 2 and CON_CdiContratado > 99 /*autoemployeefilter=XP' +
-        'TO*/))'
-      'ELSE '#39'PLANEJADO'#39
-      'END AS VERSAO,'
-      ' '
-      '  From Meses '
-      '  where MES_CdiMes = 1 '
-      '  and (select 1 '
-      '        from Contratados '
+        '                    x.CAV_CdiTipoValorAnual in (1, 2, 22, 23, 26' +
+        ', 27) '
+      '              group by x.CAV_CdiContratado '
+      '              having SUM(x.CAV_VlnValor) > 0) or '
+      '       0 <> 1'
+      #9'  ) '
+      #9'  and ('
+      #9'        ('
       
-        #9#9' where CON_CdiContratado = 1 or CON_CdiContratado = 2 and CON_' +
-        'CdiContratado > 99'
-      '  '#9'   ) '
+        #9#9'      0 = 2016 and CAV_DtiAno_Base = (select AVR_DtiAnoBase fr' +
+        'om DefSisFolhaPagamento where AVR_CdiSistema = 2)'
+      #9#9'    ) '
+      #9'        or CAV_DtiAno_Base = 2016'
+      #9'     )'
+      ''
+      '      and CAV_CdiRetencaoImpostoRenda = 473'
+      '      and CAV_CosOficialDIRF in ('#39'RTRT'#39', '#39'RTIRF'#39')'
+      '/*autoemployeefilter=ConAnuaisDIRFValores*/'#9'  '
+      #9'  '
       
-        '  and (Field1 < Field 3 or (Field4 > Field5) and Field2 < (Field' +
-        '1 or Field2) and MES_CdiMes < 10)'
-      '/*autoemployeefilter=XPTO*/'
+        'group by CAV_NusCNPJ, CAV_CdiContratado, case when CAV_CdiRetenc' +
+        'aoImpostoRenda = 3562  or CAV_CdiRetencaoImpostoRenda = 1889 the' +
+        'n 561 else CAV_CdiRetencaoImpostoRenda end, CAV_CosOficialDIRF'
+      ''
       '')
     FontSmoothing = fsmNone
   end

@@ -9,21 +9,33 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+def update_file_with_status(file_path, mr_url, status):
+    lines = []
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+    
+    with open(file_path, 'w', encoding='utf-8') as file:
+        for line in lines:
+            file.write(line)
+            if line.strip() == f'MR: {mr_url}':
+                file.write(f'Status MR: {status}\n')  # Escreve o status abaixo da linha do MR
+
 def check_mr_status(driver, file_path):
-    has_mr = False
+    with open(file_path, 'r', encoding='utf-8') as file:
+        content = file.read()
+    
+    if "Status MR: Merged" in content:
+        return "Already Processed"  # Verifica se o arquivo já foi processado
+
     with open(file_path, 'r', encoding='utf-8') as file:
         for line in file:
             if 'MR:' in line:
-                has_mr = True
                 mr_url = line.split('MR:')[1].strip()
                 if not mr_url.startswith("http"):
                     continue
                 try:
                     driver.get(mr_url)
-                    # Lista de seletores para verificar o status
-                    selectors = [
-                        ".gl-display-none.gl-sm-display-block.gl-ml-2"  # Seletores genéricos para 'Open', 'Merged', 'Closed', etc.
-                    ]
+                    selectors = [".gl-display-none.gl-sm-display-block.gl-ml-2"]
                     for selector in selectors:
                         try:
                             status_tags = WebDriverWait(driver, 10).until(
@@ -31,18 +43,17 @@ def check_mr_status(driver, file_path):
                             )
                             for status_tag in status_tags:
                                 status_text = status_tag.text.strip()
-                                if status_text in ["Open", "Merged", "Closed"]:  # Filtramos por textos de status específicos
+                                if status_text in ["Open", "Merged", "Closed"]:
+                                    if status_text == "Merged":
+                                        update_file_with_status(file_path, mr_url, status_text)
                                     return status_text
                         except:
                             continue
-                    return "Não Encontrado"
                 except Exception as e:
                     print(f"Erro ao tentar verificar o status do MR em {mr_url}: {e}")
-                    continue
     return None
 
 def main():
-    # Fecha todas as instâncias do Chrome
     try:
         subprocess.run(['taskkill', '/F', '/IM', 'chrome.exe'], check=True)
     except subprocess.CalledProcessError as e:
@@ -71,7 +82,7 @@ def main():
         file_path = os.path.join(directory_path, filename)
         chamado_name = filename[:-4]
         status = check_mr_status(driver, file_path)
-        if status:
+        if status and status != "Already Processed":
             print(f"Analisando {chamado_name} Status: {status}")
 
     driver.quit()
