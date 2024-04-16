@@ -44,12 +44,17 @@ object Form1: TForm1
         '/* INDICADOR 42101025 DEVE SER SEMPRE PLANEJADO, ENQUANTO DEMAIS' +
         ' DEVEM SER BASEADOS NO M'#202'S CORRENTE DA @DTDBASE*/'
       
-        'WHEN @TIPO=1 AND DATEDIFF = 0 AND INDICADOR NOT LIKE '#39'42101025'#39' ' +
-        'THEN '#39'REAL'#39
+        'WHEN @TIPO=1 AND DATEDIFF = 0 OR INDICADOR NOT LIKE '#39'42101025'#39' T' +
+        'HEN '#39'REAL'#39
       
         'WHEN @TIPO=1 AND DATEDIFF > 0 OR INDICADOR LIKE '#39'42101025'#39' THEN ' +
         #39'PLANEJADO'#39
       'WHEN @TIPO=0 THEN '#39'REAL'#39
+      
+        'WHEN (Select (Field1 + Field2) From Tabela Where (select Field1,' +
+        ' Field2 from Contratados where CON_CdiContratado = 1 or CON_CdiC' +
+        'ontratado = 2 and CON_CdiContratado > 99 /*autoemployeefilter=XP' +
+        'TO*/))'
       'ELSE '#39'PLANEJADO'#39
       'END AS VERSAO,'
       ' '
@@ -64,7 +69,8 @@ object Form1: TForm1
       
         '  and (Field1 < Field 3 or (Field4 > Field5) and Field2 < (Field' +
         '1 or Field2) and MES_CdiMes < 10)'
-      '/*autoemployeefilter=XPTO*/')
+      '/*autoemployeefilter=XPTO*/'
+      '')
     FontSmoothing = fsmNone
   end
   object SynEdit2: TSynEdit
