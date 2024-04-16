@@ -38,7 +38,21 @@ object Form1: TForm1
     Gutter.Font.Style = []
     Highlighter = SynSQLSyn1
     Lines.Strings = (
-      'Select (Field1 + Field2) As Field, '
+      'Select (Field1 + Field2) As Field,'
+      'CASE'
+      
+        '/* INDICADOR 42101025 DEVE SER SEMPRE PLANEJADO, ENQUANTO DEMAIS' +
+        ' DEVEM SER BASEADOS NO M'#202'S CORRENTE DA @DTDBASE*/'
+      
+        'WHEN @TIPO=1 AND DATEDIFF = 0 AND INDICADOR NOT LIKE '#39'42101025'#39' ' +
+        'THEN '#39'REAL'#39
+      
+        'WHEN @TIPO=1 AND DATEDIFF > 0 OR INDICADOR LIKE '#39'42101025'#39' THEN ' +
+        #39'PLANEJADO'#39
+      'WHEN @TIPO=0 THEN '#39'REAL'#39
+      'ELSE '#39'PLANEJADO'#39
+      'END AS VERSAO,'
+      ' '
       '  From Meses '
       '  where MES_CdiMes = 1 '
       '  and (select 1 '
@@ -52,8 +66,6 @@ object Form1: TForm1
         '1 or Field2) and MES_CdiMes < 10)'
       '/*autoemployeefilter=XPTO*/')
     FontSmoothing = fsmNone
-    ExplicitWidth = 416
-    ExplicitHeight = 386
   end
   object SynEdit2: TSynEdit
     Left = 422
@@ -83,8 +95,6 @@ object Form1: TForm1
     Lines.Strings = (
       '')
     FontSmoothing = fsmNone
-    ExplicitLeft = 416
-    ExplicitHeight = 386
   end
   object Panel1: TPanel
     Left = 0

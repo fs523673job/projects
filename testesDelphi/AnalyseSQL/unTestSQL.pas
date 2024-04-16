@@ -12,8 +12,8 @@ uses
 
 function LinearizeSQL(const ASQL: String): String;
 
-function AnaliseSQLClausesOR_StringList(var SQLText: string): TStringList; overload;
-function AnaliseSQLClausesOR(const ASQL: string): Boolean; overload;
+function AnaliseSQLClausesOR_StringList(var SQLText: string): TStringList;
+function AnaliseSQLClausesOR(const ASQL: string): Boolean;
 
 
 implementation
@@ -65,14 +65,13 @@ var
   Condition    : String;
   SQLSanitized : String;
 
-  function RemoveSnippetInParentheses(var SQLText: string): TStringList;
+  procedure RemoveSnippetInParentheses(var SQLText: string; const OutSnipped: TStringList);
   var
     SizeSQL, PosSQL     : Integer;
     ParenthesesSQL      : TParenthesesSQL;
     StackParenthesesPos : TStack<TParenthesesSQL>;
   begin
     SizeSQL := Length(SQLText);
-    Result := TStringList.Create;
     StackParenthesesPos := TStack<TParenthesesSQL>.Create;
     try
       PosSQL := 1;
@@ -91,7 +90,7 @@ var
             ParenthesesSQL.IndexEnd := PosSQL;
             ParenthesesSQL.SQLSnipped := Copy(SQLText, ParenthesesSQL.IndexBegin, (ParenthesesSQL.IndexEnd + 1) - ParenthesesSQL.IndexBegin);
 
-            Result.Add(ParenthesesSQL.SQLSnipped);
+            OutSnipped.Add(ParenthesesSQL.SQLSnipped);
 
             SQLText := StringReplace(SQLText, ParenthesesSQL.SQLSnipped, '', [rfReplaceAll]);
 
@@ -109,9 +108,44 @@ var
     end;
   end;
 
-  function RemoveSnippetInCaseWhen(var SQLText: string): TStringList;
+  procedure RemoveSnippetInCaseWhen(var SQLText: String; const OutSnipped: TStringList);
+  var
+    SizeSQL, PosSQL     : Integer;
+    ParenthesesSQL      : TParenthesesSQL;
+    StackParenthesesPos : TStack<TParenthesesSQL>;
   begin
-    Result := TStringList.Create;
+    SizeSQL := Length(SQLText);
+    StackParenthesesPos := TStack<TParenthesesSQL>.Create;
+    try
+      PosSQL := 1;
+      while PosSQL <= SizeSQL  do
+      begin
+        if Copy(SQLText, PosSQL, 4).ToUpper = 'CASE' then
+        begin
+          ParenthesesSQL.IndexBegin := PosSQL;
+          StackParenthesesPos.Push(ParenthesesSQL);
+        end
+        else if (Copy(SQLText, PosSQL, 3).ToUpper = 'END') and (StackParenthesesPos.Count > 0) then
+        begin
+          ParenthesesSQL := StackParenthesesPos.Pop();
+          ParenthesesSQL.IndexEnd := PosSQL;
+          ParenthesesSQL.SQLSnipped := Copy(SQLText, ParenthesesSQL.IndexBegin, (ParenthesesSQL.IndexEnd + 3) - ParenthesesSQL.IndexBegin);
+
+          OutSnipped.Add(ParenthesesSQL.SQLSnipped);
+
+          SQLText := StringReplace(SQLText, ParenthesesSQL.SQLSnipped, '', [rfReplaceAll]);
+
+          PosSQL  := 0;
+          SizeSQL := Length(SQLText);
+
+          StackParenthesesPos.Clear();
+        end;
+
+        Inc(PosSQL);
+      end;
+    finally
+       StackParenthesesPos.Free;
+    end;
   end;
 
   function ContainsValidOR(const Condition: String): Boolean;
@@ -152,9 +186,15 @@ var
 
 begin
   SQLSanitized := LinearizeSQL(SQLText);
-  Result := RemoveSnippetInParentheses(SQLSanitized);
+  Result := TStringList.Create;
+  RemoveSnippetInParentheses(SQLSanitized, Result);
+  RemoveSnippetInCaseWhen(SQLSanitized, Result);
   SQLText := SQLSanitized;
 end;
+
+(****************************************************************************************************
+  ANALISE SQL CLAUSE OR
+*****************************************************************************************************)
 
 function AnaliseSQLClausesOR(const ASQL: string): Boolean;
 
@@ -166,18 +206,15 @@ type
   end;
 
 var
-  Conditions   : TStringList;
-  Condition    : String;
   SQLSanitized : String;
 
-  function RemoveSnippetInParentheses(var SQLText: string): TStringList;
+  procedure RemoveSnippetInParentheses(var SQLText: String);
   var
     SizeSQL, PosSQL     : Integer;
     ParenthesesSQL      : TParenthesesSQL;
     StackParenthesesPos : TStack<TParenthesesSQL>;
   begin
     SizeSQL := Length(SQLText);
-    Result := TStringList.Create;
     StackParenthesesPos := TStack<TParenthesesSQL>.Create;
     try
       PosSQL := 1;
@@ -196,8 +233,6 @@ var
             ParenthesesSQL.IndexEnd := PosSQL;
             ParenthesesSQL.SQLSnipped := Copy(SQLText, ParenthesesSQL.IndexBegin, (ParenthesesSQL.IndexEnd + 1) - ParenthesesSQL.IndexBegin);
 
-            Result.Add(ParenthesesSQL.SQLSnipped);
-
             SQLText := StringReplace(SQLText, ParenthesesSQL.SQLSnipped, '', [rfReplaceAll]);
 
             PosSQL  := 0;
@@ -211,6 +246,44 @@ var
       end;
     finally
        StackParenthesesPos.Free;
+    end;
+  end;
+
+  procedure RemoveSnippetInCaseWhen(var SQLText: String);
+  var
+    SizeSQL, PosSQL  : Integer;
+    ParenthesesSQL   : TParenthesesSQL;
+    StackCaseWhenPos : TStack<TParenthesesSQL>;
+  begin
+    SizeSQL := Length(SQLText);
+    StackCaseWhenPos := TStack<TParenthesesSQL>.Create;
+    try
+      PosSQL := 1;
+      while PosSQL <= SizeSQL  do
+      begin
+        if Copy(SQLText, PosSQL, 4).ToUpper = 'CASE' then
+        begin
+          ParenthesesSQL.IndexBegin := PosSQL;
+          StackCaseWhenPos.Push(ParenthesesSQL);
+        end
+        else if (Copy(SQLText, PosSQL, 3).ToUpper = 'END') and (StackCaseWhenPos.Count > 0) then
+        begin
+          ParenthesesSQL := StackCaseWhenPos.Pop();
+          ParenthesesSQL.IndexEnd := PosSQL;
+          ParenthesesSQL.SQLSnipped := Copy(SQLText, ParenthesesSQL.IndexBegin, (ParenthesesSQL.IndexEnd + 3) - ParenthesesSQL.IndexBegin);
+
+          SQLText := StringReplace(SQLText, ParenthesesSQL.SQLSnipped, '', [rfReplaceAll]);
+
+          PosSQL  := 0;
+          SizeSQL := Length(SQLText);
+
+          StackCaseWhenPos.Clear();
+        end;
+
+        Inc(PosSQL);
+      end;
+    finally
+       StackCaseWhenPos.Free;
     end;
   end;
 
@@ -252,12 +325,9 @@ var
 
 begin
   SQLSanitized := LinearizeSQL(ASQL);
-  Conditions := RemoveSnippetInParentheses(SQLSanitized);
-  try
-    Result := not ExtractInternalOperators(SQLSanitized).IsEmpty;
-  finally
-    Conditions.Free;
-  end;
+  RemoveSnippetInParentheses(SQLSanitized);
+  RemoveSnippetInCaseWhen(SQLSanitized);
+  Result := not ExtractInternalOperators(SQLSanitized).IsEmpty;
 end;
 
 end.
