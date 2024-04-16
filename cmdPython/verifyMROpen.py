@@ -1,48 +1,79 @@
-import requests
-from bs4 import BeautifulSoup
+import sys
 import os
 import re
+import subprocess
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-def check_mr_status(file_path):
-    has_mr = False  # Flag para verificar se o arquivo contém um MR
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            for line in file:
-                if line.startswith('MR:'):
-                    has_mr = True
-                    parts = line.split()
-                    if len(parts) > 1:
-                        mr_url = parts[1].strip()
-                        response = requests.get(mr_url, headers=headers)
-                        if response.status_code == 200:
-                            soup = BeautifulSoup(response.text, 'html.parser')
-                            status_tag = soup.find('span', class_='gl-display-none gl-sm-display-block gl-ml-2')
+def check_mr_status(driver, file_path):
+    has_mr = False
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            if 'MR:' in line:
+                has_mr = True
+                mr_url = line.split('MR:')[1].strip()
+                if not mr_url.startswith("http"):
+                    continue
+                try:
+                    driver.get(mr_url)
+                    # Lista de seletores para verificar o status
+                    selectors = [
+                        ".gl-display-none.gl-sm-display-block.gl-ml-2",  # Selector original
+                        "",  # Adicione outros seletores conforme necessário
+                    ]
+                    for selector in selectors:
+                        try:
+                            status_tag = WebDriverWait(driver, 10).until(
+                                EC.visibility_of_element_located((By.CSS_SELECTOR, selector))
+                            )
                             if status_tag:
                                 return status_tag.text.strip()
-                        return "Não Encontrado"
-    except Exception as e:
-        print(f"Erro ao ler o arquivo: {e}")
-    
-    if not has_mr:
-        return "Sem MR"
+                        except:
+                            continue
+                    return "Não Encontrado"
+                except Exception as e:
+                    print(f"Erro ao tentar verificar o status do MR em {mr_url}: {e}")
+                    continue
+    return None
 
 def main():
-    default_path = r"C:\Users\flsantos\OneDrive - Apdata do Brasil Software Ltda\Chamados"
-    user_input = input(f"Por favor, insira o caminho do diretório dos arquivos ou pressione Enter para usar o padrão ({default_path}): ")
-    directory_path = user_input.strip() or default_path
+    # Fecha todas as instâncias do Chrome
+    try:
+        subprocess.run(['taskkill', '/F', '/IM', 'chrome.exe'], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Não foi possível fechar as instâncias do Chrome: {e}")
 
+    chrome_options = Options()
+    user_data_dir = r'C:\Users\flsantos\AppData\Local\Google\Chrome\User Data'
+    profile_directory = 'Default'
+    chrome_options.add_argument(f"user-data-dir={user_data_dir}")
+    chrome_options.add_argument(f"profile-directory={profile_directory}")
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    chrome_options.add_experimental_option('useAutomationExtension', False)
+
+    service = Service(executable_path=r'C:\ChromeDriver\Win64\chromedriver.exe')
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    directory_path = sys.argv[1] if len(sys.argv) > 1 else r"C:\Users\flsantos\OneDrive - Apdata do Brasil Software Ltda\Chamados"
+    
     if not os.path.exists(directory_path):
-        print(f"O diretório especificado não existe: {directory_path}")
+        print("O diretório especificado não existe: {}".format(directory_path))
+        driver.quit()
         return
 
     files = [f for f in os.listdir(directory_path) if f.endswith(".txt") and re.fullmatch(r'\d+\.txt', f)]
     for filename in files:
         file_path = os.path.join(directory_path, filename)
         chamado_name = filename[:-4]
-        status = check_mr_status(file_path)
-        if status not in [None, "Sem MR"]:
+        status = check_mr_status(driver, file_path)
+        if status:
             print(f"Analisando {chamado_name} Status: {status}")
+
+    driver.quit()
 
 if __name__ == '__main__':
     main()
