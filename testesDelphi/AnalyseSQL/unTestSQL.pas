@@ -27,7 +27,8 @@ var
   prevCharIsSpace: Boolean;
   auxSQL: String;
 begin
-  auxSQL := StringReplace(ASQL.ToUpper,   #$D#$A, ' ', [rfReplaceAll]);
+  auxSQL := StringReplace(ASQL.ToUpper, #$D#$A, ' ', [rfReplaceAll]);
+  auxSQL := StringReplace(ASQL.ToUpper, #9, ' ', [rfReplaceAll]);
 
   prevCharIsSpace := False;
 
@@ -106,6 +107,11 @@ var
     finally
        StackParenthesesPos.Free;
     end;
+  end;
+
+  function RemoveSnippetInCaseWhen(var SQLText: string): TStringList;
+  begin
+    Result := TStringList.Create;
   end;
 
   function ContainsValidOR(const Condition: String): Boolean;
