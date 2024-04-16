@@ -22,16 +22,17 @@ def check_mr_status(driver, file_path):
                     driver.get(mr_url)
                     # Lista de seletores para verificar o status
                     selectors = [
-                        ".gl-display-none.gl-sm-display-block.gl-ml-2",  # Selector original
-                        "",  # Adicione outros seletores conforme necessário
+                        ".gl-display-none.gl-sm-display-block.gl-ml-2"  # Seletores genéricos para 'Open', 'Merged', 'Closed', etc.
                     ]
                     for selector in selectors:
                         try:
-                            status_tag = WebDriverWait(driver, 10).until(
-                                EC.visibility_of_element_located((By.CSS_SELECTOR, selector))
+                            status_tags = WebDriverWait(driver, 10).until(
+                                EC.presence_of_all_elements_located((By.CSS_SELECTOR, selector))
                             )
-                            if status_tag:
-                                return status_tag.text.strip()
+                            for status_tag in status_tags:
+                                status_text = status_tag.text.strip()
+                                if status_text in ["Open", "Merged", "Closed"]:  # Filtramos por textos de status específicos
+                                    return status_text
                         except:
                             continue
                     return "Não Encontrado"
