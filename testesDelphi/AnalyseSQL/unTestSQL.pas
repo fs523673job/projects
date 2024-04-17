@@ -166,11 +166,24 @@ var
 
         Inc(PosSQL);
       end;
+
+      if StackSnippetPos.Count > 0 then
+      begin
+        ExcerptStructure := StackSnippetPos.Pop();
+        ExcerptStructure.IndexEnd := PosSQL - Length(KeyWord) + 1;
+        ExcerptStructure.SQLSnipped := Copy(SQLText, ExcerptStructure.IndexBegin, (ExcerptStructure.IndexEnd + 1) - ExcerptStructure.IndexBegin);
+
+        if not ExistSecurityTagInSnippedSQL(ExcerptStructure.SQLSnipped, AAnalysSnipped) then
+          OutSnipped.Add(ExcerptStructure.SQLSnipped);
+
+        SQLText := StringReplace(SQLText, ExcerptStructure.SQLSnipped, '', [rfReplaceAll]);
+
+        StackSnippetPos.Clear();
+      end;
     finally
        StackSnippetPos.Free;
     end;
   end;
-
 
   procedure RemoveSnippetInParentheses(var SQLText: string; const OutSnipped: TStringList; const AAnalysSnipped: TStringList);
   var
@@ -328,12 +341,10 @@ begin
   Result        := TStringList.Create;
   AnalysSnipped := TStringList.Create;
 
-  //RemoveSnippetInParentheses(SQLSanitized, Result, AnalysSnipped);
-  //RemoveSnippetInCaseWhen(SQLSanitized, Result, AnalysSnipped);
-
   RemoveSnippetInSQL(SQLSanitized, Result, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ','], '(', ')');
   RemoveSnippetInSQL(SQLSanitized, Result, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], 'CASE', 'END');
-
+  RemoveSnippetInSQL(SQLSanitized, Result, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], 'HAVING', 'UNION');
+  RemoveSnippetInSQL(SQLSanitized, Result, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], 'HAVING', 'ORDER');
 
   for Snipped in AnalysSnipped do
     Result.Add(Snipped);
@@ -555,23 +566,27 @@ var
         begin
           InComment := not InComment;
           Inc(PosSQL, 2);
+          KeyWord := EmptyStr;
           Continue;
         end
         else if (SQLText[PosSQL] = '*') and (SQLText[PosSQL + 1] = '/') then
         begin
           InComment := not InComment;
           Inc(PosSQL, 2);
+          KeyWord := EmptyStr;
           Continue;
         end
         else if (SQLText[PosSQL] = '''') or (SQLText[PosSQL] = '"') then
         begin
           InQuoted := not InQuoted;
           Inc(PosSQL);
+          KeyWord := EmptyStr;
           Continue
         end
         else if CharInSet(SQLText[PosSQL], AIgnoratedChar) then
         begin
           Inc(PosSQL);
+          KeyWord := EmptyStr;
           Continue;
         end
         else if SQLText[PosSQL] = ' ' then
@@ -580,6 +595,8 @@ var
           KeyWord := EmptyStr;
           Continue;
         end
+        else if SQLText[PosSQL] in ['(', ')'] then
+          KeyWord := SQLText[PosSQL]
         else
           KeyWord := KeyWord + SQLText[PosSQL];
 
@@ -595,7 +612,7 @@ var
           begin
             ExcerptStructure := StackSnippetPos.Pop();
             ExcerptStructure.IndexEnd := PosSQL - Length(KeyWord) + 1;
-            ExcerptStructure.SQLSnipped := Copy(SQLText, ExcerptStructure.IndexBegin, (ExcerptStructure.IndexEnd) - ExcerptStructure.IndexBegin);
+            ExcerptStructure.SQLSnipped := Copy(SQLText, ExcerptStructure.IndexBegin, (ExcerptStructure.IndexEnd + 1) - ExcerptStructure.IndexBegin);
 
             if Assigned(AAnalysSnipped) then
               AddExistSecurityTagInSnippedSQL(ExcerptStructure.SQLSnipped, AAnalysSnipped);
@@ -611,6 +628,20 @@ var
         end;
 
         Inc(PosSQL);
+      end;
+
+      if StackSnippetPos.Count > 0 then
+      begin
+        ExcerptStructure := StackSnippetPos.Pop();
+        ExcerptStructure.IndexEnd := PosSQL - Length(KeyWord) + 1;
+        ExcerptStructure.SQLSnipped := Copy(SQLText, ExcerptStructure.IndexBegin, (ExcerptStructure.IndexEnd + 1) - ExcerptStructure.IndexBegin);
+
+        if Assigned(AAnalysSnipped) then
+          AddExistSecurityTagInSnippedSQL(ExcerptStructure.SQLSnipped, AAnalysSnipped);
+
+        SQLText := StringReplace(SQLText, ExcerptStructure.SQLSnipped, '', [rfReplaceAll]);
+
+        StackSnippetPos.Clear();
       end;
     finally
        StackSnippetPos.Free;
@@ -659,9 +690,9 @@ begin
   try
     RemoveSnippetInSQL(SQLSanitized, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ','], '(', ')');
     RemoveSnippetInSQL(SQLSanitized, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], 'CASE', 'END');
+    RemoveSnippetInSQL(SQLSanitized, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], 'HAVING', 'UNION');
+    RemoveSnippetInSQL(SQLSanitized, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], 'HAVING', 'ORDER');
 
-    //RemoveSnippetInParentheses(SQLSanitized, AnalysSnipped);
-    //RemoveSnippetInCaseWhen(SQLSanitized, AnalysSnipped);
     Result := not ExtractInternalOperators(SQLSanitized).IsEmpty;
 
     if not Result then
