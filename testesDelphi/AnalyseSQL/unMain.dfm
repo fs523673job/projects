@@ -38,59 +38,131 @@ object Form1: TForm1
     Gutter.Font.Style = []
     Highlighter = SynSQLSyn1
     Lines.Strings = (
-      'SELECT'
-      'LTR_CDILOGTRANSACAO,'
-      'LTR_CDILOG,'
-      'LTR_CDIUSUARIO,'
-      'CWQ_CDSUSUARIO,'
-      'CWQ_CDICONTRATADO,'
-      'CWQ_DSSNOMECOMPLETO,'
-      'DATA_INICIO,'
-      'TRANSACAO,'
-      'TTR_D1STIPOTRANSACAO,'
-      'OBJ_CDIOBJETO,'
-      'OBJ_D1SOBJETO,'
-      'CALCULO,'
-      'ACL_D1SCALCULOLPC'
-      'FROM'
-      '('
-      '  SELECT '
-      '  LTR_CDILOGTRANSACAO,'
-      '  LTR_CDILOG,'
-      '  LTR_CDIUSUARIO,'
-      '  LTR_DTDDATAHORATRANSACAOINICIO AS DATA_INICIO,'
-      '  --LTR_DSSREFERENCIA_BASE,'
+      'select CdiContratado,'
+      '       CdiProcessoLPC,'
+      '       CdiVerba,'
+      '       sum(Valor_LPC1)  as Valor_LPC1,'
+      '       sum(Valor_LPC13) as Valor_LPC13,       '
+      '       sum(Quant_LPC1)  as Quant_LPC1,'
+      '       sum(Quant_LPC13) as Quant_LPC13,'
+      '       sum(Valor_LPC1) - sum(Valor_LPC13) as Valor_Dif,'
+      '       sum(Quant_LPC1) - sum(Quant_LPC13) as Quant_Dif,'
+      '       VEV_CdiNaturezaVerba,'
+      '       VEV_D1sVerba'
+      '   from VerbasView'
+      '   inner join ('
+      '               /* LPC Utiliza'#231#227'o 1 */'
       
-        '  SUBSTR(LTR_DSSREFERENCIA_BASE, (INSTR(LTR_DSSREFERENCIA_BASE, ' +
-        #39'('#39')) + 1, 5) AS TRANSACAO,'
+        '               select EGP_CdiContratado              as CdiContr' +
+        'atado,'
       
-        '  SUBSTR(LTR_DSSREFERENCIA_BASE, (INSTR(LTR_DSSREFERENCIA_BASE, ' +
-        #39'('#39')) + 13, 5) AS CALCULO'
-      '  FROM '
-      '  LOGSTRANSACOES, '
-      '  LOGS'
-      '  WHERE'
-      '  LTR_CDILOG = LOS_CDILOG'
-      '  AND LTR_CDITRANSACAO IN (33633)'
-      '  AND LTR_DTDDATAHORATRANSACAOINICIO > 0'
-      ')'
-      ','
-      'TRANSACOES,'
-      'TIPOSTRANSACOES,'
-      'PASTAS,'
-      'REGIOES,'
-      'OBJETOS,'
-      'CALCULOSLPC,'
-      'USUARIOSNOMESVIEW'
-      'WHERE TRANSACAO = TRN_CDITRANSACAO'
-      'AND TRN_CDITIPOTRANSACAO = TTR_CDITIPOTRANSACAO'
-      'AND TRN_CDIPASTA = ATA_CDIPASTA'
-      'AND ATA_CDIREGIAO = APD_CDIREGIAO'
-      'AND APD_CDIOBJETO = OBJ_CDIOBJETO'
-      'AND CALCULO = ACL_CDICALCULOLPC'
-      'AND LTR_CDIUSUARIO = CWQ_CDIUSUARIO'
-      '/*AutoEmployeeFilter=Contratados*/'
-      'ORDER BY 4 DESC'
+        '                      EGP_CdiProcessoLPC             as CdiProce' +
+        'ssoLPC,'
+      
+        '                      EGP_CdiVerba                   as CdiVerba' +
+        ','
+      
+        '                      sum(coalesce(EGP_VlnVerba, 0)) as Valor_LP' +
+        'C1,'
+      
+        '                      sum(coalesce(EGP_QtnVerba, 0)) as Quant_LP' +
+        'C1,'
+      
+        '                      0                              as Valor_LP' +
+        'C13,'
+      
+        '                      0                              as Quant_LP' +
+        'C13'
+      '                  from ContratadosRCView'
+      
+        '                  inner join Contratados on (EGP_CdiContratado =' +
+        ' CON_CdiContratado)'
+      '                  where      ((1or_Contatado_Focado > 0'
+      
+        '                         and   EGP_CdiContratado = (select USC_C' +
+        'diContratado_Focado from UsuariosContratados where USC_CdiUsuari' +
+        'o = 0))'
+      '                         or   (1or_Contatado_Focado = 0'
+      
+        '                         and   CON_CdiFolha in (select UFC_CdiFo' +
+        'lha from UsuariosFolhas where UFC_CdiUsuario = 0)))'
+      
+        '                         and ((0       > 0                      ' +
+        '   '
+      '                         and   EGP_CdiProcessoLPC = 0)'
+      '                         or   0        = 0)'
+      
+        '                 group by EGP_CdiContratado, EGP_CdiProcessoLPC,' +
+        ' EGP_CdiVerba'
+      '               union'
+      '               /* LPC Utiliza'#231#227'o 13 */'
+      
+        '               select EGP_CdiContratado              as CdiContr' +
+        'atado,'
+      
+        '                      EGP_CdiProcessoLPC             as CdiProce' +
+        'ssoLPC,'
+      
+        '                      EGP_CdiVerba                   as CdiVerba' +
+        ','
+      
+        '                      0                              as Valor_LP' +
+        'C1,'
+      
+        '                      0                              as Quant_LP' +
+        'C1,'
+      
+        '                      sum(coalesce(EGP_VlnVerba, 0)) as Valor_LP' +
+        'C13,'
+      
+        '                      sum(coalesce(EGP_QtnVerba, 0)) as Quant_LP' +
+        'C13'
+      '                  from ContratadosRCT'
+      
+        '                  inner join Contratados on (EGP_CdiContratado =' +
+        ' CON_CdiContratado)'
+      '                  where      ((1or_Contatado_Focado > 0'
+      
+        '                         and   EGP_CdiContratado = (select USC_C' +
+        'diContratado_Focado from UsuariosContratados where USC_CdiUsuari' +
+        'o = 0))'
+      '                         or   (1or_Contatado_Focado = 0'
+      
+        '                         and   CON_CdiFolha in (select UFC_CdiFo' +
+        'lha from UsuariosFolhas where UFC_CdiUsuario = 0)))'
+      
+        '                         and ((0       > 0                      ' +
+        '   '
+      '                         and   EGP_CdiProcessoLPC = 0)'
+      '                         or   0        = 0)'
+      
+        '                 group by EGP_CdiContratado, EGP_CdiProcessoLPC,' +
+        ' EGP_CdiVerba'
+      
+        '                 having    Primeiro(Valor_LPC1) - sum(Valor_LPC1' +
+        '3) not between -0.001 and 0.001'
+      
+        '                        or Primeiro(Quant_LPC1) - sum(Quant_LPC1' +
+        '4) not between -0.001 and 0.001   '
+      '                 '
+      '              ) X on (X.CdiVerba = VEV_CdiVerba)'
+      
+        '   inner join Contratados on (CdiContratado = CON_CdiContratado)' +
+        '   '
+      
+        '   where CON_CdiSituacao not in (0, 2, 99) /*'#180'Esta cl'#225'usula '#233' in' +
+        #243'cua, mas sem ela a consulta apresenta erro */'
+      '/*AUTOEMPLOYEEFILTER=Contratados*/'
+      
+        '   group by CdiContratado, CdiProcessoLPC, CdiVerba, VEV_CdiNatu' +
+        'rezaVerba, VEV_D1sVerba             '
+      
+        '   having    Segundo(Valor_LPC1) - sum(Valor_LPC13) not between ' +
+        '-0.001 and 0.001'
+      
+        '          or Segundo(Quant_LPC1) - sum(Quant_LPC13) not between ' +
+        '-0.001 and 0.001   '
+      ''
       ''
       ''
       '')

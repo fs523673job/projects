@@ -82,6 +82,96 @@ var
       AAnalysSnipped.Add(ASQLSnipped);
   end;
 
+  procedure RemoveSnippetInSQL(var SQLText: String; const OutSnipped: TStringList; const AAnalysSnipped: TStringList; AIgnoratedChar: TSysCharSet; AKeyWordBegin, AKeyWordEnd: String);
+  var
+    SizeSQL, PosSQL  : Integer;
+    ExcerptStructure : TExcerptStructure;
+    StackSnippetPos  : TStack<TExcerptStructure>;
+    KeyWord          : String;
+    InQuoted         : Boolean;
+    InComment        : Boolean;
+  begin
+    SizeSQL := Length(SQLText);
+    StackSnippetPos := TStack<TExcerptStructure>.Create;
+    try
+      PosSQL    := 1;
+      InQuoted  := False;
+      InComment := False;
+      while PosSQL <= SizeSQL  do
+      begin
+        if (SQLText[PosSQL] = '/') and (SQLText[PosSQL + 1] = '*') then
+        begin
+          InComment := not InComment;
+          Inc(PosSQL, 2);
+          KeyWord := EmptyStr;
+          Continue;
+        end
+        else if (SQLText[PosSQL] = '*') and (SQLText[PosSQL + 1] = '/') then
+        begin
+          InComment := not InComment;
+          Inc(PosSQL, 2);
+          KeyWord := EmptyStr;
+          Continue;
+        end
+        else if (SQLText[PosSQL] = '''') or (SQLText[PosSQL] = '"') then
+        begin
+          InQuoted := not InQuoted;
+          Inc(PosSQL);
+          KeyWord := EmptyStr;
+          Continue
+        end
+        else if CharInSet(SQLText[PosSQL], AIgnoratedChar) then
+        begin
+          Inc(PosSQL);
+          KeyWord := EmptyStr;
+          Continue;
+        end
+        else if SQLText[PosSQL] = ' ' then
+        begin
+          Inc(PosSQL);
+          KeyWord := EmptyStr;
+          Continue;
+        end
+        else if SQLText[PosSQL] in ['(', ')'] then
+          KeyWord := SQLText[PosSQL]
+        else
+          KeyWord := KeyWord + SQLText[PosSQL];
+
+        if (IndexStr(KeyWord.ToUpper, [AKeyWordBegin, AKeyWordEnd]) >= 0) and (not InQuoted) then
+        begin
+          if (KeyWord.ToUpper = AKeyWordBegin) then
+          begin
+            ExcerptStructure.IndexBegin := PosSQL - Length(KeyWord) + 1;
+            StackSnippetPos.Push(ExcerptStructure);
+            KeyWord := EmptyStr;
+          end
+          else if (KeyWord.ToUpper = AKeyWordEnd) and (StackSnippetPos.Count > 0) and (not InQuoted) then
+          begin
+            ExcerptStructure := StackSnippetPos.Pop();
+            ExcerptStructure.IndexEnd := PosSQL - Length(KeyWord) + 1;
+            ExcerptStructure.SQLSnipped := Copy(SQLText, ExcerptStructure.IndexBegin, (ExcerptStructure.IndexEnd + 1) - ExcerptStructure.IndexBegin);
+
+            if not ExistSecurityTagInSnippedSQL(ExcerptStructure.SQLSnipped, AAnalysSnipped) then
+              OutSnipped.Add(ExcerptStructure.SQLSnipped);
+
+            SQLText := StringReplace(SQLText, ExcerptStructure.SQLSnipped, '', [rfReplaceAll]);
+
+            PosSQL  := 0;
+            SizeSQL := Length(SQLText);
+            KeyWord := EmptyStr;
+
+            StackSnippetPos.Clear();
+          end;
+        end;
+
+        Inc(PosSQL);
+      end;
+    finally
+       StackSnippetPos.Free;
+    end;
+  end;
+
+
   procedure RemoveSnippetInParentheses(var SQLText: string; const OutSnipped: TStringList; const AAnalysSnipped: TStringList);
   var
     SizeSQL, PosSQL     : Integer;
@@ -238,8 +328,12 @@ begin
   Result        := TStringList.Create;
   AnalysSnipped := TStringList.Create;
 
-  RemoveSnippetInParentheses(SQLSanitized, Result, AnalysSnipped);
-  RemoveSnippetInCaseWhen(SQLSanitized, Result, AnalysSnipped);
+  //RemoveSnippetInParentheses(SQLSanitized, Result, AnalysSnipped);
+  //RemoveSnippetInCaseWhen(SQLSanitized, Result, AnalysSnipped);
+
+  RemoveSnippetInSQL(SQLSanitized, Result, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ','], '(', ')');
+  RemoveSnippetInSQL(SQLSanitized, Result, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], 'CASE', 'END');
+
 
   for Snipped in AnalysSnipped do
     Result.Add(Snipped);
@@ -329,11 +423,15 @@ var
     CaseWhenSQL      : TExcerptStructure;
     StackCaseWhenPos : TStack<TExcerptStructure>;
     KeyWord          : String;
+    InQuoted         : Boolean;
+    InHavingClause   : Boolean;
   begin
     SizeSQL := Length(SQLText);
     StackCaseWhenPos := TStack<TExcerptStructure>.Create;
     try
-      PosSQL := 1;
+      PosSQL         := 1;
+      InQuoted       := False;
+      InHavingClause := False;
       while PosSQL <= SizeSQL  do
       begin
         if (SQLText[PosSQL] = '/') and (SQLText[PosSQL + 1] = '*') then
@@ -342,6 +440,7 @@ var
           Inc(PosSQL)
         else if (SQLText[PosSQL] = '''') or (SQLText[PosSQL] = '"') then
         begin
+          InQuoted := not InQuoted;
           Inc(PosSQL);
           Continue
         end
@@ -359,18 +458,46 @@ var
         else
           KeyWord := KeyWord + SQLText[PosSQL];
 
-        if (KeyWord.ToUpper = 'CASE') then
+        if (IndexStr(KeyWord.ToUpper, ['CASE', 'END']) >= 0) and (not InQuoted) then
         begin
-          KeyWord := EmptyStr;
-          CaseWhenSQL.IndexBegin := PosSQL - 3;
-          StackCaseWhenPos.Push(CaseWhenSQL);
+          if (KeyWord.ToUpper = 'CASE') then
+          begin
+            CaseWhenSQL.IndexBegin := PosSQL - Length(KeyWord) + 1;
+            StackCaseWhenPos.Push(CaseWhenSQL);
+            KeyWord := EmptyStr;
+          end
+          else if (KeyWord.ToUpper = 'END') and (StackCaseWhenPos.Count > 0) then
+          begin
+            CaseWhenSQL := StackCaseWhenPos.Pop();
+            CaseWhenSQL.IndexEnd := PosSQL - Length(KeyWord) + 1;
+            CaseWhenSQL.SQLSnipped := Copy(SQLText, CaseWhenSQL.IndexBegin, (CaseWhenSQL.IndexEnd) - CaseWhenSQL.IndexBegin);
+
+            if Assigned(AAnalysSnipped) then
+              AddExistSecurityTagInSnippedSQL(CaseWhenSQL.SQLSnipped, AAnalysSnipped);
+
+            SQLText := StringReplace(SQLText, CaseWhenSQL.SQLSnipped, '', [rfReplaceAll]);
+
+            PosSQL  := 0;
+            SizeSQL := Length(SQLText);
+            KeyWord := EmptyStr;
+
+            StackCaseWhenPos.Clear();
+          end;
         end
-        else if (KeyWord.ToUpper = 'END') and (StackCaseWhenPos.Count > 0) then
+        else if (KeyWord.ToUpper = 'HAVING') then
         begin
+          InHavingClause := not InHavingClause;
+          CaseWhenSQL.IndexBegin := PosSQL - Length(KeyWord) + 1;
+          StackCaseWhenPos.Push(CaseWhenSQL);
           KeyWord := EmptyStr;
+        end
+        else if (IndexStr(KeyWord.ToUpper, ['ORDER', 'UNION', 'SELECT']) >= 0) and (not InQuoted) and (InHavingClause) then
+        begin
+          InHavingClause := not InHavingClause;
+
           CaseWhenSQL := StackCaseWhenPos.Pop();
-          CaseWhenSQL.IndexEnd := PosSQL - 2;
-          CaseWhenSQL.SQLSnipped := Copy(SQLText, CaseWhenSQL.IndexBegin, (CaseWhenSQL.IndexEnd + 3) - CaseWhenSQL.IndexBegin);
+          CaseWhenSQL.IndexEnd := PosSQL - Length(KeyWord) + 1;
+          CaseWhenSQL.SQLSnipped := Copy(SQLText, CaseWhenSQL.IndexBegin, (CaseWhenSQL.IndexEnd) - CaseWhenSQL.IndexBegin);
 
           if Assigned(AAnalysSnipped) then
             AddExistSecurityTagInSnippedSQL(CaseWhenSQL.SQLSnipped, AAnalysSnipped);
@@ -379,6 +506,23 @@ var
 
           PosSQL  := 0;
           SizeSQL := Length(SQLText);
+          KeyWord := EmptyStr;
+
+          StackCaseWhenPos.Clear();
+        end
+        else if InHavingClause and (PosSQL + 1 >= Length(SQLText))  then
+        begin
+          InHavingClause := not InHavingClause;
+
+          KeyWord := EmptyStr;
+          CaseWhenSQL := StackCaseWhenPos.Pop();
+          CaseWhenSQL.IndexEnd := PosSQL - Length(KeyWord) - 1;
+          CaseWhenSQL.SQLSnipped := Copy(SQLText, CaseWhenSQL.IndexBegin, (CaseWhenSQL.IndexEnd + 3) - CaseWhenSQL.IndexBegin);
+
+          if Assigned(AAnalysSnipped) then
+            AddExistSecurityTagInSnippedSQL(CaseWhenSQL.SQLSnipped, AAnalysSnipped);
+
+          SQLText := StringReplace(SQLText, CaseWhenSQL.SQLSnipped, '', [rfReplaceAll]);
 
           StackCaseWhenPos.Clear();
         end;
@@ -387,6 +531,89 @@ var
       end;
     finally
        StackCaseWhenPos.Free;
+    end;
+  end;
+
+  procedure RemoveSnippetInSQL(var SQLText: String; const AAnalysSnipped: TStringList; AIgnoratedChar: TSysCharSet; AKeyWordBegin, AKeyWordEnd: String);
+  var
+    SizeSQL, PosSQL  : Integer;
+    ExcerptStructure : TExcerptStructure;
+    StackSnippetPos  : TStack<TExcerptStructure>;
+    KeyWord          : String;
+    InQuoted         : Boolean;
+    InComment        : Boolean;
+  begin
+    SizeSQL := Length(SQLText);
+    StackSnippetPos := TStack<TExcerptStructure>.Create;
+    try
+      PosSQL    := 1;
+      InQuoted  := False;
+      InComment := False;
+      while PosSQL <= SizeSQL  do
+      begin
+        if (SQLText[PosSQL] = '/') and (SQLText[PosSQL + 1] = '*') then
+        begin
+          InComment := not InComment;
+          Inc(PosSQL, 2);
+          Continue;
+        end
+        else if (SQLText[PosSQL] = '*') and (SQLText[PosSQL + 1] = '/') then
+        begin
+          InComment := not InComment;
+          Inc(PosSQL, 2);
+          Continue;
+        end
+        else if (SQLText[PosSQL] = '''') or (SQLText[PosSQL] = '"') then
+        begin
+          InQuoted := not InQuoted;
+          Inc(PosSQL);
+          Continue
+        end
+        else if CharInSet(SQLText[PosSQL], AIgnoratedChar) then
+        begin
+          Inc(PosSQL);
+          Continue;
+        end
+        else if SQLText[PosSQL] = ' ' then
+        begin
+          Inc(PosSQL);
+          KeyWord := EmptyStr;
+          Continue;
+        end
+        else
+          KeyWord := KeyWord + SQLText[PosSQL];
+
+        if (IndexStr(KeyWord.ToUpper, [AKeyWordBegin, AKeyWordEnd]) >= 0) and (not InQuoted) then
+        begin
+          if (KeyWord.ToUpper = AKeyWordBegin) then
+          begin
+            ExcerptStructure.IndexBegin := PosSQL - Length(KeyWord) + 1;
+            StackSnippetPos.Push(ExcerptStructure);
+            KeyWord := EmptyStr;
+          end
+          else if (KeyWord.ToUpper = AKeyWordEnd) and (StackSnippetPos.Count > 0) and (not InQuoted) then
+          begin
+            ExcerptStructure := StackSnippetPos.Pop();
+            ExcerptStructure.IndexEnd := PosSQL - Length(KeyWord) + 1;
+            ExcerptStructure.SQLSnipped := Copy(SQLText, ExcerptStructure.IndexBegin, (ExcerptStructure.IndexEnd) - ExcerptStructure.IndexBegin);
+
+            if Assigned(AAnalysSnipped) then
+              AddExistSecurityTagInSnippedSQL(ExcerptStructure.SQLSnipped, AAnalysSnipped);
+
+            SQLText := StringReplace(SQLText, ExcerptStructure.SQLSnipped, '', [rfReplaceAll]);
+
+            PosSQL  := 0;
+            SizeSQL := Length(SQLText);
+            KeyWord := EmptyStr;
+
+            StackSnippetPos.Clear();
+          end;
+        end;
+
+        Inc(PosSQL);
+      end;
+    finally
+       StackSnippetPos.Free;
     end;
   end;
 
@@ -430,8 +657,11 @@ begin
   SQLSanitized  := LinearizeSQL(ASQL);
   AnalysSnipped :=  TStringList.Create;
   try
-    RemoveSnippetInParentheses(SQLSanitized, AnalysSnipped);
-    RemoveSnippetInCaseWhen(SQLSanitized, AnalysSnipped);
+    RemoveSnippetInSQL(SQLSanitized, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ','], '(', ')');
+    RemoveSnippetInSQL(SQLSanitized, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], 'CASE', 'END');
+
+    //RemoveSnippetInParentheses(SQLSanitized, AnalysSnipped);
+    //RemoveSnippetInCaseWhen(SQLSanitized, AnalysSnipped);
     Result := not ExtractInternalOperators(SQLSanitized).IsEmpty;
 
     if not Result then
