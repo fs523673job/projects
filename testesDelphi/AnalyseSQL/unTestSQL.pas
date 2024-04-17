@@ -85,32 +85,37 @@ var
   procedure RemoveSnippetInParentheses(var SQLText: string; const OutSnipped: TStringList; const AAnalysSnipped: TStringList);
   var
     SizeSQL, PosSQL     : Integer;
-    CaseWhenSQL         : TExcerptStructure;
+    ParenthesesSQL         : TExcerptStructure;
     StackParenthesesPos : TStack<TExcerptStructure>;
+    InQuoted            : Boolean;
   begin
     SizeSQL := Length(SQLText);
     StackParenthesesPos := TStack<TExcerptStructure>.Create;
     try
-      PosSQL := 1;
+      PosSQL   := 1;
+      InQuoted := False;
       while PosSQL <= SizeSQL  do
       begin
-        if CharInSet(SQLText[PosSQL], ['(', ')']) then
+        if (SQLText[PosSQL] = '''') or (SQLText[PosSQL] = '"') then
+          InQuoted := not InQuoted;
+
+        if CharInSet(SQLText[PosSQL], ['(', ')']) and (not InQuoted) then
         begin
           if SQLText[PosSQL] = '(' then
           begin
-            CaseWhenSQL.IndexBegin := PosSQL;
-            StackParenthesesPos.Push(CaseWhenSQL);
+            ParenthesesSQL.IndexBegin := PosSQL;
+            StackParenthesesPos.Push(ParenthesesSQL);
           end
           else if (SQLText[PosSQL] = ')') and (StackParenthesesPos.Count > 0) then
           begin
-            CaseWhenSQL := StackParenthesesPos.Pop();
-            CaseWhenSQL.IndexEnd := PosSQL;
-            CaseWhenSQL.SQLSnipped := Copy(SQLText, CaseWhenSQL.IndexBegin, (CaseWhenSQL.IndexEnd + 1) - CaseWhenSQL.IndexBegin);
+            ParenthesesSQL := StackParenthesesPos.Pop();
+            ParenthesesSQL.IndexEnd := PosSQL;
+            ParenthesesSQL.SQLSnipped := Copy(SQLText, ParenthesesSQL.IndexBegin, (ParenthesesSQL.IndexEnd + 1) - ParenthesesSQL.IndexBegin);
 
-            if not ExistSecurityTagInSnippedSQL(CaseWhenSQL.SQLSnipped, AAnalysSnipped) then
-              OutSnipped.Add(CaseWhenSQL.SQLSnipped);
+            if not ExistSecurityTagInSnippedSQL(ParenthesesSQL.SQLSnipped, AAnalysSnipped) then
+              OutSnipped.Add(ParenthesesSQL.SQLSnipped);
 
-            SQLText := StringReplace(SQLText, CaseWhenSQL.SQLSnipped, '', [rfReplaceAll]);
+            SQLText := StringReplace(SQLText, ParenthesesSQL.SQLSnipped, '', [rfReplaceAll]);
 
             PosSQL  := 0;
             SizeSQL := Length(SQLText);
@@ -131,6 +136,7 @@ var
     SizeSQL, PosSQL  : Integer;
     CaseWhenSQL      : TExcerptStructure;
     StackCaseWhenPos : TStack<TExcerptStructure>;
+    KeyWord          : String;
   begin
     SizeSQL := Length(SQLText);
     StackCaseWhenPos := TStack<TExcerptStructure>.Create;
@@ -138,19 +144,42 @@ var
       PosSQL := 1;
       while PosSQL <= SizeSQL  do
       begin
-        if Copy(SQLText, PosSQL, 4).ToUpper = 'CASE' then
+        if (SQLText[PosSQL] = '/') and (SQLText[PosSQL + 1] = '*') then
+         Inc(PosSQL)
+        else if (SQLText[PosSQL] = '*') and (SQLText[PosSQL + 1] = '/') then
+          Inc(PosSQL)
+        else if (SQLText[PosSQL] = '''') or (SQLText[PosSQL] = '"') then
         begin
-          CaseWhenSQL.IndexBegin := PosSQL;
+          Inc(PosSQL);
+          Continue
+        end
+        else if CharInSet(SQLText[PosSQL], ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')']) then
+        begin
+          Inc(PosSQL);
+          Continue;
+        end
+        else if SQLText[PosSQL] = ' ' then
+        begin
+          Inc(PosSQL);
+          KeyWord := EmptyStr;
+          Continue;
+        end
+        else
+          KeyWord := KeyWord + SQLText[PosSQL];
+
+        if KeyWord.ToUpper = 'CASE' then
+        begin
+          CaseWhenSQL.IndexBegin := PosSQL - 3;
           StackCaseWhenPos.Push(CaseWhenSQL);
         end
-        else if (Copy(SQLText, PosSQL, 3).ToUpper = 'END') and (StackCaseWhenPos.Count > 0) then
+        else if (KeyWord.ToUpper = 'END') and (StackCaseWhenPos.Count > 0) then
         begin
           CaseWhenSQL := StackCaseWhenPos.Pop();
-          CaseWhenSQL.IndexEnd := PosSQL;
+          CaseWhenSQL.IndexEnd := PosSQL - 2;
           CaseWhenSQL.SQLSnipped := Copy(SQLText, CaseWhenSQL.IndexBegin, (CaseWhenSQL.IndexEnd + 3) - CaseWhenSQL.IndexBegin);
 
-            if not ExistSecurityTagInSnippedSQL(CaseWhenSQL.SQLSnipped, AAnalysSnipped) then
-              OutSnipped.Add(CaseWhenSQL.SQLSnipped);
+          if not ExistSecurityTagInSnippedSQL(CaseWhenSQL.SQLSnipped, AAnalysSnipped) then
+            OutSnipped.Add(CaseWhenSQL.SQLSnipped);
 
           SQLText := StringReplace(SQLText, CaseWhenSQL.SQLSnipped, '', [rfReplaceAll]);
 
@@ -250,16 +279,21 @@ var
     SizeSQL, PosSQL     : Integer;
     ParenthesesSQL      : TExcerptStructure;
     StackParenthesesPos : TStack<TExcerptStructure>;
+    InQuoted            : Boolean;
   begin
     SizeSQL := Length(SQLText);
     StackParenthesesPos := TStack<TExcerptStructure>.Create;
     try
-      PosSQL := 1;
+      PosSQL   := 1;
+      InQuoted := False;
       while PosSQL <= SizeSQL  do
       begin
-        if CharInSet(SQLText[PosSQL], ['(', ')']) then
+        if (SQLText[PosSQL] = '''') or (SQLText[PosSQL] = '"') then
+          InQuoted := not InQuoted;
+
+        if CharInSet(SQLText[PosSQL], ['(', ')']) and (not InQuoted) then
         begin
-          if SQLText[PosSQL] = '(' then
+          if (SQLText[PosSQL] = '(') then
           begin
             ParenthesesSQL.IndexBegin := PosSQL;
             StackParenthesesPos.Push(ParenthesesSQL);
@@ -311,7 +345,7 @@ var
           Inc(PosSQL);
           Continue
         end
-        else if CharInSet(SQLText[PosSQL], ['<', '>', '/', '-', '+', '*', '=', '|', ',']) then
+        else if CharInSet(SQLText[PosSQL], ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')']) then
         begin
           Inc(PosSQL);
           Continue;

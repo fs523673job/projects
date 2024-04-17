@@ -38,46 +38,60 @@ object Form1: TForm1
     Gutter.Font.Style = []
     Highlighter = SynSQLSyn1
     Lines.Strings = (
+      'SELECT'
+      'LTR_CDILOGTRANSACAO,'
+      'LTR_CDILOG,'
+      'LTR_CDIUSUARIO,'
+      'CWQ_CDSUSUARIO,'
+      'CWQ_CDICONTRATADO,'
+      'CWQ_DSSNOMECOMPLETO,'
+      'DATA_INICIO,'
+      'TRANSACAO,'
+      'TTR_D1STIPOTRANSACAO,'
+      'OBJ_CDIOBJETO,'
+      'OBJ_D1SOBJETO,'
+      'CALCULO,'
+      'ACL_D1SCALCULOLPC'
+      'FROM'
+      '('
+      '  SELECT '
+      '  LTR_CDILOGTRANSACAO,'
+      '  LTR_CDILOG,'
+      '  LTR_CDIUSUARIO,'
+      '  LTR_DTDDATAHORATRANSACAOINICIO AS DATA_INICIO,'
+      '  --LTR_DSSREFERENCIA_BASE,'
       
-        'select CAV_NusCNPJ, CAV_CdiContratado, case when CAV_CdiRetencao' +
-        'ImpostoRenda = 3562  or CAV_CdiRetencaoImpostoRenda = 1889 then ' +
-        '561 else CAV_CdiRetencaoImpostoRenda end as CAV_CdiRetencaoImpos' +
-        'toRenda, CAV_CosOficialDIRF, '
-      '       SUM(CAV_VlnValor) as CAV_VlnValor'
-      'from ConAnuaisDIRFValores'
-      'where ('
-      '       0 = 1 and '
+        '  SUBSTR(LTR_DSSREFERENCIA_BASE, (INSTR(LTR_DSSREFERENCIA_BASE, ' +
+        #39'('#39')) + 1, 5) AS TRANSACAO,'
       
-        '       Exists(select SUM(x.CAV_VlnValor) from ConAnuaisDIRFValor' +
-        'es x '
-      
-        '              where x.CAV_CdiContratado = ConAnuaisDIRFValores.C' +
-        'AV_CdiContratado and '
-      '                    x.CAV_DtiAno_Base = 2016 and '
-      
-        '                    x.CAV_CdiTipoValorAnual in (1, 2, 22, 23, 26' +
-        ', 27) '
-      '              group by x.CAV_CdiContratado '
-      '              having SUM(x.CAV_VlnValor) > 0) or '
-      '       0 <> 1'
-      #9'  ) '
-      #9'  and ('
-      #9'        ('
-      
-        #9#9'      0 = 2016 and CAV_DtiAno_Base = (select AVR_DtiAnoBase fr' +
-        'om DefSisFolhaPagamento where AVR_CdiSistema = 2)'
-      #9#9'    ) '
-      #9'        or CAV_DtiAno_Base = 2016'
-      #9'     )'
+        '  SUBSTR(LTR_DSSREFERENCIA_BASE, (INSTR(LTR_DSSREFERENCIA_BASE, ' +
+        #39'('#39')) + 13, 5) AS CALCULO'
+      '  FROM '
+      '  LOGSTRANSACOES, '
+      '  LOGS'
+      '  WHERE'
+      '  LTR_CDILOG = LOS_CDILOG'
+      '  AND LTR_CDITRANSACAO IN (33633)'
+      '  AND LTR_DTDDATAHORATRANSACAOINICIO > 0'
+      ')'
+      ','
+      'TRANSACOES,'
+      'TIPOSTRANSACOES,'
+      'PASTAS,'
+      'REGIOES,'
+      'OBJETOS,'
+      'CALCULOSLPC,'
+      'USUARIOSNOMESVIEW'
+      'WHERE TRANSACAO = TRN_CDITRANSACAO'
+      'AND TRN_CDITIPOTRANSACAO = TTR_CDITIPOTRANSACAO'
+      'AND TRN_CDIPASTA = ATA_CDIPASTA'
+      'AND ATA_CDIREGIAO = APD_CDIREGIAO'
+      'AND APD_CDIOBJETO = OBJ_CDIOBJETO'
+      'AND CALCULO = ACL_CDICALCULOLPC'
+      'AND LTR_CDIUSUARIO = CWQ_CDIUSUARIO'
+      '/*AutoEmployeeFilter=Contratados*/'
+      'ORDER BY 4 DESC'
       ''
-      '      and CAV_CdiRetencaoImpostoRenda = 473'
-      '      and CAV_CosOficialDIRF in ('#39'RTRT'#39', '#39'RTIRF'#39')'
-      '/*autoemployeefilter=ConAnuaisDIRFValores*/'#9'  '
-      #9'  '
-      
-        'group by CAV_NusCNPJ, CAV_CdiContratado, case when CAV_CdiRetenc' +
-        'aoImpostoRenda = 3562  or CAV_CdiRetencaoImpostoRenda = 1889 the' +
-        'n 561 else CAV_CdiRetencaoImpostoRenda end, CAV_CosOficialDIRF'
       ''
       '')
     FontSmoothing = fsmNone
