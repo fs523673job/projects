@@ -10,15 +10,28 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 def update_file_with_status(file_path, mr_url, status):
+    updated = False
     lines = []
     with open(file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
     
     with open(file_path, 'w', encoding='utf-8') as file:
         for line in lines:
-            file.write(line)
-            if line.strip() == f'MR: {mr_url}':
-                file.write(f'Status MR: {status}\n')  # Escreve o status abaixo da linha do MR
+            if line.strip() == f'MR: {mr_url}' and not updated:
+                file.write(line)  # Reescreve a linha do MR
+                next_index = lines.index(line) + 1
+                if next_index < len(lines) and lines[next_index].strip().startswith('Status MR:'):
+                    file.write(f'Status MR: {status}\n')  # Atualiza o status se já existe
+                    updated = True
+                else:
+                    file.write(f'Status MR: {status}\n')  # Adiciona o status se não existir
+                    updated = True
+            else:
+                file.write(line)
+        if not updated:
+            # Se o MR não foi encontrado no arquivo, adiciona como novo
+            file.write(f'MR: {mr_url}\n')
+            file.write(f'Status MR: {status}\n')
 
 def check_mr_status(driver, file_path):
     with open(file_path, 'r', encoding='utf-8') as file:

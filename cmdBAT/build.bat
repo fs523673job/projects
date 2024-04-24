@@ -91,7 +91,7 @@ if exist %app_dll% (
 )	
 
 echo.
-echo %date% %time% ==== Step 04 - Generate PDB File %bpl_path%\cv2pdb.exe
+echo %date% %time% ==== Step 05 - Generate PDB File %bpl_path%\cv2pdb.exe
 
 ::Cv2Pdb Delphi
 %bpl_path%\cv2pdb.exe %app_base%.dbg %app_base%.pdb

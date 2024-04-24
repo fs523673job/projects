@@ -32,10 +32,8 @@ var
 begin
   sbbyteKey := [64, 64, 97, 112, 100, 97, 116, 97, 115, 105, 109, 102, 105, 108, 101, 107, 101, 121]; // '@@apdatasimfilekey'
   sbbyteIV := [64, 64, 97, 112, 100, 97, 116, 97, 115, 105, 109, 102, 105, 108, 101, 73, 86];         // '@@apdatasimfileIV'
-
   SetLength(sbbyteKey, 32);
   SetLength(sbbyteIV, 16);
-
   Result := True;
   try
     factory := TElSymmetricCryptoFactory.Create;
@@ -47,14 +45,11 @@ begin
           km.Key := sbbyteKey;
           km.IV := sbbyteIV;
           crypto.KeyMaterial := km;
-
           msFileIn := TMemoryStream.Create;
           msFileOut := TMemoryStream.Create;
           try
             msFileIn.LoadFromFile(AFilePath);
-
             crypto.Encrypt(msFileIn, msFileOut);
-
             if ACreateNewFile then
             begin
               if (DeleteFile(AFilePath)) then
@@ -63,7 +58,6 @@ begin
                 AFilePath := ChangeFileExt(AFilePath, newExt);
               end;
             end;
-
             msFileOut.SaveToFile(AFilePath);
           finally
             msFileIn.Free;
@@ -96,10 +90,8 @@ var
 begin
   sbbyteKey := [64, 64, 97, 112, 100, 97, 116, 97, 115, 105, 109, 102, 105, 108, 101, 107, 101, 121]; // '@@apdatasimfilekey'
   sbbyteIV := [64, 64, 97, 112, 100, 97, 116, 97, 115, 105, 109, 102, 105, 108, 101, 73, 86];         // '@@apdatasimfileIV'
-
   SetLength(sbbyteKey, 32);
   SetLength(sbbyteIV, 16);
-
   Result := True;
   try
     factory := TElSymmetricCryptoFactory.Create;
@@ -111,14 +103,11 @@ begin
           km.Key := sbbyteKey;
           km.IV := sbbyteIV;
           crypto.KeyMaterial := km;
-
           msFileIn := TMemoryStream.Create;
           msFileOut := TMemoryStream.Create;
           try
             msFileIn.LoadFromFile(AFilePath);
-
             crypto.Decrypt(msFileIn, msFileOut);
-
             if ACreateNewFile then
             begin
               newExt := ExtractFileExt(AFilePath);
@@ -127,10 +116,8 @@ begin
                 if (DeleteFile(AFilePath)) then
                   newExt := StringReplace(newExt, ENCRYPTED_EXTENSION, '', [rfReplaceAll]);
               end;
-
               AFilePath := ChangeFileExt(AFilePath, newExt);
             end;
-
             msFileOut.SaveToFile(AFilePath);
           finally
             msFileIn.Free;

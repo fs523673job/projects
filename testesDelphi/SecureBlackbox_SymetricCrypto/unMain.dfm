@@ -68,33 +68,22 @@ object Form1: TForm1
     Font.Style = []
     Font.Quality = fqClearTypeNatural
     TabOrder = 3
+    CodeFolding.GutterShapeSize = 11
+    CodeFolding.CollapsedLineColor = clGrayText
+    CodeFolding.FolderBarLinesColor = clGrayText
+    CodeFolding.IndentGuidesColor = clGray
+    CodeFolding.IndentGuides = True
+    CodeFolding.ShowCollapsedLine = False
+    CodeFolding.ShowHintMark = True
     UseCodeFolding = False
     Gutter.Font.Charset = DEFAULT_CHARSET
     Gutter.Font.Color = clWindowText
     Gutter.Font.Height = -11
     Gutter.Font.Name = 'Consolas'
     Gutter.Font.Style = []
-    Gutter.Bands = <
-      item
-        Kind = gbkMarks
-        Width = 13
-      end
-      item
-        Kind = gbkLineNumbers
-      end
-      item
-        Kind = gbkFold
-      end
-      item
-        Kind = gbkTrackChanges
-      end
-      item
-        Kind = gbkMargin
-        Width = 3
-      end>
     Lines.Strings = (
       '')
-    SelectedColor.Alpha = 0.400000005960464500
+    FontSmoothing = fsmNone
   end
   object btnDescriptografar: TButton
     Left = 175
@@ -126,7 +115,7 @@ object Form1: TForm1
     Left = 567
     Top = 409
     Width = 53
-    Height = 25
+    Height = 23
     Alignment = taRightJustify
     NumbersOnly = True
     TabOrder = 7

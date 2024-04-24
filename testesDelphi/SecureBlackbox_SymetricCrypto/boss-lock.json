@@ -1,0 +1,14 @@
+{
+	"hash": "d41d8cd98f00b204e9800998ecf8427e",
+	"updated": "2024-04-23T11:13:02.9811524-03:00",
+	"installedModules": {
+		"https://github.com/synedit/synedit": {
+			"name": "synedit",
+			"version": "master",
+			"hash": "47e536ec7cf7723125615ac141a9f00f",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		}
+	}
+}

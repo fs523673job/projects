@@ -52,6 +52,8 @@ type
     { Public declarations }
   end;
 
+//https://cdn.nsoftware.com/help/legacy/sbb/ref_howto_pki_basic_encryptsymmetric.html
+
 type
   TFunc = reference to function(var AFilePath: String; const ACreateNewFile: Boolean = False): Boolean;
 
