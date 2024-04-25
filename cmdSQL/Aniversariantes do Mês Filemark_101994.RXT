@@ -1,0 +1,2035 @@
+﻿<HEADER>
+QUERYCOUNT=2
+FUNCTIONCOUNT=0
+<END HEADER>
+
+<REPORT>
+REPORTID=101994
+GROUPID=137
+DESCRIPTION=Aniversariantes do Mês Filemark
+OPTION=2
+<END REPORT>
+
+<RTFDESCR>
+{\rtf1\ansi\deff0\uc1\ansicpg1252\deftab720{\fonttbl{\f0\fnil\fcharset1 Arial;}{
+\f1\fnil\fcharset1 Verdana;}{\f2\fnil\fcharset2 Wingdings;}{\f3\fnil\
+fcharset2 Symbol;}}{\colortbl\red0\green0\blue0;\red255\green0\blue0;\red0\
+green128\blue0;\red0\green0\blue255;\red255\green255\blue0;\red255\green0\
+blue255;\red128\green0\blue128;\red128\green0\blue0;\red0\green255\blue0;\red0\
+green255\blue255;\red0\green128\blue128;\red0\green0\blue128;\red255\green255\
+blue255;\red192\green192\blue192;\red128\green128\blue128;\red0\green0\blue0;\
+red34\green34\blue34;}\wpprheadfoot1\paperw12240\paperh15840\margl1880\
+margr1880\margt1440\margb1440\headery720\footery720\ftnbj\sftnbj\sftnrstcont\
+nocolbal\sftnnar\saftnnar\fet0\endnhere\sectdefaultcl{\*\
+generator WPTools_7.270-PRM;}{\qc\plain\f1\fs32\cf16\b Aniversariantes do M\
+'EAs\par\ql\plain\f1\fs20\cf16  \par\pard\tblstart1{\trowd\trleft-10\trgaph10\trpaddfl3\trpaddl10\trpaddfr3\trpaddr10\trftsWidth3\trwWidth9638\clbrdrb\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth3810\clvertalt\cellx3800\clbrdrb\brdrs\brdrw20\clbrdrr\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth5828\clvertalt\cellx9628\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16\b Personagens\cell\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs24\cf16   \f1\fs20\cf16 Operador\cell\row}{\trowd\trleft-10\trgaph10\trpaddfl3\trpaddl10\trpaddfr3\trpaddr10\trftsWidth3\trwWidth9638\clbrdrb\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth3810\clvertalt\cellx3800\clbrdrb\brdrs\brdrw20\clbrdrr\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth5828\clvertalt\cellx9628\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\pard\intbl\plain\li20\sl276\plain\f1\fs20\cf16\b Escopo\par\plain\f1\fs20\cf16\b  \cell\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\pard\intbl\plain\li20\sl276\plain\f1\fs20\cf16 Escopo Flex\'EDvel de Relat\
+'F3rios:\par\plain\f1\fs20\cf16 1.\f1\fs14\cf16     \f1\fs20\cf16 Contratado Focado\par\plain\f1\fs20\cf16 2.\f1\fs14\cf16     \f1\fs20\cf16 Contratados Correntes\par\plain\f1\fs20\cf16 3.\f1\fs14\cf16     \f1\fs20\cf16 Folhas Correntes\par\plain\f1\fs20\cf16 4.\f1\fs14\cf16     \f1\fs20\cf16 Usu\'E1rio Contratado\
+par\plain\f1\fs20\cf16 5.\f1\fs14\cf16     \f1\fs20\cf16 Logs Transa\'E7\'F5es\
+par\plain\f1\fs20\cf16 6.\f1\fs14\cf16     \f1\fs20\cf16 Textos Pendentes\cell\
+row}{\trowd\trleft-10\trgaph10\trpaddfl3\trpaddl10\trpaddfr3\trpaddr10\
+trftsWidth3\trwWidth9638\clbrdrb\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\
+brdrs\brdrw20\clftsWidth3\clwWidth3810\clvertalt\cellx3800\clbrdrb\brdrs\
+brdrw20\clbrdrr\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\
+clftsWidth3\clwWidth5828\clvertalt\cellx9628\pard\intbl\li20\fi0\ri0\sb0\sa0\
+slmult0\sl276\ql\plain\f1\fs20\cf16\b Par\
+'E2metros Fixos (Filtros)\cell\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\pard\intbl\plain\li20\sl276\plain\f1\fs20\cf16\b Situa\'E7\
+'E3o diferente de 0,2,3 e 99\par\plain\f1\fs20\cf16\b Log Transa\'E7\
+'E3o se habilitada a op\'E7\
+'E3o 5 de escopo\cell\row}{\trowd\trleft-10\trgaph10\trpaddfl3\trpaddl10\trpaddfr3\trpaddr10\trftsWidth3\trwWidth9638\clbrdrb\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth3810\clvertalt\cellx3800\clbrdrb\brdrs\brdrw20\clbrdrr\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth5828\clvertalt\cellx9628\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16\b Par\'E2metros Obrigat\
+'F3rios\cell\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16 M\'EAs Anivers\
+'E1rio\cell\row}{\trowd\trleft-10\trgaph10\trpaddfl3\trpaddl10\trpaddfr3\trpaddr10\trftsWidth3\trwWidth9638\clbrdrb\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth3810\clvertalt\cellx3800\clbrdrb\brdrs\brdrw20\clbrdrr\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth5828\clvertalt\cellx9628\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16\b Par\'E2metros Opcionais\
+cell\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\qj\plain\f1\fs20\cf16 N\
+'E3o h\'E1\cell\row}{\trowd\trleft-10\trgaph10\trpaddfl3\trpaddl10\trpaddfr3\
+trpaddr10\trftsWidth3\trwWidth9638\clbrdrb\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\
+clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth3810\clvertalt\cellx3800\clbrdrb\
+brdrs\brdrw20\clbrdrr\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\
+clftsWidth3\clwWidth5828\clvertalt\cellx9628\pard\intbl\li20\fi0\ri0\sb0\sa0\
+slmult0\sl276\ql\plain\f1\fs20\cf16\b Modo de Gera\'E7\'E3o\cell\pard\intbl\
+li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16 Anal\
+'EDtico\cell\row}{\trowd\trleft-10\trgaph10\trpaddfl3\trpaddl10\trpaddfr3\trpaddr10\trftsWidth3\trwWidth9638\clbrdrb\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth3810\clvertalt\cellx3800\clbrdrb\brdrs\brdrw20\clbrdrr\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth5828\clvertalt\cellx9628\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16\b Ilustra\'E7\
+'E3o de Quebras\cell\pard\intbl\li0\fi0\ri0\sb0\sa0\ql\plain\f1\fs20\cf0 Id Contratado\cell\row}{\trowd\trleft-10\trgaph10\trpaddfl3\trpaddl10\trpaddfr3\trpaddr10\trftsWidth3\trwWidth9638\clbrdrb\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth3810\clvertalt\cellx3800\clbrdrb\brdrs\brdrw20\clbrdrr\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth5828\clvertalt\cellx9628\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16\b Descritivo\cell\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16 Relat\'F3rio que lista os aniversariantes do m\
+'EAs solicitado\cell\row}{\trowd\trleft-10\trgaph10\trpaddfl3\trpaddl10\trpaddfr3\trpaddr10\trftsWidth3\trwWidth9638\clbrdrb\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth3810\clvertalt\cellx3800\clbrdrb\brdrs\brdrw20\clbrdrr\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth5828\clvertalt\cellx9628\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16\b Informa\'E7\
+'F5es Gerais\cell\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs24\cf0\cell\row}{\trowd\trleft-10\trgaph10\trpaddfl3\trpaddl10\trpaddfr3\trpaddr10\trftsWidth3\trwWidth9638\clbrdrb\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth3810\clvertalt\cellx3800\clbrdrb\brdrs\brdrw20\clbrdrr\brdrs\brdrw20\clbrdrt\brdrs\brdrw20\clbrdrl\brdrs\brdrw20\clftsWidth3\clwWidth5828\clvertalt\cellx9628\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16\b Dados Exemplos Base Oficial\cell\pard\intbl\li20\fi0\ri0\sb0\sa0\slmult0\sl276\ql\plain\f1\fs20\cf16\cell\row}\tblend1\pard\plain\plain\f1\fs24\cf0\par
+}}
+<END RTFDESCR>
+
+<RPTEXPL>
+Português-BR=Gere os Aniversariantes do Mês;English=Relatório que lista os aniversariantes do mês;Español=Relatório que lista os aniversariantes do mês;Português-PT=;Deutsch=;Italiano=;Français=;Pyccki=
+<END RPTEXPL>
+
+<REPORT DATA>
+object TppReport
+  DigitalDocument = False
+  AutoStop = False
+  DataPipeline = daApQueryDataView1.Contratados_Aniversariantes
+  PrinterSetup.BinName = 'Default'
+  PrinterSetup.DocumentName = 
+    'Portugu'#234's-BR=Aniversariantes do M'#234's Filemark,English=Aniversaria' +
+    'ntes do M'#234's Filemark,Espa'#241'ol=Aniversariantes do M'#234's Filemark,Por' +
+    'tugu'#234's-PT=Aniversariantes do M'#234's Filemark,Deutsch=Aniversariante' +
+    's do M'#234's Filemark,Italiano=Aniversariantes do M'#234's Filemark,Fran'#231 +
+    'ais=Aniversariantes do M'#234's Filemark,Pyccki=Aniversariantes do M'#234 +
+    's Filemark'
+  PrinterSetup.Duplex = dpNone
+  PrinterSetup.PaperName = 'A4'
+  PrinterSetup.PrinterName = 'Default'
+  PrinterSetup.SaveDeviceSettings = False
+  PrinterSetup.mmMarginBottom = 6350
+  PrinterSetup.mmMarginLeft = 6350
+  PrinterSetup.mmMarginRight = 6350
+  PrinterSetup.mmMarginTop = 6350
+  PrinterSetup.mmPaperHeight = 297127
+  PrinterSetup.mmPaperWidth = 210079
+  PrinterSetup.PaperSize = 9
+  Template.Format = ftASCII
+  ApdataScriptRevision = 1
+  ReportFunctions = <>
+  ID = 101994
+  UseScope = True
+  CodificationType = cdUTF
+  AllowPrintToFile = True
+  ArchiveFileName = '($MyDocuments)\ReportArchive.raf'
+  DeviceType = 'Screen'
+  DefaultFileDeviceType = 'PDF'
+  EmailSettings.ReportFormat = 'PDF'
+  LanguageID = 'Portuguese (Brazil)'
+  Language = lgPortugueseBrazil
+  OpenFile = False
+  OutlineSettings.CreateNode = False
+  OutlineSettings.CreatePageNodes = False
+  OutlineSettings.Visible = False
+  ThumbnailSettings.Enabled = True
+  ThumbnailSettings.Visible = True
+  ThumbnailSettings.DeadSpace = 30
+  ThumbnailSettings.PageHighlight.Width = 3
+  PDFSettings.EmbedFontOptions = [efUseSubset]
+  PDFSettings.EncryptSettings.AllowCopy = True
+  PDFSettings.EncryptSettings.AllowInteract = True
+  PDFSettings.EncryptSettings.AllowModify = True
+  PDFSettings.EncryptSettings.AllowPrint = True
+  PDFSettings.EncryptSettings.AllowExtract = True
+  PDFSettings.EncryptSettings.AllowAssemble = True
+  PDFSettings.EncryptSettings.AllowQualityPrint = True
+  PDFSettings.EncryptSettings.Enabled = False
+  PDFSettings.EncryptSettings.KeyLength = kl40Bit
+  PDFSettings.EncryptSettings.EncryptionType = etRC4
+  PDFSettings.FontEncoding = feUnicode
+  PDFSettings.ImageCompressionLevel = 25
+  PDFSettings.PDFAFormat = pafNone
+  PreviewFormSettings.PageBorder.mmPadding = 0
+  RTFSettings.DefaultFont.Charset = DEFAULT_CHARSET
+  RTFSettings.DefaultFont.Color = clWindowText
+  RTFSettings.DefaultFont.Height = -13
+  RTFSettings.DefaultFont.Name = 'Arial'
+  RTFSettings.DefaultFont.Style = []
+  TextFileName = '($MyDocuments)\Report.pdf'
+  TextSearchSettings.DefaultString = '<Texto a localizar>'
+  TextSearchSettings.Enabled = False
+  XLSSettings.AppName = 'Apdata/ReportBuilder'
+  XLSSettings.Author = 'Apdata/ReportBuilder'
+  XLSSettings.ExportFormattedStrings = False
+  XLSSettings.Subject = 'Report'
+  XLSSettings.Title = 'Report'
+  XLSSettings.WorksheetName = 'Report'
+  DelimitedCharacter = ';'
+  Version = '19.0'
+  mmColumnWidth = 0
+  DataPipelineName = 'Contratados_Aniversariantes'
+  object ppHeaderBand1: TppHeaderBand
+    Save = True
+    Background.Brush.Style = bsClear
+    Border.mmPadding = 0
+    mmBottomOffset = 0
+    mmHeight = 62177
+    mmPrintPosition = 0
+    object ppShape4: TppShape
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Shape4'
+      Brush.Color = 15263976
+      Pen.Color = clSilver
+      mmHeight = 7408
+      mmLeft = 265
+      mmTop = 22490
+      mmWidth = 197115
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppMultLangLabel5: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'MultLangLabel5'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Aniversariantes em'
+      Color = clBlack
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clFuchsia
+      Font.Name = 'Verdana'
+      Font.Size = 10
+      Font.Style = [fsBold]
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      Visible = False
+      TextIdioms = 
+        'Portugu'#234's-BR="Aniversariantes em",English="Birthdays on",Espa'#241'ol' +
+        '="Cumplea'#241'os en",Portugu'#234's-PT="Aniversariantes em",Deutsch="Aniv' +
+        'ersariantes em",Italiano="Aniversariantes em",Fran'#231'ais="Aniversa' +
+        'riantes em",Pyccki="Aniversariantes em"'
+      mmHeight = 4233
+      mmLeft = 45508
+      mmTop = 14023
+      mmWidth = 38142
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppShape7: TppShape
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Shape7'
+      Brush.Color = 15263976
+      Pen.Color = clSilver
+      mmHeight = 7408
+      mmLeft = 265
+      mmTop = 30692
+      mmWidth = 17992
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppDBImage1: TppDBImage
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'DBImage1'
+      AlignHorizontal = ahLeft
+      AlignVertical = avTop
+      MaintainAspectRatio = True
+      Stretch = True
+      Border.mmPadding = 0
+      DataField = 'EMP_DsbLogotipo'
+      DataPipeline = daApQueryDataView2.EmpresasLogotipo
+      GraphicType = 'JPEG'
+      ParentDataPipeline = False
+      DataPipelineName = 'EmpresasLogotipo'
+      mmHeight = 20902
+      mmLeft = 529
+      mmTop = 794
+      mmWidth = 36248
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppShape3: TppShape
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Shape3'
+      Brush.Color = 15263976
+      Pen.Color = clSilver
+      mmHeight = 7408
+      mmLeft = 17992
+      mmTop = 30692
+      mmWidth = 80963
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppShape1: TppShape
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Shape1'
+      Brush.Color = 15263976
+      Pen.Color = clSilver
+      mmHeight = 7408
+      mmLeft = 98690
+      mmTop = 30692
+      mmWidth = 17992
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppShape2: TppShape
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Shape2'
+      Brush.Color = 15263976
+      Pen.Color = clSilver
+      mmHeight = 7408
+      mmLeft = 116417
+      mmTop = 30692
+      mmWidth = 80963
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppShape9: TppShape
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Shape9'
+      Pen.Color = clSilver
+      mmHeight = 19315
+      mmLeft = 90223
+      mmTop = 2381
+      mmWidth = 107156
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppMultLangLabel1: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'MultLangLabel1'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Empresa: '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="Empresa: ",English="Company:",Espa'#241'ol="Empresa: ",' +
+        'Portugu'#234's-PT="Empresa: ",Deutsch="Empresa: ",Italiano="Empresa: ' +
+        '",Fran'#231'ais="Empresa: ",Pyccki="Empresa: "'
+      mmHeight = 2963
+      mmLeft = 90752
+      mmTop = 3969
+      mmWidth = 11049
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppMultLangLabel2: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'MultLangLabel2'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Local: '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="Local: ",English="Location:",Espa'#241'ol="Local: ",Por' +
+        'tugu'#234's-PT="Local: ",Deutsch="Local: ",Italiano="Local: ",Fran'#231'ai' +
+        's="Local: ",Pyccki="Local: "'
+      mmHeight = 2963
+      mmLeft = 90752
+      mmTop = 8467
+      mmWidth = 7197
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppMultLangLabel3: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'MultLangLabel3'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Gera'#231#227'o em: '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="Gera'#231#227'o em: ",English="Issued on:",Espa'#241'ol="Genera' +
+        'do en:",Portugu'#234's-PT="Gera'#231#227'o em: ",Deutsch="Gera'#231#227'o em: ",Itali' +
+        'ano="Gera'#231#227'o em: ",Fran'#231'ais="Gera'#231#227'o em: ",Pyccki="Gera'#231#227'o em: "'
+      mmHeight = 2963
+      mmLeft = 90752
+      mmTop = 17727
+      mmWidth = 14690
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppDBMultLangText1: TppDBMultLangText
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'DBMultLangText1'
+      HyperlinkEnabled = False
+      RTLReading = False
+      AutoSize = True
+      Border.mmPadding = 0
+      DataField = 'EMP_DssEmpresa'
+      DataPipeline = daApQueryDataView1.Contratados_Aniversariantes
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      Transparent = True
+      DataPipelineName = 'Contratados_Aniversariantes'
+      mmHeight = 2910
+      mmLeft = 106098
+      mmTop = 3969
+      mmWidth = 27517
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppDBMultLangText2: TppDBMultLangText
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'DBMultLangText2'
+      HyperlinkEnabled = False
+      RTLReading = False
+      AutoSize = True
+      Border.mmPadding = 0
+      DataField = 'LOC_D1sLocal'
+      DataPipeline = daApQueryDataView1.Contratados_Aniversariantes
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      Transparent = True
+      DataPipelineName = 'Contratados_Aniversariantes'
+      mmHeight = 2910
+      mmLeft = 106098
+      mmTop = 8467
+      mmWidth = 5292
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppSystemVariable5: TppSystemVariable
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'SystemVariable5'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      VarType = vtDateTime
+      DisplayFormat = 'dd/mm/yyyy hh:nn'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      Transparent = True
+      mmHeight = 2963
+      mmLeft = 106098
+      mmTop = 17727
+      mmWidth = 19770
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppVariable1: TppVariable
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Variable1'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      BlankWhenZero = False
+      CalcOrder = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      Transparent = True
+      Caption = 'Variable1'
+      mmHeight = 2963
+      mmLeft = 106098
+      mmTop = 13229
+      mmWidth = 10033
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppMultLangLabel4: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'MultLangLabel4'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'CNPJ: '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      Transparent = True
+      TextIdioms = 'Portugu'#234's-BR="CNPJ: ",English="FEIN:",Espa'#241'ol=" - "'
+      mmHeight = 2963
+      mmLeft = 90752
+      mmTop = 13229
+      mmWidth = 7154
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppMultLangLabel6: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'MultLangLabel6'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Matr'#237'cula'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = [fsBold]
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      TextAlignment = taCentered
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="Matr'#237'cula",English="Id",Espa'#241'ol="Id Empleado",Port' +
+        'ugu'#234's-PT="Matr'#237'cula",Deutsch="Matr'#237'cula",Italiano="Matr'#237'cula",Fr' +
+        'an'#231'ais="Matr'#237'cula",Pyccki="Matr'#237'cula"'
+      mmHeight = 2910
+      mmLeft = 3440
+      mmTop = 33073
+      mmWidth = 11642
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppMultLangLabel7: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'MultLangLabel7'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Nome'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = [fsBold]
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      TextAlignment = taCentered
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="Nome",English="Name",Espa'#241'ol="Nombre",Portugu'#234's-PT' +
+        '="Nome",Deutsch="Nome",Italiano="Nome",Fran'#231'ais="Nome",Pyccki="N' +
+        'ome"'
+      mmHeight = 2910
+      mmLeft = 55033
+      mmTop = 33073
+      mmWidth = 7144
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppMultLangLabel8: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'MultLangLabel8'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Dia Aniver.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = [fsBold]
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      TextAlignment = taCentered
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="Dia Aniver.",English="BDAY",Espa'#241'ol="D'#237'a Cumple.",' +
+        'Portugu'#234's-PT="Dia Aniver.",Deutsch="Dia Aniver.",Italiano="Dia A' +
+        'niver.",Fran'#231'ais="Dia Aniver.",Pyccki="Dia Aniver."'
+      mmHeight = 2910
+      mmLeft = 101071
+      mmTop = 33073
+      mmWidth = 13494
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppMultLangLabel9: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'MultLangLabel9'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Centro de Custo'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = [fsBold]
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      TextAlignment = taCentered
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="Centro de Custo",English="Cost Center",Espa'#241'ol="Ce' +
+        'ntro Costo",Portugu'#234's-PT="Centro de Custo",Deutsch="Centro de Cu' +
+        'sto",Italiano="Centro de Custo",Fran'#231'ais="Centro de Custo",Pycck' +
+        'i="Centro de Custo"'
+      mmHeight = 2910
+      mmLeft = 147109
+      mmTop = 33073
+      mmWidth = 19844
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppVariable2: TppVariable
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Variable2'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      BlankWhenZero = False
+      CalcOrder = 1
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Verdana'
+      Font.Size = 10
+      Font.Style = [fsBold]
+      TextAlignment = taCentered
+      Transparent = True
+      Caption = 'Variable2'
+      mmHeight = 4233
+      mmLeft = 85196
+      mmTop = 24077
+      mmWidth = 18785
+      BandType = 0
+      LayerName = Foreground
+    end
+    object ppTextFileMark1: TppTextFileMark
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'TextFileMark1'
+      RTLReading = False
+      SaveOrder = 0
+      Save = True
+      Border.mmPadding = 0
+      Caption = 'TextFileMark1'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Arial'
+      Font.Size = 10
+      Font.Style = []
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      Transparent = True
+      mmHeight = 4233
+      mmLeft = 1852
+      mmTop = 42333
+      mmWidth = 42598
+      BandType = 0
+      LayerName = Foreground
+    end
+    object TppBandFunction
+      FunctionBody.Strings = (
+        'Begin'
+        ''
+        ''
+        '  {CNPJ}'
+        
+          '  ppVariable1.AsString := Query('#39'Contratados_Aniversariantes'#39').F' +
+          'ieldByName('#39'EMP_NusCNPJPrefixo'#39').AsString + '#39'/'#39' +'
+        
+          '                          Query('#39'Contratados_Aniversariantes'#39').F' +
+          'ieldByName('#39'LOC_NusCNPJSufixo'#39').AsString ;'
+        ''
+        '  if Length(ppVariable1.AsString) < 5 then'
+        '     ppVariable1.AsString := '#39'-'#39
+        '  ;'
+        ''
+        '  //nome relatorio'
+        
+          '  ppVariable2.AsString := ppMultlangLabel5.Caption + '#39' '#39' + Query' +
+          '('#39'Contratados_Aniversariantes'#39').FieldByName('#39'MES_D1sMes'#39').AsStri' +
+          'ng;'
+        ''
+        
+          'ppTextFileMark1.Caption := '#39'Teste_'#39' + Query('#39'Contratados_Anivers' +
+          'ariantes'#39').FieldByName('#39'Con_CdiContratado'#39').AsString + '#39'.txt'#39';'
+        ''
+        'End;'
+        '')
+    end
+  end
+  object ppDetailBand1: TppDetailBand
+    Save = True
+    Background1.Brush.Style = bsClear
+    Background2.Brush.Style = bsClear
+    Border.mmPadding = 0
+    mmBottomOffset = 0
+    mmHeight = 42069
+    mmPrintPosition = 0
+    object ppShape10: TppShape
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Shape10'
+      Brush.Style = bsClear
+      Pen.Color = clSilver
+      mmHeight = 7408
+      mmLeft = 116417
+      mmTop = 0
+      mmWidth = 80963
+      BandType = 4
+      LayerName = Foreground
+    end
+    object ppShape5: TppShape
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Shape101'
+      Brush.Style = bsClear
+      Pen.Color = clSilver
+      mmHeight = 7408
+      mmLeft = 98690
+      mmTop = 0
+      mmWidth = 17992
+      BandType = 4
+      LayerName = Foreground
+    end
+    object ppShape6: TppShape
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Shape6'
+      Brush.Style = bsClear
+      Pen.Color = clSilver
+      mmHeight = 7408
+      mmLeft = 17992
+      mmTop = 0
+      mmWidth = 80963
+      BandType = 4
+      LayerName = Foreground
+    end
+    object ppDBText2: TppDBMultLangText
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'DBText2'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      DataField = 'CON_DssNomeCompleto'
+      DataPipeline = daApQueryDataView1.Contratados_Aniversariantes
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      Transparent = True
+      DataPipelineName = 'Contratados_Aniversariantes'
+      mmHeight = 2910
+      mmLeft = 19315
+      mmTop = 2381
+      mmWidth = 78581
+      BandType = 4
+      LayerName = Foreground
+    end
+    object ppDBText3: TppDBMultLangText
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'DBText3'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      DataField = 'day_Contratados_CON_DtdNascime'
+      DataPipeline = daApQueryDataView1.Contratados_Aniversariantes
+      DisplayFormat = '00'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      TextAlignment = taCentered
+      Transparent = True
+      DataPipelineName = 'Contratados_Aniversariantes'
+      mmHeight = 2910
+      mmLeft = 104246
+      mmTop = 2381
+      mmWidth = 7144
+      BandType = 4
+      LayerName = Foreground
+    end
+    object ppDBText4: TppDBMultLangText
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'DBText4'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      DataField = 'CCU_D1sCentroCusto'
+      DataPipeline = daApQueryDataView1.Contratados_Aniversariantes
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      Transparent = True
+      DataPipelineName = 'Contratados_Aniversariantes'
+      mmHeight = 2910
+      mmLeft = 117211
+      mmTop = 2381
+      mmWidth = 79111
+      BandType = 4
+      LayerName = Foreground
+    end
+    object ppShape8: TppShape
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Shape8'
+      Brush.Style = bsClear
+      Pen.Color = clSilver
+      mmHeight = 7408
+      mmLeft = 265
+      mmTop = 0
+      mmWidth = 17992
+      BandType = 4
+      LayerName = Foreground
+    end
+    object ppDBText6: TppDBMultLangText
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'DBText6'
+      HyperlinkEnabled = False
+      RTLReading = False
+      SaveOrder = 0
+      Save = True
+      Border.mmPadding = 0
+      DataField = 'CON_CdiContratado'
+      DataPipeline = daApQueryDataView1.Contratados_Aniversariantes
+      DisplayFormat = '#'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      TextAlignment = taCentered
+      Transparent = True
+      DataPipelineName = 'Contratados_Aniversariantes'
+      mmHeight = 2910
+      mmLeft = 1852
+      mmTop = 2381
+      mmWidth = 15081
+      BandType = 4
+      LayerName = Foreground
+    end
+    object TppBandFunction
+      FunctionBody.Strings = (
+        'begin'
+        '  '
+        'end;'
+        ''
+        ''
+        ''
+        '')
+    end
+  end
+  object ppFooterBand1: TppFooterBand
+    Background.Brush.Style = bsClear
+    Border.mmPadding = 0
+    mmBottomOffset = 0
+    mmHeight = 23813
+    mmPrintPosition = 0
+    object ppLabel5: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Label5'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Feliz Anivers'#225'rio !!!'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Name = 'Verdana'
+      Font.Size = 10
+      Font.Style = [fsBold]
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="Feliz Anivers'#225'rio !!!",English="Happy Birthday!!",' +
+        'Espa'#241'ol="'#161'Feliz Cumplea'#241'os!",Portugu'#234's-PT="Feliz Anivers'#225'rio !!!' +
+        '",Deutsch="Feliz Anivers'#225'rio !!!",Italiano="Feliz Anivers'#225'rio !!' +
+        '!",Fran'#231'ais="Feliz Anivers'#225'rio !!!",Pyccki="Feliz Anivers'#225'rio !!' +
+        '!"'
+      mmHeight = 4233
+      mmLeft = 79640
+      mmTop = 1852
+      mmWidth = 38100
+      BandType = 8
+      LayerName = Foreground
+    end
+    object ppMultLangLabel10: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Label102'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Gerado Por:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="Gerado Por:",English="Issued by:",Espa'#241'ol="Generad' +
+        'o Por:",Portugu'#234's-PT="Gerado Por:",Deutsch="Gerado Por:",Italian' +
+        'o="Gerado Por:",Fran'#231'ais="Gerado Por:",Pyccki="Gerado Por:"'
+      mmHeight = 2910
+      mmLeft = 0
+      mmTop = 16933
+      mmWidth = 12965
+      BandType = 8
+      LayerName = Foreground
+    end
+    object ppLabel64: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'Label28'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'ID Relatorio:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="ID Relatorio:",English="Reporte Id:",Espa'#241'ol="Repo' +
+        'rte Id:",Portugu'#234's-PT="ID Relatorio:",Deutsch="ID Relatorio:",It' +
+        'aliano="ID Relatorio:",Fran'#231'ais="ID Relatorio:",Pyccki="ID Relat' +
+        'orio:"'
+      mmHeight = 2963
+      mmLeft = 0
+      mmTop = 12700
+      mmWidth = 13843
+      BandType = 8
+      LayerName = Foreground
+    end
+    object ppSystemVariable2: TppSystemVariable
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'SystemVariable2'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      VarType = vtReportID
+      DisplayFormat = '#'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      Transparent = True
+      mmHeight = 2963
+      mmLeft = 14817
+      mmTop = 12700
+      mmWidth = 5419
+      BandType = 8
+      LayerName = Foreground
+    end
+    object ppSystemVariable3: TppSystemVariable
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'SystemVariable3'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      VarType = vtUserGenerator
+      DisplayFormat = '#'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      Transparent = True
+      mmHeight = 2910
+      mmLeft = 14817
+      mmTop = 16933
+      mmWidth = 10319
+      BandType = 8
+      LayerName = Foreground
+    end
+    object ppMultLangLabel11: TppMultLangLabel
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'MultLangLabel11'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      Caption = 'Base:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+      FormFieldSettings.FormFieldType = fftNone
+      Transparent = True
+      TextIdioms = 
+        'Portugu'#234's-BR="Base:",English="Base:",Espa'#241'ol="Base:",Portugu'#234's-P' +
+        'T="Base:",Deutsch="Base:",Italiano="Base:",Fran'#231'ais="Base:",Pycc' +
+        'ki="Base:"'
+      mmHeight = 2910
+      mmLeft = 0
+      mmTop = 20902
+      mmWidth = 6085
+      BandType = 8
+      LayerName = Foreground
+    end
+    object ppSystemVariable4: TppSystemVariable
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'SystemVariable4'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      VarType = vtInstanceType
+      DisplayFormat = '#'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      Transparent = True
+      mmHeight = 2910
+      mmLeft = 14817
+      mmTop = 20902
+      mmWidth = 10319
+      BandType = 8
+      LayerName = Foreground
+    end
+    object ppSystemVariable1: TppSystemVariable
+      ShiftWithParent = False
+      DesignLayer = ppDesignLayer1.Owner
+      UserName = 'SystemVariable1'
+      HyperlinkEnabled = False
+      RTLReading = False
+      Border.mmPadding = 0
+      VarType = vtPageNoDesc
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Name = 'Tahoma'
+      Font.Size = 7
+      Font.Style = []
+      TextAlignment = taRightJustified
+      Transparent = True
+      mmHeight = 2910
+      mmLeft = 188384
+      mmTop = 16933
+      mmWidth = 9260
+      BandType = 8
+      LayerName = Foreground
+    end
+    object TppBandFunction
+    end
+  end
+  object ppGroup1: TppGroup
+    BreakName = 'EMP_CdiEmpresa'
+    DataPipeline = daApQueryDataView1.Contratados_Aniversariantes
+    GroupFileSettings.NewFile = False
+    GroupFileSettings.EmailFile = False
+    OutlineSettings.CreateNode = False
+    NewPage = True
+    ReprintOnSubsequentPage = False
+    StartOnOddPage = False
+    UserName = 'Group1'
+    mmNewColumnThreshold = 0
+    mmNewPageThreshold = 0
+    DataPipelineName = 'Contratados_Aniversariantes'
+    NewFile = False
+    object ppGroupHeaderBand1: TppGroupHeaderBand
+      Background.Brush.Style = bsClear
+      Border.mmPadding = 0
+      mmBottomOffset = 0
+      mmHeight = 0
+      mmPrintPosition = 0
+      object TppBandFunction
+      end
+    end
+    object ppGroupFooterBand1: TppGroupFooterBand
+      Background.Brush.Style = bsClear
+      Border.mmPadding = 0
+      HideWhenOneDetail = False
+      mmBottomOffset = 0
+      mmHeight = 0
+      mmPrintPosition = 0
+      object TppBandFunction
+      end
+    end
+  end
+  object ppGroup2: TppGroup
+    BreakName = 'LOC_CdiLocal'
+    DataPipeline = daApQueryDataView1.Contratados_Aniversariantes
+    GroupFileSettings.NewFile = False
+    GroupFileSettings.EmailFile = False
+    OutlineSettings.CreateNode = False
+    NewPage = True
+    ReprintOnSubsequentPage = False
+    StartOnOddPage = False
+    UserName = 'Group2'
+    mmNewColumnThreshold = 0
+    mmNewPageThreshold = 0
+    DataPipelineName = 'Contratados_Aniversariantes'
+    NewFile = False
+    object ppGroupHeaderBand2: TppGroupHeaderBand
+      Background.Brush.Style = bsClear
+      Border.mmPadding = 0
+      mmBottomOffset = 0
+      mmHeight = 0
+      mmPrintPosition = 0
+      object TppBandFunction
+      end
+    end
+    object ppGroupFooterBand2: TppGroupFooterBand
+      Background.Brush.Style = bsClear
+      Border.mmPadding = 0
+      HideWhenOneDetail = False
+      mmBottomOffset = 0
+      mmHeight = 0
+      mmPrintPosition = 0
+      object TppBandFunction
+      end
+    end
+  end
+  object daDataModule1: TdaDataModule
+    object daApQueryDataView1: TdaApQueryDataView
+      UserName = 'Query_Contratados_Aniversariantes'
+      Height = 160
+      Left = 10
+      NameColumnWidth = 105
+      SizeColumnWidth = 35
+      SortMode = 0
+      Top = 10
+      TypeColumnWidth = 52
+      Width = 200
+      AutoSearchTabOrder = 0
+      PipeLineName = 'Contratados_Aniversariantes'
+      IdQuery = 10000007
+      object Contratados_Aniversariantes: TppApDataPipeLine
+        IdQuery = 10000007
+        object ppField0: TppField
+          FieldAlias = 'Id Empresa'
+          FieldName = 'EMP_CdiEmpresa'
+          FieldLength = 10
+          DataType = dtInteger
+          DisplayWidth = 10
+          Position = 0
+        end
+        object ppField1: TppField
+          FieldAlias = 'Raz'#227'o Social da Empresa'
+          FieldName = 'EMP_DssEmpresa'
+          FieldLength = 100
+          DisplayWidth = 10
+          Position = 1
+        end
+        object ppField2: TppField
+          FieldAlias = 'Id Local'
+          FieldName = 'LOC_CdiLocal'
+          FieldLength = 10
+          DataType = dtInteger
+          DisplayWidth = 10
+          Position = 2
+        end
+        object ppField3: TppField
+          FieldAlias = 'Local'
+          FieldName = 'LOC_D1sLocal'
+          FieldLength = 32
+          DisplayWidth = 10
+          Position = 3
+        end
+        object ppField4: TppField
+          FieldAlias = 'Centro de Custo'
+          FieldName = 'CCU_D1sCentroCusto'
+          FieldLength = 100
+          DisplayWidth = 10
+          Position = 4
+        end
+        object ppField5: TppField
+          FieldAlias = 'Id Contratado'
+          FieldName = 'CON_CdiContratado'
+          FieldLength = 10
+          DataType = dtInteger
+          DisplayWidth = 10
+          Position = 5
+        end
+        object ppField6: TppField
+          FieldAlias = 'Nome Completo'
+          FieldName = 'CON_DssNomeCompleto'
+          FieldLength = 70
+          DisplayWidth = 10
+          Position = 6
+        end
+        object ppField7: TppField
+          FieldAlias = 'Data do Nascimento'
+          FieldName = 'CON_DtdNascimentoData'
+          FieldLength = 10
+          DataType = dtDate
+          DisplayWidth = 10
+          Position = 7
+        end
+        object ppField8: TppField
+          FieldAlias = 'Prefixo do CNPJ'
+          FieldName = 'EMP_NusCNPJPrefixo'
+          FieldLength = 10
+          DisplayWidth = 10
+          Position = 8
+        end
+        object ppField9: TppField
+          FieldAlias = 'Sufixo do CNPJ'
+          FieldName = 'LOC_NusCNPJSufixo'
+          FieldLength = 7
+          DisplayWidth = 10
+          Position = 9
+        end
+        object ppField10: TppField
+          FieldAlias = 'day_Contratados_CON_DtdNascime'
+          FieldName = 'day_Contratados_CON_DtdNascime'
+          FieldLength = 0
+          DataType = dtInteger
+          DisplayWidth = 10
+          Position = 10
+        end
+        object ppField11: TppField
+          FieldAlias = 'Month_Contratados_CON_DtdNasci'
+          FieldName = 'Month_Contratados_CON_DtdNasci'
+          FieldLength = 0
+          DataType = dtInteger
+          DisplayWidth = 10
+          Position = 11
+        end
+        object ppField12: TppField
+          FieldAlias = 'M'#234's'
+          FieldName = 'MES_D1sMes'
+          FieldLength = 16
+          DisplayWidth = 10
+          Position = 12
+        end
+      end
+      object daSQL1: TdaSQL
+        Tag = 10000007
+        DatabaseName = 'ApServer'
+        DatabaseType = dtMSSQLServer
+        DataPipelineName = 'Contratados_Aniversariantes'
+        EditSQLAsText = True
+        LinkColor = clMaroon
+        LinkType = ltParameterizedSQL
+        MaxSQLFieldAliasLength = 25
+        SQLText.Strings = (
+          'SELECT Empresas.EMP_CdiEmpresa, '
+          '       Empresas.EMP_DssEmpresa, '
+          '       Locais.LOC_CdiLocal, Locais.LOC_D1sLocal, '
+          '       CentrosCustos.CCU_D1sCentroCusto, '
+          '       Contratados.CON_CdiContratado, '
+          '       Contratados.CON_DssNomeCompleto, '
+          '       Contratados.CON_DtdNascimentoData, '
+          '       Empresas.EMP_NusCNPJPrefixo, '
+          '       Locais.LOC_NusCNPJSufixo, '
+          
+            '       day (Contratados.CON_DtdNascimentoData) AS "day_Contratad' +
+            'os_CON_DtdNascime", '
+          
+            '       Month (Contratados.CON_DtdNascimentoData) AS "Month_Contr' +
+            'atados_CON_DtdNasci",'
+          '       Meses.MES_D1sMes'
+          'FROM Contratados Contratados'
+          '      INNER JOIN CentrosCustos CentrosCustos ON ( '
+          
+            '     (Contratados.CON_CdiCentroCusto = CentrosCustos.CCU_CdiCent' +
+            'roCusto)'
+          '      )  INNER JOIN Folhas Folhas ON ( '
+          '     (Contratados.CON_CdiFolha = Folhas.FOL_CdiFolha)'
+          '      )  INNER JOIN Locais Locais ON ( '
+          '     (Folhas.FOL_CdiLocal = Locais.LOC_CdiLocal)'
+          '      )  INNER JOIN Empresas Empresas ON ( '
+          '     (Locais.LOC_CdiEmpresa = Empresas.EMP_CdiEmpresa)'
+          '      )'
+          '      INNER JOIN Meses Meses ON ('
+          
+            '      (Meses.MES_CdiMes = Month(Contratados.CON_DtdNascimentoDat' +
+            'a))'
+          '      )'
+          'WHERE '
+          '      ( Month(Contratados.CON_DtdNascimentoData)  IN (:Mes) )'
+          '       AND ( Contratados.CON_CdiContratado IN (:Contratados) )'
+          
+            '       AND ( CentrosCustos.CCU_CdiCentroCusto IN (:CentroCusto) ' +
+            ')'
+          '       AND ( Contratados.CON_CdiSituacao NOT IN (0,2,3,99) )'
+          '       AND ( 2 = :Geral )'
+          '/*AutoEmployeeFilter=Contratados*/'
+          ''
+          'UNION ALL'
+          ''
+          'SELECT Empresas.EMP_CdiEmpresa, '
+          '       Empresas.EMP_DssEmpresa, '
+          '       Locais.LOC_CdiLocal, Locais.LOC_D1sLocal, '
+          '       CentrosCustos.CCU_D1sCentroCusto, '
+          '       Contratados.CON_CdiContratado, '
+          '       Contratados.CON_DssNomeCompleto, '
+          '       Contratados.CON_DtdNascimentoData, '
+          '       Empresas.EMP_NusCNPJPrefixo, '
+          '       Locais.LOC_NusCNPJSufixo, '
+          
+            '       day (Contratados.CON_DtdNascimentoData) AS "day_Contratad' +
+            'os_CON_DtdNascime", '
+          
+            '       Month (Contratados.CON_DtdNascimentoData) AS "Month_Contr' +
+            'atados_CON_DtdNasci",'
+          '       Meses.MES_D1sMes'
+          'FROM Contratados Contratados'
+          '      INNER JOIN CentrosCustos CentrosCustos ON ( '
+          
+            '     (Contratados.CON_CdiCentroCusto = CentrosCustos.CCU_CdiCent' +
+            'roCusto)'
+          '      )  INNER JOIN Folhas Folhas ON ( '
+          '     (Contratados.CON_CdiFolha = Folhas.FOL_CdiFolha)'
+          '      )  INNER JOIN Locais Locais ON ( '
+          '     (Folhas.FOL_CdiLocal = Locais.LOC_CdiLocal)'
+          '      )  INNER JOIN Empresas Empresas ON ( '
+          '     (Locais.LOC_CdiEmpresa = Empresas.EMP_CdiEmpresa)'
+          '      )'
+          '      INNER JOIN Meses Meses ON ('
+          
+            '      (Meses.MES_CdiMes = Month(Contratados.CON_DtdNascimentoDat' +
+            'a))'
+          '      )'
+          'WHERE '
+          '      ( Month(Contratados.CON_DtdNascimentoData)  IN (:Mes) )'
+          '       AND ( Contratados.CON_CdiContratado IN (:Contratados) )'
+          
+            '       AND ( CentrosCustos.CCU_CdiCentroCusto IN (:CentroCusto) ' +
+            ')'
+          '       AND ( Contratados.CON_CdiSituacao NOT IN (0,2,3,99) )'
+          '       AND ( 1 = :Geral )'
+          '/*AutoEmployeeFilter=NONE*/'
+          ''
+          'ORDER BY 1,3, 11, 7')
+        SQLType = sqSQL2
+        Literal = 'Contratados Aniversariantes'
+        Params = <
+          item
+            DataType = ftInteger
+            Name = 'Mes'
+            ParamType = ptUnknown
+            Alias = 'M'#234's'
+            AliasLanguage = 
+              'Portugu'#234's-BR=M'#234's,English=Month,Espa'#241'ol=Mes,Portugu'#234's-PT=M'#234's,Deut' +
+              'sch=M'#234's,Italiano=M'#234's,Fran'#231'ais=M'#234's,Pyccki=M'#234's'
+            IsLookupParam = True
+            LookupObj = 'MesesGrid'
+            IsListParam = True
+            IsOptParam = True
+          end
+          item
+            DataType = ftInteger
+            Name = 'Contratados'
+            ParamType = ptUnknown
+            Alias = 'Contratados'
+            AliasLanguage = 
+              'Portugu'#234's-BR=Contratados,English=Employees,Espa'#241'ol=Empleados,Por' +
+              'tugu'#234's-PT=Contratados,Deutsch=Contratados,Italiano=Contratados,F' +
+              'ran'#231'ais=Contratados,Pyccki=Contratados'
+            IsLookupParam = True
+            LookupObj = 'ContratadosGrid'
+            IsListParam = True
+            IsOptParam = True
+          end
+          item
+            DataType = ftInteger
+            Name = 'CentroCusto'
+            ParamType = ptUnknown
+            Alias = 'Centro de Custo'
+            AliasLanguage = 
+              '"Portugu'#234's-BR=Centro de Custo","English=Cost Center","Espa'#241'ol=Ce' +
+              'ntro Costo","Portugu'#234's-PT=Centro de Custo","Deutsch=Centro de Cu' +
+              'sto","Italiano=Centro de Custo","Fran'#231'ais=Centro de Custo","Pycc' +
+              'ki=Centro de Custo"'
+            IsLookupParam = True
+            LookupObj = 'CentrosCustosTree'
+            IsListParam = True
+            IsOptParam = True
+          end
+          item
+            DataType = ftInteger
+            Name = 'Geral'
+            ParamType = ptUnknown
+            Value = '2'
+            Alias = 'Exibir todos os colaboradores?'
+            AliasLanguage = 
+              '"Portugu'#234's-BR=Exibir todos os colaboradores?","English=Show all ' +
+              'employees?","Espa'#241'ol='#191'Presentar todos los empleados?","Portugu'#234's' +
+              '-PT=Exibir todos os colaboradores?","Deutsch=Exibir todos os col' +
+              'aboradores?","Italiano=Exibir todos os colaboradores?","Fran'#231'ais' +
+              '=Exibir todos os colaboradores?","Pyccki=Exibir todos os colabor' +
+              'adores?"'
+            ValueList.Strings = (
+              'Sim=1'
+              'N'#227'o=2')
+            UseValueList = True
+          end>
+        IsPublic = True
+        NoTranslation = False
+        NomeReferencia = 'Contratados Aniversariantes'
+        object daField1: TdaField
+          Alias = 'Id Empresa'
+          DataType = dtInteger
+          DisplayWidth = 10
+          FieldAlias = 'Id Empresa'
+          FieldLength = 10
+          FieldName = 'EMP_CdiEmpresa'
+          SQLFieldName = 'EMP_CdiEmpresa'
+          TableAlias = 'Empresas'
+          TableName = 'Empresas'
+        end
+        object daField2: TdaField
+          Alias = 'Raz'#227'o Social da Empresa'
+          DisplayWidth = 10
+          FieldAlias = 'Raz'#227'o Social da Empresa'
+          FieldLength = 100
+          FieldName = 'EMP_DssEmpresa'
+          SQLFieldName = 'EMP_DssEmpresa'
+          TableAlias = 'Empresas'
+          TableName = 'Empresas'
+        end
+        object daField3: TdaField
+          Alias = 'Id Local'
+          DataType = dtInteger
+          DisplayWidth = 10
+          FieldAlias = 'Id Local'
+          FieldLength = 10
+          FieldName = 'LOC_CdiLocal'
+          SQLFieldName = 'LOC_CdiLocal'
+          TableAlias = 'Locais'
+          TableName = 'Locais'
+        end
+        object daField4: TdaField
+          Alias = 'Local'
+          DisplayWidth = 10
+          FieldAlias = 'Local'
+          FieldLength = 32
+          FieldName = 'LOC_D1sLocal'
+          SQLFieldName = 'LOC_D1sLocal'
+          TableAlias = 'Locais'
+          TableName = 'Locais'
+        end
+        object daField5: TdaField
+          Alias = 'Centro de Custo'
+          DisplayWidth = 10
+          FieldAlias = 'Centro de Custo'
+          FieldLength = 100
+          FieldName = 'CCU_D1sCentroCusto'
+          SQLFieldName = 'CCU_D1sCentroCusto'
+          TableAlias = 'CentrosCustos'
+          TableName = 'CentrosCustos'
+        end
+        object daField6: TdaField
+          Alias = 'Id Contratado'
+          DataType = dtInteger
+          DisplayWidth = 10
+          FieldAlias = 'Id Contratado'
+          FieldLength = 10
+          FieldName = 'CON_CdiContratado'
+          SQLFieldName = 'CON_CdiContratado'
+          TableAlias = 'Contratados'
+          TableName = 'Contratados'
+        end
+        object daField7: TdaField
+          Alias = 'Nome Completo'
+          DisplayWidth = 10
+          FieldAlias = 'Nome Completo'
+          FieldLength = 70
+          FieldName = 'CON_DssNomeCompleto'
+          SQLFieldName = 'CON_DssNomeCompleto'
+          TableAlias = 'Contratados'
+          TableName = 'Contratados'
+        end
+        object daField8: TdaField
+          Alias = 'Data do Nascimento'
+          DataType = dtDate
+          DisplayWidth = 10
+          FieldAlias = 'Data do Nascimento'
+          FieldLength = 10
+          FieldName = 'CON_DtdNascimentoData'
+          SQLFieldName = 'CON_DtdNascimentoData'
+          TableAlias = 'Contratados'
+          TableName = 'Contratados'
+        end
+        object daField9: TdaField
+          Alias = 'Prefixo do CNPJ'
+          DisplayWidth = 10
+          FieldAlias = 'Prefixo do CNPJ'
+          FieldLength = 10
+          FieldName = 'EMP_NusCNPJPrefixo'
+          SQLFieldName = 'EMP_NusCNPJPrefixo'
+          TableAlias = 'Empresas'
+          TableName = 'Empresas'
+        end
+        object daField10: TdaField
+          Alias = 'Sufixo do CNPJ'
+          DisplayWidth = 10
+          FieldAlias = 'Sufixo do CNPJ'
+          FieldLength = 7
+          FieldName = 'LOC_NusCNPJSufixo'
+          SQLFieldName = 'LOC_NusCNPJSufixo'
+          TableAlias = 'Locais'
+          TableName = 'Locais'
+        end
+        object daField11: TdaField
+          Alias = 'day_Contratados_CON_DtdNascime'
+          DataType = dtInteger
+          DisplayWidth = 10
+          FieldAlias = 'day_Contratados_CON_DtdNascime'
+          FieldLength = 0
+          FieldName = 'day_Contratados_CON_DtdNascime'
+          SQLFieldName = 'day_Contratados_CON_DtdNascime'
+        end
+        object daField12: TdaField
+          Alias = 'Month_Contratados_CON_DtdNasci'
+          DataType = dtInteger
+          DisplayWidth = 10
+          FieldAlias = 'Month_Contratados_CON_DtdNasci'
+          FieldLength = 0
+          FieldName = 'Month_Contratados_CON_DtdNasci'
+          SQLFieldName = 'Month_Contratados_CON_DtdNasci'
+        end
+        object daField13: TdaField
+          Alias = 'M'#234's'
+          DisplayWidth = 10
+          FieldAlias = 'M'#234's'
+          FieldLength = 16
+          FieldName = 'MES_D1sMes'
+          SQLFieldName = 'MES_D1sMes'
+          TableAlias = 'Meses'
+          TableName = 'Meses'
+        end
+      end
+    end
+    object daApQueryDataView2: TdaApQueryDataView
+      UserName = 'Query_EmpresasLogotipo'
+      Height = 0
+      Left = 0
+      NameColumnWidth = 105
+      SizeColumnWidth = 35
+      SortMode = 0
+      Top = 0
+      TypeColumnWidth = 52
+      Width = 0
+      AutoSearchTabOrder = 0
+      MasterDataViewUserName = 'Query_Contratados_Aniversariantes'
+      PipeLineName = 'EmpresasLogotipo'
+      IdQuery = 10000006
+      object EmpresasLogotipo: TppApDataPipeLine
+        IdQuery = 10000006
+        MasterDataPipelineName = 'Contratados_Aniversariantes'
+        object ppField0: TppField
+          FieldAlias = 'Id Empresa'
+          FieldName = 'EMP_CdiEmpresa'
+          FieldLength = 10
+          DataType = dtInteger
+          DisplayWidth = 8
+          Position = 0
+          TableName = 'Empresas'
+        end
+        object ppField1: TppField
+          FieldAlias = 'Logotipo'
+          FieldName = 'EMP_DsbLogotipo'
+          FieldLength = 5000
+          Linkable = False
+          DataType = dtBLOB
+          DisplayWidth = 3501
+          Position = 1
+          TableName = 'Empresas'
+        end
+        object ppField2: TppField
+          FieldAlias = 'Raz'#227'o Social da Empresa'
+          FieldName = 'EMP_DssEmpresa'
+          FieldLength = 100
+          DisplayWidth = 71
+          Position = 2
+          TableName = 'Empresas'
+        end
+        object TppMasterFieldLink
+          MasterFieldName = 'EMP_CdiEmpresa'
+          GuidCollationType = gcString
+          DetailFieldName = 'EMP_CdiEmpresa'
+          DetailSortOrder = soAscending
+          IgnoreTrailingSpaces = False
+        end
+      end
+      object daSQL2: TdaSQL
+        Tag = 10000006
+        DatabaseName = 'ApServer'
+        DatabaseType = dtMSSQLServer
+        DataPipelineName = 'EmpresasLogotipo'
+        LinkColor = clNavy
+        LinkType = ltParameterizedSQL
+        MaxSQLFieldAliasLength = 30
+        SkipWhenNoRecords = False
+        SQLText.Strings = (
+          'SELECT Empresas.EMP_CdiEmpresa, '
+          '       Empresas.EMP_DsbLogotipo, '
+          '       Empresas.EMP_DssEmpresa'
+          'FROM Empresas Empresas'
+          'WHERE ( Empresas.EMP_CdiEmpresa <> 0 )'
+          'ORDER BY Empresas.EMP_CdiEmpresa')
+        SQLType = sqSQL2
+        Literal = 'Logotipo das Empresas'
+        Params = <>
+        NoTranslation = False
+        NomeReferencia = 'Logotipo das Empresas'
+        IncludeInactiveLeaves = True
+        object daCriteria1: TdaCriteria
+          ChildType = 7
+          Level = 0
+          Operator = dacoNotEqual
+          Value = '0'
+          Params = <>
+          IsSpecial = False
+          object TdaField
+            Alias = 'Id Empresa'
+            DataType = dtInteger
+            DisplayWidth = 10
+            FieldAlias = 'Id Empresa'
+            FieldLength = 10
+            FieldName = 'EMP_CdiEmpresa'
+            SQLFieldName = 'EMP_CdiEmpresa'
+            TableAlias = 'Empresas'
+            TableName = 'Empresas'
+            TableSQLAlias = 'Empresas'
+          end
+          object TdaNumericValue
+          end
+        end
+        object daField1: TdaField
+          Alias = 'Id Empresa'
+          DataType = dtInteger
+          DisplayWidth = 8
+          FieldAlias = 'Id Empresa'
+          FieldLength = 10
+          FieldName = 'EMP_CdiEmpresa'
+          SQLFieldName = 'EMP_CdiEmpresa'
+          TableAlias = 'Empresas'
+          TableName = 'Empresas'
+          TableSQLAlias = 'Empresas'
+        end
+        object daField2: TdaField
+          Alias = 'Logotipo'
+          DataType = dtBLOB
+          DisplayWidth = 3501
+          FieldAlias = 'Logotipo'
+          FieldLength = 5000
+          FieldName = 'EMP_DsbLogotipo'
+          Linkable = False
+          SQLFieldName = 'EMP_DsbLogotipo'
+          TableAlias = 'Empresas'
+          TableName = 'Empresas'
+          TableSQLAlias = 'Empresas'
+        end
+        object daField3: TdaField
+          Alias = 'Raz'#227'o Social da Empresa'
+          DisplayWidth = 71
+          FieldAlias = 'Raz'#227'o Social da Empresa'
+          FieldLength = 100
+          FieldName = 'EMP_DssEmpresa'
+          SQLFieldName = 'EMP_DssEmpresa'
+          TableAlias = 'Empresas'
+          TableName = 'Empresas'
+          TableSQLAlias = 'Empresas'
+        end
+        object daField4: TdaField
+          ChildType = 2
+          Alias = 'Id Empresa'
+          DataType = dtInteger
+          DisplayWidth = 10
+          FieldAlias = 'Id Empresa'
+          FieldLength = 10
+          FieldName = 'EMP_CdiEmpresa'
+          SQLFieldName = 'EMP_CdiEmpresa'
+          TableAlias = 'Empresas'
+          TableName = 'Empresas'
+          TableSQLAlias = 'Empresas'
+        end
+        object daTable1: TdaTable
+          ChildType = 5
+          Alias = 'Empresas'
+          JoinType = dajtNone
+          SQLAlias = 'Empresas'
+          TableAlias = 'Empresas'
+          TableName = 'Empresas'
+        end
+        object TdaSQLLink
+          ChildType = 9
+          object daField5: TdaField
+            ChildType = 10
+            Alias = 'Id Empresa'
+            DataType = dtInteger
+            DisplayWidth = 10
+            FieldAlias = 'Id Empresa'
+            FieldLength = 10
+            FieldName = 'EMP_CdiEmpresa'
+            SQLFieldName = 'EMP_CdiEmpresa'
+          end
+          object daField6: TdaField
+            ChildType = 11
+            Alias = 'Id Empresa'
+            DataType = dtInteger
+            DisplayWidth = 10
+            FieldAlias = 'Id Empresa'
+            FieldLength = 10
+            FieldName = 'EMP_CdiEmpresa'
+            SQLFieldName = 'EMP_CdiEmpresa'
+            TableAlias = 'Empresas'
+            TableName = 'Empresas'
+            TableSQLAlias = 'Empresas'
+          end
+        end
+      end
+    end
+  end
+  object ppDesignLayers1: TppDesignLayers
+    object ppDesignLayer1: TppDesignLayer
+      UserName = 'Foreground'
+      LayerType = ltBanded
+      Index = 0
+    end
+  end
+  object ppParameterList1: TppParameterList
+  end
+end
+
+<END REPORT DATA>
+
+<QUERIES>
+<QUERY:10000006 - EmpresasLogotipo;Logotipo das Empresas;Español=;EmpresasLogotipo;EmpresasLogotipo;EmpresasLogotipo;EmpresasLogotipo;EmpresasLogotipo;EmpresasLogotipo>
+>DssNomeReferencia0=Logotipo das Empresas
+>DssNomeReferencia1=Español=
+>DssNomeReferencia2=EmpresasLogotipo
+>DssNomeReferencia3=EmpresasLogotipo
+>DssNomeReferencia4=EmpresasLogotipo
+>DssNomeReferencia5=EmpresasLogotipo
+>DssNomeReferencia6=EmpresasLogotipo
+>DssNomeReferencia7=EmpresasLogotipo
+>DssExplanation:Português-BR=;English=;Español=;Português-PT=;Deutsch=;Italiano=;Français=;Pyccki=
+object daSQL2: TdaSQL
+  Tag = 91
+  DatabaseType = dtMSSQLServer
+  DataPipelineName = 'EmpresasLogotipo'
+  LinkColor = clNavy
+  LinkType = ltMagicSQL
+  MaxSQLFieldAliasLength = 30
+  SkipWhenNoRecords = False
+  SQLText.Strings = (
+    'SELECT Empresas.EMP_CdiEmpresa, '
+    '       Empresas.EMP_DsbLogotipo, '
+    '       Empresas.EMP_DssEmpresa'
+    'FROM Empresas Empresas'
+    'WHERE ( Empresas.EMP_CdiEmpresa <> 0 )'
+    'ORDER BY Empresas.EMP_CdiEmpresa')
+  SQLType = sqSQL2
+  Params = <>
+  NoTranslation = False
+  NomeReferencia = 'Logotipo das Empresas'
+  IncludeInactiveLeaves = True
+  object daCriteria1: TdaCriteria
+    ChildType = 7
+    Level = 0
+    Operator = dacoNotEqual
+    Value = '0'
+    Params = <>
+    IsSpecial = False
+    object TdaField
+      Alias = 'Id Empresa'
+      DataType = dtInteger
+      DisplayWidth = 10
+      FieldAlias = 'Id Empresa'
+      FieldLength = 10
+      FieldName = 'EMP_CdiEmpresa'
+      SQLFieldName = 'EMP_CdiEmpresa'
+      TableAlias = 'Empresas'
+      TableName = 'Empresas'
+      TableSQLAlias = 'Empresas'
+    end
+    object TdaNumericValue
+    end
+  end
+  object daField1: TdaField
+    Alias = 'Id Empresa'
+    DataType = dtInteger
+    DisplayWidth = 8
+    FieldAlias = 'Id Empresa'
+    FieldLength = 10
+    FieldName = 'EMP_CdiEmpresa'
+    SQLFieldName = 'EMP_CdiEmpresa'
+    TableAlias = 'Empresas'
+    TableName = 'Empresas'
+    TableSQLAlias = 'Empresas'
+  end
+  object daField2: TdaField
+    Alias = 'Logotipo'
+    DataType = dtBLOB
+    DisplayWidth = 3501
+    FieldAlias = 'Logotipo'
+    FieldLength = 5000
+    FieldName = 'EMP_DsbLogotipo'
+    Linkable = False
+    SQLFieldName = 'EMP_DsbLogotipo'
+    TableAlias = 'Empresas'
+    TableName = 'Empresas'
+    TableSQLAlias = 'Empresas'
+  end
+  object daField3: TdaField
+    Alias = 'Raz'#227'o Social da Empresa'
+    DisplayWidth = 71
+    FieldAlias = 'Raz'#227'o Social da Empresa'
+    FieldLength = 100
+    FieldName = 'EMP_DssEmpresa'
+    SQLFieldName = 'EMP_DssEmpresa'
+    TableAlias = 'Empresas'
+    TableName = 'Empresas'
+    TableSQLAlias = 'Empresas'
+  end
+  object daField4: TdaField
+    ChildType = 2
+    Alias = 'Id Empresa'
+    DataType = dtInteger
+    DisplayWidth = 10
+    FieldAlias = 'Id Empresa'
+    FieldLength = 10
+    FieldName = 'EMP_CdiEmpresa'
+    SQLFieldName = 'EMP_CdiEmpresa'
+    TableAlias = 'Empresas'
+    TableName = 'Empresas'
+    TableSQLAlias = 'Empresas'
+  end
+  object daTable1: TdaTable
+    ChildType = 5
+    Alias = 'Empresas'
+    JoinType = dajtNone
+    SQLAlias = 'Empresas'
+    TableAlias = 'Empresas'
+    TableName = 'Empresas'
+  end
+  object TdaSQLLink
+    ChildType = 9
+    object daField5: TdaField
+      ChildType = 10
+      Alias = 'Id Empresa'
+      DataType = dtInteger
+      DisplayWidth = 10
+      FieldAlias = 'Id Empresa'
+      FieldLength = 10
+      FieldName = 'EMP_CdiEmpresa'
+      SQLFieldName = 'EMP_CdiEmpresa'
+    end
+    object daField6: TdaField
+      ChildType = 11
+      Alias = 'Id Empresa'
+      DataType = dtInteger
+      DisplayWidth = 10
+      FieldAlias = 'Id Empresa'
+      FieldLength = 10
+      FieldName = 'EMP_CdiEmpresa'
+      SQLFieldName = 'EMP_CdiEmpresa'
+      TableAlias = 'Empresas'
+      TableName = 'Empresas'
+      TableSQLAlias = 'Empresas'
+    end
+  end
+end
+
+<END QUERY:10000006 - EmpresasLogotipo;Logotipo das Empresas;Español=;EmpresasLogotipo;EmpresasLogotipo;EmpresasLogotipo;EmpresasLogotipo;EmpresasLogotipo;EmpresasLogotipo>
+
+<QUERY:10000007 - Contratados_Aniversariantes;Contratados Aniversariantes;Español=;Contratados_Aniversariantes;Contratados_Aniversariantes;Contratados_Aniversariantes;Contratados_Aniversariantes;Contratados_Aniversariantes;Contratados_Aniversariantes>
+>DssNomeReferencia0=Contratados Aniversariantes
+>DssNomeReferencia1=Español=
+>DssNomeReferencia2=Contratados_Aniversariantes
+>DssNomeReferencia3=Contratados_Aniversariantes
+>DssNomeReferencia4=Contratados_Aniversariantes
+>DssNomeReferencia5=Contratados_Aniversariantes
+>DssNomeReferencia6=Contratados_Aniversariantes
+>DssNomeReferencia7=Contratados_Aniversariantes
+>DssExplanation:Português-BR=;English=;Español=;Português-PT=;Deutsch=;Italiano=;Français=;Pyccki=
+object daSQL1: TdaSQL
+  Tag = 4609
+  DatabaseType = dtMSSQLServer
+  DataPipelineName = 'Contratados_Aniversariantes'
+  EditSQLAsText = True
+  LinkColor = clMaroon
+  LinkType = ltParameterizedSQL
+  MaxSQLFieldAliasLength = 25
+  SQLText.Strings = (
+    'SELECT Empresas.EMP_CdiEmpresa, '
+    '       Empresas.EMP_DssEmpresa, '
+    '       Locais.LOC_CdiLocal, Locais.LOC_D1sLocal, '
+    '       CentrosCustos.CCU_D1sCentroCusto, '
+    '       Contratados.CON_CdiContratado, '
+    '       Contratados.CON_DssNomeCompleto, '
+    '       Contratados.CON_DtdNascimentoData, '
+    '       Empresas.EMP_NusCNPJPrefixo, '
+    '       Locais.LOC_NusCNPJSufixo, '
+    
+      '       day (Contratados.CON_DtdNascimentoData) AS "day_Contratad' +
+      'os_CON_DtdNascime", '
+    
+      '       Month (Contratados.CON_DtdNascimentoData) AS "Month_Contr' +
+      'atados_CON_DtdNasci",'
+    '       Meses.MES_D1sMes'
+    'FROM Contratados Contratados'
+    '      INNER JOIN CentrosCustos CentrosCustos ON ( '
+    
+      '     (Contratados.CON_CdiCentroCusto = CentrosCustos.CCU_CdiCent' +
+      'roCusto)'
+    '      )  INNER JOIN Folhas Folhas ON ( '
+    '     (Contratados.CON_CdiFolha = Folhas.FOL_CdiFolha)'
+    '      )  INNER JOIN Locais Locais ON ( '
+    '     (Folhas.FOL_CdiLocal = Locais.LOC_CdiLocal)'
+    '      )  INNER JOIN Empresas Empresas ON ( '
+    '     (Locais.LOC_CdiEmpresa = Empresas.EMP_CdiEmpresa)'
+    '      )'
+    '      INNER JOIN Meses Meses ON ('
+    
+      '      (Meses.MES_CdiMes = Month(Contratados.CON_DtdNascimentoDat' +
+      'a))'
+    '      )'
+    'WHERE '
+    '      ( Month(Contratados.CON_DtdNascimentoData)  IN (:Mes) )'
+    '       AND ( Contratados.CON_CdiContratado IN (:Contratados) )'
+    
+      '       AND ( CentrosCustos.CCU_CdiCentroCusto IN (:CentroCusto) ' +
+      ')'
+    '       AND ( Contratados.CON_CdiSituacao NOT IN (0,2,3,99) )'
+    '       AND ( 2 = :Geral )'
+    '/*AutoEmployeeFilter=Contratados*/'
+    ''
+    'UNION ALL'
+    ''
+    'SELECT Empresas.EMP_CdiEmpresa, '
+    '       Empresas.EMP_DssEmpresa, '
+    '       Locais.LOC_CdiLocal, Locais.LOC_D1sLocal, '
+    '       CentrosCustos.CCU_D1sCentroCusto, '
+    '       Contratados.CON_CdiContratado, '
+    '       Contratados.CON_DssNomeCompleto, '
+    '       Contratados.CON_DtdNascimentoData, '
+    '       Empresas.EMP_NusCNPJPrefixo, '
+    '       Locais.LOC_NusCNPJSufixo, '
+    
+      '       day (Contratados.CON_DtdNascimentoData) AS "day_Contratad' +
+      'os_CON_DtdNascime", '
+    
+      '       Month (Contratados.CON_DtdNascimentoData) AS "Month_Contr' +
+      'atados_CON_DtdNasci",'
+    '       Meses.MES_D1sMes'
+    'FROM Contratados Contratados'
+    '      INNER JOIN CentrosCustos CentrosCustos ON ( '
+    
+      '     (Contratados.CON_CdiCentroCusto = CentrosCustos.CCU_CdiCent' +
+      'roCusto)'
+    '      )  INNER JOIN Folhas Folhas ON ( '
+    '     (Contratados.CON_CdiFolha = Folhas.FOL_CdiFolha)'
+    '      )  INNER JOIN Locais Locais ON ( '
+    '     (Folhas.FOL_CdiLocal = Locais.LOC_CdiLocal)'
+    '      )  INNER JOIN Empresas Empresas ON ( '
+    '     (Locais.LOC_CdiEmpresa = Empresas.EMP_CdiEmpresa)'
+    '      )'
+    '      INNER JOIN Meses Meses ON ('
+    
+      '      (Meses.MES_CdiMes = Month(Contratados.CON_DtdNascimentoDat' +
+      'a))'
+    '      )'
+    'WHERE '
+    '      ( Month(Contratados.CON_DtdNascimentoData)  IN (:Mes) )'
+    '       AND ( Contratados.CON_CdiContratado IN (:Contratados) )'
+    
+      '       AND ( CentrosCustos.CCU_CdiCentroCusto IN (:CentroCusto) ' +
+      ')'
+    '       AND ( Contratados.CON_CdiSituacao NOT IN (0,2,3,99) )'
+    '       AND ( 1 = :Geral )'
+    '/*AutoEmployeeFilter=NONE*/'
+    ''
+    'ORDER BY 1,3, 11, 7')
+  SQLType = sqSQL2
+  Params = <
+    item
+      DataType = ftInteger
+      Name = 'Mes'
+      ParamType = ptUnknown
+      Alias = 'M'#234's'
+      AliasLanguage = 
+        'Portugu'#234's-BR=M'#234's,English=Month,Espa'#241'ol=Mes,Portugu'#234's-PT=M'#234's,Deut' +
+        'sch=M'#234's,Italiano=M'#234's,Fran'#231'ais=M'#234's,Pyccki=M'#234's'
+      IsLookupParam = True
+      LookupObj = 'MesesGrid'
+      IsListParam = True
+      IsOptParam = True
+    end
+    item
+      DataType = ftInteger
+      Name = 'Contratados'
+      ParamType = ptUnknown
+      Alias = 'Contratados'
+      AliasLanguage = 
+        'Portugu'#234's-BR=Contratados,English=Employees,Espa'#241'ol=Empleados,Por' +
+        'tugu'#234's-PT=Contratados,Deutsch=Contratados,Italiano=Contratados,F' +
+        'ran'#231'ais=Contratados,Pyccki=Contratados'
+      IsLookupParam = True
+      LookupObj = 'ContratadosGrid'
+      IsListParam = True
+      IsOptParam = True
+    end
+    item
+      DataType = ftInteger
+      Name = 'CentroCusto'
+      ParamType = ptUnknown
+      Alias = 'Centro de Custo'
+      AliasLanguage = 
+        '"Portugu'#234's-BR=Centro de Custo","English=Cost Center","Espa'#241'ol=Ce' +
+        'ntro Costo","Portugu'#234's-PT=Centro de Custo","Deutsch=Centro de Cu' +
+        'sto","Italiano=Centro de Custo","Fran'#231'ais=Centro de Custo","Pycc' +
+        'ki=Centro de Custo"'
+      IsLookupParam = True
+      LookupObj = 'CentrosCustosTree'
+      IsListParam = True
+      IsOptParam = True
+    end
+    item
+      DataType = ftInteger
+      Name = 'Geral'
+      ParamType = ptUnknown
+      Value = '2'
+      Alias = 'Exibir todos os colaboradores?'
+      AliasLanguage = 
+        '"Portugu'#234's-BR=Exibir todos os colaboradores?","English=Show all ' +
+        'employees?","Espa'#241'ol='#191'Presentar todos los empleados?","Portugu'#234's' +
+        '-PT=Exibir todos os colaboradores?","Deutsch=Exibir todos os col' +
+        'aboradores?","Italiano=Exibir todos os colaboradores?","Fran'#231'ais' +
+        '=Exibir todos os colaboradores?","Pyccki=Exibir todos os colabor' +
+        'adores?"'
+      ValueList.Strings = (
+        'Sim=1'
+        'N'#227'o=2')
+      UseValueList = True
+    end>
+  IsPublic = True
+  NoTranslation = False
+  NomeReferencia = 'Contratados Aniversariantes'
+end
+
+<END QUERY:10000007 - Contratados_Aniversariantes;Contratados Aniversariantes;Español=;Contratados_Aniversariantes;Contratados_Aniversariantes;Contratados_Aniversariantes;Contratados_Aniversariantes;Contratados_Aniversariantes;Contratados_Aniversariantes>
+
+<END QUERIES>
+
+<PUBLIC FUNCTIONS>
+<END PUBLIC FUNCTIONS>
