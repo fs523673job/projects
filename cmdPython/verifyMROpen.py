@@ -37,8 +37,8 @@ def check_mr_status(driver, file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
     
-    if "Status MR: Merged" in content:
-        return "Already Processed"  # Verifica se o arquivo já foi processado
+    if "Status MR: Merged" in content or "Status MR: Closed" in content:
+        return "Already Processed"  # Verifica se o arquivo já foi processado por MRs Merged ou Closed
 
     with open(file_path, 'r', encoding='utf-8') as file:
         for line in file:
@@ -57,7 +57,7 @@ def check_mr_status(driver, file_path):
                             for status_tag in status_tags:
                                 status_text = status_tag.text.strip()
                                 if status_text in ["Open", "Merged", "Closed"]:
-                                    if status_text == "Merged":
+                                    if status_text in ["Merged", "Closed"]:
                                         update_file_with_status(file_path, mr_url, status_text)
                                     return status_text
                         except:

@@ -15,8 +15,22 @@ uses
 const
   ENCRYPTED_EXTENSION = '.APC';
 
+type
+  TSecuryHeaderStream = class
+  public
+    const
+      HEADER = 'EncryptedFile';
+  public
+    class function Add(var AStream: TMemoryStream): Boolean;
+    class function Remove(var AStream: TMemoryStream): Boolean;
+    class function Check(var AStream: TMemoryStream): Boolean;
+  end;
+
 function EncryptSymetricFile(var AFilePath: String; const ACreateNewFile: Boolean = False): Boolean;
 function DecryptSymetricFile(var AFilePath: String; const ACreateNewFile: Boolean = False): Boolean;
+
+function EncryptSymetricFile_HeaderSecurity(var AFilePath: String; const ACreateNewFile: Boolean = False): Boolean;
+function DecryptSymetricFile_HeaderSecurity(var AFilePath: String; const ACreateNewFile: Boolean = False): Boolean;
 
 implementation
 
@@ -135,6 +149,109 @@ begin
   except
     on E: Exception do
       Result := False;
+  end;
+end;
+
+function EncryptSymetricFile_HeaderSecurity(var AFilePath: String; const ACreateNewFile: Boolean = False): Boolean;
+var
+  TmpStream: TMemoryStream;
+begin
+  TmpStream := TMemoryStream.Create;
+  try
+    TmpStream.LoadFromFile(AFilePath);
+    if not (TSecuryHeaderStream.Check(TmpStream)) then
+    begin
+      TmpStream.Clear;
+      if EncryptSymetricFile(AFilePath, ACreateNewFile) then
+      begin
+        TmpStream.LoadFromFile(AFilePath);
+        TSecuryHeaderStream.Add(TmpStream);
+        TmpStream.SaveToFile(AFilePath);
+        Exit(True);
+      end;
+    end
+    else
+      Exit(False);
+  finally
+    TmpStream.Free;
+  end;
+end;
+
+function DecryptSymetricFile_HeaderSecurity(var AFilePath: String; const ACreateNewFile: Boolean = False): Boolean;
+var
+  TmpStream: TMemoryStream;
+begin
+  TmpStream := TMemoryStream.Create;
+  try
+    TmpStream.LoadFromFile(AFilePath);
+    if TSecuryHeaderStream.Check(TmpStream) then
+    begin
+      if TSecuryHeaderStream.Remove(TmpStream) then
+        TmpStream.SaveToFile(AFilePath);
+
+      Exit(DecryptSymetricFile(AFilePath, ACreateNewFile));
+    end
+    else
+      Exit(False);
+  finally
+    TmpStream.Free;
+  end;
+end;
+
+{ TSecuryHeaderStream }
+
+class function TSecuryHeaderStream.Add(var AStream: TMemoryStream): Boolean;
+var
+  TmpStream: TMemoryStream;
+begin
+  TmpStream := TMemoryStream.Create;
+  try
+    try
+      TmpStream.WriteBuffer(HEADER[1], Length(HEADER) * SizeOf(Char));
+      TmpStream.CopyFrom(AStream, 0);
+      AStream.Clear;
+      AStream.CopyFrom(TmpStream, 0);
+      AStream.Position := 0;
+      Exit(True);
+    except
+      Exit(False);
+    end;
+  finally
+    TmpStream.Free;
+  end;
+end;
+
+class function TSecuryHeaderStream.Check(var AStream: TMemoryStream): Boolean;
+var
+  FileHeader: String;
+begin
+  SetLength(FileHeader, Length(HEADER));
+  AStream.Position := 0;
+  AStream.ReadBuffer(FileHeader[1], Length(HEADER) * SizeOf(Char));
+  AStream.Position := 0;
+  Exit(FileHeader = Header);
+end;
+
+class function TSecuryHeaderStream.Remove(var AStream: TMemoryStream): Boolean;
+var
+  TmpStream: TMemoryStream;
+begin
+  if not Check(AStream) then
+    Exit(False);
+
+  TmpStream := TMemoryStream.Create;
+  try
+    try
+      AStream.Position := Length(HEADER) * SizeOf(Char);
+      TmpStream.CopyFrom(AStream, AStream.Size - AStream.Position);
+      AStream.Clear;
+      AStream.CopyFrom(TmpStream, 0);
+      Exit(True);
+    except
+      Exit(False);
+    end;
+  finally
+    TmpStream.Free;
   end;
 end;
 

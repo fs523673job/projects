@@ -41,6 +41,7 @@ type
     ckLoadFile: TCheckBox;
     btStress: TButton;
     edtCount: TEdit;
+    ckbAddHeaderSecuritySymetric: TCheckBox;
     procedure spFileNameClick(Sender: TObject);
     procedure btnEncryptClick(Sender: TObject);
     procedure btnDescriptografarClick(Sender: TObject);
@@ -118,7 +119,10 @@ begin
         seContentFile.Lines.LoadFromFile(FilePath);
       end;
 
-      MeansureExecutionTime(EncryptSymetricFile, FilePath, ckAlterExtension.Checked, ExecOk, TimeExec);
+      if ckbAddHeaderSecuritySymetric.Checked then
+        MeansureExecutionTime(EncryptSymetricFile_HeaderSecurity, FilePath, ckAlterExtension.Checked, ExecOk, TimeExec)
+      else
+        MeansureExecutionTime(EncryptSymetricFile, FilePath, ckAlterExtension.Checked, ExecOk, TimeExec);
 
       if (ExecOk) then
       begin
@@ -160,7 +164,10 @@ begin
         seContentFile.Lines.LoadFromFile(FilePath);
       end;
 
-      MeansureExecutionTime(DecryptSymetricFile, FilePath, ckAlterExtension.Checked, ExecOk, TimeExec);
+      if ckbAddHeaderSecuritySymetric.Checked then
+        MeansureExecutionTime(DecryptSymetricFile_HeaderSecurity, FilePath, ckAlterExtension.Checked, ExecOk, TimeExec)
+      else
+        MeansureExecutionTime(DecryptSymetricFile, FilePath, ckAlterExtension.Checked, ExecOk, TimeExec);
 
       if ExecOk then
       begin

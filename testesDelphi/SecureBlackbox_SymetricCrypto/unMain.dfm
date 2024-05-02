@@ -52,8 +52,6 @@ object Form1: TForm1
     Width = 225
     Height = 17
     Caption = 'Salvar Criptografia Para Novo Arquivo '
-    Checked = True
-    State = cbChecked
     TabOrder = 2
   end
   object seContentFile: TSynEdit
@@ -95,7 +93,7 @@ object Form1: TForm1
     OnClick = btnDescriptografarClick
   end
   object ckLoadFile: TCheckBox
-    Left = 248
+    Left = 234
     Top = 51
     Width = 113
     Height = 17
@@ -120,6 +118,16 @@ object Form1: TForm1
     NumbersOnly = True
     TabOrder = 7
     Text = '100'
+  end
+  object ckbAddHeaderSecuritySymetric: TCheckBox
+    Left = 8
+    Top = 74
+    Width = 257
+    Height = 17
+    Caption = 'Salvar Header de Criptografia nos arquivos'
+    Checked = True
+    State = cbChecked
+    TabOrder = 8
   end
   object OpenDialog: TOpenDialog
     Left = 424
