@@ -34,11 +34,12 @@ def update_file_with_status(file_path, mr_url, status):
             file.write(f'Status MR: {status}\n')
 
 def check_mr_status(driver, file_path):
+    conflict_message = None
     with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
     
     if "Status MR: Merged" in content or "Status MR: Closed" in content:
-        return "Already Processed"  # Verifica se o arquivo já foi processado por MRs Merged ou Closed
+        return "Already Processed", conflict_message  # Retorna que já foi processado e sem conflito
 
     with open(file_path, 'r', encoding='utf-8') as file:
         for line in file:
@@ -48,23 +49,23 @@ def check_mr_status(driver, file_path):
                     continue
                 try:
                     driver.get(mr_url)
-                    selectors = [".gl-display-none.gl-sm-display-block.gl-ml-2"]
+                    selectors = [".gl-display-none.gl-sm-display-block.gl-ml-2", ".gl-display-flex"]
+                    status_text = None
                     for selector in selectors:
-                        try:
-                            status_tags = WebDriverWait(driver, 10).until(
-                                EC.presence_of_all_elements_located((By.CSS_SELECTOR, selector))
-                            )
-                            for status_tag in status_tags:
-                                status_text = status_tag.text.strip()
-                                if status_text in ["Open", "Merged", "Closed"]:
-                                    if status_text in ["Merged", "Closed"]:
-                                        update_file_with_status(file_path, mr_url, status_text)
-                                    return status_text
-                        except:
-                            continue
+                        elements = WebDriverWait(driver, 10).until(
+                            EC.presence_of_all_elements_located((By.CSS_SELECTOR, selector))
+                        )
+                        for element in elements:
+                            if element.text.strip() == "Merge conflicts must be resolved.":
+                                conflict_message = "[Merge conflicts must be resolved]"
+                            if element.text.strip() in ["Open", "Merged", "Closed"]:
+                                status_text = element.text.strip()
+                    if status_text in ["Merged", "Closed"]:
+                        update_file_with_status(file_path, mr_url, status_text)
+                    return status_text, conflict_message
                 except Exception as e:
                     print(f"Erro ao tentar verificar o status do MR em {mr_url}: {e}")
-    return None
+    return None, conflict_message
 
 def main():
     try:
@@ -94,9 +95,12 @@ def main():
     for filename in files:
         file_path = os.path.join(directory_path, filename)
         chamado_name = filename[:-4]
-        status = check_mr_status(driver, file_path)
+        status, conflict_message = check_mr_status(driver, file_path)
         if status and status != "Already Processed":
-            print(f"Analisando {chamado_name} Status: {status}")
+            message = f"Analisando {chamado_name} Status: {status}"
+            if conflict_message:
+                message += f" {conflict_message}"
+            print(message)
 
     driver.quit()
 
