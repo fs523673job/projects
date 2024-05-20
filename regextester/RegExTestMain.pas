@@ -80,7 +80,7 @@ begin
   if chkExplicitCapture.Checked then
     Include(options,TRegExOption.roIgnoreCase);
   if chkCompiled.Checked then
-    Include(options,TRegExOption.roIgnoreCase);
+    Include(options,TRegExOption.roCompiled);
   if chkIgnorePatternSpace.Checked then
     Include(options,TRegExOption.roIgnoreCase);
 

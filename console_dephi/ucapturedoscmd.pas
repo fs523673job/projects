@@ -21,17 +21,20 @@ var
 begin
   MessageSanitized := AMessage.ToLower;
 
-  if (Pos(('ApComps\ApLibrary\ApLibServer\RPCServer.pas').ToLower, MessageSanitized) > 0) and
-     (
-        (Pos(('Value assigned to ''qryTmp'' never used').ToLower, MessageSanitized) > 0) or
-        (Pos(('Variable ''aFileMajorNumber'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
-        (Pos(('Variable ''aFileMinorNumber'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
-        (Pos(('Variable ''AFileRelease'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0)  or
-        (Pos(('Variable ''aFileMajorNumber'' is declared but never used in').ToLower, MessageSanitized) > 0) or
-        (Pos(('Variable ''aFileMinorNumber'' is declared but never used in').ToLower, MessageSanitized) > 0) or
-        (Pos(('Variable ''AFileRelease'' is declared but never used in').ToLower, MessageSanitized) > 0)
-
-     ) then
+   if (
+       (Pos(('Value assigned to ''qryTmp'' never used').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''aFileMajorNumber'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''aFileMinorNumber'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''AFileRelease'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0)  or
+       (Pos(('Variable ''aFileMajorNumber'' is declared but never used in').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''aFileMinorNumber'' is declared but never used in').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''AFileRelease'' is declared but never used in').ToLower, MessageSanitized) > 0) or
+       (Pos(('warning W1005: Unit ''RPCServer'' is specific to a platform').ToLower, MessageSanitized) > 0) or
+       (Pos(('warning W1002: Symbol ''IncludeTrailingBackslash'' is specific to a platform').ToLower, MessageSanitized) > 0) or
+       (Pos(('warning W1002: Symbol ''faArchive'' is specific to a platform').ToLower, MessageSanitized) > 0) or
+       (Pos(('warning W1002: Symbol ''Create'' is specific to a platform').ToLower, MessageSanitized) > 0) or
+       (Pos(('warning W1029: Duplicate constructor').ToLower, MessageSanitized) > 0)
+    ) then
    begin
      Exit(True);
    end

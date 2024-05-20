@@ -97,7 +97,7 @@ def main():
         chamado_name = filename[:-4]
         status, linkMR = check_mr_status(driver, file_path)
         if status and status != "Already Processed":
-            print(f"Analisando {chamado_name} Status: {status} LinkMR: [{linkMR}]")
+            print(f"Analisando {chamado_name} Status: [{status}] LinkMR: [{linkMR}]")
 
     driver.quit()
 

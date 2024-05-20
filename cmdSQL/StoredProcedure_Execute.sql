@@ -70,9 +70,11 @@ exec sp_lastIdTable 'ComandosSQLs'
 exec sp_lastIdTable 'ComandosSQLsGrupos'
 exec sp_lastIdTable 'EstruturasAD'
 exec sp_lastIdTable 'DefSisIntegracaoAD'
+exec sp_lastIdTable 'Defaults'
 
 exec sp_takeKeyForInsertion 'DefSisIntegracaoAD'
 exec sp_takeKeyForInsertion 'ServidoresIntegracoesBDs'
+exec sp_takeKeyForInsertion 'Defaults'
 
 exec sp_infoApDataPkLimit 'ServidoresIntegracoes'
 exec sp_infoApDataPkLimit 'TransacoesIntegracoesSobs'
@@ -93,6 +95,7 @@ exec sp_infoApDataPkLimit 'ComandosSQLsGrupos'
 exec sp_infoApDataPkLimit 'EstruturasAD'
 exec sp_infoApDataPkLimit 'EstruturasADProps'
 exec sp_infoApDataPkLimit 'DefSisIntegracaoAD'
+exec sp_infoApDataPkLimit 'Defaults'
 
 exec sp_deleteCascate 'ConDependentes', '= 1037', 1                          /*0 - Deletar, 1 - Mostra os Comandos - Excluir todos os registros relacionados em todas tabelas*/
 exec sp_deleteCascateRegistry 'ConDependentes', 'DEP_CdiConDependente = 1037', 0 /*0 - Deletar, 1 - Mostra os Comandos - Excluir todos os registros relacionados em todas tabelas*/
