@@ -902,6 +902,7 @@ begin
 	exec sp_Execute_Delete 'dbo', 02, 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao = 1'
 	exec sp_Execute_Delete 'dbo', 03, 'ControlesSeqsInternos', 'DJN_CdiTabela > 0'
 	exec sp_deleteCascate 'EstruturasAD', '= 1001', 0
+	exec sp_deleteCascate 'Defaults', '> 12', 0
 end
 GO
 
@@ -1404,15 +1405,21 @@ begin
 		/*OUTROS AJUSTES PARA TESTES - FIM*/	
 
 		/*1048 - CONTEUDO PRE-DEFINIDO - DEFAULTS - INICIO*/
+			declare @DefaultsKey int
+			exec sp_takeKeyForInsertion 'Defaults', @DefaultsKey OUTPUT
+
+			exec sp_Execute_Insert_Key 'dbo', 01, 'Defaults', 'DEF_CdiDefault, DEF_D1sDefault, DEF_CdiTipoDefault', @DefaultsKey, 01, '''(TESTES) AD DEFAULT 1'',5', 1  
+			exec sp_Execute_Insert_Key 'dbo', 02, 'Defaults', 'DEF_CdiDefault, DEF_D1sDefault, DEF_CdiTipoDefault', @DefaultsKey, 02, '''(TESTES) AD DEFAULT 2'',5', 1  
+
 		/*1048 - CONTEUDO PRE-DEFINIDO - DEFAULTS - FIM*/
 
-	    /*ADINTEGRATOR - ACTIVE DIRECTORY -INICIO */
+	    /*-> ADINTEGRATOR - ACTIVE DIRECTORY -INICIO */
 			--exec sp_takeKeyForInsertion 'DefSisIntegracaoAD', @AuxKey OUTPUT
 
 			/*Objeto 3090*/
 			--exec sp_Execute_Insert_Key 'dbo', 01, 'DefSisIntegracaoAD', 'DZW_CdiSistema, DZW_DtdOficializacaoSistema, DZW_OplAtivaIntegracao, DZW_OplCriacaoUsuarioAut, DZW_DssCaminhoLDAP, DZW_OplIntegraViaWS, DZW_DssWSCriaUsuario, DZW_DssWSAtualizaDados, DZW_DssWSTrocaSenha, DZW_DssWSResetaSenha, DZW_DssWSAtivaDesativaUsuario, DZW_CdsWSUsuario, DZW_CosWSSenha, DZW_OplAtivaLogIntegracao, DZW_OplNaoSincronizarGrupo, DZW_OplNaoSincronizarEstrutura, DZW_DssWSValidaLogin, DZW_DssWSTrataSSO', @AuxKey/*72*/, 0,  'null, 1, 0, ''LDAP://DC=apdatatst,DC=com,DC=br'', 1, ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', null, null, ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', ''flsantos'', ''Fls12345@'', 1, 0, 0, null, null', 1
 			
-			exec sp_Execute_Update 'dbo', '01', 'DefSisIntegracaoAD', 'DZW_DtdOficializacaoSistema = null, DZW_OplAtivaIntegracao = 1, DZW_OplCriacaoUsuarioAut =  0, DZW_DssCaminhoLDAP = ''LDAP://DC=apdatatst,DC=com,DC=br'', DZW_OplIntegraViaWS = 1, DZW_DssWSCriaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtualizaDados = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrocaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSResetaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtivaDesativaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_CdsWSUsuario = ''flsantos'', DZW_CosWSSenha = ''Fls12345@'', DZW_OplAtivaLogIntegracao = 1, DZW_OplNaoSincronizarGrupo = 0, DZW_OplNaoSincronizarEstrutura = 0, DZW_DssWSValidaLogin = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrataSSO = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 'DZW_CdiSistema = 72', 1
+			exec sp_Execute_Update 'dbo', '01', 'DefSisIntegracaoAD', 'DZW_DtdOficializacaoSistema = null, DZW_OplAtivaIntegracao = 1, DZW_OplCriacaoUsuarioAut =  0, DZW_DssCaminhoLDAP = ''DC=apdatatst,DC=com,DC=br'', DZW_OplIntegraViaWS = 1, DZW_DssWSCriaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtualizaDados = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrocaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSResetaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtivaDesativaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_CdsWSUsuario = ''flsantos'', DZW_CosWSSenha = ''Fls12345@'', DZW_OplAtivaLogIntegracao = 1, DZW_OplNaoSincronizarGrupo = 0, DZW_OplNaoSincronizarEstrutura = 0, DZW_DssWSValidaLogin = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrataSSO = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 'DZW_CdiSistema = 72', 1
 
 			declare @EstruturasADKey int
 			declare @EstruturasADPropsKey int
@@ -1424,7 +1431,7 @@ begin
 				exec sp_takeKeyForInsertion 'EstruturasADGrupos', @EstruturasADGroup OUTPUT
 
 				/*Configuração - Básica*/
-				exec sp_Execute_Insert_Key 'dbo', 01, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey/*1002*/, 0, '''(TESTE) CONFIGURACAO BASICA'', null, null, null, null, null, null, null, 0, 0, 0, ''LDAP://OU=ProdutoTestes'', 0, 0', 1 
+				exec sp_Execute_Insert_Key 'dbo', 01, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey/*1002*/, 0, '''(TESTE) CONFIGURACAO BASICA'', null, null, null, null, null, null, null, 0, 0, 0, ''OU=ProdutoTestes'', 0, 0', 1 
 
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 01, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 0, @EstruturasADKey, 0, '105848, 38, 0, 0', 1   
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 02, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 1, @EstruturasADKey, 0, '91403, 7, 0, 0', 1
@@ -1439,7 +1446,7 @@ begin
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 09, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 2, @EstruturasADKey, 0, '''Grupo_Basico_Dois'''  
 
 				/*Configuração - Para Valores Default 1*/
-				exec sp_Execute_Insert_Key 'dbo', 10, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey, 1, '''(TESTE) CONFIGURACAO VALOR PRE-DEFINIDO UM'', null, null, null, null, null, null, null, 1, 0, 0, ''LDAP://OU=ProdutoTestes,OU=Default_Um'', 0, 0', 1 
+				exec sp_Execute_Insert_Key 'dbo', 10, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey, 1, '''(TESTE) CONFIGURACAO VALOR PRE-DEFINIDO UM'', null, null, null, null, null, null, null, 14, 0, 0, ''OU=Default_Um'', 0, 0', 1 
 
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 11, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 7, @EstruturasADKey, 1, '105848, 38, 0, 0', 1   
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 12, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 8, @EstruturasADKey, 1, '91403, 7, 0, 0', 1
@@ -1454,7 +1461,7 @@ begin
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 19, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 4, @EstruturasADKey, 1, '''Grupo_Default_Dois'''  
 
 				/*Configuração - Para Valores Default 2*/
-				exec sp_Execute_Insert_Key 'dbo', 19, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey, 2, '''(TESTE) CONFIGURACAO VALOR PRE-DEFINIDO DOIS'', null, null, null, null, null, null, null, 1, 0, 0, ''LDAP://OU=ProdutoTestes,OU=Default_Dois'', 0, 0', 1 
+				exec sp_Execute_Insert_Key 'dbo', 19, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey, 2, '''(TESTE) CONFIGURACAO VALOR PRE-DEFINIDO DOIS'', null, null, null, null, null, null, null, 15, 0, 0, ''OU=Default_Dois'', 0, 0', 1 
 
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 20, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 14, @EstruturasADKey, 2, '105848, 38, 0, 0', 1   
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 21, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 15, @EstruturasADKey, 2, '91403, 7, 0, 0', 1
