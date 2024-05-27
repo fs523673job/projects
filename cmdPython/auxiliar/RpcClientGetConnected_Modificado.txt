@@ -1,6 +1,0 @@
-function TRPCClient.GetConnected: Boolean;
-begin
-//  if (not FClient.Active) and Self.FSuccessfulConnectionActive then
-//    ServerConnect;
-  Result := FClient.Active;
-end;
