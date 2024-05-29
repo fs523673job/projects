@@ -920,6 +920,7 @@ begin
 	exec sp_Execute_Delete 'dbo', 03, 'ControlesSeqsInternos', 'DJN_CdiTabela > 0'
 	exec sp_deleteCascate 'EstruturasAD', '= 1001', 0
 	exec sp_deleteCascate 'Defaults', '> 12', 0
+	exec sp_deleteCascate 'ListasGenericas', '> 50010'
 end
 GO
 
