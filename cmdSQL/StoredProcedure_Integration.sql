@@ -163,6 +163,14 @@ begin
 
   set nocount on
 
+  if @keyTable is null or @forKey is null
+  begin
+	print '--################### ERROR BEGINS ##################'
+    print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [@keyTable ' + isnull(cast(@keyTable as varchar(10)), 'NULL') + '], @forKey: [' + isnull(cast(@forKey as varchar(10)), 'NULL') + ']';
+	print '--################### ERROR ENDS ####################'
+    return;
+  end
+
   set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + trim(cast(@keyTable + @incKey as char(10))) + ',' + trim(cast(@forKey + @incFor as char(10))) + ',' + @values + ')';
   
   begin try
@@ -236,6 +244,15 @@ begin
   declare @insert_fields nvarchar(max);
 
   set nocount on
+
+  if @keyOne is null or @KeyTwo is null or @KeyThree is null 
+  begin
+	print '--################### ERROR BEGINS ##################'
+    print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: @keyOne: [' + isnull(cast(@keyOne as varchar(10)), 'NULL') + '], @KeyTwo: [' + isnull(cast(@KeyTwo as varchar(10)), 'NULL') + '], @KeyThree: [' + isnull(cast(@KeyThree as varchar(10)), 'NULL') + ']';
+	print '--################### ERROR ENDS ####################'
+    return;
+  end
+
 
   set @insert_fields = 'insert into ' + @schema + '.' + @table + '(' + @fields + ') values ' + '(' + trim(cast(@keyOne + @incKeyOne as char(10))) + ',' + trim(cast(@KeyTwo + @incKeyTwoFor as char(10))) + ',' + trim(cast(@KeyThree + @incKeyThree as char(10))) + ',' + @values + ')';
   
@@ -1409,22 +1426,28 @@ begin
 			declare @ListasGenericasItensKey int
 
 			exec sp_takeKeyForInsertion 'ListasGenericas', @ListasGenericasKey OUTPUT 
-			exec sp_takeKeyForInsertion 'ListasGenericasItensKey', @ListasGenericasItensKey OUTPUT 
+			exec sp_takeKeyForInsertion 'ListasGenericasItens', @ListasGenericasItensKey OUTPUT 
 			
-			exec sp_Execute_Insert_Key 'dbo', 01, 'ListasGenericas', 'CJT_CdiListaGenerica, CJT_D1sListaGenerica', @ListasGenericasKey, 1, '''OU=ListaGenerica''', 1 
-			/*Contratado 01*/exec sp_Execute_Insert_Key_ForeignKey 'dbo', 02, 'ListasGenericasItensKey', 'CJU_CdiListaGenericaItem CJU_CdiListaGenerica CJU_NuiConteudo_Inteiro', @ListasGenericasItensKey, 1, @ListasGenericasKey, 1, '1', 1 
-			/*Contratado 02*/exec sp_Execute_Insert_Key_ForeignKey 'dbo', 03, 'ListasGenericasItensKey', 'CJU_CdiListaGenericaItem CJU_CdiListaGenerica CJU_NuiConteudo_Inteiro', @ListasGenericasItensKey, 1, @ListasGenericasKey, 1, '2', 1 
+			exec sp_Execute_Insert_Key 'dbo', 01, 'ListasGenericas', 'CJT_CdiListaGenerica, CJT_D1sListaGenerica', @ListasGenericasKey, 1, '''OU=ListaGenerica_01''', 1 
+			/*Contratado 1 - CJU_NuiConteudo_Inteiro (Id do Contratado)*/
+			exec sp_Execute_Insert_Key_ForeignKey 'dbo', 02, 'ListasGenericasItens', 'CJU_CdiListaGenericaItem, CJU_CdiListaGenerica, CJU_NuiConteudo_Inteiro', @ListasGenericasItensKey, 1, @ListasGenericasKey, 1, '1', 1 
+
+			exec sp_Execute_Insert_Key 'dbo', 03, 'ListasGenericas', 'CJT_CdiListaGenerica, CJT_D1sListaGenerica', @ListasGenericasKey, 2, '''OU=ListaGenerica_02''', 1 
+			/*Contratado 2 - CJU_NuiConteudo_Inteiro (Id do Contratado)*/
+			exec sp_Execute_Insert_Key_ForeignKey 'dbo', 04, 'ListasGenericasItens', 'CJU_CdiListaGenericaItem, CJU_CdiListaGenerica, CJU_NuiConteudo_Inteiro', @ListasGenericasItensKey, 2, @ListasGenericasKey, 2, '2', 1 
 
 		/*1048 - CONTEUDO PRE-DEFINIDO - DEFAULTS - INICIO*/
 			declare @DefaultsKey int
 			declare @DefaultsChavesKey int
 
 			exec sp_takeKeyForInsertion 'Defaults', @DefaultsKey OUTPUT
+			exec sp_takeKeyForInsertion 'DefaultsChaves', @DefaultsChavesKey OUTPUT
 
 			exec sp_Execute_Insert_Key 'dbo', 01, 'Defaults', 'DEF_CdiDefault, DEF_D1sDefault, DEF_CdiTipoDefault', @DefaultsKey, 01, '''(TESTES) AD DEFAULT 1'',5', 1  
-			exec sp_Execute_Insert_Key 'dbo', 02, 'Defaults', 'DEF_CdiDefault, DEF_D1sDefault, DEF_CdiTipoDefault', @DefaultsKey, 02, '''(TESTES) AD DEFAULT 2'',5', 1  
-
-			exec sp_Execute_Insert_ThreeKey 'dbo', 29, 'DefaultsChaves', 'BDI_CdiDefaultChave, BDI_CdiDefault, BDI_CdiListaGenerica, BDI_CdiCampo_Chave, BDI_CdiOperacaoLogica', @DefaultsChavesKey, 1,  @DefaultsKey, 02, @ListaGenericaKey, 1, '10430, 9', 1
+            exec sp_Execute_Insert_ThreeKey 'dbo', 02, 'DefaultsChaves', 'BDI_CdiDefaultChave, BDI_CdiDefault, BDI_CdiListaGenerica, BDI_CdiCampo_Chave, BDI_CdiOperacaoLogica', @DefaultsChavesKey, 1,  @DefaultsKey, 1, @ListasGenericasKey, 1, '10430, 9', 1
+			
+			exec sp_Execute_Insert_Key 'dbo', 03, 'Defaults', 'DEF_CdiDefault, DEF_D1sDefault, DEF_CdiTipoDefault', @DefaultsKey, 02, '''(TESTES) AD DEFAULT 2'',5', 1  
+			exec sp_Execute_Insert_ThreeKey 'dbo', 02, 'DefaultsChaves', 'BDI_CdiDefaultChave, BDI_CdiDefault, BDI_CdiListaGenerica, BDI_CdiCampo_Chave, BDI_CdiOperacaoLogica', @DefaultsChavesKey, 2,  @DefaultsKey, 2, @ListasGenericasKey, 2, '10430, 9', 1
 
 		/*1048 - CONTEUDO PRE-DEFINIDO - DEFAULTS - FIM*/
 		

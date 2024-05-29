@@ -131,6 +131,8 @@ exec sp_Simple_Generate_Inserts_From_Selects 'EstruturasAD'
 exec sp_Simple_Generate_Inserts_From_Selects 'EstruturasADProps' 
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 20069', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL,SQL_D1bComentarios'
 
+exec sp_Execute_Insert_Key_ForeignKey 'dbo', 01, 'ListasGenericasItens', 'CJU_CdiListaGenericaItem, CJU_CdiListaGenerica, CJU_NuiConteudo_Inteiro', 1001, 1, 1002, 1, '1', 1 
+
 /*CAMPOS GERAIS UTILIZADOS PARA CLONAR*/
 
 exec sp_New_Execute_Sql 'dbo', 01, 'ServidoresIntegracoes', 'BBN_CdiServidorIntegracao, BBN_D1sServidorIntegracao, BBN_CosEnderecoIP, BBN_NuiPorta', '1, ''(TESTES) - INTEGRATION - SERVIDORES'', ''localhost'', 7080', 1  
@@ -174,4 +176,5 @@ select
 
 select SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL,SQL_D1bComentarios from ComandosSQLs where SQL_CdiComandoSQL = 20069
 
+select * from ListasGenericas
 select * from ListasGenericasItens
