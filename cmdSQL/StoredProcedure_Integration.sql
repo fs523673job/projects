@@ -1404,33 +1404,47 @@ begin
 			exec sp_Execute_Insert_Key 'dbo', 01, 'Consultas', 'ACS_CdiConsulta, ACS_CdiConsultaGrupo, ACS_DtdAbertura, ACS_DsbConteudo, ACS_DssConsulta, ACS_OplExigirSenhaAdicl, ACS_CdiPais, ACS_OplFolhasDesativadas, ACS_OplPublico, ACS_NuiIcone, ACS_NuiIcone_Selecionado, ACS_NuiIcone_WorkArea, ACS_OplVisContratadoConectado, ACS_D1sNomeReferencia, ACS_D2sNomeReferencia, ACS_D3sNomeReferencia, ACS_D4sNomeReferencia, ACS_D5sNomeReferencia, ACS_D6sNomeReferencia, ACS_D7sNomeReferencia, ACS_D8sNomeReferencia, ACS_D1bAjuda, ACS_D2bAjuda, ACS_D3bAjuda, ACS_D4bAjuda, ACS_D5bAjuda, ACS_D6bAjuda, ACS_D7bAjuda, ACS_D8bAjuda, ACS_OplAltoConsumoRecurso, ACS_D1sConsultaExplicacao, ACS_D2sConsultaExplicacao, ACS_D3sConsultaExplicacao, ACS_D4sConsultaExplicacao, ACS_D5sConsultaExplicacao, ACS_D6sConsultaExplicacao, ACS_D7sConsultaExplicacao, ACS_D8sConsultaExplicacao, ACS_OplDesativado', @MaxKeyFromTable, 0, '75, null, 0x545046300654646153514C00035461670372631147756964436F6C6C6174696F6E54797065070D67634D5353514C5365727665720C446174616261736554797065070D64744D5353514C5365727665721044617461506970656C696E654E616D65060B426C6F624172717569766F0D4564697453514C41735465787409094C696E6B436F6C6F720707636C426C61636B084C696E6B5479706507126C74506172616D65746572697A656453514C164D617853514C4669656C64416C6961734C656E67746802000F53514C546578742E537472696E677301063073656C656374204C57435F4364694C616E63616D656E746F57462C204C57435F447362436F6E746575646F5F426C6F62061B202046726F6D204C616E63616D656E746F73574643616D706F7320067020207768657265204C57435F4364694C616E63616D656E746F574620696E202873656C656374204C57465F4364694C616E63616D656E746F57462046726F6D204C616E63616D656E746F735746207768657265204C57465F436469466F726D756C6172696F5746203D203A496446572906262020416E64204C57435F447362436F6E746575646F5F426C6F62206973206E6F74206E756C6C1200000000000753514C547970650706737153514C32074C69746572616C060B426C6F624172717569766F06506172616D730E01084461746154797065070C667457696465537472696E67044E616D6506044964465709506172616D5479706507097074556E6B6E6F776E00000D4E6F5472616E736C6174696F6E0800085464614669656C640864614669656C643105416C69617314170000004C616EC3A7616D656E746F20646520576F726B666C6F7708446174615479706507096474496E74656765720C446973706C6179576964746802080A4669656C64416C69617314170000004C616EC3A7616D656E746F20646520576F726B666C6F770B4669656C644C656E677468020A094669656C644E616D6506134C57435F4364694C616E63616D656E746F57460C53514C4669656C644E616D6506134C57435F4364694C616E63616D656E746F5746095461626C654E616D6506134C616E63616D656E746F73574643616D706F730000085464614669656C640864614669656C643205416C6961731410000000436F6E7465C3BA646F202D20426C6F6208446174615479706507066474424C4F420C446973706C6179576964746803AD0D0A4669656C64416C6961731410000000436F6E7465C3BA646F202D20426C6F620B4669656C644C656E677468038813094669656C644E616D6506144C57435F447362436F6E746575646F5F426C6F62084C696E6B61626C65080C53514C4669656C644E616D6506144C57435F447362436F6E746575646F5F426C6F62095461626C654E616D6506134C616E63616D656E746F73574643616D706F73000000, ''BlobArquivo'', 0, 1, 0, 0, 0, 0, 0, 0, ''BlobArquivo'', ''Español='', ''BlobArquivo'', ''BlobArquivo'', ''BlobArquivo'', ''BlobArquivo'', ''BlobArquivo'', ''BlobArquivo'', null, null, null, null, null, null, null, null, 0, '''', '''', '''', '''', '''', '''', '''', '''', 0', 1
 		/*OUTROS AJUSTES PARA TESTES - FIM*/	
 
+		/*1440 - Listas Genéricas de Conteúdo*/
+			declare @ListasGenericasKey int
+			declare @ListasGenericasItensKey int
+
+			exec sp_takeKeyForInsertion 'ListasGenericas', @ListasGenericasKey OUTPUT 
+			exec sp_takeKeyForInsertion 'ListasGenericasItensKey', @ListasGenericasItensKey OUTPUT 
+			
+			exec sp_Execute_Insert_Key 'dbo', 01, 'ListasGenericas', 'CJT_CdiListaGenerica, CJT_D1sListaGenerica', @ListasGenericasKey, 1, '''OU=ListaGenerica''', 1 
+			/*Contratado 01*/exec sp_Execute_Insert_Key_ForeignKey 'dbo', 02, 'ListasGenericasItensKey', 'CJU_CdiListaGenericaItem CJU_CdiListaGenerica CJU_NuiConteudo_Inteiro', @ListasGenericasItensKey, 1, @ListasGenericasKey, 1, '1', 1 
+			/*Contratado 02*/exec sp_Execute_Insert_Key_ForeignKey 'dbo', 03, 'ListasGenericasItensKey', 'CJU_CdiListaGenericaItem CJU_CdiListaGenerica CJU_NuiConteudo_Inteiro', @ListasGenericasItensKey, 1, @ListasGenericasKey, 1, '2', 1 
+
 		/*1048 - CONTEUDO PRE-DEFINIDO - DEFAULTS - INICIO*/
 			declare @DefaultsKey int
+			declare @DefaultsChavesKey int
+
 			exec sp_takeKeyForInsertion 'Defaults', @DefaultsKey OUTPUT
 
 			exec sp_Execute_Insert_Key 'dbo', 01, 'Defaults', 'DEF_CdiDefault, DEF_D1sDefault, DEF_CdiTipoDefault', @DefaultsKey, 01, '''(TESTES) AD DEFAULT 1'',5', 1  
 			exec sp_Execute_Insert_Key 'dbo', 02, 'Defaults', 'DEF_CdiDefault, DEF_D1sDefault, DEF_CdiTipoDefault', @DefaultsKey, 02, '''(TESTES) AD DEFAULT 2'',5', 1  
 
-		/*1048 - CONTEUDO PRE-DEFINIDO - DEFAULTS - FIM*/
+			exec sp_Execute_Insert_ThreeKey 'dbo', 29, 'DefaultsChaves', 'BDI_CdiDefaultChave, BDI_CdiDefault, BDI_CdiListaGenerica, BDI_CdiCampo_Chave, BDI_CdiOperacaoLogica', @DefaultsChavesKey, 1,  @DefaultsKey, 02, @ListaGenericaKey, 1, '10430, 9', 1
 
+		/*1048 - CONTEUDO PRE-DEFINIDO - DEFAULTS - FIM*/
+		
 	    /*-> ADINTEGRATOR - ACTIVE DIRECTORY -INICIO */
 			--exec sp_takeKeyForInsertion 'DefSisIntegracaoAD', @AuxKey OUTPUT
-
-			/*Objeto 3090*/
 			--exec sp_Execute_Insert_Key 'dbo', 01, 'DefSisIntegracaoAD', 'DZW_CdiSistema, DZW_DtdOficializacaoSistema, DZW_OplAtivaIntegracao, DZW_OplCriacaoUsuarioAut, DZW_DssCaminhoLDAP, DZW_OplIntegraViaWS, DZW_DssWSCriaUsuario, DZW_DssWSAtualizaDados, DZW_DssWSTrocaSenha, DZW_DssWSResetaSenha, DZW_DssWSAtivaDesativaUsuario, DZW_CdsWSUsuario, DZW_CosWSSenha, DZW_OplAtivaLogIntegracao, DZW_OplNaoSincronizarGrupo, DZW_OplNaoSincronizarEstrutura, DZW_DssWSValidaLogin, DZW_DssWSTrataSSO', @AuxKey/*72*/, 0,  'null, 1, 0, ''LDAP://DC=apdatatst,DC=com,DC=br'', 1, ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', null, null, ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', ''flsantos'', ''Fls12345@'', 1, 0, 0, null, null', 1
-			
+
+		/*Objeto 3090*/
 			exec sp_Execute_Update 'dbo', '01', 'DefSisIntegracaoAD', 'DZW_DtdOficializacaoSistema = null, DZW_OplAtivaIntegracao = 1, DZW_OplCriacaoUsuarioAut =  0, DZW_DssCaminhoLDAP = ''DC=apdatatst,DC=com,DC=br'', DZW_OplIntegraViaWS = 1, DZW_DssWSCriaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtualizaDados = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrocaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSResetaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtivaDesativaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_CdsWSUsuario = ''flsantos'', DZW_CosWSSenha = ''Fls12345@'', DZW_OplAtivaLogIntegracao = 1, DZW_OplNaoSincronizarGrupo = 0, DZW_OplNaoSincronizarEstrutura = 0, DZW_DssWSValidaLogin = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrataSSO = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 'DZW_CdiSistema = 72', 1
 
 			declare @EstruturasADKey int
 			declare @EstruturasADPropsKey int
 			declare @EstruturasADGroup int
 
-			/*Objeto - 3091 - Criação do grupo básico para realização de testes*/
-				exec sp_takeKeyForInsertion 'EstruturasAD', @EstruturasADKey OUTPUT
-				exec sp_takeKeyForInsertion 'EstruturasADProps', @EstruturasADPropsKey OUTPUT
-				exec sp_takeKeyForInsertion 'EstruturasADGrupos', @EstruturasADGroup OUTPUT
+		/*Objeto - 3091 - Criação do grupo básico para realização de testes*/
+			exec sp_takeKeyForInsertion 'EstruturasAD', @EstruturasADKey OUTPUT
+			exec sp_takeKeyForInsertion 'EstruturasADProps', @EstruturasADPropsKey OUTPUT
+			exec sp_takeKeyForInsertion 'EstruturasADGrupos', @EstruturasADGroup OUTPUT
 
-				/*Configuração - Básica*/
+			/*3091 - Configuração - Básica*/
 				exec sp_Execute_Insert_Key 'dbo', 01, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey/*1002*/, 0, '''(TESTE) CONFIGURACAO BASICA'', null, null, null, null, null, null, null, 0, 0, 0, ''OU=ProdutoTestes'', 0, 0', 1 
 
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 01, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 0, @EstruturasADKey, 0, '105848, 38, 0, 0', 1   
@@ -1445,7 +1459,7 @@ begin
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 08, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 1, @EstruturasADKey, 0, '''Grupo_Basico_Um'''  
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 09, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 2, @EstruturasADKey, 0, '''Grupo_Basico_Dois'''  
 
-				/*Configuração - Para Valores Default 1*/
+			/*3091 - Configuração - Para Valores Default 1*/
 				exec sp_Execute_Insert_Key 'dbo', 10, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey, 1, '''(TESTE) CONFIGURACAO VALOR PRE-DEFINIDO UM'', null, null, null, null, null, null, null, 14, 0, 0, ''OU=Default_Um'', 0, 0', 1 
 
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 11, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 7, @EstruturasADKey, 1, '105848, 38, 0, 0', 1   
@@ -1457,10 +1471,10 @@ begin
 				exec sp_Execute_Insert_ThreeKey 'dbo', 16, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 12, @EstruturasADKey, 1, @SQL_CdiComandoSQL, 10, '0, 3, 0', 1
 				exec sp_Execute_Insert_ThreeKey 'dbo', 17, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 13, @EstruturasADKey, 1, @SQL_CdiComandoSQL, 11, '0, 0, 0', 1
 
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 18, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 3, @EstruturasADKey, 1, '''Grupo_Default_Um'''  
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 19, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 4, @EstruturasADKey, 1, '''Grupo_Default_Dois'''  
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 18, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 3, @EstruturasADKey, 1, '''Grupo_Default_Um''', 1  
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 19, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 4, @EstruturasADKey, 1, '''Grupo_Default_Dois''', 1  
 
-				/*Configuração - Para Valores Default 2*/
+			/*3091 - Configuração - Para Valores Default 2*/
 				exec sp_Execute_Insert_Key 'dbo', 19, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey, 2, '''(TESTE) CONFIGURACAO VALOR PRE-DEFINIDO DOIS'', null, null, null, null, null, null, null, 15, 0, 0, ''OU=Default_Dois'', 0, 0', 1 
 
 				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 20, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 14, @EstruturasADKey, 2, '105848, 38, 0, 0', 1   
@@ -1472,10 +1486,8 @@ begin
 				exec sp_Execute_Insert_ThreeKey 'dbo', 25, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 19, @EstruturasADKey, 2, @SQL_CdiComandoSQL, 10, '0, 3, 0', 1
 				exec sp_Execute_Insert_ThreeKey 'dbo', 26, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 20, @EstruturasADKey, 2, @SQL_CdiComandoSQL, 11, '0, 0, 0', 1
 
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 27, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 5, @EstruturasADKey, 2, '''Grupo_Default_Tres'''  
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 28, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 6, @EstruturasADKey, 2, '''Grupo_Default_Quatro'''  
-			/*Criação do grupo básico para realização de testes*/
-
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 27, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 5, @EstruturasADKey, 2, '''Grupo_Default_Tres''', 1  
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 28, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 6, @EstruturasADKey, 2, '''Grupo_Default_Quatro''', 1  
 		/*ADINTEGRATOR - ACTIVE DIRECTORY - FIM*/
 
 		exec sp_Create_Aux_Table;

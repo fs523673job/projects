@@ -174,3 +174,4 @@ select
 
 select SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL,SQL_D1bComentarios from ComandosSQLs where SQL_CdiComandoSQL = 20069
 
+select * from ListasGenericasItens

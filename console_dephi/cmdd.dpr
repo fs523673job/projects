@@ -10,6 +10,7 @@ uses
   System.Classes,
   System.StrUtils,
   System.RTTI,
+  System.IOUtils,
   ucapturedoscmd in 'ucapturedoscmd.pas'
   ;
 
@@ -264,6 +265,8 @@ var
       19 :
         begin
           Result := ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]), '', 'GenerateMessages');
+          if TFile.Exists(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository])) then
+            Result := Result + #13#10 + (ExecuteInternal(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository]), '', 'AtualizaPath'));
         end;
       20 :
         begin
