@@ -50,7 +50,7 @@ def carregar_configuracoes(caminho_base, arquivo_config):
         return None
 
 # Define o caminho base para os arquivos de configuração e trechos de código
-caminho_base = 'C:\\github\\Fontes_Alterados_Testesr'
+caminho_base = 'C:\\github\\Fontes_Alterados_Testes'
 
 arquivo_config = 'updateAlterFontsForTests.json'
 configuracoes = carregar_configuracoes(caminho_base, arquivo_config)

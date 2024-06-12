@@ -905,6 +905,7 @@ begin
 	exec sp_deleteOptionByApDataRange 'ModelosIntegracoesCmds', @ConsiderApdataRange
 	exec sp_deleteOptionByApDataRange 'ModelosIntegracoes', @ConsiderApdataRange
 	exec sp_deleteOptionByApDataRange 'LayoutsSaidas', @ConsiderApdataRange
+	exec sp_deleteOptionByApDataRange 'EstruturasADxSitsAtivs', 1, 1
 	exec sp_deleteOptionByApDataRange 'EstruturasADGrupos', 1, 1
 	exec sp_deleteOptionByApDataRange 'EstruturasADProps', 1, 1
 	exec sp_deleteOptionByApDataRange 'EstruturasAD', 1, 1
@@ -1459,56 +1460,64 @@ begin
 		/*Objeto 3090*/
 			exec sp_Execute_Update 'dbo', '01', 'DefSisIntegracaoAD', 'DZW_DtdOficializacaoSistema = null, DZW_OplAtivaIntegracao = 1, DZW_OplCriacaoUsuarioAut =  0, DZW_DssCaminhoLDAP = ''DC=apdatatst,DC=com,DC=br'', DZW_OplIntegraViaWS = 1, DZW_DssWSCriaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtualizaDados = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrocaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSResetaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtivaDesativaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_CdsWSUsuario = ''flsantos'', DZW_CosWSSenha = ''Fls12345@'', DZW_OplAtivaLogIntegracao = 1, DZW_OplNaoSincronizarGrupo = 0, DZW_OplNaoSincronizarEstrutura = 0, DZW_DssWSValidaLogin = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrataSSO = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 'DZW_CdiSistema = 72', 1
 
-			declare @EstruturasADKey int
-			declare @EstruturasADPropsKey int
+			declare @EstruturasAD int
+			declare @EstruturasADProps int
 			declare @EstruturasADGroup int
+			declare @EstruturasADxSitsAtivs int
 
 		/*Objeto - 3091 - Criação do grupo básico para realização de testes*/
-			exec sp_takeKeyForInsertion 'EstruturasAD', @EstruturasADKey OUTPUT
-			exec sp_takeKeyForInsertion 'EstruturasADProps', @EstruturasADPropsKey OUTPUT
+			exec sp_takeKeyForInsertion 'EstruturasAD', @EstruturasAD OUTPUT
+			exec sp_takeKeyForInsertion 'EstruturasADProps', @EstruturasADProps OUTPUT
 			exec sp_takeKeyForInsertion 'EstruturasADGrupos', @EstruturasADGroup OUTPUT
+			exec sp_takeKeyForInsertion 'EstruturasADxSitsAtivs', @EstruturasADxSitsAtivs OUTPUT
 
 			/*3091 - Configuração - Básica*/
-				exec sp_Execute_Insert_Key 'dbo', 01, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey/*1002*/, 0, '''(TESTE) CONFIGURACAO BASICA'', null, null, null, null, null, null, null, 1, 0, 2, ''OU=ProdutoTestes'', 0, 0', 1 
+				exec sp_Execute_Insert_Key 'dbo', 01, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasAD/*1002*/, 0, '''(TESTE) CONFIGURACAO BASICA'', null, null, null, null, null, null, null, 1, 0, 2, ''OU=ProdutoTestes'', 0, 0', 1 
 
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 01, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 0, @EstruturasADKey, 0, '105848, 38, 0, 0', 1   
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 02, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 1, @EstruturasADKey, 0, '91403, 7, 0, 0', 1
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 03, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 2, @EstruturasADKey, 0, '96978, 39, 0, 0', 1
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 04, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 3, @EstruturasADKey, 0, '9420, 35, 1, 0', 1
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 02, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 0, @EstruturasAD, 0, '105848, 38, 0, 0', 1   
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 03, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 1, @EstruturasAD, 0, '91403, 7, 0, 0', 1
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 04, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 2, @EstruturasAD, 0, '96978, 39, 0, 0', 1
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 05, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 3, @EstruturasAD, 0, '9420, 35, 1, 0', 1
 			
-				exec sp_Execute_Insert_ThreeKey 'dbo', 05, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 4, @EstruturasADKey, 0, @SQL_CdiComandoSQL, 11, '89918, 6, 0', 1
-				exec sp_Execute_Insert_ThreeKey 'dbo', 06, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 5, @EstruturasADKey, 0, @SQL_CdiComandoSQL, 10, '0, 3, 0', 1
-				exec sp_Execute_Insert_ThreeKey 'dbo', 07, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 6, @EstruturasADKey, 0, @SQL_CdiComandoSQL, 11, '0, 0, 0', 1
+				exec sp_Execute_Insert_ThreeKey 'dbo', 06, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADProps, 4, @EstruturasAD, 0, @SQL_CdiComandoSQL, 11, '89918, 6, 0', 1
+				exec sp_Execute_Insert_ThreeKey 'dbo', 07, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADProps, 5, @EstruturasAD, 0, @SQL_CdiComandoSQL, 10, '0, 3, 0', 1
+				exec sp_Execute_Insert_ThreeKey 'dbo', 08, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADProps, 6, @EstruturasAD, 0, @SQL_CdiComandoSQL, 11, '0, 0, 0', 1
 
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 08, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 1, @EstruturasADKey, 0, '''Provisorio'''  
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 09, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 1, @EstruturasAD, 0, '''Provisorio''', 1  
+
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 10, 'EstruturasADxSitsAtivs', 'EBA_CdiEstruturaADSitAtiv, EBA_CdiEstruturaAD, EBA_CdiSituacao ', @EstruturasADxSitsAtivs, 0, @EstruturasAD, 0, '1', 1   
 
 			/*3091 - Configuração - Para Valores Default 1*/
-				exec sp_Execute_Insert_Key 'dbo', 10, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey, 1, '''(TESTE) CONFIGURACAO VALOR PRE-DEFINIDO UM'', null, null, null, null, null, null, null, 14, 0, 1, ''OU=Contratados'', 0, 0', 1 
+				exec sp_Execute_Insert_Key 'dbo', 11, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasAD, 1, '''(TESTE) CONFIGURACAO VALOR PRE-DEFINIDO UM'', null, null, null, null, null, null, null, 14, 0, 1, ''OU=Contratados'', 0, 0', 1 
 
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 11, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 7, @EstruturasADKey, 1, '105848, 38, 0, 0', 1   
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 12, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 8, @EstruturasADKey, 1, '91403, 7, 0, 0', 1
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 13, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 9, @EstruturasADKey, 1, '96978, 39, 0, 0', 1
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 14, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 10, @EstruturasADKey, 1, '9420, 35, 1, 0', 1
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 12, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 7,  @EstruturasAD, 1, '105848, 38, 0, 0', 1   
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 13, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 8,  @EstruturasAD, 1, '91403, 7, 0, 0', 1
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 14, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 9,  @EstruturasAD, 1, '96978, 39, 0, 0', 1
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 15, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 10, @EstruturasAD, 1, '9420, 35, 1, 0', 1
 			
-				exec sp_Execute_Insert_ThreeKey 'dbo', 15, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 11, @EstruturasADKey, 1, @SQL_CdiComandoSQL, 11, '89918, 6, 0', 1
-				exec sp_Execute_Insert_ThreeKey 'dbo', 16, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 12, @EstruturasADKey, 1, @SQL_CdiComandoSQL, 10, '0, 3, 0', 1
-				exec sp_Execute_Insert_ThreeKey 'dbo', 17, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 13, @EstruturasADKey, 1, @SQL_CdiComandoSQL, 11, '0, 0, 0', 1
+				exec sp_Execute_Insert_ThreeKey 'dbo', 16, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADProps, 11, @EstruturasAD, 1, @SQL_CdiComandoSQL, 11, '89918, 6, 0', 1
+				exec sp_Execute_Insert_ThreeKey 'dbo', 17, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADProps, 12, @EstruturasAD, 1, @SQL_CdiComandoSQL, 10, '0, 3, 0', 1
+				exec sp_Execute_Insert_ThreeKey 'dbo', 18, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADProps, 13, @EstruturasAD, 1, @SQL_CdiComandoSQL, 11, '0, 0, 0', 1
 
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 18, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 3, @EstruturasADKey, 1, '''Programadores''', 1  
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 19, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 3, @EstruturasAD, 1, '''Programadores''', 1  
+
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 20, 'EstruturasADxSitsAtivs', 'EBA_CdiEstruturaADSitAtiv, EBA_CdiEstruturaAD, EBA_CdiSituacao ', @EstruturasADxSitsAtivs, 1, @EstruturasAD, 1, '1', 1   
 
 			/*3091 - Configuração - Para Valores Default 2*/
-				exec sp_Execute_Insert_Key 'dbo', 19, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasADKey, 2, '''(TESTE) CONFIGURACAO VALOR PRE-DEFINIDO DOIS'', null, null, null, null, null, null, null, 15, 0, 1, ''OU=Gerentes'', 0, 0', 1 
+				exec sp_Execute_Insert_Key 'dbo', 21, 'EstruturasAD', 'DZY_CdiEstruturaAD, DZY_D1sDescricaoEstruturaAD, DZY_D2sDescricaoEstruturaAD, DZY_D3sDescricaoEstruturaAD, DZY_D4sDescricaoEstruturaAD, DZY_D5sDescricaoEstruturaAD, DZY_D6sDescricaoEstruturaAD, DZY_D7sDescricaoEstruturaAD, DZY_D8sDescricaoEstruturaAD, DZY_CdiDefault, DZY_OplSemFiltro, DZY_NuiOrdem, DZY_DssCaminhoLDAP, DZY_OplIgnorarEstrutsSup, DZY_OplNaoIntegrar', @EstruturasAD, 2, '''(TESTE) CONFIGURACAO VALOR PRE-DEFINIDO DOIS'', null, null, null, null, null, null, null, 15, 0, 1, ''OU=Gerentes'', 0, 0', 1 
 
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 20, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 14, @EstruturasADKey, 2, '105848, 38, 0, 0', 1   
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 21, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 15, @EstruturasADKey, 2, '91403, 7, 0, 0', 1
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 22, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 16, @EstruturasADKey, 2, '96978, 39, 0, 0', 1
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 23, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADPropsKey, 17, @EstruturasADKey, 2, '9420, 35, 1, 0', 1
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 22, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 14, @EstruturasAD, 2, '105848, 38, 0, 0', 1   
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 23, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 15, @EstruturasAD, 2, '91403, 7, 0, 0', 1
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 24, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 16, @EstruturasAD, 2, '96978, 39, 0, 0', 1
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 25, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor, EBC_CdiComandoSQL', @EstruturasADProps, 17, @EstruturasAD, 2, '9420, 35, 1, 0', 1
 			
-				exec sp_Execute_Insert_ThreeKey 'dbo', 24, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 18, @EstruturasADKey, 2, @SQL_CdiComandoSQL, 11, '89918, 6, 0', 1
-				exec sp_Execute_Insert_ThreeKey 'dbo', 25, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 19, @EstruturasADKey, 2, @SQL_CdiComandoSQL, 10, '0, 3, 0', 1
-				exec sp_Execute_Insert_ThreeKey 'dbo', 26, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADPropsKey, 20, @EstruturasADKey, 2, @SQL_CdiComandoSQL, 11, '0, 0, 0', 1
+				exec sp_Execute_Insert_ThreeKey 'dbo', 26, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADProps, 18, @EstruturasAD, 2, @SQL_CdiComandoSQL, 11, '89918, 6, 0', 1
+				exec sp_Execute_Insert_ThreeKey 'dbo', 27, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADProps, 19, @EstruturasAD, 2, @SQL_CdiComandoSQL, 10, '0, 3, 0', 1
+				exec sp_Execute_Insert_ThreeKey 'dbo', 28, 'EstruturasADProps', 'EBC_CdiEstruturaADProp, EBC_CdiEstruturaAD, EBC_CdiComandoSQL, EBC_CdiCampo, EBC_CdiPropriedadeAD, EBC_OplConsDescLookupValor', @EstruturasADProps, 20, @EstruturasAD, 2, @SQL_CdiComandoSQL, 11, '0, 0, 0', 1
 
-				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 27, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 5, @EstruturasADKey, 2, '''Gerentes''', 1  
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 29, 'EstruturasADGrupos', 'DZZ_CdiEstruturaAdGrupo, DZZ_CdiEstruturaAD, DZZ_D1sDssGrupoUsuario ', @EstruturasADGroup, 5, @EstruturasAD, 2, '''Gerentes''', 1  
+
+				exec sp_Execute_Insert_Key_ForeignKey 'dbo', 30, 'EstruturasADxSitsAtivs', 'EBA_CdiEstruturaADSitAtiv, EBA_CdiEstruturaAD, EBA_CdiSituacao ', @EstruturasADxSitsAtivs, 2, @EstruturasAD, 2, '1', 1   
 		/*ADINTEGRATOR - ACTIVE DIRECTORY - FIM*/
 
 		exec sp_Create_Aux_Table;

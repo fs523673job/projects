@@ -178,3 +178,5 @@ select SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComando
 
 select * from ListasGenericas
 select * from ListasGenericasItens
+
+select * from EstruturasADxSitsAtivs
