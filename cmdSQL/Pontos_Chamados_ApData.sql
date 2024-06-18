@@ -15,9 +15,9 @@ M.AHX_CdiContratoItemxPessoa_At = ChamadasOcorrencias.AHX_CdiContratoItemxPessoa
 M.AHX_CdiContratoItemxPessoa_At in ( 13679, 23265, 30112, 30032, 5019, 20508, 29293, 27995, 35360,
 11212, 3949, 26280, 27918, 30288, 13692, 30506) and
 M.AHX_CdiOcorrenciaChamada in (32, 71, 30, 1020) and
-M.AHX_DtdChamadaOcorrencia_Ini >= '04/01/2023' )
+M.AHX_DtdChamadaOcorrencia_Ini >= '05/01/2023' )
 and AHX_CdiOcorrenciaChamada in (32, 71, 30, 1020)
-and Coalesce(Month(AHX_DtdChamadaOcorrencia_Ini), 0) = 4
+and Coalesce(Month(AHX_DtdChamadaOcorrencia_Ini), 0) = 6
 and Coalesce(Year(AHX_DtdChamadaOcorrencia_Ini), 0) = 2024
 ) ChamadasOcorrencias on (AHX_CdiContratoItemxPessoa_At = HFE_CdiContratoItemxPessoa)
 Where HFE_CdiContratoItemxPessoa in ( 13679, 23265, 30112, 30032, 5019, 20508, 29293, 27995, 35360,

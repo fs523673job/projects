@@ -49,12 +49,15 @@ def check_mr_status(driver, file_path):
                     continue
                 try:
                     driver.get(mr_url)
-                    selectors = [".gl-display-none.gl-sm-display-block.gl-ml-2"]
+                    print(f"Verificando URL: {mr_url}");
+                    selectors = ["span[class='gl-hidden sm:gl-block gl-ml-2']"]
                     for selector in selectors:
+                        print(f"Verificando seletor: {selector}")
                         try:
                             status_tags = WebDriverWait(driver, 10).until(
                                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, selector))
                             )
+                            print(f"Status Tag: {status_tags}")
                             for status_tag in status_tags:
                                 status_text = status_tag.text.strip()
                                 if status_text in ["Open", "Merged", "Closed"]:
@@ -62,6 +65,7 @@ def check_mr_status(driver, file_path):
                                         update_file_with_status(file_path, mr_url, status_text)
                                     return status_text, mr_url
                         except:
+                            print(f"Não encontrado elemento {selector}")
                             continue
                 except Exception as e:
                     print(f"Erro ao tentar verificar o status do MR em {mr_url}: {e}")
