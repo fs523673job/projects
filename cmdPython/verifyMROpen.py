@@ -49,7 +49,6 @@ def check_mr_status(driver, file_path):
                     continue
                 try:
                     driver.get(mr_url)
-                    print(f"Verificando URL: {mr_url}");
                     selectors = ["span[class='gl-hidden sm:gl-block gl-ml-2']"]
                     for selector in selectors:
                         try:

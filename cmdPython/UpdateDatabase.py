@@ -49,6 +49,11 @@ def main():
     # Set database based on user input
     global database
     database = "Oficial_31202.BAK" if base_beta == "yes" else "Oficial_55900.BAK"
+    source_path = rf"\\192.168.10.209\BackupsOficiais\{database}"
+    
+    if not os.path.isfile(source_path):
+        print(f"Arquivo do database {source_path} nao encontrado e o script sera finalizado");
+        exit();
 
     # Start process
     print(f"Database a ser restaurado: {database}")
@@ -56,7 +61,6 @@ def main():
     delete_file_if_exists(os.path.join(BASES_LOCAL_PATH, "logData.txt"))
 
     # Copying file
-    source_path = rf"\\192.168.10.209\BackupsOficiais\{database}"
     destination_path = os.path.join(BASES_LOCAL_PATH, database)
     print(f"Copiando arquivo de '{source_path}'")
     
