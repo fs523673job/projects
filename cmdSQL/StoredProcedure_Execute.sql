@@ -122,7 +122,7 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModel
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 20069', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL,SQL_D1bComentarios'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLsGrupos'
 exec sp_Simple_Generate_Inserts_From_Selects 'Consultas', 'ACS_CdiConsulta = 10018'
-exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida in (1004, 1005)', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
+exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida in (1011)', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
 exec sp_Simple_Generate_Inserts_From_Selects 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao = 1'
 exec sp_Simple_Generate_Inserts_From_Selects 'TiposComandosIntegrs'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsRets'
