@@ -49,7 +49,7 @@ def main():
     # Set database based on user input
     global database
     database = "Oficial_31202.BAK" if base_beta == "yes" else "Oficial_55900.BAK"
-    source_path = rf"\\192.168.10.209\BackupsOficiais\{database}"
+    source_path = rf"\\172.26.7.209\BackupsOficiais\{database}"
     
     if not os.path.isfile(source_path):
         print(f"Arquivo do database {source_path} nao encontrado e o script sera finalizado");
