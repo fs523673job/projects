@@ -7,7 +7,7 @@ def buscar_links():
     DB_HOST = 'localhost'
     DB_NAME = r'C:\github\bases\firebird\TESTDB_F30.FDB'
     DB_USER = 'SYSDBA'
-    DB_PASSWORD = 'masterkey'
+    DB_PASSWORD = 'master'
 
     # Conexão com o banco de dados
     con = fdb.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)

@@ -4,7 +4,7 @@ import subprocess
 from tqdm import tqdm
 
 # Constants for SQL server details and file paths
-SERVER = "APDNSON0096"
+SERVER = "APDNSON0220"
 USERNAME = "sa"
 PASSWORD = "18|=S1=aHbU{T1Tn"
 CMD_SQL_PATH = r"C:\github\fs523673job\projects\cmdSQL"
@@ -43,6 +43,7 @@ def copy_file_with_progress(src, dest):
 
 def main():
     # Solicitando entrada do usuário
+    copiar_arquivo = input("Copiar novo backup da base? [yes, no]: ").lower()
     restaurar = input("Restaurar Base Dados e adicionar dados default (*no* apenas restauracao) [yes, no]: ").lower()
     base_beta = input("Restaurar Base Beta [yes, no]: ").lower()
 
@@ -50,24 +51,31 @@ def main():
     global database
     database = "Oficial_31202.BAK" if base_beta == "yes" else "Oficial_55900.BAK"
     source_path = rf"\\172.26.7.209\BackupsOficiais\{database}"
-    
+
     if not os.path.isfile(source_path):
-        print(f"Arquivo do database {source_path} nao encontrado e o script sera finalizado");
-        exit();
+        print(f"Arquivo do database {source_path} nao encontrado e o script sera finalizado")
+        exit()
 
     # Start process
     print(f"Database a ser restaurado: {database}")
-    delete_file_if_exists(os.path.join(BASES_LOCAL_PATH, database))
+    if copiar_arquivo == "yes":
+        delete_file_if_exists(os.path.join(BASES_LOCAL_PATH, database))
     delete_file_if_exists(os.path.join(BASES_LOCAL_PATH, "logData.txt"))
 
-    # Copying file
-    destination_path = os.path.join(BASES_LOCAL_PATH, database)
-    print(f"Copiando arquivo de '{source_path}'")
-    
-    # Show progress bar while copying
-    print("Iniciando copia do arquivo...")
-    copy_file_with_progress(source_path, destination_path)
-    print("Copia finalizada.")
+    if copiar_arquivo == "yes":
+        # Copying file
+        destination_path = os.path.join(BASES_LOCAL_PATH, database)
+        print(f"Copiando arquivo de '{source_path}'")
+
+        # Show progress bar while copying
+        print("Iniciando copia do arquivo...")
+        copy_file_with_progress(source_path, destination_path)
+        print("Copia finalizada.")
+    else:
+        destination_path = os.path.join(BASES_LOCAL_PATH, database)
+        if not os.path.isfile(destination_path):
+            print(f"O arquivo {destination_path} não existe localmente. Não é possível restaurar sem uma cópia válida.")
+            exit()
 
     # Restoring database
     print(f"Iniciando restauracao da base de dados: {database}")

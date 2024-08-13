@@ -1,14 +1,22 @@
 import fdb
 import subprocess
 import os
+from unidecode import unidecode
+import re
 
-
-def insert_into_firebird(input_name, input_sha, branch_name, regex_search, feature_desc, feature_type):
+def insert_into_firebird(input_name, input_sha, branch_name, regex_search, feature_desc, feature_type, name_pt):
     # Configurações de conexão com o banco Firebird
     DB_HOST = 'localhost'
     DB_NAME = r'C:\github\bases\firebird\TESTDB_F30.FDB'
     DB_USER = 'SYSDBA'
-    DB_PASSWORD = 'masterkey'
+    DB_PASSWORD = 'master'
+
+    # Remove acentuação
+    regex_search = unidecode(regex_search)
+    feature_desc = unidecode(feature_desc)
+
+    # Remove tudo que não é dígito de name_pt
+    name_pt = re.sub(r'\D', '', name_pt)
 
     # Conexão com o banco de dados
     con = fdb.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
@@ -19,12 +27,12 @@ def insert_into_firebird(input_name, input_sha, branch_name, regex_search, featu
 
     # SQL para inserir os dados
     sql = """
-    INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM, REGEX_SEARCH, TYPE_FEATURE, DESC_PT) 
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM, REGEX_SEARCH, TYPE_FEATURE, DESC_PT, NAME_PT)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     """
 
     # Executa a SQL
-    cur.execute(sql, (input_name, input_sha, branch_name, regex_search, feature_type, feature_desc))
+    cur.execute(sql, (input_name, input_sha, branch_name, regex_search, feature_type, feature_desc, name_pt))
     con.commit()
     con.close()
 
@@ -96,6 +104,10 @@ def main():
     regex_search = input("Digite o regex de busca: ")
     feature_type = get_feature_type(feature_name)
 
+    # Remove acentuação
+    feature_desc = unidecode(feature_desc)
+    regex_search = unidecode(regex_search)
+
     args = ['C:/Program Files/Git/bin/git.exe', 'fscreatefeaturefrombranch', branch_name, feature_name]
     result = subprocess.run(args, capture_output=True, text=True)
     print("Saída completa do Bash:\n", result.stdout)
@@ -109,7 +121,9 @@ def main():
     print("Data extraído do Bash:", data)
 
     if 'NAME_FEATURE' in data and 'NAME_BRANCH' in data and 'SHA_ORIGEM' in data:
-        insert_into_firebird(data['NAME_FEATURE'], data['NAME_BRANCH'], data['SHA_ORIGEM'], regex_search, feature_desc, feature_type)
+        # Remove tudo que não é dígito de name_pt
+        name_pt = re.sub(r'\D', '', data['NAME_BRANCH'])
+        insert_into_firebird(data['NAME_FEATURE'], data['NAME_BRANCH'], data['SHA_ORIGEM'], regex_search, feature_desc, feature_type, name_pt)
         update_feature_file(data['NAME_FEATURE'])  # Atualiza o arquivo
     else:
         print("Erro: Não foi possível obter todas as informações necessárias da saída do script Bash.")

@@ -11,6 +11,7 @@ uses
   System.StrUtils,
   System.RTTI,
   System.IOUtils,
+  WinApi.Windows,
   ucapturedoscmd in 'ucapturedoscmd.pas'
   ;
 
@@ -264,9 +265,27 @@ var
         end;
       19 :
         begin
-          Result := ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]), '', 'GenerateMessages');
-          if TFile.Exists(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository])) then
-            Result := Result + #13#10 + (ExecuteInternal(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository]), '', 'AtualizaPath'));
+          var OriginalContent := TStringList.Create;;
+          try
+            if not FileExists(Format('%s\ApIdControl.exe',[DirectoryRepository])) then
+            begin
+              var SourcePath := Format('%s\Utils\ApIdControl\bin\Win32\Release\ApIdControl.exe', [DirectoryRepository]);
+              var SourceDest := Format('%s\ApIdControl.exe', [DirectoryRepository]);
+
+              CopyFile(PChar(SourcePath), PChar(SourceDest), False);
+            end;
+
+            OriginalContent.LoadFromFile(Format('%s\GenerateMessages.bat', [DirectoryRepository]));
+
+            TFile.WriteAllText(Format('%s\GenerateMessages.bat', [DirectoryRepository]), OriginalContent.Text.Replace('\\srvdevel\', '\\srvdevel1\').TrimRight);
+
+            Result := ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]), '', 'GenerateMessages');
+            if TFile.Exists(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository])) then
+              Result := Result + #13#10 + (ExecuteInternal(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository]), '', 'AtualizaPath'));
+          finally
+            TFile.WriteAllText(Format('%s\GenerateMessages.bat', [DirectoryRepository]), OriginalContent.Text.Replace('\\srvdevel1\', '\\srvdevel\').TrimRight);
+            OriginalContent.Free;
+          end;
         end;
       20 :
         begin
