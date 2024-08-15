@@ -52,9 +52,10 @@ def main():
     database = "Oficial_31202.BAK" if base_beta == "yes" else "Oficial_55900.BAK"
     source_path = rf"\\172.26.7.209\BackupsOficiais\{database}"
 
-    if not os.path.isfile(source_path):
-        print(f"Arquivo do database {source_path} nao encontrado e o script sera finalizado")
-        exit()
+    if (copiar_arquivo == "yes"):
+        if not os.path.isfile(source_path):
+            print(f"Arquivo do database {source_path} nao encontrado e o script sera finalizado")
+            exit()
 
     # Start process
     print(f"Database a ser restaurado: {database}")

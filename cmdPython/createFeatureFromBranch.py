@@ -122,7 +122,7 @@ def main():
 
     if 'NAME_FEATURE' in data and 'NAME_BRANCH' in data and 'SHA_ORIGEM' in data:
         # Remove tudo que não é dígito de name_pt
-        name_pt = re.sub(r'\D', '', data['NAME_BRANCH'])
+        name_pt = re.sub(r'\D', '', data['NAME_FEATURE'])
         insert_into_firebird(data['NAME_FEATURE'], data['NAME_BRANCH'], data['SHA_ORIGEM'], regex_search, feature_desc, feature_type, name_pt)
         update_feature_file(data['NAME_FEATURE'])  # Atualiza o arquivo
     else:
