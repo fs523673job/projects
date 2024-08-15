@@ -9,20 +9,25 @@ set "dirBase=%3"
 set "dirApp=%4"
 set "arquitetura=%5"
 set "appName=%6"
-set "dirNameAux=%7"
-set "addEureka=%8" 
+set "aplicacoes=%7"
+set "bin=%8"
+set "source=%9"
+shift
+set "lib=%~9" 
+shift
+set "addEureka=%~9" 
 set "delphiAlexandria=alexandria"
 set "dephiTokyo=tokyo"
 set "studioVer=22.0"
 set "localPath=C:\Program Files (x86)\Embarcadero\Studio\22.0\bin;C:\Program Files (x86)\Embarcadero\Studio\22.0\bin64;C:\Program Files\CMake\;%PATH%"
 
 :: Caminhos
-set "app_exe=C:\%dirBase%\%dirNameAux%\%dirApp%\%arquitetura%\%typeBuild%\%appName%.exe"
-set "app_dll=C:\%dirBase%\%dirNameAux%\%dirApp%\%arquitetura%\%typeBuild%\%appName%.dll"
-set "app_base=C:\%dirBase%\%dirNameAux%\%dirApp%\%arquitetura%\%typeBuild%\%appName%"
-set "app_source=C:\%dirBase%\%dirNameAux%\%dirApp%\%appName%"
-set "app_lib=C:\%dirBase%\%dirNameAux%\%dirApp%\%arquitetura%\%typeBuild%"
-set "warning_path=C:\%dirBase%\%dirNameAux%\%dirApp%\%arquitetura%\%typeBuild%\Warnings.log"
+set "app_exe=C:\%dirBase%\%aplicacoes%\%dirApp%\%bin%\%arquitetura%\%typeBuild%\%appName%.exe
+set "app_dll=C:\%dirBase%\%aplicacoes%\%dirApp%\%bin%\%arquitetura%\%typeBuild%\%appName%.dll
+set "app_base=C:\%dirBase%\%aplicacoes%\%dirApp%\%bin%\%arquitetura%\%typeBuild%\%appName%
+set "app_source=C:\%dirBase%\%aplicacoes%\%dirApp%\%source%\%appName%
+set "app_lib=C:\%dirBase%\%aplicacoes%\%dirApp%\%lib%\%arquitetura%\%typeBuild%"
+set "warning_path=C:\%dirBase%\%aplicacoes%\%dirApp%\%bin%\%arquitetura%\%typeBuild%\Warnings.log"
 set "bpl_path=C:\%dirBase%\ApBPL"
 set "ecc32exe=C:\%dirBase%\ApComps\EurekaLog7\Bin\ecc32.exe"
 
@@ -39,9 +44,6 @@ set "ecc32exe=C:\%dirBase%\ApComps\EurekaLog7\Bin\ecc32.exe"
 @set PlatformSDK=
 
 set status=0
-
-echo SOURCE COMPILE
-echo.
 
 if /I %dephiTokyo% == %vrsDelphi% (
 	set studioVer="19.0"
