@@ -1,28 +1,53 @@
 #!/bin/bash
-# Limpa os arquivos não rastreados, exceto os especificados
-git clean -fxd -e *.bpl -e *.tds -e *.drc -e *.map -e *.rar -e *.ini -e *.dll -e *.txt -e *.xml -e *.log -e *.snl -e *.lnk -e *.config -e *.config*
 
-# Reseta para o estado do último commit
-git reset --hard
+discard_changes() {
+    # Limpa os arquivos não rastreados, exceto os especificados
+    git clean -fxd -e *.bpl -e *.tds -e *.drc -e *.map -e *.rar -e *.ini -e *.dll -e *.txt -e *.xml -e *.log -e *.snl -e *.lnk -e *.config -e *.config*
 
-# Descarta as mudanças nos arquivos não rastreados
-git checkout -- .
+    # Reseta para o estado do último commit
+    git reset --hard
 
-# Salva a saída do git status -s em uma variável
-status_output=$(git status -s)
+    # Descarta as mudanças nos arquivos rastreados
+    git checkout -- .
+}
 
-# Verifica se há alguma saída do git status -s
-if [[ -n $status_output ]]; then
-    # Exibe os arquivos presentes no git status -s
-    echo "Arquivos para deletar:"
-    echo "$status_output"
+delete_files() {
+    # Salva a saída do git status -s em uma variável
+    status_output=$(git status -s)
+
+    # Verifica se há alguma saída do git status -s
+    if [[ -n $status_output ]]; then
+        # Exibe os arquivos presentes no git status -s
+        echo "Arquivos para deletar:"
+        echo "$status_output"
+        
+        # Deleta os arquivos presentes no git status -s
+        git status -s | awk '{print $2}' | xargs rm -f
+        
+        # Adiciona as mudanças ao stage
+        git add .
+
+        # Descarta as mudanças do stage (os arquivos deletados)
+        git reset HEAD -- .
+    fi
+}
+
+while true; do
+    discard_changes
+    delete_files
     
-    # Deleta os arquivos presentes no git status -s
-    git status -s | awk '{print $2}' | xargs rm -f
+    # Verifica se ainda existem mudanças não descartadas
+    remaining_changes=$(git status -s)
     
-    # Adiciona as mudanças ao stage
-    git add .
-
-    # Descarta as mudanças do stage (os arquivos deletados)
-    git reset HEAD -- .
-fi
+    if [[ -z $remaining_changes ]]; then
+        echo "Todas as mudanças foram descartadas com sucesso."
+        break
+    else
+        echo "Ainda existem mudanças não descartadas."
+        read -p "Deseja tentar novamente? (s/n): " retry
+        if [[ $retry != "s" ]]; then
+            echo "Saindo sem descartar todas as mudanças."
+            break
+        fi
+    fi
+done
