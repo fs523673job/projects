@@ -11,7 +11,8 @@ uses
   Windows,
   System.SysUtils,
   System.Classes,
-  System.Console
+  System.Console,
+  System.Diagnostics
   ;
 
 
@@ -161,6 +162,7 @@ var
   CompError       : Boolean;
   CompHint        : Integer;
   CompWarning     : Integer;
+  StopWatch       : TStopWatch;
 begin
   Result := False;
   CompError := False;
@@ -168,6 +170,7 @@ begin
   CompWarning := 0;
   AMessages := '';
   Console.WriteLine(StringOfChar('*', 80));
+  StopWatch := TStopWatch.StartNew;
   Console.WriteColorLine('Inicializando a compilação do ' + ASystemName, [TConsoleColor.Yellow]);
   Console.WriteLine();
   try
@@ -205,7 +208,7 @@ begin
               else if (Pos('Fim do script de compilacao', String(pCommandLine)) > 0) then
               begin
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Green]);
-                AMessages := Format('%s - Compilado sem erros', [ASystemName]);
+                AMessages := Format('%s - Compilado sem erros [%d - ms (%s)', [ASystemName, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
               end
               else if (Pos('ERROS', UpperCase(String(pCommandLine))) > 0) then
               begin
@@ -242,16 +245,16 @@ begin
     end;
   finally
     if CompError then
-      AMessages := Format('%s - Erros Encontrados Na Compilacao', [ASystemName]);
+      AMessages := Format('%s - Erros Encontrados Na Compilacao [%d - ms (%s)]', [ASystemName, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
 
     if CompHint > 0 then
-      AMessages := Format('%s - [Hints Encontrados %d]', [AMessages, CompHint]);
+      AMessages := Format('%s - [Hints Encontrados %d] - [%d - ms (%s)]', [AMessages, CompHint, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
 
     if CompWarning > 0 then
-      AMessages := Format('%s - [Warnings Encontrados %d]', [AMessages, CompWarning]);
+      AMessages := Format('%s - [Warnings Encontrados %d] - [%d - ms (%s)]', [AMessages, CompWarning, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
 
     Console.WriteLine();
-    Console.WriteColorLine('Finalizando a compilação do ' + ASystemName, [TConsoleColor.Yellow]);
+    Console.WriteColorLine(Format('Finalizando a compilação do %s em %d - ms (%s)', [ASystemName, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]), [TConsoleColor.Yellow]);
     Console.WriteLine(StringOfChar('*', 80));
   end;
 end;
