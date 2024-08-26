@@ -46,8 +46,8 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
+        <DCC_DcuOutput>.\$(Platform)\$(Config)\dcus</DCC_DcuOutput>
+        <DCC_ExeOutput>.\$(Platform)\$(Config)\app</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
@@ -59,7 +59,7 @@
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
         <SanitizedProjectName>SignPDF</SanitizedProjectName>
-        <DCC_UnitSearchPath>C:\Apdata_x64\ApComps\SecureBlackBox\Sources;C:\Apdata_x64\ApComps\DevExpress\ExpressLibrary\Sources;C:\Apdata_x64\ApComps\DevExpress;C:\Apdata_x64\ApComps\DevExpress\ExpressCore Library\Sources;C:\Apdata_x64\ApComps\DevExpress\ExpressGDI+ Library\Sources;C:\Apdata_x64\ApComps\DevExpress\XP Theme Manager\Sources;C:\Apdata_x64\ApComps\SecureBlackBox\Sources;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>C:\Apdata_x64\ApComps\SecureBlackBox\Sources;C:\Apdata_x64\ApComps\DevExpress\ExpressLibrary\Sources;C:\Apdata_x64\ApComps\DevExpress;C:\Apdata_x64\ApComps\DevExpress\ExpressCore Library\Sources;C:\Apdata_x64\ApComps\DevExpress\ExpressGDI+ Library\Sources;C:\Apdata_x64\ApComps\DevExpress\XP Theme Manager\Sources;modules\.dcp;..\modules\.dcp;modules\.dcu;..\modules\.dcu;modules;..\modules;modules\synpdf;..\modules\synpdf;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>1046</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
@@ -85,7 +85,6 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppDPIAwarenessMode>PerMonitor</AppDPIAwarenessMode>
@@ -130,14 +129,47 @@
                     <Source Name="MainSource">SignPDF.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Apdata_X64\ApBPL\Win32\acQueryBuilderDsgnD25.bpl">Active Query Builder Core (Design) [Apdata]</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Apdata_X64\ApBPL\Win32\acSqlTextEditorDsgnD25.bpl">Active Query Builder Sql Text Editor (Design) [Apdata]</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Apdata_X64\ApBPL\Win32\acCriteriaBuilderDsgnD25.bpl">Active Query Builder Criteria Builder (Design) [Apdata]</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Apdata_X64\ApBPL\Win32\acQueryBuilderDsgnSDD25.bpl">Active Query Builder SQLDirect Connectivity (Design) [Apdata]</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Apdata_X64\ApBPL\Win32\acQueryBuilderDsgnADOD25.bpl">Active Query Builder ADO Connectivity (Design) [Apdata]</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Apdata_X64\ApBPL\Win32\acQueryBuilderDsgnFireDACD25.bpl">Active Query Builder FireDAC Connectivity (Design) [Apdata]</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Apdata_X64\ApBPL\Win32\acQueryBuilderDsgnDbExD25.bpl">Active Query Builder dbExpress Connectivity (Design) [Apdata]</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclIPIndyImpl280.bpl">IP Abstraction Indy Implementation Design Time</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclIndyCore280.bpl">File c:\program files (x86)\embarcadero\studio\22.0\bin\dclIndyCore280.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclIndyProtocols280.bpl">Indy 10 Protocols Design Time</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclBaseExpert250.bpl">File C:\ApData_x64\ApBPL\Win32\JclBaseExpert250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclDebugExpert250.bpl">File C:\ApData_x64\ApBPL\Win32\JclDebugExpert250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclProjectAnalysisExpert250.bpl">File C:\ApData_x64\ApBPL\Win32\JclProjectAnalysisExpert250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclFavoriteFoldersExpert250.bpl">File C:\ApData_x64\ApBPL\Win32\JclFavoriteFoldersExpert250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclRepositoryExpert250.bpl">File C:\ApData_x64\ApBPL\Win32\JclRepositoryExpert250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclSIMDViewExpert250.bpl">File C:\ApData_x64\ApBPL\Win32\JclSIMDViewExpert250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclStackTraceViewerExpert250.bpl">File C:\ApData_x64\ApBPL\Win32\JclStackTraceViewerExpert250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvAppFrmDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvAppFrmDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvCoreDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvCoreDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvBandsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvBandsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvCmpDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvCmpDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvControlsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvControlsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvCryptDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvCryptDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvCustomDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvCustomDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvDBDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvDBDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvDlgsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvDlgsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvDockingDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvDockingDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvDotNetCtrlsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvDotNetCtrlsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvGlobusDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvGlobusDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvHMIDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvHMIDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvJansDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvJansDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvManagedThreadsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvManagedThreadsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvMMDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvMMDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvNetDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvNetDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvPageCompsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvPageCompsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvPascalInterpreterDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvPascalInterpreterDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvPluginSystemDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvPluginSystemDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvPrintPreviewDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvPrintPreviewDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvRuntimeDesignDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvRuntimeDesignDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvStdCtrlsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvStdCtrlsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvSystemDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvSystemDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvTimeFrameworkDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvTimeFrameworkDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvWizardsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvWizardsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvXPCtrlsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvXPCtrlsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\dclRBFireDAC1621.bpl">ReportBuilder Data Access for FireDAC</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\EurekaLogComponent240.bpl">File C:\ApData_x64\ApBPL\Win32\EurekaLogComponent240.bpl not found</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="4">

@@ -12,8 +12,14 @@ set "appName=%6"
 set "addEureka=%7" 
 set "delphiAlexandria=alexandria"
 set "dephiTokyo=tokyo"
-set "studioVer=22.0"
+::set "studioVer=22.0"
 set "localPath=C:\Program Files (x86)\Embarcadero\Studio\22.0\bin;C:\Program Files (x86)\Embarcadero\Studio\22.0\bin64;C:\Program Files\CMake\;%PATH%"
+
+if /I "%vrsDelphi%" == "%delphiAlexandria%" (
+    set "studioVer=22.0"
+) else if /I "%vrsDelphi%" == "%dephiTokyo%" (
+    set "studioVer=19.0"
+)
 
 :: Caminhos
 set "app_exe=C:\%dirBase%\Aplicacoes\%dirApp%\Bin\%arquitetura%\%typeBuild%\%appName%.exe
@@ -38,11 +44,6 @@ set "ecc32exe=C:\%dirBase%\ApComps\EurekaLog7\Bin\ecc32.exe"
 @set PlatformSDK=
 
 set status=0
-
-if /I %dephiTokyo% == %vrsDelphi% (
-	set studioVer="19.0"
-	set localPath="%ProgramFiles%\nodejs;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\amd64;%FrameworkDir%;%ProgramFiles(x86)%\Embarcadero\Studio\19.0\bin;%ProgramFiles(x86)%\Embarcadero\Studio\19.0\bin64;%SystemRoot%\system32;%SystemRoot%;%ProgramW6432%\Git\cmd;%ProgramW6432%\mingw64\bin;%ProgramW6432%\Git\usr\bin;%ProgramData%\Oracle\Java\javapath;%X64_CERTIFICATE_PATH%\bin;%X64_CERTIFICATE_PATH%\bin"
-)
 
 :: Deleta pasta de dcus
 echo %date% %time% ==== Step 01 - Cleaning dcu from %app_lib%

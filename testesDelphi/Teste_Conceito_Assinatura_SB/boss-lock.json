@@ -1,0 +1,14 @@
+{
+	"hash": "d41d8cd98f00b204e9800998ecf8427e",
+	"updated": "2024-08-26T16:34:56.0701484-03:00",
+	"installedModules": {
+		"https://github.com/synopse/synpdf": {
+			"name": "synpdf",
+			"version": "master",
+			"hash": "c5ca344abbc3912c07f3546cc2799a7b",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		}
+	}
+}

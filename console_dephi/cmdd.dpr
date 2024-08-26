@@ -152,116 +152,116 @@ var
       01 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('%s %s %s ApServer Win32 ApServer 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('%s %s %s ApServer Win32 ApServer 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApServer 32 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApServer 32');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), Format('ApServer 32 - %s', [versionDelphi.ToUpper]));
         end;
       02 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('%s %s %s ApServer Win64 ApServer 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApServer 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('%s %s %s ApServer Win64 ApServer 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApServer 64 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApServer 64');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApServer\Source\buildServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), Format('ApServer 64 - %s', [versionDelphi.ToUpper]));
         end;
       03 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('%s %s %s ApTools Win32 ApTools 0', [versionDelphi, ASubCommand, dirDelphi]) , 'Aptools')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat', Format('%s %s %s ApTools Win32 ApTools 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApTools - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand, 'ApTools');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApTools\Source\buildTools.bat', [DirectoryRepository]), ASubCommand, Format('ApTools - %s', [versionDelphi.ToUpper]));
         end;
       04 :
         begin
-          Result := ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Source\buildWebDispatcher.bat', [DirectoryRepository]), ASubCommand, 'ApWebDispatcher');
+          Result := ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Source\buildWebDispatcher.bat', [DirectoryRepository]), ASubCommand, Format('ApWebDispatcher - %s', [versionDelphi.ToUpper]));
         end;
       05 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApLoadBalancer Win32 ApLoadBalancerServer 1', [versionDelphi, ASubCommand, dirDelphi]) , 'ApLoadBalancerServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApLoadBalancer Win32 ApLoadBalancerServer 1', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApLoadBalancer 32 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApLoadBalancer 32');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), Format('ApLoadBalancer 32 - %s', [versionDelphi.ToUpper]));
         end;
       06 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApLoadBalancer Win64 ApLoadBalancerServer 1', [versionDelphi, ASubCommand, dirDelphi]) , 'ApLoadBalancerServer 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApLoadBalancer Win64 ApLoadBalancerServer 1', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApLoadBalancer 64 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApLoadBalancer 64');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApLoadBalancer\Source\buildBalancer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), Format('ApLoadBalancer 64 - %s', [versionDelphi.ToUpper]));
         end;
       07 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApESocialMsg Win32 ApESocialMsg 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApESocialMsg 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApESocialMsg Win32 ApESocialMsg 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApESocialMsg 32 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand, 'ApESocialMsg');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApESocialMsg\Source\buildESocialMsg.bat', [DirectoryRepository]), ASubCommand, Format('ApESocial 32 - %s', [versionDelphi.ToUpper]));
         end;
       08 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApScripter Win32 ApScripter 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApScripter 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApScripter Win32 ApScripter 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApScripter 32 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApScripter 32');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), Format('ApScripter 32 - %s', [versionDelphi.ToUpper]));
         end;
       09 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApScripter Win64 ApScripter 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApScripter 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApScripter Win64 ApScripter 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApScripter 64 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApScripter 64');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApScripter\Source\buildScripter.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), Format('ApScripter 64 - %s', [versionDelphi.ToUpper]));
         end;
       10 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApIntegrationServer Win32 ApIntegrationServer 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApIntegrationServer 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApIntegrationServer Win32 ApIntegrationServer 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApIntegrationServer 32 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationServer 32');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), Format('ApIntegrationServer 32 - %s', [versionDelphi.ToUpper]));
         end;
       11 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApIntegrationServer Win64 ApIntegrationServer 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApIntegrationServer 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApIntegrationServer Win64 ApIntegrationServer 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApIntegrationServer 64 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationServer 64');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationServer\Source\buildIntegrationServer.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), Format('ApIntegrationServer 64 - %s', [versionDelphi.ToUpper]));
         end;
       12 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApIntegrationInterface Win32 ApIntegrationInterface 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApIntegrationInterface 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApIntegrationInterface Win32 ApIntegrationInterface 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApIntegrationInterface 32 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), 'ApIntegrationInterface 32');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win32', [ASubCommand]), Format('ApIntegrationInterface 32 - %s', [versionDelphi.ToUpper]));
         end;
       13 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApIntegrationInterface Win64 ApIntegrationInterface 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApIntegrationInterface 64')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApIntegrationInterface Win64 ApIntegrationInterface 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApIntegrationInterface 64 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), 'ApIntegrationInterface 64');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApIntegrationInterface\Source\buildIntegrationInterface.bat', [DirectoryRepository]), Format('%s Win64', [ASubCommand]), Format('ApIntegrationInterface 64 - %s', [versionDelphi.ToUpper]));
         end;
       14 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApManager Win32 ApManager 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApManager 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApManager Win32 ApManager 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApManager 32 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand, 'ApManager');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApManager\Source\buildManager.bat', [DirectoryRepository]), ASubCommand, Format('ApManager 32 - %s', [versionDelphi.ToUpper]));
         end;
       15 :
         begin
           if NewBuild then
-            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApUsers Win32 ApUsers 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApUsers 32')
+            Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApUsers Win32 ApUsers 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApUsers 32 - %s', [versionDelphi.ToUpper]))
           else
-            Result := ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand, 'ApUsers');
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApUsers\Source\buildUsers.bat', [DirectoryRepository]), ASubCommand, Format('ApUsers 32 - %s', [versionDelphi.ToUpper]));
         end;
       16 :
         begin
-          Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApADIntegratorWS Win32 ApADIntegratorWS 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApADIntegratorWS ISAPI')
+          Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApADIntegratorWS Win32 ApADIntegratorWS 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApADIntegratorWS ISAPI - %s', [versionDelphi.ToUpper]))
         end;
       17 :
         begin
-          Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApDeveloper Win32 ApDeveloper 0', [versionDelphi, ASubCommand, dirDelphi]) , 'ApDeveloper 32')
+          Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s ApDeveloper Win32 ApDeveloper 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApDeveloper 32 - %s', [versionDelphi.ToUpper]))
         end;
       18 :
         begin
-          Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s RelogioVirtual Win32 RelogioVirtual 0', [versionDelphi, ASubCommand, dirDelphi]) , 'RelogioVirtual 32')
+          Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\build.bat',Format('%s %s %s RelogioVirtual Win32 RelogioVirtual 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('RelogioVirtual 32 - %s', [versionDelphi.ToUpper]))
         end;
       19 :
         begin
@@ -515,6 +515,13 @@ begin
     NewBuild := ParamStr(2).ToUpper() = 'TRUE'
   else
     NewBuild := True;
+
+  if (not ParamStr(3).IsEmpty) then
+  begin
+    versionDelphi := ParamStr(3).ToLower;
+    if (AnsiIndexStr(versionDelphi, ['alexandria', 'tokyo']) = -1) then
+      versionDelphi := 'alexandria';
+  end;
 
   try
     while True do

@@ -208,7 +208,7 @@ begin
               else if (Pos('Fim do script de compilacao', String(pCommandLine)) > 0) then
               begin
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Green]);
-                AMessages := Format('%s - Compilado sem erros [%d - ms (%s)', [ASystemName, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
+                AMessages := Format('%s - Compilado sem erros', [ASystemName]);
               end
               else if (Pos('ERROS', UpperCase(String(pCommandLine))) > 0) then
               begin
@@ -245,13 +245,15 @@ begin
     end;
   finally
     if CompError then
-      AMessages := Format('%s - Erros Encontrados Na Compilacao [%d - ms (%s)]', [ASystemName, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
+      AMessages := Format('%s - Erros Encontrados Na Compilacao', [ASystemName]);
 
     if CompHint > 0 then
-      AMessages := Format('%s - [Hints Encontrados %d] - [%d - ms (%s)]', [AMessages, CompHint, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
+      AMessages := Format('%s - [Hints Encontrados %d]', [AMessages, CompHint]);
 
     if CompWarning > 0 then
-      AMessages := Format('%s - [Warnings Encontrados %d] - [%d - ms (%s)]', [AMessages, CompWarning, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
+      AMessages := Format('%s - [Warnings Encontrados %d]', [AMessages, CompWarning]);
+
+    AMessages := Format('%s - [%d - ms (%s)]', [AMessages, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
 
     Console.WriteLine();
     Console.WriteColorLine(Format('Finalizando a compilação do %s em %d - ms (%s)', [ASystemName, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]), [TConsoleColor.Yellow]);

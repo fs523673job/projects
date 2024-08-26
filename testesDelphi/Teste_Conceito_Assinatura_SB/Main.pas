@@ -18,30 +18,35 @@ uses
   SBWinCertStorage,
   SBX509,
 
-  SignaturePDF
+  SignaturePDF, Vcl.ComCtrls
   ;
 
 type
   TfrmMain = class(TForm)
     OpenDialog: TOpenDialog;
-    GroupBox1: TGroupBox;
-    edtCertFile: TEdit;
-    btnLoadCert: TBitBtn;
-    GroupBox2: TGroupBox;
-    cmbCertificate: TComboBox;
-    btnSignDocument: TBitBtn;
-    Label1: TLabel;
-    edtPassCert: TEdit;
-    GroupBox3: TGroupBox;
-    edtJPEGPath: TEdit;
-    btnLoadJpegPath: TBitBtn;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
     GroupBox4: TGroupBox;
+    Label2: TLabel;
     edtPDF: TEdit;
     btnLoadPDF: TBitBtn;
     cmbCamposAssinaturas: TComboBox;
-    Label2: TLabel;
     ckbTodos: TCheckBox;
     btnRemoveSignature: TButton;
+    GroupBox1: TGroupBox;
+    Label1: TLabel;
+    edtCertFile: TEdit;
+    btnLoadCert: TBitBtn;
+    edtPassCert: TEdit;
+    GroupBox2: TGroupBox;
+    cmbCertificate: TComboBox;
+    GroupBox3: TGroupBox;
+    edtJPEGPath: TEdit;
+    btnLoadJpegPath: TBitBtn;
+    btnSignDocument: TBitBtn;
+    edtCriarNovoPDF: TEdit;
+    btnCriarNovoPDF: TButton;
     procedure btnLoadPDFClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -49,11 +54,13 @@ type
     procedure btnLoadJpegPathClick(Sender: TObject);
     procedure btnSignDocumentClick(Sender: TObject);
     procedure btnRemoveSignatureClick(Sender: TObject);
+    procedure btnCriarNovoPDFClick(Sender: TObject);
   private
     PDFSign: TPDFSignature;
   private
     procedure PopulateWindowsCertificate;
     procedure PopulateFieldsSign;
+    procedure InitializeFields;
   public
   end;
 
@@ -66,16 +73,24 @@ implementation
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
-  PDFSign := TPDFSignature.Create;
-  cmbCertificate.Items.Clear;
-  cmbCamposAssinaturas.Items.Clear;
   PopulateWindowsCertificate;
+  InitializeFields;
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   if Assigned(PDFSign) then
     PDFSign.Free;
+end;
+
+procedure TfrmMain.InitializeFields;
+begin
+  PDFSign := TPDFSignature.Create;
+
+  cmbCertificate.Items.Clear;
+  cmbCamposAssinaturas.Items.Clear;
+
+  edtCriarNovoPDF.Text := ExtractFilePath(ParamStr(0)) + '\NewPDFTest.PDF';
 end;
 
 procedure TfrmMain.PopulateFieldsSign;
@@ -113,6 +128,11 @@ begin
   finally
     WinCert.Free;
   end;
+end;
+
+procedure TfrmMain.btnCriarNovoPDFClick(Sender: TObject);
+begin
+  PDFSign.PreparePDF(edtCriarNovoPDF.Text);
 end;
 
 procedure TfrmMain.btnLoadCertClick(Sender: TObject);

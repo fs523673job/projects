@@ -25,7 +25,11 @@ uses
   SBTypes,
   SBCustomCertStorage,
   SBX509,
-  SBWinCertStorage
+  SBWinCertStorage,
+
+  //SYNPDF
+  SynCommons,
+  SynPDF
   ;
 
 type
@@ -63,6 +67,8 @@ type
 
     function RemoveSignature(Index: integer): TMemoryStream;
     function RemoveEmptySignatureField(Index: Integer): TMemoryStream;
+
+    procedure PreparePDF(const FileName: String = '');
 
     property Field[Index:Integer]: TPDFSignatureField read GetSignField;
     property Certificate : TPDFCertificate read FCertificate;
@@ -356,6 +362,41 @@ begin
 
       FListSignField.Add(SignField);
     end;
+  end;
+end;
+
+procedure TPDFSignature.PreparePDF(const FileName: String = '');
+var
+ lPdf   : TPdfDocument;
+ lPage  : TPdfPage;
+begin
+  lPdf := TPdfDocument.Create;
+  try
+    lPdf.Info.Author        := 'Autor do Relatório';
+    lPdf.Info.CreationDate  := Now;
+    lPdf.Info.Creator       := 'Relatório Financeiro - Agosto 2024';
+    lPdf.DefaultPaperSize   := psA4;
+
+    lPage := lPDF.AddPage;
+
+    lPdf.Canvas.SetFont('Arial',12.0,[]);
+    lPdf.Canvas.SetLeading(lPDF.Canvas.Page.FontSize);
+    lPdf.Canvas.SetLineWidth(0.1);
+
+    lPdf.Canvas.TextOut(50, 100, 'Assinatura 1: _____________________________');
+    lPdf.Canvas.TextOut(50, 80, 'CPF: ');
+    lPdf.Canvas.TextOut(50, 60, 'Geolocalização: ');
+
+    lPdf.Canvas.TextOut(50, 40, 'Assinatura 1: _____________________________');
+    lPdf.Canvas.TextOut(50, 20, 'CPF: ');
+    lPdf.Canvas.TextOut(50, 0, 'Geolocalização: ');
+
+    if FileName.IsEmpty then
+      lPdf.SaveToFile(ExtractFilePath(ParamStr(0)) +'\NewPDFTest.PDF')
+    else
+      lPdf.SaveToFile(FileName);
+  finally
+    lPdf.Free;
   end;
 end;
 
