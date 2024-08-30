@@ -20,25 +20,25 @@ def update_file_with_status(file_path, mr_url, status):
             if line.strip() == f'MR: {mr_url}' and not updated:
                 file.write(line)  # Reescreve a linha do MR
                 next_index = lines.index(line) + 1
-                if next_index < len(lines) and lines[next_index].strip().startswith('Status MR:'):
-                    file.write(f'Status MR: {status}\n')  # Atualiza o status se já existe
+                if next_index < len(lines) and lines[next_index].strip().startswith('Status Merge Request:'):
+                    file.write(f'Status Merge Request: {status}\n')  # Atualiza o status se já existe
                     updated = True
                 else:
-                    file.write(f'Status MR: {status}\n')  # Adiciona o status se não existir
+                    file.write(f'Status Merge Request: {status}\n')  # Adiciona o status se não existir
                     updated = True
             else:
                 file.write(line)
         if not updated:
             # Se o MR não foi encontrado no arquivo, adiciona como novo
             file.write(f'MR: {mr_url}\n')
-            file.write(f'Status MR: {status}\n')
+            file.write(f'Status Merge Request: {status}\n')
 
 def check_mr_status(driver, file_path):
     mr_url = None
     with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
     
-    if "Status MR: Merged" in content or "Status MR: Closed" in content:
+    if "Status Merge Request: Merged" in content or "Status Merge Request: Closed" in content:
         return "Already Processed", None  # Verifica se o arquivo já foi processado por MRs Merged ou Closed
 
     with open(file_path, 'r', encoding='utf-8') as file:

@@ -62,6 +62,8 @@ drop procedure if exists sp_getNewCriteria
 GO
 drop function if exists fn_getPKFieldName 
 GO
+drop procedure if exists sp_Execute_Or_Insert
+GO
 
 /*** FUNÇÕES UTILITÁRIAS **********************************************/
 /*** PROCEDURES UTILITÁRIAS *******************************************/
@@ -219,6 +221,106 @@ begin
 	print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + '-> Command:  ' + @update_fields
 	print '--################### ERROR ENDS ####################'
   end catch
+end
+GO
+
+/**********************************************************************
+    1.1.3 - OVERLOAD SP_EXECUTESQL (Insert our Update)
+***********************************************************************/
+
+create or alter procedure sp_Execute_Or_Insert(
+    @schema   varchar(200) = 'dbo',
+    @ordNum   int = 0,
+    @table    varchar(200),
+    @keyField varchar(200),
+    @keyValue varchar(200),
+    @keyInc   varchar(200),
+    @fields   varchar(max) = null,
+    @values   varchar(max) = null,
+    @showCmd  int = 1
+)
+as
+begin
+    declare @exists int;
+    declare @sql nvarchar(max);
+    declare @params nvarchar(max);
+    declare @keyIncrement int;
+    declare @updateClause nvarchar(max) = '';
+    declare @i int = 1;
+    declare @field nvarchar(200);
+    declare @value nvarchar(max);
+    declare @fieldList table (Field nvarchar(200), RowNum int identity(1,1));
+    declare @valueList table (Value nvarchar(max), RowNum int identity(1,1));
+
+    set nocount on;
+
+    -- Verifica se o registro existe
+    set @sql = 'select @exists = count(1) from ' + @schema + '.' + @table + ' where ' + @keyField + ' = ' + @keyValue;
+    set @params = N'@exists int output, @keyValue varchar(200)';
+
+    exec sp_executesql @sql, @params, @exists = @exists output, @keyValue = @keyValue;
+
+    if @exists > 0
+    begin
+        -- Insere os campos e valores em tabelas temporárias com numeração de linha
+        insert into @fieldList(Field) select value from string_split(@fields, ',');
+        insert into @valueList(Value) select value from string_split(@values, ',');
+
+        -- Constrói a cláusula SET
+        while @i <= (select count(*) from @fieldList)
+        begin
+            select @field = Field from @fieldList where RowNum = @i;
+            select @value = Value from @valueList where RowNum = @i;
+
+            if @updateClause <> ''
+                set @updateClause = @updateClause + ', ';
+
+            set @updateClause = @updateClause + @field + ' = ' + @value;
+
+            set @i = @i + 1;
+        end
+
+        -- Monta a string SQL para o UPDATE
+        set @sql = 'update ' + @schema + '.' + @table + ' set ' + @updateClause + ' where ' + @keyField + ' = ' + @keyValue;
+
+        begin try
+            exec sp_executesql @sql;
+            if (@showCmd = 1)
+                print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected = ' + cast(@@ROWCOUNT as char(03)) + '] -> Command: ' + @sql;
+            else 
+                print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @sql;
+        end try
+        begin catch
+            print '--################### ERROR BEGINS ##################';
+            print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + ' -> Command: ' + @sql;
+            print '--################### ERROR ENDS ####################';
+        end catch
+    end
+    else
+    begin
+        -- Tratamento para a inserção
+        if (@keyInc <> '')
+        begin
+            exec sp_takeKeyForInsertion @table, @keyIncrement OUTPUT;
+            set @fields = @keyInc + ',' + @fields;
+            set @values = cast(@keyIncrement as varchar(10)) + ',' + @values;
+        end
+
+        set @sql = 'insert into ' + @schema + '.' + @table + ' (' + @fields + ') values (' + @values + ')';
+        
+        begin try
+            exec sp_executesql @sql;
+            if (@showCmd = 1)
+                print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected = ' + cast(@@ROWCOUNT as char(03)) + '] -> Command: ' + @sql;
+            else 
+                print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @sql;
+        end try
+        begin catch
+            print '--################### ERROR BEGINS ##################';
+            print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + ' -> Command: ' + @sql;
+            print '--################### ERROR ENDS ####################';
+        end catch
+    end
 end
 GO
 
@@ -1419,10 +1521,10 @@ begin
 			exec sp_takeKeyForInsertion 'Consultas', @MaxKeyFromTable OUTPUT 
 
     		/*Desativa a tag de segurança para consultas*/
-			exec sp_Execute_Update 'dbo', '01', 'Usuarios', 'USR_OplForcarUsoTAGApDesig = 0', 'USR_CdiUsuario = 1', 1
+			exec sp_Execute_Update 'dbo', 01, 'Usuarios', 'USR_OplForcarUsoTAGApDesig = 0', 'USR_CdiUsuario = 1', 1
 
 			/*Teste para utilização do Manager AD*/
-			exec sp_Execute_Update 'dbo', '01', 'Contratados', 'CON_NuiContratado_Superior = 1', 'CON_CdiContratado = 2', 1
+			exec sp_Execute_Update 'dbo', 01, 'Contratados', 'CON_NuiContratado_Superior = 1', 'CON_CdiContratado = 2', 1
 
 
 			/*Query Execute*/
@@ -1465,6 +1567,11 @@ begin
 
 		/*Objeto 3090*/
 			exec sp_Execute_Update 'dbo', '01', 'DefSisIntegracaoAD', 'DZW_DtdOficializacaoSistema = null, DZW_OplAtivaIntegracao = 1, DZW_OplCriacaoUsuarioAut =  0, DZW_DssCaminhoLDAP = ''DC=apdatatst,DC=com,DC=br'', DZW_OplIntegraViaWS = 1, DZW_DssWSCriaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtualizaDados = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrocaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSResetaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtivaDesativaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_CdsWSUsuario = ''flsantos'', DZW_CosWSSenha = ''Fls12345@'', DZW_OplAtivaLogIntegracao = 1, DZW_OplNaoSincronizarGrupo = 0, DZW_OplNaoSincronizarEstrutura = 0, DZW_DssWSValidaLogin = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrataSSO = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 'DZW_CdiSistema = 72', 1
+			--Para ativar a integração da ApData marcar a configuração da seguinte forma [GUS_CdiOpcao_AtivaIntegracao = 1, GUS_CdiTipoAutenticacao = 2, GUS_CdiOpcao_IntegraViaWS = 1]
+			exec sp_Execute_Update 'dbo', '02', 'GruposUsuarios', 'GUS_CdiOpcao_AtivaIntegracao = 0, GUS_CdiTipoAutenticacao = 2, GUS_CdiOpcao_IntegraViaWS = 0', 'GUS_CdiGrupoUsuario = 1019', 1
+			
+			--Para ativar a validação da apdata [usuários com nome e-mail]
+			exec sp_Execute_Or_Insert 'dbo', 01, 'IdentificacoesApServer', 'EON_DssNomeMaquina', '''APDNSON0220''', 'EON_CdiIdentificacaoApServer', 'EON_DssNomeMaquina, EON_DssNomeInstancia, EON_DssLinkADIntegratorWS', '''APDNSON0220'',''localhost'',''https://apad.apdata.com.br/aPAD/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 1
 
 			declare @EstruturasAD int
 			declare @EstruturasADProps int

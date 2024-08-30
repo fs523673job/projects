@@ -31,22 +31,46 @@ def atualizar_arquivo_com_link(diretorio: str, chamado_numero: str, link: str):
     with open(arquivo_nome, 'r', encoding='utf-8') as arquivo:
         linhas = arquivo.readlines()
 
-    linhas_originais = linhas.copy()
+    # Inicializa uma flag para saber se o link já existe
+    link_encontrado = False
+    mr_encontrado = False
 
     for i, linha in enumerate(linhas):
         if "MR:" in linha:
-            # Se já tiver um link após "MR:", não alterar o arquivo
-            if "http" not in linha:
+            mr_encontrado = True
+            # Se a linha já contém o link correto, não fazer nada
+            if link in linha:
+                link_encontrado = True
+            # Se a linha "MR:" não contém o link, atualiza a linha
+            elif "http" in linha:
                 linhas[i] = f"MR: {link}\n"
+                link_encontrado = True
+            else:
+                linhas[i] = f"MR: {link}\n"
+                link_encontrado = True
+
+    # Se não encontrou nenhuma linha com "MR:", adiciona o link após "Colateral (PT):"
+    if not link_encontrado and not mr_encontrado:
+        for i, linha in enumerate(linhas):
+            if "Colateral (PT):" in linha:
+                linhas.insert(i + 1, f"MR: {link}\n")
                 break
-        elif "Colateral (PT):" in linha and not any("MR:" in l for l in linhas[i:]):
-            linhas.insert(i + 1, f"MR: {link}\n")
-            break
+
+    # Remove duplicatas mantendo apenas uma instância de cada link
+    linhas_unicas = []
+    links_encontrados = set()
+    for linha in linhas:
+        if "MR:" in linha:
+            if linha not in links_encontrados:
+                linhas_unicas.append(linha)
+                links_encontrados.add(linha)
+        else:
+            linhas_unicas.append(linha)
 
     # Verificar se houve alterações comparando as listas de linhas
-    if linhas != linhas_originais:
+    if linhas != linhas_unicas:
         with open(arquivo_nome, 'w', encoding='utf-8') as arquivo:
-            arquivo.writelines(linhas)
+            arquivo.writelines(linhas_unicas)
         print(f"Arquivo {arquivo_nome} atualizado com sucesso!")
     else:
         print(f"Nenhuma alteração necessária para o arquivo {arquivo_nome}.")
