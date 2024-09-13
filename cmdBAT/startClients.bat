@@ -1,40 +1,48 @@
 @echo off
 chcp 1252 >nul
-setlocal
+setlocal enabledelayedexpansion
 
+:: Define o diretório onde o script está localizado
 cd /d %~dp0
 
-:version
-echo Escolha a versão do Delphi:
+:: Variáveis para controle
+set count=0
+set choice=
 
-echo 0. Sair
-echo 1. Alexandria
-echo 2. Tokyo
+:: Lista todos os diretórios no diretório atual
+for /d %%d in (*) do (
+    set /a count+=1
+    echo !count!: %%d
+    set dir!count!=%%d
+)
 
-set /p versionChoice=Digite o número correspondente a sua escolha: 
+:: Se não houver diretórios, sair
+if %count%==0 (
+    echo Nenhum diretório encontrado.
+    goto fim
+)
 
-if "%versionChoice%"=="0" goto fim
-if "%versionChoice%"=="1" set "delphiVersion=alexandria" & goto buildtype
-if "%versionChoice%"=="2" set "delphiVersion=tokyo" & goto buildtype
+:: Pergunta ao usuário para escolher um diretório
+set /p choice=Digite o número correspondente ao diretório que deseja acessar: 
 
-echo Escolha inválida. Tente novamente.
-goto version
+:: Verifica se a escolha é válida
+if %choice% gtr %count% (
+    echo Escolha inválida.
+    goto fim
+)
 
-:buildtype
-echo Escolha o tipo de build:
+:: Define o diretório escolhido
+set chosenDir=!dir%choice%!
+echo Você escolheu o diretório: %chosenDir%
 
-echo 0. Sair
-echo 1. Release
-echo 2. Debug
+:: Verifica se o arquivo ApTools.exe ou ApManager.exe existe no diretório escolhido
+if not exist "%~dp0%chosenDir%\ApTools.exe" if not exist "%~dp0%chosenDir%\ApManager.exe" (
+    echo Nenhum arquivo ApTools.exe ou ApManager.exe foi encontrado no diretório escolhido. Tente novamente.
+    goto fim
+)
 
-set /p buildChoice=Digite o número correspondente a sua escolha: 
-
-if "%buildChoice%"=="0" goto fim
-if "%buildChoice%"=="1" set "buildType=Release" & goto menu
-if "%buildChoice%"=="2" set "buildType=Debug" & goto menu
-
-echo Escolha inválida. Tente novamente.
-goto buildtype
+:: Muda para o diretório escolhido
+cd /d "%~dp0%chosenDir%"
 
 :menu
 echo =======================
@@ -56,34 +64,12 @@ goto menu
 
 :aptools
 echo Iniciando Aptools...
-
-:: Monta o diretório base para Win32
-if "%delphiVersion%"=="alexandria" (
-    set "baseDir=C:\apdata_x64\aplicacoes\aptools\bin"
-) else if "%delphiVersion%"=="tokyo" (
-    set "baseDir=C:\apdata_xwt\aplicacoes\aptools\bin"
-)
-
-:: Monta o caminho completo com base no tipo de build
-set "fullDir=%baseDir%\Win32\%buildType%"
-
-start "" "%fullDir%\ApTools.exe"
+start "" "ApTools.exe"
 goto fim
 
 :apmanager
 echo Iniciando ApManager...
-
-:: Monta o diretório base para Win32
-if "%delphiVersion%"=="alexandria" (
-    set "baseDir=C:\apdata_x64\aplicacoes\apmanager\bin"
-) else if "%delphiVersion%"=="tokyo" (
-    set "baseDir=C:\apdata_xwt\aplicacoes\apmanager\bin"
-)
-
-:: Monta o caminho completo com base no tipo de build
-set "fullDir=%baseDir%\Win32\%buildType%"
-
-start "" "%fullDir%\ApManager.exe"
+start "" "ApManager.exe"
 goto fim
 
 :sair
