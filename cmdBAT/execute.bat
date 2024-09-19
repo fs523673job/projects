@@ -9,7 +9,7 @@ cd /d %~dp0
 set networkPath=\\SRVDEVEL1\builds\V559_BUILDS
 
 :: Lista de opções de pesquisa
-set pesquisaList=Oficial-Feature
+set pesquisaList=Oficial-Feature Oficial-controladas
 
 :: Variáveis para controle
 set count=0
@@ -54,7 +54,14 @@ for %%f in (%filesToCopy%) do (
         copy "!finalNetworkPath!" "%~dp0!chosenDir!\"
         echo Arquivo %%f copiado com sucesso.
     ) else (
-        echo O arquivo %%f nao foi encontrado no caminho da rede.
+	    set alternativeFinalNetworkPath=%networkPath%\Oficial-%chosenDir%-Release\%%f
+		if exist "!alternativeFinalNetworkPath!" (
+		    echo %%f encontrado no caminho alternativo. Copiando arquivo...
+			copy "!alternativeFinalNetworkPath!" "%~dp0!chosenDir!\"
+			echo Arquivo %%f copiado com sucesso.
+		) else (
+            echo O arquivo %%f nao foi encontrado em nenhum dos caminhos da rede.
+		)
     )
 )
 
