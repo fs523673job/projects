@@ -35,7 +35,7 @@ end;
 
 class function TPreventXSS.SanitizeHTML(const AContentHTML: String): String;
 const
-  AllowedTags: array[0..8] of string = ('b', 'i', 'u', 'p', 'br', 'img', 'div', 'font', 'span');
+  AllowedTags: array[0..10] of string = ('b', 'i', 'u', 'p', 'br', 'img', 'div', 'font', 'span', 'a', 'strong');
   AllowedAttributes: array[0..3] of string = ('href', 'src', 'style', 'face');
 var
   TagRegex, AttrRegex: TRegEx;
@@ -91,27 +91,31 @@ begin
         IsSafeTag := True;
         if not IsEndTag then
         begin
-          AttrRegex := TRegEx.Create('([a-z0-9\-]+)\s*=\s*["'']([^"'']*)["'']', [roIgnoreCase]);
+          AttrRegex := TRegEx.Create('([a-z0-9\-]+)\s*=\s*(?:"([^"]*)"|''([^'']*)''|([^\s>]+))', [roIgnoreCase]);
           TagContent := '<' + TagName;
           for AttrMatch in AttrRegex.Matches(TagMatch.Value) do
           begin
             AttrName := LowerCase(AttrMatch.Groups[1].Value);
-            AttrValue := AttrMatch.Groups[2].Value;
+
+            if AttrMatch.Groups[2].Success then
+              AttrValue := AttrMatch.Groups[2].Value
+            else if AttrMatch.Groups[3].Success then
+              AttrValue := AttrMatch.Groups[3].Value
+            else if AttrMatch.Groups[4].Success then
+              AttrValue := AttrMatch.Groups[4].Value
+            else
+              AttrValue := '';
 
             if AllowedAttrList.ContainsKey(AttrName) then
             begin
               if (AttrName = 'href') or (AttrName = 'src') then
               begin
-                if not AttrValue.Contains(':') then
-                  TagContent := TagContent + Format(' %s="%s"', [AttrName, AttrValue])
-                else
-                  IsSafeTag := False;
+                if (TRegEx.IsMatch(AttrValue, '(^http|https|mailto):', [roIgnoreCase])) then
+                  TagContent := TagContent + Format(' %s="%s"', [AttrName, AttrValue]);
               end
               else
                 TagContent := TagContent + Format(' %s="%s"', [AttrName, AttrValue]);
-            end
-            else
-              IsSafeTag := False;
+            end;
           end;
           TagContent := TagContent + '>';
 
@@ -122,10 +126,6 @@ begin
         begin
           SanitizedOutput.Append('</' + TagName + '>');
         end;
-      end
-      else
-      begin
-
       end;
 
       LastIndex := TagMatch.Index + TagMatch.Length;

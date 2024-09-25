@@ -135,7 +135,17 @@ object frmMain: TfrmMain
         ' responsabilidades</span>'
       '</div>'
       '<div>'
-      #9'<img src=x onerror=alert("XSS Teste" )>'
+      '    <img src=x onerror=alert("XSS Teste" )>'
+      
+        '    <img src="http://teste.teste.jpg" onerror=alert("XSS Teste" ' +
+        ')>'
+      '    <img src=http://teste.teste.jpg onerror=alert("XSS Teste" )>'
+      
+        '    <img src="https://teste.teste.jpg" onerror=alert("XSS Teste"' +
+        ' )>'
+      
+        '    <img src=https://teste.teste.jpg onerror=alert("XSS Teste" )' +
+        '>'
       '</div>')
     SelectedColor.Alpha = 0.400000005960464500
   end
