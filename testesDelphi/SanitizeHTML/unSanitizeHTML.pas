@@ -13,8 +13,11 @@ uses
 type
   TPreventXSS = class
   public
+    class function NeedsDecoding(const AContentHTML: String): Boolean; static;
     class function SanitizeHTML(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeHTML(const AContentHTML: String): String; overload;
+    class function SanitizeHTMLContentTag(const AContentHTML: String): String; overload;
+    class function IsProbablyHTML(const AContent: String): Boolean; static;
   end;
 
 
@@ -33,10 +36,23 @@ begin
   Exit(Encoding.GetBytes(SanitizedString));
 end;
 
+class function TPreventXSS.IsProbablyHTML(const AContent: String): Boolean;
+begin
+  Exit(TRegEx.IsMatch(AContent, '<\/?[a-z][\s\S]*>', [roIgnoreCase]));
+end;
+
+class function TPreventXSS.NeedsDecoding(const AContentHTML: String): Boolean;
+var
+  DecodedContent: String;
+begin
+  DecodedContent := TNetEncoding.HTML.Decode(AContentHTML);
+  Exit(not AContentHTML.Equals(DecodedContent));
+end;
+
 class function TPreventXSS.SanitizeHTML(const AContentHTML: String): String;
 const
   AllowedTags: array[0..10] of string = ('b', 'i', 'u', 'p', 'br', 'img', 'div', 'font', 'span', 'a', 'strong');
-  AllowedAttributes: array[0..3] of string = ('href', 'src', 'style', 'face');
+  AllowedAttributes: array[0..4] of string = ('href', 'src', 'style', 'face', 'class');
 var
   TagRegex, AttrRegex: TRegEx;
   Matches: TMatchCollection;
@@ -48,8 +64,9 @@ var
   AttrName, AttrValue: String;
   SanitizedOutput: TStringBuilder;
   IsSafeTag: Boolean;
+  IsNeedEncoding: Boolean;
 begin
-  Output := TNetEncoding.HTML.Decode(AContentHTML);
+  Output := AContentHTML;
 
   AllowedTagList := TDictionary<string, Boolean>.Create;
   AllowedAttrList := TDictionary<string, Boolean>.Create;
@@ -134,12 +151,61 @@ begin
     if LastIndex <= Length(Output) then
       SanitizedOutput.Append(Copy(Output, LastIndex, Length(Output) - LastIndex + 1));
 
-    Result := SanitizedOutput.ToString;
+    Exit(SanitizedOutput.ToString);
   finally
     AllowedTagList.Free;
     AllowedAttrList.Free;
     SanitizedOutput.Free;
   end;
 end;
+
+class function TPreventXSS.SanitizeHTMLContentTag(const AContentHTML: String): String;
+var
+  Input: String;
+  Output: TStringBuilder;
+  Regex: TRegEx;
+  Matches: TMatchCollection;
+  Match: TMatch;
+  ProcessedContent: String;
+  IsNeedEncoding: Boolean;
+  c: Integer;
+  Group: TGroup;
+  str: String;
+begin
+  Input := AContentHTML;
+  Output := TStringBuilder.Create;
+  try
+    Regex := TRegEx.Create('(<[^>]*>)|([^<>]+)', [roIgnoreCase]);
+    Matches := Regex.Matches(Input);
+    for Match in Matches do
+    begin
+      if (Match.Groups.Count - 1 = 1) and (Match.Groups[1].Success) then
+        Output.Append(Match.Groups[1].Value);
+
+      if (Match.Groups.Count > 2) and (Match.Groups[2].Success) then
+      begin
+        ProcessedContent := Match.Groups[2].Value;
+
+        if ProcessedContent.Trim <> '' then
+        begin
+          IsNeedEncoding := TPreventXSS.NeedsDecoding(ProcessedContent);
+
+          if IsNeedEncoding then
+            ProcessedContent := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(ProcessedContent));
+
+          ProcessedContent := TPreventXSS.SanitizeHTML(ProcessedContent);
+
+          if IsNeedEncoding then
+            ProcessedContent := TNetEncoding.HTML.Encode(ProcessedContent);
+        end;
+        Output.Append(ProcessedContent);
+      end;
+    end;
+    Result := Output.ToString;
+  finally
+    Output.Free;
+  end;
+end;
+
 
 end.

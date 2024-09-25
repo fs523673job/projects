@@ -2,7 +2,7 @@ object frmMain: TfrmMain
   Left = 0
   Top = 0
   Caption = 'frmMain'
-  ClientHeight = 395
+  ClientHeight = 425
   ClientWidth = 976
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -146,7 +146,28 @@ object frmMain: TfrmMain
       
         '    <img src=https://teste.teste.jpg onerror=alert("XSS Teste" )' +
         '>'
-      '</div>')
+      '</div>'
+      '<div>'
+      
+        #9'<span style="font-family:'#39#39'Arial'#39#39';font-size:11.00pt;">&amp;lt;' +
+        'img src=x onerror=alert(&#39;teste&#39;)&amp;gt;</span>'
+      
+        #9'<span style="font-family:'#39#39'Arial'#39#39';font-size:11.00pt;">&amp;lt;' +
+        'img src="http://teste.teste.jpg" onerror=alert(&#39;teste&#39;)&' +
+        'amp;gt;</span>'
+      
+        #9'<span style="font-family:'#39#39'Arial'#39#39';font-size:11.00pt;">&amp;lt;' +
+        'img src=http://teste.teste.jpg onerror=alert(&#39;teste&#39;)&am' +
+        'p;gt;</span>'
+      
+        #9'<span style="font-family:'#39#39'Arial'#39#39';font-size:11.00pt;">&amp;lt;' +
+        'img src="https://teste.teste.jpg" onerror=alert(&#39;teste&#39;)' +
+        '&amp;gt;</span>'
+      
+        #9'<span style="font-family:'#39#39'Arial'#39#39';font-size:11.00pt;">&amp;lt;' +
+        'img src=https://teste.teste.jpg onerror=alert(&#39;teste&#39;)&a' +
+        'mp;gt;</span>'
+      '</div>'#9)
     SelectedColor.Alpha = 0.400000005960464500
   end
   object seOutput: TSynEdit
@@ -192,12 +213,39 @@ object frmMain: TfrmMain
   end
   object btnSanitizeHTML: TButton
     Left = 10
-    Top = 359
+    Top = 392
     Width = 473
     Height = 25
     Caption = 'Sanitizar HTML'
     TabOrder = 2
     OnClick = btnSanitizeHTMLClick
+  end
+  object btClearAll: TButton
+    Left = 8
+    Top = 359
+    Width = 473
+    Height = 25
+    Caption = 'Limpar Campos'
+    TabOrder = 3
+    OnClick = btClearAllClick
+  end
+  object cbAnalisysXSS: TCheckBox
+    Left = 487
+    Top = 359
+    Width = 138
+    Height = 17
+    Caption = 'Analisa Tags Permitidas'
+    Checked = True
+    State = cbChecked
+    TabOrder = 4
+  end
+  object cbAnalysisXSSTags: TCheckBox
+    Left = 487
+    Top = 382
+    Width = 170
+    Height = 17
+    Caption = 'Analisa Conte'#250'do das Tags'
+    TabOrder = 5
   end
   object SynHTMLSyn1: TSynHTMLSyn
     Left = 440

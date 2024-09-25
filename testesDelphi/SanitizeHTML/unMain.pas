@@ -27,7 +27,11 @@ type
     seOutput: TSynEdit;
     SynHTMLSyn1: TSynHTMLSyn;
     btnSanitizeHTML: TButton;
+    btClearAll: TButton;
+    cbAnalisysXSS: TCheckBox;
+    cbAnalysisXSSTags: TCheckBox;
     procedure btnSanitizeHTMLClick(Sender: TObject);
+    procedure btClearAllClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -41,10 +45,26 @@ implementation
 
 {$R *.dfm}
 
+procedure TfrmMain.btClearAllClick(Sender: TObject);
+begin
+  seInput.Lines.Clear;
+  seOutput.Lines.Clear;
+end;
+
 procedure TfrmMain.btnSanitizeHTMLClick(Sender: TObject);
 begin
   seOutput.Lines.Clear;
-  seOutput.Text := TPreventXSS.SanitizeHTML(seInput.Lines.Text);
+  if cbAnalisysXSS.Checked and cbAnalysisXSSTags.Checked then
+  begin
+    seOutput.Text := TPreventXSS.SanitizeHTMLContentTag(seInput.Lines.Text);
+    seOutput.Text := TPreventXSS.SanitizeHTML(seOutput.Text);
+  end
+  else if cbAnalisysXSS.Checked then
+    seOutput.Text := TPreventXSS.SanitizeHTML(seInput.Lines.Text)
+  else if cbAnalysisXSSTags.Checked then
+    seOutput.Text := TPreventXSS.SanitizeHTMLContentTag(seInput.Lines.Text)
+  else
+    seOutput.Text := TPreventXSS.SanitizeHTML(seInput.Lines.Text);
 end;
 
 end.
