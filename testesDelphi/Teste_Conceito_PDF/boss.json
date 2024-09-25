@@ -1,0 +1,11 @@
+{
+	"name": "Teste_Conceito_PDF",
+	"description": "",
+	"version": "1.0.0",
+	"homepage": "",
+	"mainsrc": "./src",
+	"projects": [],
+	"dependencies": {
+		"https://github.com/synopse/synpdf": ">0.0.0"
+	}
+}
