@@ -13,11 +13,14 @@ uses
 type
   TPreventXSS = class
   public
+    class function IsProbablyHTML(const AContent: String): Boolean; static;
     class function NeedsDecoding(const AContentHTML: String): Boolean; static;
     class function SanitizeHTML(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeHTML(const AContentHTML: String): String; overload;
-    class function SanitizeHTMLContentTag(const AContentHTML: String): String; overload;
-    class function IsProbablyHTML(const AContent: String): Boolean; static;
+    class function SanitizeTag(const AContentHTML: String): String; overload;
+    class function SanitizeTag(const AContentBytes: TBytes): TBytes; overload;
+    class function SanitizeAll(const AContentHTML: String): String; overload;
+    class function SanitizeAll(const AContentBytes: TBytes): TBytes; overload;
   end;
 
 
@@ -159,7 +162,9 @@ begin
   end;
 end;
 
-class function TPreventXSS.SanitizeHTMLContentTag(const AContentHTML: String): String;
+class function TPreventXSS.SanitizeTag(const AContentHTML: String): String;
+const
+  NotNeedEncoded: array[0..0] of string = ('&nbsp;');
 var
   Input: String;
   Output: TStringBuilder;
@@ -170,42 +175,49 @@ var
   IsNeedEncoding: Boolean;
   c: Integer;
   Group: TGroup;
-  str: String;
+  NotNeedEncodedList: TDictionary<string, Boolean>;
 begin
   Input := AContentHTML;
   Output := TStringBuilder.Create;
   try
-    Regex := TRegEx.Create('(<[^>]*>)|([^<>]+)', [roIgnoreCase]);
-    Matches := Regex.Matches(Input);
-    for Match in Matches do
-    begin
-      if (Match.Groups.Count - 1 = 1) and (Match.Groups[1].Success) then
-        Output.Append(Match.Groups[1].Value);
+    NotNeedEncodedList := TDictionary<string, Boolean>.Create;
+    try
+      for c := Low(NotNeedEncoded) to High(NotNeedEncoded) do
+        NotNeedEncodedList.Add(NotNeedEncoded[c], True);
 
-      if (Match.Groups.Count > 2) and (Match.Groups[2].Success) then
+      Regex := TRegEx.Create('(<[^>]*>)|([^<>]+)', [roIgnoreCase]);
+      Matches := Regex.Matches(Input);
+      for Match in Matches do
       begin
-        ProcessedContent := Match.Groups[2].Value;
+        if (Match.Groups.Count - 1 = 1) and (Match.Groups[1].Success) then
+          Output.Append(Match.Groups[1].Value);
 
-        if ProcessedContent.Trim <> '' then
+        if (Match.Groups.Count > 2) and (Match.Groups[2].Success) then
         begin
-          IsNeedEncoding := TPreventXSS.NeedsDecoding(ProcessedContent);
+          ProcessedContent := Match.Groups[2].Value;
 
-          if IsNeedEncoding then
-            ProcessedContent := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(ProcessedContent));
+          if (ProcessedContent.Trim <> '') and (not NotNeedEncodedList.ContainsKey(ProcessedContent)) then
+          begin
+            IsNeedEncoding := TPreventXSS.NeedsDecoding(ProcessedContent);
 
-          ProcessedContent := TPreventXSS.SanitizeHTML(ProcessedContent);
+            if IsNeedEncoding then
+              ProcessedContent := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(ProcessedContent));
 
-          if IsNeedEncoding then
-            ProcessedContent := TNetEncoding.HTML.Encode(ProcessedContent);
+            ProcessedContent := TPreventXSS.SanitizeHTML(ProcessedContent);
+
+            if IsNeedEncoding then
+              ProcessedContent := TNetEncoding.HTML.Encode(ProcessedContent);
+          end;
+          Output.Append(ProcessedContent);
         end;
-        Output.Append(ProcessedContent);
       end;
+      Result := Output.ToString;
+    finally
+      NotNeedEncodedList.Free;
     end;
-    Result := Output.ToString;
   finally
     Output.Free;
   end;
 end;
-
 
 end.

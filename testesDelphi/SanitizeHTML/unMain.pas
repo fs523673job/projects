@@ -56,13 +56,13 @@ begin
   seOutput.Lines.Clear;
   if cbAnalisysXSS.Checked and cbAnalysisXSSTags.Checked then
   begin
-    seOutput.Text := TPreventXSS.SanitizeHTMLContentTag(seInput.Lines.Text);
+    seOutput.Text := TPreventXSS.SanitizeTag(seInput.Lines.Text);
     seOutput.Text := TPreventXSS.SanitizeHTML(seOutput.Text);
   end
   else if cbAnalisysXSS.Checked then
     seOutput.Text := TPreventXSS.SanitizeHTML(seInput.Lines.Text)
   else if cbAnalysisXSSTags.Checked then
-    seOutput.Text := TPreventXSS.SanitizeHTMLContentTag(seInput.Lines.Text)
+    seOutput.Text := TPreventXSS.SanitizeTag(seInput.Lines.Text)
   else
     seOutput.Text := TPreventXSS.SanitizeHTML(seInput.Lines.Text);
 end;
