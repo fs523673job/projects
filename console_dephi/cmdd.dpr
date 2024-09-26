@@ -19,7 +19,6 @@ const
   CRLF = #13#10;
 
 var
-  c                   : Integer;
   Command             : String;
   SubCommand          : String;
   SystemType          : String;
@@ -135,7 +134,8 @@ var
     Console.WriteColorLine('* 25 - Pack Dlls [pdlls32]                                            *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 26 - Pack Dlls [pdlls64]                                            *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 27 - Pack Clients [pclients]                                        *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 28 - All                                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 28 - Pack Tools [ptools]                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 29 - All                                                            *', [TConsoleColor.Blue]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
   end;
 
@@ -147,7 +147,6 @@ var
   function ExecuteCommand(const ASystemId: Integer; const ASubCommand: String = ''): String;
   type
     DataBuild = record
-      vrsDelphi   : String;
       typeBuild   : String;
       dirBase     : String;
       dirApp      : String;
@@ -160,36 +159,44 @@ var
       addEureka   : String;
     end;
   const
-    CompileBuild: array[0..0] of DataBuild = (
-                                    (
-                                      vrsDelphi   : 'alexandria';
-                                      typeBuild   : 'release';
-                                      dirBase     : 'Apdata_X64';
-                                      dirApp      : 'GenVersionRes';
-                                      arquitetura : 'Win32';
-                                      appName     : 'GenVersionRes';
-                                      aplicacoes  : 'Utils\Compilacao';
-                                      bin         : '\';
-                                      source      : '\';
-                                      lib         : 'lib';
-                                      addEureka   : '0'
-                                    ),
-                                    (
-                                      vrsDelphi   : 'alexandria';
-                                      typeBuild   : 'release';
-                                      dirBase     : 'Apdata_X64';
-                                      dirApp      : 'TesteParser';
-                                      arquitetura : 'Win32';
-                                      appName     : 'TesteParser';
-                                      aplicacoes  : '';
-                                      bin         : '\';
-                                      source      : '\';
-                                      lib         : '';
-                                      addEureka   : '0'
-                                    ),
-
-
-                                  );
+    CompileBuild: array[0..2] of DataBuild = (
+                                                (
+                                                  typeBuild   : 'release';
+                                                  dirBase     : 'Apdata_X64';
+                                                  dirApp      : 'GenVersionRes';
+                                                  arquitetura : 'Win32';
+                                                  appName     : 'GenVersionRes';
+                                                  aplicacoes  : 'Utils\Compilacao';
+                                                  bin         : '\';
+                                                  source      : '\';
+                                                  lib         : 'lib';
+                                                  addEureka   : '0'
+                                                ),
+                                                (
+                                                  typeBuild   : '';
+                                                  dirBase     : 'Apdata_X64';
+                                                  dirApp      : 'TesteParser';
+                                                  arquitetura : 'Win64';
+                                                  appName     : 'TesteParser';
+                                                  aplicacoes  : '';
+                                                  bin         : '\';
+                                                  source      : '\';
+                                                  lib         : '\';
+                                                  addEureka   : '0'
+                                                ),
+                                                (
+                                                  typeBuild   : 'release';
+                                                  dirBase     : 'Apdata_X64';
+                                                  dirApp      : 'ApIdControl';
+                                                  arquitetura : 'Win32';
+                                                  appName     : 'ApIdControl';
+                                                  aplicacoes  : 'Utils';
+                                                  bin         : 'bin';
+                                                  source      : '\';
+                                                  lib         : 'lib';
+                                                  addEureka   : '0';
+                                                )
+                                             );
   var
     strListMsg: TStringList;
   begin
@@ -310,7 +317,7 @@ var
         end;
       19 :
         begin
-          var OriginalContent := TStringList.Create;;
+          var OriginalContent := TStringList.Create;
           try
             if not FileExists(Format('%s\ApIdControl.exe',[DirectoryRepository])) then
             begin
@@ -445,12 +452,35 @@ var
         end;
       28 :
         begin
-          for c := Low(CompileBuild) to High(CompileBuild) do
-          begin
-            //call "C:\github\fs523673job\projects\cmdBAT\compile.bat" %vrsDelphi% %typeBuild% %dirBase% %dirApp% %arquitetura% %appName% %aplicacoes% %bin% %source% %lib% %addEureka%
-
-            //Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\compile.bat',Format('%s %s %s RelogioVirtual Win32 RelogioVirtual 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('RelogioVirtual 32 - %s', [versionDelphi.ToUpper]));
+          strListMsg := TStringList.Create;
+          try
+            for var c := Low(CompileBuild) to High(CompileBuild) do
+            begin
+              strListMsg.Add(
+                ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\compile.bat',
+                      Format('%s %s %s %s %s %s %s %s %s %s %s',
+                              [
+                                 versionDelphi,
+                                 IfThen(CompileBuild[c].typeBuild.IsEmpty, ASubCommand, CompileBuild[c].typeBuild),
+                                 dirDelphi,
+                                 CompileBuild[c].dirApp,
+                                 CompileBuild[c].arquitetura,
+                                 CompileBuild[c].appName,
+                                 CompileBuild[c].aplicacoes,
+                                 CompileBuild[c].bin,
+                                 CompileBuild[c].source,
+                                 CompileBuild[c].lib,
+                                 CompileBuild[c].addEureka
+                              ]
+                            ),
+                      Format('%s %s - %s', [CompileBuild[c].appName, CompileBuild[c].arquitetura, versionDelphi.ToUpper])
+               ));
+            end;
+          finally
+            strListMsg.Free;
           end;
+
+          Result := 'compile Tools [TestParser, GenVersionRes]';
         end;
       29 :
         begin
@@ -550,7 +580,7 @@ var
         Result := 26
       else if (AnsiSameText(ANameSystem, 'pclients')) then
         Result := 27
-      else if (AnsiSameText(ANameSystem, 'Tools - [Parser]')) then
+      else if (AnsiSameText(ANameSystem, 'ptools')) then
         Result := 28
       else if (AnsiSameText(ANameSystem, 'All')) then
         Result := 29
@@ -602,7 +632,7 @@ begin
           SystemArray := InputArray[2].Trim.Split([','])
         else if Length(InputArray) > 3 then
         begin
-          for c := 2 to High(InputArray) do
+          for var c := 2 to High(InputArray) do
           begin
             if (InputArray[c] <> '') then
             begin
@@ -641,7 +671,7 @@ begin
             try
               if (Length(SystemArray) > 0) then
               begin
-                for c := 0 to Length(SystemArray) - 1 do
+                for var c := 0 to Length(SystemArray) - 1 do
                 begin
                   SystemType := SystemArray[c].ToUpper;
                   Console.WriteColorLine(Format('compile> compiling %.2d/%.2d', [c + 1, Length(SystemArray)]), [TConsoleColor.DarkGreen]);
