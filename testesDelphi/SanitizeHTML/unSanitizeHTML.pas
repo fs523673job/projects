@@ -17,9 +17,10 @@ type
   private
     class function DecodeEntities(const AText: String): String;
     class function MatchEvaluator(const Match: TMatch): String;
-    class function AdjustNBSPError(const AContent: String; const AReplace: Boolean = False): String; static;
+    class function AdjustNBSPError(const AContent: String; const ADecharacterizesNBSP: Boolean = True): String; static;
   public
-    class function IsProbablyHTML(const AContent: String): Boolean; static;
+    class function IsProbablyHTML(const AContent: String): Boolean; overload; static;
+    class function IsProbablyHTML(const AContentBytes: TBytes): Boolean; overload; static;
     class function NeedsDecoding(const AContentHTML: String): Boolean; static;
     class function SanitizeHTML(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeHTML(const AContentHTML: String): String; overload;
@@ -54,19 +55,30 @@ begin
   Result := RegEx.Replace(Result, MatchEvaluator);
 end;
 
-class function TPreventXSS.AdjustNBSPError(const AContent: String; const AReplace: Boolean = False): String;
-var
-  Index: Integer;
+class function TPreventXSS.AdjustNBSPError(const AContent: String; const ADecharacterizesNBSP: Boolean = True): String;
 begin
-  if AReplace then
-    Exit(AContent.Replace('#nbsp;', '&nbsp;', [rfIgnoreCase, rfReplaceAll]))
+  if ADecharacterizesNBSP then
+    Exit(AContent.Replace('&nbsp;', '#nbsp;', [rfIgnoreCase, rfReplaceAll]))
   else
     Exit(AContent.Replace('#nbsp;', '&nbsp;', [rfIgnoreCase, rfReplaceAll]));
 end;
 
 class function TPreventXSS.IsProbablyHTML(const AContent: String): Boolean;
+var
+  LocalContent: String;
 begin
-  Exit(TRegEx.IsMatch(AContent, '<\/?[a-z][\s\S]*>', [roIgnoreCase]));
+  LocalContent := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.AdjustNBSPError(AContent)));
+  Exit(TRegEx.IsMatch(LocalContent, '<\/?[a-z][\s\S]*>', [roIgnoreCase]));
+end;
+
+class function TPreventXSS.IsProbablyHTML(const AContentBytes: TBytes): Boolean;
+var
+  ContentString, SanitizedString: String;
+  Encoding: TEncoding;
+begin
+  Encoding := TEncoding.UTF8;
+  ContentString := Encoding.GetString(AContentBytes);
+  Exit(TPreventXSS.IsProbablyHTML(ContentString));
 end;
 
 class function TPreventXSS.MatchEvaluator(const Match: TMatch): String;
@@ -112,27 +124,21 @@ var
   IsNeedEncoding: Boolean;
 begin
   Output := AContentHTML;
-
   AllowedTagList := TDictionary<string, Boolean>.Create;
   AllowedAttrList := TDictionary<string, Boolean>.Create;
   SanitizedOutput := TStringBuilder.Create;
   try
     for i := Low(AllowedTags) to High(AllowedTags) do
       AllowedTagList.Add(AllowedTags[i], True);
-
     for i := Low(AllowedAttributes) to High(AllowedAttributes) do
       AllowedAttrList.Add(AllowedAttributes[i], True);
-
     TagRegex := TRegEx.Create('<[^>]*>', [roIgnoreCase]);
     Matches := TagRegex.Matches(Output);
-
     LastIndex := 1;
     for TagMatch in Matches do
     begin
       SanitizedOutput.Append(Copy(Output, LastIndex, TagMatch.Index - LastIndex));
-
       TagContent := TagMatch.Value;
-
       if TRegEx.IsMatch(TagContent, '^<\/\s*([a-z0-9]+)', [roIgnoreCase]) then
       begin
         IsEndTag := True;
@@ -145,9 +151,7 @@ begin
       end
       else
         Continue;
-
       TagName := LowerCase(TagName);
-
       if AllowedTagList.ContainsKey(TagName) then
       begin
         IsSafeTag := True;
@@ -158,7 +162,6 @@ begin
           for AttrMatch in AttrRegex.Matches(TagMatch.Value) do
           begin
             AttrName := LowerCase(AttrMatch.Groups[1].Value);
-
             if AttrMatch.Groups[2].Success then
               AttrValue := AttrMatch.Groups[2].Value
             else if AttrMatch.Groups[3].Success then
@@ -167,7 +170,6 @@ begin
               AttrValue := AttrMatch.Groups[4].Value
             else
               AttrValue := '';
-
             if AllowedAttrList.ContainsKey(AttrName) then
             begin
               if (AttrName = 'href') or (AttrName = 'src') then
@@ -180,7 +182,6 @@ begin
             end;
           end;
           TagContent := TagContent + '>';
-
           if IsSafeTag then
             SanitizedOutput.Append(TagContent);
         end
@@ -189,13 +190,10 @@ begin
           SanitizedOutput.Append('</' + TagName + '>');
         end;
       end;
-
       LastIndex := TagMatch.Index + TagMatch.Length;
     end;
-
     if LastIndex <= Length(Output) then
       SanitizedOutput.Append(Copy(Output, LastIndex, Length(Output) - LastIndex + 1));
-
     Exit(SanitizedOutput.ToString);
   finally
     AllowedTagList.Free;
@@ -250,7 +248,7 @@ begin
             if IsNeedEncoding then
               ProcessedContent := TNetEncoding.HTML.Encode(ProcessedContent);
 
-            ProcessedContent :=  TPreventXSS.AdjustNBSPError(ProcessedContent, True);
+            ProcessedContent :=  TPreventXSS.AdjustNBSPError(ProcessedContent, False);
           end;
           Output.Append(ProcessedContent);
         end;
@@ -292,3 +290,58 @@ begin
 end;
 
 end.
+
+{
+Testes:
+<div style=background-color:red onclick=alert('XSS')>
+  Conteúdo perigoso
+</div>
+<img src=x onerror=alert("XSS Teste" )>
+<a href="http://exemplo.com" href="javascript:alert('XSS')">Link</a>
+
+<!--<script>Malicious code</script>-->
+<p>Texto após comentário malicioso.</p>
+
+<a href="&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;&#39;XSS&#39;&#41;">Link Malicioso</a>
+
+<foo:bar>Conteúdo com namespace desconhecido</foo:bar>
+
+<a href="javascript:alert('XSS')">Clique aqui</a>
+
+<script>alert('Este é um script malicioso');</script>
+
+<form action="/submit" method="post">
+  <label for="nome">Nome:</label>
+  <input type="text" id="nome" name="nome"><br><br>
+  <input type="submit" value="Enviar">
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Idade</th>
+      <th>Cidade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ana</td>
+      <td>28</td>
+      <td>São Paulo</td>
+    </tr>
+    <tr>
+      <td>Bruno</td>
+      <td>35</td>
+      <td>Rio de Janeiro</td>
+    </tr>
+  </tbody>
+</table>
+
+<img src="imagem.jpg" alt="Descrição da imagem">
+
+<a href="http://exemplo.com" href="javascript:alert('XSS')">Link</a>
+
+<div data-info="informação" data-test="testando">Conteúdo com data-attributes</div>
+
+}
