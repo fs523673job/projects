@@ -6,12 +6,18 @@ uses
   System.SysUtils,
   System.Generics.Collections,
   System.RegularExpressions,
-  System.NetEncoding
+  System.NetEncoding,
+  System.WideStrUtils,
+  System.Character
   ;
 
 
 type
   TPreventXSS = class
+  private
+    class function DecodeEntities(const AText: String): String;
+    class function MatchEvaluator(const Match: TMatch): String;
+    class function AdjustNBSPError(const AContent: String; const AReplace: Boolean = False): String; static;
   public
     class function IsProbablyHTML(const AContent: String): Boolean; static;
     class function NeedsDecoding(const AContentHTML: String): Boolean; static;
@@ -39,9 +45,45 @@ begin
   Exit(Encoding.GetBytes(SanitizedString));
 end;
 
+class function TPreventXSS.DecodeEntities(const AText: String): String;
+var
+  RegEx: TRegEx;
+begin
+  Result := AText;
+  RegEx := TRegEx.Create('&#(x?)([0-9A-Fa-f]+);', [roIgnoreCase]);
+  Result := RegEx.Replace(Result, MatchEvaluator);
+end;
+
+class function TPreventXSS.AdjustNBSPError(const AContent: String; const AReplace: Boolean = False): String;
+var
+  Index: Integer;
+begin
+  if AReplace then
+    Exit(AContent.Replace('#nbsp;', '&nbsp;', [rfIgnoreCase, rfReplaceAll]))
+  else
+    Exit(AContent.Replace('#nbsp;', '&nbsp;', [rfIgnoreCase, rfReplaceAll]));
+end;
+
 class function TPreventXSS.IsProbablyHTML(const AContent: String): Boolean;
 begin
   Exit(TRegEx.IsMatch(AContent, '<\/?[a-z][\s\S]*>', [roIgnoreCase]));
+end;
+
+class function TPreventXSS.MatchEvaluator(const Match: TMatch): String;
+var
+  IsHex: Boolean;
+  CharCode: Integer;
+begin
+  IsHex := Match.Groups[1].Value = 'x';
+  if IsHex then
+    CharCode := StrToIntDef('$' + Match.Groups[2].Value, -1)
+  else
+    CharCode := StrToIntDef(Match.Groups[2].Value, -1);
+
+  if (CharCode >= 0) and (CharCode <= $10FFFF) then
+    Result := Char.ConvertFromUtf32(CharCode)
+  else
+    Result := Match.Value;
 end;
 
 class function TPreventXSS.NeedsDecoding(const AContentHTML: String): Boolean;
@@ -174,7 +216,6 @@ var
   ProcessedContent: String;
   IsNeedEncoding: Boolean;
   c: Integer;
-  Group: TGroup;
   NotNeedEncodedList: TDictionary<string, Boolean>;
 begin
   Input := AContentHTML;
@@ -198,6 +239,7 @@ begin
 
           if (ProcessedContent.Trim <> '') and (not NotNeedEncodedList.ContainsKey(ProcessedContent)) then
           begin
+            ProcessedContent :=  TPreventXSS.AdjustNBSPError(ProcessedContent);
             IsNeedEncoding := TPreventXSS.NeedsDecoding(ProcessedContent);
 
             if IsNeedEncoding then
@@ -207,6 +249,8 @@ begin
 
             if IsNeedEncoding then
               ProcessedContent := TNetEncoding.HTML.Encode(ProcessedContent);
+
+            ProcessedContent :=  TPreventXSS.AdjustNBSPError(ProcessedContent, True);
           end;
           Output.Append(ProcessedContent);
         end;
@@ -218,6 +262,33 @@ begin
   finally
     Output.Free;
   end;
+end;
+
+class function TPreventXSS.SanitizeTag(const AContentBytes: TBytes): TBytes;
+var
+  ContentString, SanitizedString: String;
+  Encoding: TEncoding;
+begin
+  Encoding := TEncoding.UTF8;
+  ContentString := Encoding.GetString(AContentBytes);
+  SanitizedString := TPreventXSS.SanitizeTag(ContentString);
+  Exit(Encoding.GetBytes(SanitizedString));
+end;
+
+class function TPreventXSS.SanitizeAll(const AContentHTML: String): String;
+begin
+  Exit(TPreventXSS.SanitizeHTML(TPreventXSS.SanitizeTag(AContentHTML)));
+end;
+
+class function TPreventXSS.SanitizeAll(const AContentBytes: TBytes): TBytes;
+var
+  ContentString, SanitizedString: String;
+  Encoding: TEncoding;
+begin
+  Encoding := TEncoding.UTF8;
+  ContentString := Encoding.GetString(AContentBytes);
+  SanitizedString := TPreventXSS.SanitizeAll(ContentString);
+  Exit(Encoding.GetBytes(SanitizedString));
 end;
 
 end.

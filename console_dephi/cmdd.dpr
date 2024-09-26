@@ -145,6 +145,51 @@ var
   end;
 
   function ExecuteCommand(const ASystemId: Integer; const ASubCommand: String = ''): String;
+  type
+    DataBuild = record
+      vrsDelphi   : String;
+      typeBuild   : String;
+      dirBase     : String;
+      dirApp      : String;
+      arquitetura : String;
+      appName     : String;
+      aplicacoes  : String;
+      bin         : String;
+      source      : String;
+      lib         : String;
+      addEureka   : String;
+    end;
+  const
+    CompileBuild: array[0..0] of DataBuild = (
+                                    (
+                                      vrsDelphi   : 'alexandria';
+                                      typeBuild   : 'release';
+                                      dirBase     : 'Apdata_X64';
+                                      dirApp      : 'GenVersionRes';
+                                      arquitetura : 'Win32';
+                                      appName     : 'GenVersionRes';
+                                      aplicacoes  : 'Utils\Compilacao';
+                                      bin         : '\';
+                                      source      : '\';
+                                      lib         : 'lib';
+                                      addEureka   : '0'
+                                    ),
+                                    (
+                                      vrsDelphi   : 'alexandria';
+                                      typeBuild   : 'release';
+                                      dirBase     : 'Apdata_X64';
+                                      dirApp      : 'TesteParser';
+                                      arquitetura : 'Win32';
+                                      appName     : 'TesteParser';
+                                      aplicacoes  : '';
+                                      bin         : '\';
+                                      source      : '\';
+                                      lib         : '';
+                                      addEureka   : '0'
+                                    ),
+
+
+                                  );
   var
     strListMsg: TStringList;
   begin
@@ -400,6 +445,15 @@ var
         end;
       28 :
         begin
+          for c := Low(CompileBuild) to High(CompileBuild) do
+          begin
+            //call "C:\github\fs523673job\projects\cmdBAT\compile.bat" %vrsDelphi% %typeBuild% %dirBase% %dirApp% %arquitetura% %appName% %aplicacoes% %bin% %source% %lib% %addEureka%
+
+            //Result := ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\compile.bat',Format('%s %s %s RelogioVirtual Win32 RelogioVirtual 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('RelogioVirtual 32 - %s', [versionDelphi.ToUpper]));
+          end;
+        end;
+      29 :
+        begin
           strListMsg := TStringList.Create;
           try
             strListMsg.Add(ExecuteCommand(19, ASubCommand));
@@ -430,7 +484,7 @@ var
           end;
 
           Result := 'compile pack 26';
-        end
+        end;
       else
         Console.WriteColor('not executed!', [TConsoleColor.Red]);
     end;
@@ -496,8 +550,10 @@ var
         Result := 26
       else if (AnsiSameText(ANameSystem, 'pclients')) then
         Result := 27
-      else if (AnsiSameText(ANameSystem, 'All')) then
+      else if (AnsiSameText(ANameSystem, 'Tools - [Parser]')) then
         Result := 28
+      else if (AnsiSameText(ANameSystem, 'All')) then
+        Result := 29
     end;
   end;
 

@@ -2,7 +2,7 @@ object frmMain: TfrmMain
   Left = 0
   Top = 0
   Caption = 'frmMain'
-  ClientHeight = 425
+  ClientHeight = 395
   ClientWidth = 976
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
