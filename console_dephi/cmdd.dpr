@@ -480,7 +480,7 @@ var
             strListMsg.Free;
           end;
 
-          Result := 'compile Tools [TestParser, GenVersionRes]';
+          Result := 'compile Tools [TestParser, GenVersionRes, ApIdControl]';
         end;
       29 :
         begin

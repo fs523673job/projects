@@ -9,26 +9,22 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-def update_file_with_status(file_path, mr_url, status, date=None):
+def update_file_with_status(file_path, mr_url, status):
     updated = False
     lines = []
     with open(file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
 
     with open(file_path, 'w', encoding='utf-8') as file:
-        for i, line in enumerate(lines):
+        for line in lines:
             if line.strip() == f'MR: {mr_url}' and not updated:
                 file.write(line)  # Reescreve a linha do MR
-                next_index = i + 1
+                next_index = lines.index(line) + 1
                 if next_index < len(lines) and lines[next_index].strip().startswith('Status Merge Request:'):
                     file.write(f'Status Merge Request: {status}\n')  # Atualiza o status se já existe
-                    if date:
-                        file.write(f'Data Merge Request: {date}\n')
                     updated = True
                 else:
                     file.write(f'Status Merge Request: {status}\n')  # Adiciona o status se não existir
-                    if date:
-                        file.write(f'Data Merge Request: {date}\n')
                     updated = True
             else:
                 file.write(line)
@@ -36,8 +32,6 @@ def update_file_with_status(file_path, mr_url, status, date=None):
             # Se o MR não foi encontrado no arquivo, adiciona como novo
             file.write(f'MR: {mr_url}\n')
             file.write(f'Status Merge Request: {status}\n')
-            if date:
-                file.write(f'Data Merge Request: {date}\n')
 
 def check_mr_status(driver, file_path):
     mr_url = None
@@ -45,7 +39,7 @@ def check_mr_status(driver, file_path):
         content = file.read()
 
     if "Status Merge Request: Merged" in content or "Status Merge Request: Closed" in content:
-        return "Already Processed", None, None  # Verifica se o arquivo já foi processado por MRs Merged ou Closed
+        return "Already Processed", None  # Verifica se o arquivo já foi processado por MRs Merged ou Closed
 
     with open(file_path, 'r', encoding='utf-8') as file:
         for line in file:
@@ -65,23 +59,14 @@ def check_mr_status(driver, file_path):
                             for status_tag in status_tags:
                                 status_text = status_tag.text.strip()
                                 if status_text in ["Open", "Merged", "Closed"]:
-                                    # Extrai a data do elemento <time>
-                                    try:
-                                        time_element = driver.find_element(By.CSS_SELECTOR, "time.js-timeago.gl-inline-block")
-                                        mr_date = time_element.get_attribute('datetime')
-                                    except Exception as e:
-                                        print(f"Erro ao extrair a data do MR: {e}")
-                                        mr_date = None
                                     if status_text in ["Merged", "Closed"]:
-                                        update_file_with_status(file_path, mr_url, status_text, mr_date)
-                                    else:
                                         update_file_with_status(file_path, mr_url, status_text)
-                                    return status_text, mr_url, mr_date
+                                    return status_text, mr_url
                         except:
                             continue
                 except Exception as e:
                     print(f"Erro ao tentar verificar o status do MR em {mr_url}: {e}")
-        return None, None, None
+    return None, None
 
 def main():
     try:
@@ -111,9 +96,9 @@ def main():
     for filename in files:
         file_path = os.path.join(directory_path, filename)
         chamado_name = filename[:-4]
-        status, linkMR, mr_date = check_mr_status(driver, file_path)
+        status, linkMR = check_mr_status(driver, file_path)
         if status and status != "Already Processed":
-            print(f"Analisando {chamado_name} Status: [{status}] LinkMR: [{linkMR}] Data: [{mr_date}]")
+            print(f"Analisando {chamado_name} Status: [{status}] LinkMR: [{linkMR}]")
 
     driver.quit()
 
