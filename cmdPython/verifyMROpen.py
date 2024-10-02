@@ -10,34 +10,43 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 def update_file_with_status(file_path, mr_url, status, date=None):
-    updated = False
     lines = []
     with open(file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
-
+    
+    updated = False
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if line.strip() == f'MR: {mr_url}':
+            # Encontrou o MR, agora procura pelo status e data
+            i += 1
+            while i < len(lines) and (lines[i].strip().startswith('Status Merge Request:') or lines[i].strip().startswith('Data Merge Request:')):
+                if lines[i].strip().startswith('Status Merge Request:'):
+                    lines[i] = f'Status Merge Request: {status}\n'  # Atualiza o status existente
+                elif date and lines[i].strip().startswith('Data Merge Request:'):
+                    lines[i] = f'Data Merge Request: {date}\n'  # Atualiza a data existente
+                i += 1
+            # Se não encontrou 'Status Merge Request:', adiciona após o MR
+            if not any('Status Merge Request:' in line for line in lines):
+                lines.insert(i, f'Status Merge Request: {status}\n')
+                i += 1
+            # Se não encontrou 'Data Merge Request:' e a data existe, adiciona após o status
+            if date and not any('Data Merge Request:' in line for line in lines):
+                lines.insert(i, f'Data Merge Request: {date}\n')
+            updated = True
+            break  # MR encontrado e atualizado, sai do loop
+        i += 1
+    if not updated:
+        # Se o MR não foi encontrado no arquivo, adiciona no final
+        lines.append(f'\nMR: {mr_url}\n')
+        lines.append(f'Status Merge Request: {status}\n')
+        if date:
+            lines.append(f'Data Merge Request: {date}\n')
+    
+    # Escreve de volta no arquivo
     with open(file_path, 'w', encoding='utf-8') as file:
-        for i, line in enumerate(lines):
-            if line.strip() == f'MR: {mr_url}' and not updated:
-                file.write(line)  # Reescreve a linha do MR
-                next_index = i + 1
-                if next_index < len(lines) and lines[next_index].strip().startswith('Status Merge Request:'):
-                    file.write(f'Status Merge Request: {status}\n')  # Atualiza o status se já existe
-                    if date:
-                        file.write(f'Data Merge Request: {date}\n')
-                    updated = True
-                else:
-                    file.write(f'Status Merge Request: {status}\n')  # Adiciona o status se não existir
-                    if date:
-                        file.write(f'Data Merge Request: {date}\n')
-                    updated = True
-            else:
-                file.write(line)
-        if not updated:
-            # Se o MR não foi encontrado no arquivo, adiciona como novo
-            file.write(f'MR: {mr_url}\n')
-            file.write(f'Status Merge Request: {status}\n')
-            if date:
-                file.write(f'Data Merge Request: {date}\n')
+        file.writelines(lines)
 
 def check_mr_status(driver, file_path):
     mr_url = None

@@ -108,6 +108,8 @@ end;
 
 class function TPreventXSS.SanitizeHTML(const AContentHTML: String): String;
 const
+  SPECIAL_APDATA_BEGIN = '/*APDATABEGIN*/';
+  SPECIAL_APDATA_END = '/*APDATAEND*/';
   AllowedTags: array[0..10] of string = ('b', 'i', 'u', 'p', 'br', 'img', 'div', 'font', 'span', 'a', 'strong');
   AllowedAttributes: array[0..4] of string = ('href', 'src', 'style', 'face', 'class');
 var
@@ -118,10 +120,23 @@ var
   IsEndTag: Boolean;
   i, LastIndex: Integer;
   AllowedTagList, AllowedAttrList: TDictionary<string, Boolean>;
-  AttrName, AttrValue: String;
+  AttrName, AttrValue, AttrValueApdata: String;
   SanitizedOutput: TStringBuilder;
   IsSafeTag: Boolean;
   IsNeedEncoding: Boolean;
+
+  function GetValueFromTagApdata(const AAttrValueApdata: String): String;
+  var
+    PosBegin, PosEnd: Integer;
+  begin
+    PosBegin := Pos(SPECIAL_APDATA_BEGIN, AAttrValueApdata);
+    PosEnd := Pos(SPECIAL_APDATA_END, AAttrValueApdata);
+    if (PosBegin > 0) and (PosEnd > 0) and (PosEnd > PosBegin) then
+      Exit(TNetEncoding.HTML.Decode(Copy(AAttrValueApdata, PosBegin + Length(SPECIAL_APDATA_BEGIN), PosEnd - PosBegin - Length(SPECIAL_APDATA_BEGIN))).Replace('''', ''))
+    else
+      Exit(EmptyStr);
+  end;
+
 begin
   Output := AContentHTML;
   AllowedTagList := TDictionary<string, Boolean>.Create;
@@ -175,7 +190,15 @@ begin
               if (AttrName = 'href') or (AttrName = 'src') then
               begin
                 if (TRegEx.IsMatch(AttrValue, '(^http|https|mailto):', [roIgnoreCase])) then
+                begin
                   TagContent := TagContent + Format(' %s="%s"', [AttrName, AttrValue]);
+                end
+                else if (Pos(SPECIAL_APDATA_BEGIN, AttrValue) > 0) and (Pos(SPECIAL_APDATA_END, AttrValue) > 0) then
+                begin
+                  AttrValueApdata := GetValueFromTagApdata(AttrValue);
+                  if (TRegEx.IsMatch(AttrValueApdata, '(^http|https|mailto|www):|(^www).', [roIgnoreCase])) then
+                    TagContent := TagContent + Format(' %s="%s"', [AttrName, AttrValue.Replace(SPECIAL_APDATA_BEGIN, '').Replace(SPECIAL_APDATA_END, '')]);
+                end;
               end
               else
                 TagContent := TagContent + Format(' %s="%s"', [AttrName, AttrValue]);

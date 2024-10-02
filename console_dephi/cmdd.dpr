@@ -135,7 +135,7 @@ var
     Console.WriteColorLine('* 26 - Pack Dlls [pdlls64]                                            *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 27 - Pack Clients [pclients]                                        *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 28 - Pack Tools [ptools]                                            *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 29 - All                                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 29 - All [All32, All64]                                             *', [TConsoleColor.Blue]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
   end;
 
@@ -173,18 +173,6 @@ var
                                                   addEureka   : '0'
                                                 ),
                                                 (
-                                                  typeBuild   : '';
-                                                  dirBase     : 'Apdata_X64';
-                                                  dirApp      : 'TesteParser';
-                                                  arquitetura : 'Win64';
-                                                  appName     : 'TesteParser';
-                                                  aplicacoes  : '';
-                                                  bin         : '\';
-                                                  source      : '\';
-                                                  lib         : '\';
-                                                  addEureka   : '0'
-                                                ),
-                                                (
                                                   typeBuild   : 'release';
                                                   dirBase     : 'Apdata_X64';
                                                   dirApp      : 'ApIdControl';
@@ -195,6 +183,18 @@ var
                                                   source      : '\';
                                                   lib         : 'lib';
                                                   addEureka   : '0';
+                                                ),
+                                                (
+                                                  typeBuild   : '';
+                                                  dirBase     : 'Apdata_X64';
+                                                  dirApp      : 'TesteParser';
+                                                  arquitetura : 'Win64';
+                                                  appName     : 'TesteParser';
+                                                  aplicacoes  : '\';
+                                                  bin         : '\';
+                                                  source      : '\';
+                                                  lib         : '\';
+                                                  addEureka   : '0'
                                                 )
                                              );
   var
@@ -515,6 +515,65 @@ var
 
           Result := 'compile pack 26';
         end;
+
+      30 :
+        begin
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(19, ASubCommand));
+            strListMsg.Add(ExecuteCommand(20, ASubCommand));
+
+            strListMsg.Add(ExecuteCommand(01, ASubCommand));
+            strListMsg.Add(ExecuteCommand(03, ASubCommand));
+            strListMsg.Add(ExecuteCommand(04, ASubCommand));
+            strListMsg.Add(ExecuteCommand(05, ASubCommand));
+            strListMsg.Add(ExecuteCommand(07, ASubCommand));
+            strListMsg.Add(ExecuteCommand(08, ASubCommand));
+            strListMsg.Add(ExecuteCommand(10, ASubCommand));
+            strListMsg.Add(ExecuteCommand(12, ASubCommand));
+            strListMsg.Add(ExecuteCommand(14, ASubCommand));
+            strListMsg.Add(ExecuteCommand(15, ASubCommand));
+            strListMsg.Add(ExecuteCommand(16, ASubCommand));
+            strListMsg.Add(ExecuteCommand(17, ASubCommand));
+            strListMsg.Add(ExecuteCommand(18, ASubCommand));
+
+            PrintResumeComp(strListMsg);
+          finally
+            strListMsg.Free;
+          end;
+
+          Result := 'compile pack 27';
+        end;
+
+      31 :
+        begin
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(19, ASubCommand));
+            strListMsg.Add(ExecuteCommand(20, ASubCommand));
+
+            strListMsg.Add(ExecuteCommand(02, ASubCommand));
+            strListMsg.Add(ExecuteCommand(03, ASubCommand));
+            strListMsg.Add(ExecuteCommand(04, ASubCommand));
+            strListMsg.Add(ExecuteCommand(06, ASubCommand));
+            strListMsg.Add(ExecuteCommand(07, ASubCommand));
+            strListMsg.Add(ExecuteCommand(08, ASubCommand));
+            strListMsg.Add(ExecuteCommand(09, ASubCommand));
+            strListMsg.Add(ExecuteCommand(11, ASubCommand));
+            strListMsg.Add(ExecuteCommand(13, ASubCommand));
+            strListMsg.Add(ExecuteCommand(14, ASubCommand));
+            strListMsg.Add(ExecuteCommand(15, ASubCommand));
+            strListMsg.Add(ExecuteCommand(16, ASubCommand));
+            strListMsg.Add(ExecuteCommand(17, ASubCommand));
+            strListMsg.Add(ExecuteCommand(18, ASubCommand));
+
+            PrintResumeComp(strListMsg);
+          finally
+            strListMsg.Free;
+          end;
+
+          Result := 'compile pack 28';
+        end;
       else
         Console.WriteColor('not executed!', [TConsoleColor.Red]);
     end;
@@ -584,6 +643,10 @@ var
         Result := 28
       else if (AnsiSameText(ANameSystem, 'All')) then
         Result := 29
+      else if (AnsiSameText(ANameSystem, 'All32')) then
+        Result := 30
+      else if (AnsiSameText(ANameSystem, 'All64')) then
+        Result := 31
     end;
   end;
 

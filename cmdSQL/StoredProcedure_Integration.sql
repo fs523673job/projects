@@ -1021,6 +1021,7 @@ begin
 	exec sp_Execute_Delete 'dbo', 01, 'FormulariosWFCampos', 'FWC_CdiFormularioWFCampo = 100505' 
 	exec sp_Execute_Delete 'dbo', 02, 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao = 1'
 	exec sp_Execute_Delete 'dbo', 03, 'ControlesSeqsInternos', 'DJN_CdiTabela > 0'
+	exec sp_Execute_Delete 'dbo', 04, 'UsuariosDesabilitacoes', 'USD_CdiUsuario = 1'
 	exec sp_deleteCascate 'EstruturasAD', '= 1001', 0
 	exec sp_deleteCascate 'Defaults', '> 12', 0
 	exec sp_deleteCascate 'ListasGenericas', '> 50010', 0
@@ -1973,6 +1974,144 @@ begin
 end
 GO
 */
+
+/**********************************************************************
+    17 - DUPLICAR REGISTRO
+***********************************************************************/
+
+create or alter procedure sp_DuplicarRegistro(@TableName NVARCHAR(128),
+                                              @PrimaryKeyColumn NVARCHAR(128),
+                                              @PrimaryKeyValue SQL_VARIANT
+                                             )     
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @sql NVARCHAR(MAX);
+    DECLARE @columns NVARCHAR(MAX);
+
+    -- Obter a lista de colunas, excluindo a chave primária e colunas de identidade
+    SELECT @columns = STRING_AGG(QUOTENAME(name), ', ')
+    FROM sys.columns
+    WHERE object_id = OBJECT_ID(@TableName)
+      AND name <> @PrimaryKeyColumn
+      AND is_identity = 0;
+
+    -- Verificar se as colunas foram obtidas
+    IF @columns IS NULL
+    BEGIN
+        RAISERROR('Tabela ou colunas não encontradas.', 16, 1);
+        RETURN;
+    END
+
+    -- Construir o SQL dinâmico para inserir o registro duplicado
+    SET @sql = N'
+    INSERT INTO ' + QUOTENAME(@TableName) + ' (' + @columns + ')
+    SELECT ' + @columns + '
+    FROM ' + QUOTENAME(@TableName) + '
+    WHERE ' + QUOTENAME(@PrimaryKeyColumn) + ' = @PrimaryKeyValue;
+    ';
+
+    -- Executar o SQL dinâmico
+    EXEC sp_executesql @sql, N'@PrimaryKeyValue SQL_VARIANT', @PrimaryKeyValue;
+END;
+GO
+
+/**********************************************************************
+    18 - DUPLICAR REGISTRO
+***********************************************************************/
+
+create or alter procedure sp_DuplicarRegistroComAlteracoes(@TableName NVARCHAR(128),
+                                                           @PrimaryKeyColumn NVARCHAR(128),
+                                                           @PrimaryKeyValue SQL_VARIANT, 
+                                                           @CamposAlterar NVARCHAR(MAX) = NULL,  -- Ex: 'Coluna1, Coluna2'
+                                                           @NovosValores NVARCHAR(MAX) = NULL     -- Ex: 'Valor1, Valor2'
+                                                          ) 
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @sql NVARCHAR(MAX);
+    DECLARE @columns NVARCHAR(MAX);
+    DECLARE @selectColumns NVARCHAR(MAX);
+    DECLARE @NextPrimaryKeyValue INT;
+
+    SET @sql = N'SELECT @NextPrimaryKeyValue = ISNULL(MAX(' + QUOTENAME(@PrimaryKeyColumn) + '), 0) + 1 FROM ' + QUOTENAME(@TableName);
+    EXEC sp_executesql @sql, N'@NextPrimaryKeyValue INT OUTPUT', @NextPrimaryKeyValue = @NextPrimaryKeyValue OUTPUT;
+
+    SELECT @columns = STRING_AGG(CAST(QUOTENAME(name) AS NVARCHAR(MAX)), ', ')
+    FROM sys.columns
+    WHERE object_id = OBJECT_ID(@TableName)
+      AND is_identity = 0;  
+
+    IF @columns IS NULL
+    BEGIN
+        RAISERROR('Tabela ou colunas não encontradas.', 16, 1);
+        RETURN;
+    END
+
+    SET @selectColumns = @columns;
+
+    IF @CamposAlterar IS NOT NULL AND @NovosValores IS NOT NULL
+    BEGIN
+        DECLARE @Campos TABLE (RN INT, Nome NVARCHAR(128));
+        DECLARE @Valores TABLE (RN INT, Valor NVARCHAR(MAX));
+
+        INSERT INTO @Campos (RN, Nome)
+        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RN, LTRIM(RTRIM(value))
+        FROM STRING_SPLIT(@CamposAlterar, ',');
+
+        INSERT INTO @Valores (RN, Valor)
+        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RN, LTRIM(RTRIM(value))
+        FROM STRING_SPLIT(@NovosValores, ',');
+
+        IF (SELECT COUNT(*) FROM @Campos) <> (SELECT COUNT(*) FROM @Valores)
+        BEGIN
+            RAISERROR('O número de campos e valores não corresponde.', 16, 1);
+            RETURN;
+        END
+
+        SELECT @selectColumns = STRING_AGG(
+            CAST(
+                CASE
+                    WHEN c.name = @PrimaryKeyColumn THEN CAST(@NextPrimaryKeyValue AS NVARCHAR(MAX)) + ' AS ' + QUOTENAME(c.name)
+                    WHEN cn.Nome IS NOT NULL THEN vn.Valor + ' AS ' + QUOTENAME(c.name)
+                    ELSE QUOTENAME(c.name)
+                END AS NVARCHAR(MAX)
+            ), ', '
+        )
+        FROM sys.columns c
+        LEFT JOIN @Campos cn ON c.name = cn.Nome
+        LEFT JOIN @Valores vn ON cn.RN = vn.RN
+        WHERE c.object_id = OBJECT_ID(@TableName)
+          AND c.is_identity = 0;
+    END
+    ELSE
+    BEGIN
+        SELECT @selectColumns = STRING_AGG(
+            CAST(
+                CASE
+                    WHEN c.name = @PrimaryKeyColumn THEN CAST(@NextPrimaryKeyValue AS NVARCHAR(MAX)) + ' AS ' + QUOTENAME(c.name)
+                    ELSE QUOTENAME(c.name)
+                END AS NVARCHAR(MAX)
+            ), ', '
+        )
+        FROM sys.columns c
+        WHERE c.object_id = OBJECT_ID(@TableName)
+          AND c.is_identity = 0;
+    END
+
+    SET @sql = N'
+    INSERT INTO ' + QUOTENAME(@TableName) + ' (' + @columns + ')
+    SELECT ' + @selectColumns + '
+    FROM ' + QUOTENAME(@TableName) + '
+    WHERE ' + QUOTENAME(@PrimaryKeyColumn) + ' = @PrimaryKeyValue;
+    ';
+
+    EXEC sp_executesql @sql, N'@PrimaryKeyValue SQL_VARIANT', @PrimaryKeyValue;
+END;
+GO
+/**********************************************************************/
 
 IF DB_NAME() = 'INTEGRATION_BETA'
 begin
