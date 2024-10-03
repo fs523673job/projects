@@ -64,6 +64,8 @@ drop function if exists fn_getPKFieldName
 GO
 drop procedure if exists sp_Execute_Or_Insert
 GO
+drop procedure if exists sp_DuplicarRegistroComAlteracoes
+GO
 
 /*** FUNÇÕES UTILITÁRIAS **********************************************/
 /*** PROCEDURES UTILITÁRIAS *******************************************/
@@ -1053,9 +1055,8 @@ begin
 end;
 GO
 
-
 /**********************************************************************
-  8 - Store Procedure Standard Data
+  08 - Store Procedure Standard Data
 ***********************************************************************/
 
 --create procedure sp_StandardData_FixedValues
@@ -1561,6 +1562,10 @@ begin
 			exec sp_Execute_Insert_ThreeKey 'dbo', 02, 'DefaultsChaves', 'BDI_CdiDefaultChave, BDI_CdiDefault, BDI_CdiListaGenerica, BDI_CdiCampo_Chave, BDI_CdiOperacaoLogica', @DefaultsChavesKey, 2,  @DefaultsKey, 2, @ListasGenericasKey, 2, '10430, 9', 1
 
 		/*1048 - CONTEUDO PRE-DEFINIDO - DEFAULTS - FIM*/
+
+		/*2330 - CRIAÇÃO DE NOVOS USUÁRIOS PARA TESTES - BEGIN*/
+			exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''flsantos@apdatatst.com.br'', ''flsantos@apdatatst.com.br'', ''Flsantos Teste ApDataTst'''
+		/*2330 - CRIAÇÃO DE NOVOS USUÁRIOS PARA TESTES - END*/
 		
 	    /*-> ADINTEGRATOR - ACTIVE DIRECTORY -INICIO */
 			--exec sp_takeKeyForInsertion 'DefSisIntegracaoAD', @AuxKey OUTPUT
@@ -1976,49 +1981,7 @@ GO
 */
 
 /**********************************************************************
-    17 - DUPLICAR REGISTRO
-***********************************************************************/
-
-create or alter procedure sp_DuplicarRegistro(@TableName NVARCHAR(128),
-                                              @PrimaryKeyColumn NVARCHAR(128),
-                                              @PrimaryKeyValue SQL_VARIANT
-                                             )     
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    DECLARE @sql NVARCHAR(MAX);
-    DECLARE @columns NVARCHAR(MAX);
-
-    -- Obter a lista de colunas, excluindo a chave primária e colunas de identidade
-    SELECT @columns = STRING_AGG(QUOTENAME(name), ', ')
-    FROM sys.columns
-    WHERE object_id = OBJECT_ID(@TableName)
-      AND name <> @PrimaryKeyColumn
-      AND is_identity = 0;
-
-    -- Verificar se as colunas foram obtidas
-    IF @columns IS NULL
-    BEGIN
-        RAISERROR('Tabela ou colunas não encontradas.', 16, 1);
-        RETURN;
-    END
-
-    -- Construir o SQL dinâmico para inserir o registro duplicado
-    SET @sql = N'
-    INSERT INTO ' + QUOTENAME(@TableName) + ' (' + @columns + ')
-    SELECT ' + @columns + '
-    FROM ' + QUOTENAME(@TableName) + '
-    WHERE ' + QUOTENAME(@PrimaryKeyColumn) + ' = @PrimaryKeyValue;
-    ';
-
-    -- Executar o SQL dinâmico
-    EXEC sp_executesql @sql, N'@PrimaryKeyValue SQL_VARIANT', @PrimaryKeyValue;
-END;
-GO
-
-/**********************************************************************
-    18 - DUPLICAR REGISTRO
+    16 - DUPLICAR REGISTRO
 ***********************************************************************/
 
 create or alter procedure sp_DuplicarRegistroComAlteracoes(@TableName NVARCHAR(128),
@@ -2111,7 +2074,9 @@ BEGIN
     EXEC sp_executesql @sql, N'@PrimaryKeyValue SQL_VARIANT', @PrimaryKeyValue;
 END;
 GO
+
 /**********************************************************************/
+
 
 IF DB_NAME() = 'INTEGRATION_BETA'
 begin

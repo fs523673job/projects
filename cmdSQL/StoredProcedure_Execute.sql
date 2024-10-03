@@ -133,7 +133,6 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL 
 
 exec sp_Execute_Insert_Key_ForeignKey 'dbo', 01, 'ListasGenericasItens', 'CJU_CdiListaGenericaItem, CJU_CdiListaGenerica, CJU_NuiConteudo_Inteiro', 1001, 1, 1002, 1, '1', 1 
 
-exec sp_DuplicarRegistro 'Usuarios', 'USR_CdiUsuario', 1672
 exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''flsantos@apdatatst.com.br'', ''flsantos@apdatatst.com.br'', ''Flsantos Teste ApDataTst''';
 
 select * from Usuarios where USR_CdsUsuario = 'flsantos@apdatatst.com.br'
