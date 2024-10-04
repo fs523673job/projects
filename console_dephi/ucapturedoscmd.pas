@@ -9,6 +9,7 @@ implementation
 
 uses
   Windows,
+  System.StrUtils,
   System.SysUtils,
   System.Classes,
   System.Console,
@@ -248,12 +249,12 @@ begin
       AMessages := Format('%s - Erros Encontrados Na Compilacao', [ASystemName]);
 
     if CompHint > 0 then
-      AMessages := Format('%s - [Hints Encontrados %d]', [AMessages, CompHint]);
+      AMessages := Format('%s - [Hints Encontrados %d]', [IfThen(AMessages.IsEmpty, ASystemName, AMessages), CompHint]);
 
     if CompWarning > 0 then
-      AMessages := Format('%s - [Warnings Encontrados %d]', [AMessages, CompWarning]);
+      AMessages := Format('%s - [Warnings Encontrados %d]', [IfThen(AMessages.IsEmpty, ASystemName, AMessages), CompWarning]);
 
-    AMessages := Format('%s - [%d - ms (%s)]', [AMessages, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
+    AMessages := Format('%s - [%d - ms (%s)]', [IfThen(AMessages.IsEmpty, ASystemName, AMessages), StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]);
 
     Console.WriteLine();
     Console.WriteColorLine(Format('Finalizando a compilação do %s em %d - ms (%s)', [ASystemName, StopWatch.ElapsedMilliseconds, StopWatch.Elapsed.ToString]), [TConsoleColor.Yellow]);

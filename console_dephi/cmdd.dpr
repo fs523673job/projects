@@ -333,7 +333,7 @@ var
 
             Result := ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]), '', 'GenerateMessages');
             if TFile.Exists(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository])) then
-              Result := Result + #13#10 + (ExecuteInternal(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository]), '', 'AtualizaPath'));
+              Result := Result + #13#10 + 'AtualizaPath ' +  (ExecuteInternal(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository]), '', 'AtualizaPath'));
           finally
             TFile.WriteAllText(Format('%s\GenerateMessages.bat', [DirectoryRepository]), OriginalContent.Text.Replace('\\srvdevel1\', '\\srvdevel\').TrimRight);
             OriginalContent.Free;
