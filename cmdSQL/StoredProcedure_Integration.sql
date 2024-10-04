@@ -66,6 +66,8 @@ drop procedure if exists sp_Execute_Or_Insert
 GO
 drop procedure if exists sp_DuplicarRegistroComAlteracoes
 GO
+drop procedure if exists sp_GetLastIdFromTable
+GO
 
 /*** FUNÇÕES UTILITÁRIAS **********************************************/
 /*** PROCEDURES UTILITÁRIAS *******************************************/
@@ -1036,23 +1038,51 @@ GO
 
 create or alter procedure sp_Create_Aux_Table(@newRecs int = 15)
 as
-begin
-	drop table IntegrationMonitoracao
+BEGIN
+    SET NOCOUNT ON;
+    
+    IF OBJECT_ID('dbo.IntegrationMonitoracao', 'U') IS NOT NULL
+        DROP TABLE dbo.IntegrationMonitoracao;
 
-	create table IntegrationMonitoracao(
-		id_integrationmonitoracao int,
-		id_cargo int,
-		id_pais int,
-		id_areaatuacao int,
-		status_ int,
-		datatransacao datetime,
-		evento int,
-		error varchar(256),
-		desc_cargo varchar(256)
-	)
+    CREATE TABLE dbo.IntegrationMonitoracao(
+        id_integrationmonitoracao INT,
+        id_cargo INT,
+        id_pais INT,
+        id_areaatuacao INT,
+        status_ INT,
+        datatransacao DATETIME,
+        evento INT,
+        error VARCHAR(256),
+        desc_cargo VARCHAR(256)
+    );
 
-	declare @count int = 1
-end;
+    ;WITH Numbers AS (
+        SELECT TOP (@newRecs) ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS n
+        FROM sys.all_columns  
+    )
+    INSERT INTO dbo.IntegrationMonitoracao (
+        id_integrationmonitoracao,
+        id_cargo,
+        id_pais,
+        id_areaatuacao,
+        status_,
+        datatransacao,
+        evento,
+        error,
+        desc_cargo
+    )
+    SELECT
+        n,                                               -- id_integrationmonitoracao
+        n + 100,                                         -- id_cargo
+        n + 200,                                         -- id_pais
+        n + 300,                                         -- id_areaatuacao
+        n % 2,                                           -- status_, alterna entre 0 e 1
+        DATEADD(MINUTE, n, GETDATE()),                   -- datatransacao, incrementa minutos
+        n % 3,                                           -- evento, valores entre 0 e 2
+        'Mock error message ' + CAST(n AS VARCHAR(10)),  -- error
+        'Mock description ' + CAST(n AS VARCHAR(10))     -- desc_cargo
+    FROM Numbers;
+END;
 GO
 
 /**********************************************************************
@@ -1563,8 +1593,102 @@ begin
 
 		/*1048 - CONTEUDO PRE-DEFINIDO - DEFAULTS - FIM*/
 
-		/*2330 - CRIAÇÃO DE NOVOS USUÁRIOS PARA TESTES - BEGIN*/
-			exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''flsantos@apdatatst.com.br'', ''flsantos@apdatatst.com.br'', ''Flsantos Teste ApDataTst'''
+		/*2330 - CRIAÇÃO/ATUALIZAÇÃO DE NOVOS/ATUAIS USUÁRIOS PARA TESTES - BEGIN*/
+		    declare @ultimaChaveUsuario int
+			declare @ultimaChaveTabela int
+			declare @ultimaChaveNovoGrupo int
+			declare @ultimaChavePerfil int
+			declare @WhereNovoUsuario nvarchar(max)
+			declare @valoresCampos nvarchar(max)
+			declare @valoresCamposSet nvarchar(max)
+
+			/*Adicionar Perfis ao usuário 1672 - flsantos*/
+			if not EXISTS(Select 1 From UsuariosxPerfis Where USP_CdiUsuario = 1672 and USP_CdiPerfil in (217, 218, 220, 222, 382))
+			begin
+			  exec sp_GetLastIdFromTable 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil', 0, @ultimaChavePerfil OUTPUT
+			  exec sp_Execute_Insert_Key 'dbo', 01, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 01, '1672, 217', 1  
+			  exec sp_Execute_Insert_Key 'dbo', 02, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 02, '1672, 218', 1  
+			  exec sp_Execute_Insert_Key 'dbo', 03, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 03, '1672, 220', 1  
+			  exec sp_Execute_Insert_Key 'dbo', 04, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 04, '1672, 222', 1
+			  exec sp_Execute_Insert_Key 'dbo', 05, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, '1672, 382', 1
+			end
+
+		    if not EXISTS(Select 1 From GruposUsuarios where GUS_D1sGrupoUsuario = 'Apdata - Programação - SCE')
+			begin
+			  exec sp_DuplicarRegistroComAlteracoes 'GruposUsuarios', 'GUS_CdiGrupoUsuario', 1019, 'GUS_D1sGrupoUsuario', '''Apdata - Programação - SCE''', @ultimaChaveNovoGrupo OUTPUT
+			end
+
+		    if not EXISTS(Select 1 From Usuarios Where USR_CdsUsuario = 'flsantos@apdata.com.br')
+			begin
+			  /*Cria o usuario flsantos@apdata.com.br*/
+			  exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''flsantos@apdata.com.br'', ''flsantos@apdata.com.br'', ''Flsantos Apdata Com Br''', @ultimaChaveUsuario OUTPUT
+
+			  /*Adicionnar Usuarios Contratados*/
+			  set @valoresCampos = CAST(@ultimaChaveUsuario AS NVARCHAR(20)) + ',0'
+			  exec sp_Execute_Insert 'dbo', 06, 'UsuariosContratados', 'USC_CdiUsuario, USC_CdiContratado_Usuario', @valoresCampos, 1 
+
+			  /*Adicionar Perfis*/
+			  exec sp_GetLastIdFromTable 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil', 0, @ultimaChavePerfil OUTPUT
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 07, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 01, @ultimaChaveUsuario, 0, '217', 1  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 08, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 02, @ultimaChaveUsuario, 0, '218', 1  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 09, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 03, @ultimaChaveUsuario, 0, '220', 1  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 10, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 04, @ultimaChaveUsuario, 0, '222', 1
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 11, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, @ultimaChaveUsuario, 0, '382', 1
+			  
+			  /*Cria MFA Teste*/
+			  exec sp_GetLastIdFromTable 'ModFatoresAutenticacoes', 'JRZ_CdiModFatorAutenticacao', 1, @ultimaChaveTabela OUTPUT
+			  
+			  set @valoresCampos = CAST(@ultimaChaveTabela AS NVARCHAR(20)) + ',''Modelo Teste MFA'''
+			  exec sp_Execute_Insert 'dbo', 12, 'ModFatoresAutenticacoes', 'JRZ_CdiModFatorAutenticacao, JRZ_D1sModFatorAutenticacao', @valoresCampos, 1
+
+			  /*Atualiza tipo autenticação para teste*/
+			  set @WhereNovoUsuario = 'USR_CdiUsuario = ' + CAST(@ultimaChaveUsuario AS NVARCHAR(20))
+			  exec sp_Execute_Update 'dbo', 13, 'Usuarios', 'USR_CdiOpcao_AutenticacaoNativ = 2', @WhereNovoUsuario
+
+			  /*Atualiza fator de autenticação*/
+			  set @valoresCamposSet = 'USR_CdiModFatorAutenticacao = ' + CAST(@ultimaChaveTabela AS NVARCHAR(20))  
+			  exec sp_Execute_Update 'dbo', 14, 'Usuarios', @valoresCamposSet, @WhereNovoUsuario
+
+			  /*Cria tipo de fator de autenticação por e-mail*/
+			  set @valoresCampos = CAST(@ultimaChaveTabela AS NVARCHAR(20)) + ',1,1'
+			  			  
+			  exec sp_GetLastIdFromTable 'ModFatoresAutenticacoesIts', 'JSB_CdiModFatorAutenticacaoIt', 1, @ultimaChaveTabela OUTPUT
+
+			  set @valoresCampos = CAST(@ultimaChaveTabela AS NVARCHAR(20)) + ',' + @valoresCampos
+
+			  exec sp_Execute_Insert 'dbo', 15, 'ModFatoresAutenticacoesIts', 'JSB_CdiModFatorAutenticacaoIt, JSB_CdiModFatorAutenticacao, JSB_CdiFatorAutenticacao, JSB_NuiOrdem', @valoresCampos, 1
+			  
+			  Print 'Criação e adição do usuário flsantos@apdata.com.br para testes de MFA autenticação especial apdata.'
+			end
+			else
+			  Print 'Usuário flsantos@apdata.com.br já existe. Operção não realizada.';
+
+		    if not EXISTS(Select 1 From Usuarios Where USR_CdsUsuario = 'flsantos@apdatatst.com.br')
+			begin
+			  exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''flsantos@apdatatst.com.br'', ''flsantos@apdatatst.com.br'', ''Flsantos ApdataTst Com Br''', @ultimaChaveUsuario OUTPUT
+
+			  set @valoresCampos = CAST(@ultimaChaveUsuario AS NVARCHAR(20)) + ',0'
+			  exec sp_Execute_Insert 'dbo', 11, 'UsuariosContratados', 'USC_CdiUsuario, USC_CdiContratado_Usuario', @valoresCampos , 1
+			  
+			  set @valoresCamposSet = 'USR_CdiGrupoUsuario = ' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20))
+			  set @WhereNovoUsuario = 'USR_CdiUsuario = ' + CAST(@ultimaChaveUsuario AS NVARCHAR(20))
+			  
+			  exec sp_Execute_Update 'dbo', 16, 'Usuarios', @valoresCamposSet, @WhereNovoUsuario
+			  exec sp_Execute_Update 'dbo', 17, 'Usuarios', @valoresCamposSet, 'USR_CdiUsuario = 1672'
+
+			  exec sp_GetLastIdFromTable 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil', 0, @ultimaChavePerfil OUTPUT
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 18, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 01, @ultimaChaveUsuario, 0, '217'  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 19, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 02, @ultimaChaveUsuario, 0, '218'  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 20, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 03, @ultimaChaveUsuario, 0, '220'  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 21, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 04, @ultimaChaveUsuario, 0, '222'
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 22, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, @ultimaChaveUsuario, 0, '382'
+
+
+			  Print 'Criado o Grupo [' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20)) + '] Adicionado o usuário flsantos e flsantos@apdatatst.com.br'
+			  Print 'Criação e adição do usuário flsantos@apdatatst.com.br para testes de no servidor http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf.'
+			end
+			else
+			  Print 'Usuário flsantos@apdatatst.com.br já existe. Operção não realizada.';
 		/*2330 - CRIAÇÃO DE NOVOS USUÁRIOS PARA TESTES - END*/
 		
 	    /*-> ADINTEGRATOR - ACTIVE DIRECTORY -INICIO */
@@ -1574,7 +1698,7 @@ begin
 		/*Objeto 3090*/
 			exec sp_Execute_Update 'dbo', '01', 'DefSisIntegracaoAD', 'DZW_DtdOficializacaoSistema = null, DZW_OplAtivaIntegracao = 1, DZW_OplCriacaoUsuarioAut =  0, DZW_DssCaminhoLDAP = ''DC=apdatatst,DC=com,DC=br'', DZW_OplIntegraViaWS = 1, DZW_DssWSCriaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtualizaDados = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrocaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSResetaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtivaDesativaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_CdsWSUsuario = ''flsantos'', DZW_CosWSSenha = ''Fls12345@'', DZW_OplAtivaLogIntegracao = 1, DZW_OplNaoSincronizarGrupo = 0, DZW_OplNaoSincronizarEstrutura = 0, DZW_DssWSValidaLogin = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrataSSO = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 'DZW_CdiSistema = 72', 1
 			--Para ativar a integração da ApData marcar a configuração da seguinte forma [GUS_CdiOpcao_AtivaIntegracao = 1, GUS_CdiTipoAutenticacao = 2, GUS_CdiOpcao_IntegraViaWS = 1]
-			exec sp_Execute_Update 'dbo', '02', 'GruposUsuarios', 'GUS_CdiOpcao_AtivaIntegracao = 0, GUS_CdiTipoAutenticacao = 2, GUS_CdiOpcao_IntegraViaWS = 0', 'GUS_CdiGrupoUsuario = 1019', 1
+			exec sp_Execute_Update 'dbo', '02', 'GruposUsuarios', 'GUS_CdiOpcao_AtivaIntegracao = 1, GUS_CdiTipoAutenticacao = 2, GUS_CdiOpcao_IntegraViaWS = 1', 'GUS_CdiGrupoUsuario = 1019', 1
 			
 			--Para ativar a validação da apdata [usuários com nome e-mail]
 			exec sp_Execute_Or_Insert 'dbo', 01, 'IdentificacoesApServer', 'EON_DssNomeMaquina', '''APDNSON0220''', 'EON_CdiIdentificacaoApServer', 'EON_DssNomeMaquina, EON_DssNomeInstancia, EON_DssLinkADIntegratorWS', '''APDNSON0220'',''localhost'',''https://apad.apdata.com.br/aPAD/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 1
@@ -1988,7 +2112,8 @@ create or alter procedure sp_DuplicarRegistroComAlteracoes(@TableName NVARCHAR(1
                                                            @PrimaryKeyColumn NVARCHAR(128),
                                                            @PrimaryKeyValue SQL_VARIANT, 
                                                            @CamposAlterar NVARCHAR(MAX) = NULL,  -- Ex: 'Coluna1, Coluna2'
-                                                           @NovosValores NVARCHAR(MAX) = NULL     -- Ex: 'Valor1, Valor2'
+                                                           @NovosValores NVARCHAR(MAX) = NULL,     -- Ex: 'Valor1, Valor2'
+														   @NovoValorChavePrimaria INT OUTPUT    -- Parâmetro de saída para a chave primária
                                                           ) 
 AS
 BEGIN
@@ -1999,13 +2124,15 @@ BEGIN
     DECLARE @selectColumns NVARCHAR(MAX);
     DECLARE @NextPrimaryKeyValue INT;
 
+    -- Calcular o próximo valor disponível para a chave primária
     SET @sql = N'SELECT @NextPrimaryKeyValue = ISNULL(MAX(' + QUOTENAME(@PrimaryKeyColumn) + '), 0) + 1 FROM ' + QUOTENAME(@TableName);
     EXEC sp_executesql @sql, N'@NextPrimaryKeyValue INT OUTPUT', @NextPrimaryKeyValue = @NextPrimaryKeyValue OUTPUT;
 
+    -- Obter a lista de colunas, incluindo a chave primária
     SELECT @columns = STRING_AGG(CAST(QUOTENAME(name) AS NVARCHAR(MAX)), ', ')
     FROM sys.columns
     WHERE object_id = OBJECT_ID(@TableName)
-      AND is_identity = 0;  
+      AND is_identity = 0;  -- Exclui colunas de identidade (se houver)
 
     IF @columns IS NULL
     BEGIN
@@ -2013,10 +2140,13 @@ BEGIN
         RETURN;
     END
 
+    -- Inicializar @selectColumns com as colunas originais
     SET @selectColumns = @columns;
 
+    -- Se campos para alterar forem fornecidos
     IF @CamposAlterar IS NOT NULL AND @NovosValores IS NOT NULL
     BEGIN
+        -- Dividir os campos e valores em tabelas temporárias com números de linha
         DECLARE @Campos TABLE (RN INT, Nome NVARCHAR(128));
         DECLARE @Valores TABLE (RN INT, Valor NVARCHAR(MAX));
 
@@ -2028,12 +2158,14 @@ BEGIN
         SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RN, LTRIM(RTRIM(value))
         FROM STRING_SPLIT(@NovosValores, ',');
 
+        -- Verificar se o número de campos e valores correspondem
         IF (SELECT COUNT(*) FROM @Campos) <> (SELECT COUNT(*) FROM @Valores)
         BEGIN
             RAISERROR('O número de campos e valores não corresponde.', 16, 1);
             RETURN;
         END
 
+        -- Reconstituir @selectColumns com os novos valores
         SELECT @selectColumns = STRING_AGG(
             CAST(
                 CASE
@@ -2051,6 +2183,7 @@ BEGIN
     END
     ELSE
     BEGIN
+        -- Quando não há campos para alterar, ainda precisamos definir o novo valor para a chave primária
         SELECT @selectColumns = STRING_AGG(
             CAST(
                 CASE
@@ -2064,14 +2197,96 @@ BEGIN
           AND c.is_identity = 0;
     END
 
+    -- Criar uma tabela temporária para capturar o valor da chave primária inserida
+    CREATE TABLE #InsertedKeys (ChavePrimaria INT);
+
+    -- Construir o SQL dinâmico com a cláusula OUTPUT
     SET @sql = N'
     INSERT INTO ' + QUOTENAME(@TableName) + ' (' + @columns + ')
+    OUTPUT inserted.' + QUOTENAME(@PrimaryKeyColumn) + ' INTO #InsertedKeys(ChavePrimaria)
     SELECT ' + @selectColumns + '
     FROM ' + QUOTENAME(@TableName) + '
     WHERE ' + QUOTENAME(@PrimaryKeyColumn) + ' = @PrimaryKeyValue;
     ';
 
-    EXEC sp_executesql @sql, N'@PrimaryKeyValue SQL_VARIANT', @PrimaryKeyValue;
+    -- Executar o SQL dinâmico
+    EXEC sp_executesql @sql, N'@PrimaryKeyValue SQL_VARIANT', @PrimaryKeyValue = @PrimaryKeyValue;
+
+    -- Recuperar o valor da chave primária inserida
+    SELECT TOP 1 @NovoValorChavePrimaria = ChavePrimaria FROM #InsertedKeys;
+
+    -- Limpar a tabela temporária
+    DROP TABLE #InsertedKeys;
+END;
+GO
+
+/**********************************************************************
+    17 - PEGAR A ÚLTIMA CHAVE DE UMA TABELA
+***********************************************************************/
+
+create or alter procedure sp_GetLastIdFromTable(@TableName NVARCHAR(128),
+                                                @IdColumn NVARCHAR(128),
+                                                @Increment INT = 0,
+                                                @LastId INT OUTPUT
+                                               )
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @SQL NVARCHAR(MAX);
+    DECLARE @ParmDefinition NVARCHAR(500);
+
+    -- Construir o SQL dinâmico
+    SET @SQL = N'SELECT @LastIdOut = MAX(' + QUOTENAME(@IdColumn) + ') FROM ' + QUOTENAME(@TableName) + ';';
+    SET @ParmDefinition = N'@LastIdOut INT OUTPUT';
+
+    -- Executar o SQL dinâmico
+    EXEC sp_executesql @SQL, @ParmDefinition, @LastIdOut = @LastId OUTPUT;
+
+    -- Tratar casos onde MAX retorna NULL (tabela vazia)
+    IF @LastId IS NULL
+        SET @LastId = 0;
+
+    -- Incrementar o ID se necessário
+    SET @LastId = @LastId + @Increment;
+END;
+GO
+
+create or alter procedure sp_GetLastIdFromTableEx(@TableName SYSNAME,
+                                                  @LastId INT OUTPUT
+                                                 )
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @IdColumn SYSNAME;
+    DECLARE @SQL NVARCHAR(MAX);
+    DECLARE @ParmDefinition NVARCHAR(500);
+
+    -- Obter o nome da coluna de chave primária
+    SELECT TOP 1 @IdColumn = KU.COLUMN_NAME
+    FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS TC
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KU
+        ON TC.CONSTRAINT_TYPE = 'PRIMARY KEY' AND
+           TC.CONSTRAINT_NAME = KU.CONSTRAINT_NAME
+    WHERE KU.TABLE_NAME = @TableName;
+
+    IF @IdColumn IS NULL
+    BEGIN
+        RAISERROR('Chave primária não encontrada para a tabela %s.', 16, 1, @TableName);
+        RETURN;
+    END
+
+    -- Construir o SQL dinâmico
+    SET @SQL = N'SELECT @LastIdOut = MAX(' + QUOTENAME(@IdColumn) + ') FROM ' + QUOTENAME(@TableName) + ';';
+    SET @ParmDefinition = N'@LastIdOut INT OUTPUT';
+
+    -- Executar o SQL dinâmico
+    EXEC sp_executesql @SQL, @ParmDefinition, @LastIdOut = @LastId OUTPUT;
+
+    -- Tratar casos onde MAX retorna NULL (tabela vazia)
+    IF @LastId IS NULL
+        SET @LastId = 0;
 END;
 GO
 

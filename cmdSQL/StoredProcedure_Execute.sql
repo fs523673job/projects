@@ -51,6 +51,15 @@ select [dbo].[fn_getNuiPkLimiteApdata]('ServidoresIntegracoes')
 select [dbo].[fn_lastIdTable]('ServidoresIntegracoes')
 select [dbo].[fn_getTableMaxKey]('ServidoresIntegracoes')
 
+declare @lastId int
+exec sp_GetLastIdFromTable 'ModFatoresAutenticacoes', 'JRZ_CdiModFatorAutenticacao', 0, @lastId OUTPUT
+select @lastId as NextId;
+
+declare @lastId int
+exec sp_GetLastIdFromTableEx 'ModFatoresAutenticacoes', @lastId OUTPUT
+select @lastId as NextId;
+
+
 exec sp_lastIdTable 'ServidoresIntegracoesBDs'
 exec sp_lastIdTable 'ServidoresIntegracoes'
 exec sp_lastIdTable 'TransacoesIntegracoesSobs'
@@ -133,9 +142,22 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL 
 
 exec sp_Execute_Insert_Key_ForeignKey 'dbo', 01, 'ListasGenericasItens', 'CJU_CdiListaGenericaItem, CJU_CdiListaGenerica, CJU_NuiConteudo_Inteiro', 1001, 1, 1002, 1, '1', 1 
 
-exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''flsantos@apdatatst.com.br'', ''flsantos@apdatatst.com.br'', ''Flsantos Teste ApDataTst''';
+/*Novos usuários testes*/
+declare @lastPrimaryKey int
+exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''novoteste@mail.com'', ''novoteste@mail.com'', ''Flsantos Teste ApDataTst''',  @lastPrimaryKey OUTPUT;
+declare @valoresCampos nvarchar(max)
+set @valoresCampos = CAST(@lastPrimaryKey AS NVARCHAR(20)) + ',0'
+exec sp_Execute_Insert 'dbo', 01, 'UsuariosContratados', 'USC_CdiUsuario, USC_CdiContratado_Usuario', @valoresCampos , 1  
 
-select * from Usuarios where USR_CdsUsuario = 'flsantos@apdatatst.com.br'
+select 1 from Usuarios where USR_CdsUsuario = 'flsantos@apdatatst.com.br'
+select 1 from Usuarios where USR_CdsUsuario = 'flsantos@apdata.com.br'
+/*Novos usuários testes*/
+
+select * from IntegrationMonitoracao
+
+select * from UsuariosContratados where  USC_CdiUsuario in (1853, 1855)
+delete from UsuariosContratados where  USC_CdiUsuario in (1853, 1855)
+delete from Usuarios where USR_CdiUsuario in (1853, 1855)
 
 /*CAMPOS GERAIS UTILIZADOS PARA CLONAR*/
 
@@ -184,3 +206,4 @@ select * from ListasGenericas
 select * from ListasGenericasItens
 
 select * from EstruturasADxSitsAtivs
+select * from ModFatoresAutenticacoesIts
