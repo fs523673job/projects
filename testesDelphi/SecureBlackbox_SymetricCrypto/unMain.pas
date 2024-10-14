@@ -164,7 +164,7 @@ begin
   SymetricCript := TSymetricCript.Create('CriptoSymetric');
   try
     NewNameFile := leFilePath.Text;
-    SymetricCript.EncryptFile(NewNameFile, True);
+    SymetricCript.EncryptFile(NewNameFile, False);
   finally
     SymetricCript.Free;
   end;
@@ -178,7 +178,7 @@ begin
   SymetricCript := TSymetricCript.Create('CriptoSymetric');
   try
     NewNameFile := leFilePath.Text;
-    SymetricCript.DecryptFile(NewNameFile, True);
+    SymetricCript.DecryptFile(NewNameFile, False);
   finally
     SymetricCript.Free;
   end;
