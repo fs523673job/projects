@@ -24,7 +24,8 @@ uses
 
   SynEdit,
 
-  unImplementacao
+  unImplementacao,
+  unSymetricCripto, Vcl.ComCtrls
 
   ;
 
@@ -33,19 +34,28 @@ type
     leFilePath: TLabeledEdit;
     spFileName: TSpeedButton;
     OpenDialog: TOpenDialog;
-    btnEncrypt: TButton;
     ckAlterExtension: TCheckBox;
     seContentFile: TSynEdit;
     Label1: TLabel;
-    btnDescriptografar: TButton;
     ckLoadFile: TCheckBox;
+    ckbAddHeaderSecuritySymetric: TCheckBox;
+    pgControl: TPageControl;
+    tabApenasMetodos: TTabSheet;
+    btnEncrypt: TButton;
+    btnDescriptografar: TButton;
     btStress: TButton;
     edtCount: TEdit;
-    ckbAddHeaderSecuritySymetric: TCheckBox;
+    tbClasseSymetricCript: TTabSheet;
+    btnEncryptSC: TButton;
+    btDescriptografarSC: TButton;
+    btStressSC: TButton;
+    Edit1: TEdit;
     procedure spFileNameClick(Sender: TObject);
     procedure btnEncryptClick(Sender: TObject);
     procedure btnDescriptografarClick(Sender: TObject);
     procedure btStressClick(Sender: TObject);
+    procedure btnEncryptSCClick(Sender: TObject);
+    procedure btDescriptografarSCClick(Sender: TObject);
   private
     { Private declarations }
     procedure EnableDisable(const AFlag: Boolean);
@@ -144,6 +154,35 @@ begin
   end
   else
     ShowMessage('Arquivo selecionado não encontrado');
+end;
+
+procedure TForm1.btnEncryptSCClick(Sender: TObject);
+var
+  SymetricCript: TSymetricCript;
+  NewNameFile: String;
+begin
+  SymetricCript := TSymetricCript.Create('CriptoSymetric');
+  try
+    NewNameFile := leFilePath.Text;
+    SymetricCript.EncryptFile(NewNameFile, True);
+  finally
+    SymetricCript.Free;
+  end;
+end;
+
+procedure TForm1.btDescriptografarSCClick(Sender: TObject);
+var
+  SymetricCript: TSymetricCript;
+  NewNameFile: String;
+begin
+  SymetricCript := TSymetricCript.Create('CriptoSymetric');
+  try
+    NewNameFile := leFilePath.Text;
+    SymetricCript.DecryptFile(NewNameFile, True);
+  finally
+    SymetricCript.Free;
+  end;
+
 end;
 
 procedure TForm1.btnDescriptografarClick(Sender: TObject);

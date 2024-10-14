@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Criptografia Sim'#233'trica - SecureBlackbox'
-  ClientHeight = 442
+  ClientHeight = 499
   ClientWidth = 628
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -37,22 +37,13 @@ object Form1: TForm1
     TabOrder = 0
     Text = 'Informe o caminho do arquivo'
   end
-  object btnEncrypt: TButton
-    Left = 8
-    Top = 409
-    Width = 161
-    Height = 25
-    Caption = 'Encriptografar'
-    TabOrder = 1
-    OnClick = btnEncryptClick
-  end
   object ckAlterExtension: TCheckBox
     Left = 8
     Top = 51
     Width = 225
     Height = 17
     Caption = 'Salvar Criptografia Para Novo Arquivo '
-    TabOrder = 2
+    TabOrder = 1
   end
   object seContentFile: TSynEdit
     Left = 8
@@ -65,32 +56,34 @@ object Form1: TForm1
     Font.Name = 'Consolas'
     Font.Style = []
     Font.Quality = fqClearTypeNatural
-    TabOrder = 3
-    CodeFolding.GutterShapeSize = 11
-    CodeFolding.CollapsedLineColor = clGrayText
-    CodeFolding.FolderBarLinesColor = clGrayText
-    CodeFolding.IndentGuidesColor = clGray
-    CodeFolding.IndentGuides = True
-    CodeFolding.ShowCollapsedLine = False
-    CodeFolding.ShowHintMark = True
+    TabOrder = 2
     UseCodeFolding = False
     Gutter.Font.Charset = DEFAULT_CHARSET
     Gutter.Font.Color = clWindowText
     Gutter.Font.Height = -11
     Gutter.Font.Name = 'Consolas'
     Gutter.Font.Style = []
+    Gutter.Bands = <
+      item
+        Kind = gbkMarks
+        Width = 13
+      end
+      item
+        Kind = gbkLineNumbers
+      end
+      item
+        Kind = gbkFold
+      end
+      item
+        Kind = gbkTrackChanges
+      end
+      item
+        Kind = gbkMargin
+        Width = 3
+      end>
     Lines.Strings = (
       '')
-    FontSmoothing = fsmNone
-  end
-  object btnDescriptografar: TButton
-    Left = 175
-    Top = 409
-    Width = 161
-    Height = 25
-    Caption = 'Descriptografar'
-    TabOrder = 4
-    OnClick = btnDescriptografarClick
+    SelectedColor.Alpha = 0.400000005960464500
   end
   object ckLoadFile: TCheckBox
     Left = 234
@@ -98,26 +91,7 @@ object Form1: TForm1
     Width = 113
     Height = 17
     Caption = 'Carregar arquivo'
-    TabOrder = 5
-  end
-  object btStress: TButton
-    Left = 342
-    Top = 409
-    Width = 219
-    Height = 25
-    Caption = 'Stress Encryp/Decript'
-    TabOrder = 6
-    OnClick = btStressClick
-  end
-  object edtCount: TEdit
-    Left = 567
-    Top = 409
-    Width = 53
-    Height = 23
-    Alignment = taRightJustify
-    NumbersOnly = True
-    TabOrder = 7
-    Text = '100'
+    TabOrder = 3
   end
   object ckbAddHeaderSecuritySymetric: TCheckBox
     Left = 8
@@ -127,7 +101,96 @@ object Form1: TForm1
     Caption = 'Salvar Header de Criptografia nos arquivos'
     Checked = True
     State = cbChecked
-    TabOrder = 8
+    TabOrder = 4
+  end
+  object pgControl: TPageControl
+    Left = 8
+    Top = 416
+    Width = 612
+    Height = 73
+    ActivePage = tbClasseSymetricCript
+    TabOrder = 5
+    object tabApenasMetodos: TTabSheet
+      Caption = 'Apenas Metodos'
+      object btnEncrypt: TButton
+        Left = 3
+        Top = 10
+        Width = 161
+        Height = 25
+        Caption = 'Encriptografar'
+        TabOrder = 0
+        OnClick = btnEncryptClick
+      end
+      object btnDescriptografar: TButton
+        Left = 170
+        Top = 10
+        Width = 161
+        Height = 25
+        Caption = 'Descriptografar'
+        TabOrder = 1
+        OnClick = btnDescriptografarClick
+      end
+      object btStress: TButton
+        Left = 341
+        Top = 10
+        Width = 203
+        Height = 25
+        Caption = 'Stress Encryp/Decript'
+        TabOrder = 2
+        OnClick = btStressClick
+      end
+      object edtCount: TEdit
+        Left = 552
+        Top = 10
+        Width = 51
+        Height = 25
+        Alignment = taRightJustify
+        NumbersOnly = True
+        TabOrder = 3
+        Text = '100'
+      end
+    end
+    object tbClasseSymetricCript: TTabSheet
+      Caption = 'Classe SymetricCript'
+      ImageIndex = 1
+      object btnEncryptSC: TButton
+        Left = 3
+        Top = 10
+        Width = 161
+        Height = 25
+        Caption = 'Encriptografar'
+        TabOrder = 0
+        OnClick = btnEncryptSCClick
+      end
+      object btDescriptografarSC: TButton
+        Left = 170
+        Top = 10
+        Width = 161
+        Height = 25
+        Caption = 'Descriptografar'
+        TabOrder = 1
+        OnClick = btDescriptografarSCClick
+      end
+      object btStressSC: TButton
+        Left = 341
+        Top = 10
+        Width = 203
+        Height = 25
+        Caption = 'Stress Encryp/Decript'
+        TabOrder = 2
+        OnClick = btStressClick
+      end
+      object Edit1: TEdit
+        Left = 552
+        Top = 10
+        Width = 51
+        Height = 23
+        Alignment = taRightJustify
+        NumbersOnly = True
+        TabOrder = 3
+        Text = '100'
+      end
+    end
   end
   object OpenDialog: TOpenDialog
     Left = 424

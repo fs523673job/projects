@@ -34,8 +34,11 @@ var
   const
     COMPSEMERROR = 'Compilado sem erros';
     COMPERROR = 'Compilado com erros';
+    ARQQUIVOSBATS : TArray<String> = ['GenerateMessages', 'GenerateSass'];
   var
     c1: Integer;
+    values: String;
+    findSpecial: Boolean;
   begin
     Console.WriteLine(StringOfChar('*', 80));
     Console.WriteColor('RESUMO DA COMPILACAO', [TConsoleColor.Yellow]);
@@ -51,7 +54,20 @@ var
         else if (Pos(COMPERROR, AStrListMsg[c1]) > 0)  then
           Console.WriteColorLine(AStrListMsg[c1], [TConsoleColor.Red])
         else
-          Console.WriteColorLine(AStrListMsg[c1], [TConsoleColor.Yellow])
+        begin
+          findSpecial := False;
+          for values in ARQQUIVOSBATS do
+          begin
+            if (Pos(values.ToUpper, AStrListMsg[c1].ToUpper) > 0) then
+            begin
+              Console.WriteColorLine(AStrListMsg[c1], [TConsoleColor.Blue]);
+              findSpecial := True;
+            end;
+          end;
+
+          if not findSpecial then
+            Console.WriteColorLine(AStrListMsg[c1], [TConsoleColor.Yellow]);
+        end;
       end
     end;
 

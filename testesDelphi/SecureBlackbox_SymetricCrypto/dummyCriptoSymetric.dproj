@@ -72,7 +72,7 @@
         <SanitizedProjectName>dummyCriptoSymetric</SanitizedProjectName>
         <VerInfo_Locale>1046</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <DCC_UnitSearchPath>C:\Apdata_X64\ApComps\SecureBlackBox\Sources;$(DCC_UnitSearchPath);modules\.dcp;modules\.dcu;modules;modules\synedit\Demos\AutoCompleteDemo;modules\synedit\Demos\CompletionProposalDemo;modules\synedit\Demos\D4Demo;modules\synedit\Demos\DBSynEditDemo;modules\synedit\Demos\EditAppDemos;modules\synedit\Demos\ExportDemo;modules\synedit\Demos\Folding;modules\synedit\Demos\GutterDemo;modules\synedit\Demos\HighlighterDemo;modules\synedit\Demos\MiniMap;modules\synedit\Demos\MultiSynDemo;modules\synedit\Demos\OnPaintTransientDemo;modules\synedit\Demos\PrintDemo;modules\synedit\Demos\PrintDemoNew;modules\synedit\Demos\ScanTokensDemo;modules\synedit\Demos\SearchReplaceDemo;modules\synedit\Demos\SimpleIDEDemo;modules\synedit\Demos\SynAutoCorrectDemo;modules\synedit\Demos\URLDemo\Linux;modules\synedit\Demos\URLDemo\Windows;modules\synedit\Demos;modules\synedit\Source;modules\synedit\SynGen</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>C:\Apdata_X64\ApComps\SecureBlackBox\Sources;modules\.dcp;modules\.dcu;modules;modules\synedit\Demos\AutoCompleteDemo;modules\synedit\Demos\CompletionProposalDemo;modules\synedit\Demos\D4Demo;modules\synedit\Demos\DBSynEditDemo;modules\synedit\Demos\EditAppDemos;modules\synedit\Demos\ExportDemo;modules\synedit\Demos\Folding;modules\synedit\Demos\GutterDemo;modules\synedit\Demos\HighlighterDemo;modules\synedit\Demos\MiniMap;modules\synedit\Demos\MultiSynDemo;modules\synedit\Demos\OnPaintTransientDemo;modules\synedit\Demos\PrintDemo;modules\synedit\Demos\PrintDemoNew;modules\synedit\Demos\ScanTokensDemo;modules\synedit\Demos\SearchReplaceDemo;modules\synedit\Demos\SimpleIDEDemo;modules\synedit\Demos\SynAutoCorrectDemo;modules\synedit\Demos\URLDemo\Linux;modules\synedit\Demos\URLDemo\Windows;modules\synedit\Demos;modules\synedit\Source;modules\synedit\SynGen;C:\Users\flsantos\Documents\Embarcadero\Studio\22.0\CatalogRepository\SynEdit-11\Source\Highlighters;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_UsePackage>soapserver;FireDACIBDriver;SSLBBoxSrvIndy10D24;vclwinx;cxExportRS25;SMIMECAdESBBoxD24;rbDBE1621;DAVBBoxCliD24;fmx;dxFireDACServerModeRS25;vclie;DbxCommonDriver;bindengine;VCLRESTComponents;FireDACCommonODBC;IndyIPCommon;TeeImage;cxPivotGridOLAPRS25;dxPScxSchedulerLnkRS25;appanalytics;IndyProtocols;vclx;PKISSHBBoxD24;dbxcds;vcledge;dxdbtrRS25;dxCoreRS25;cxPivotGridRS25;dxPScxGridLnkRS25;HTTPBBoxCliD24;LDAPBBoxD24;dxBarRS25;JvAppFrm;FireDACSqliteDriver;DbxClientDriver;ppWPToolsPack;JclVcl;soapmidas;dxSkinsdxDLPainterRS25;TMSScripter_IDE;TeeUI;Jcl;dbexpress;JvManagedThreads;dxPSdxMapControlLnkRS25;TeePro;rbDB1621;SSLBBoxCliIndy10D24;inet;EHS_XE7_R;dxWizardControlRS25;dxADOServerModeRS25;vcltouch;SSLBBoxSrvD24;ipstudiowin;dxRibbonRS25;FTPSBBoxSrvD24;JvDB;cxTreeListdxBarPopupMenuRS25;dxServerModeRS25;acQueryBuilderD25;fmxdae;XMLBBoxD24;JvCustom;CustomIPTransport;JvSystem;dxtrmdRS25;ipstudiowinwordxp;SAMLBBoxD24;JvControls;rbDIDE1621;cxLibraryRS25;dxSkinsdxRibbonPainterRS25;MailBBoxD24;PGPSSHBBoxD24;TeeImport;OmniThreadLibraryRuntime;JvCrypt;JvJans;cxGridRS25;JvMM;IndySystem;lmdrtl;dxSpellCheckerRS25;SSHBBoxSrvD24;PKIPDFBBoxD24;PGPTLSBBoxD24;acQueryBuilderSDD25;JvGlobus;JclContainers;dxHttpIndyRequestRS25;dxTileControlRS25;JvPageComps;rbDAD1621;vclFireDAC;WinSkinR;ApLibClient;FireDACCommon;rbADO1621;TMSScripter_VCL;bindcompdbx;TeeLanguage;dxThemeRS25;rtl;FireDACMySQLDriver;SMIMEBBoxD24;PGPLDAPBBoxD24;dxTabbedMDIRS25;cxPageControlRS25;XMLBBoxSecD24;dxGaugeControlRS25;ApBasicControls;DBXSqliteDriver;dxPSRichEditControlLnkRS25;acSqlTextEditorD25;TeeGL;JvRuntimeDesign;lmdrteldb;dxBarExtItemsRS25;JvXPCtrls;PKIBBoxD24;vclimg;inetdbxpress;FireDAC;JvDocking;JvDlgs;xmlrtl;cxTreeListRS25;dxPSPrVwRibbonRS25;SqlDir;rbTCUI1621;ZIPBBoxD24;OfficeBBoxD24;dsnap;JvCmp;cxPivotGridChartRS25;cxSchedulerRS25;dxDBXServerModeRS25;PGPMIMEBBoxD24;WPTools7;dxGDIPlusRS25;fmxobj;bindcompvclsmp;dxRichEditControlCoreRS25;ASiCBBoxD24;rbIDE1621;acQueryBuilderDbExD25;dxPSCoreRS25;dxFlowChartRS25;TMSScripter_Memo;SFTPBBoxSrvD24;dxBarExtDBItemsRS25;ApLibrary;MIMEBBoxD24;BaseBBoxD24;dxLayoutControlRS25;dxPScxCommonRS25;acQueryBuilderADOD25;FireDACCommonDriver;cxDataRS25;dxSkinsdxNavBarPainterRS25;dxPScxExtCommonRS25;dxPsPrVwAdvRS25;dxRichEditControlRS25;IndyIPClient;dxSpreadSheetReportDesignerRS25;bindcompvclwinx;dxPSdxGaugeControlLnkRS25;bindcompfmx;dxNavBarRS25;dxRibbonCustomizationFormRS25;cxVerticalGridRS25;JvBands;inetdb;dxDockingRS25;rbRCL1621;HTTPBBoxSrvD24;Tee;dxPSDBTeeChartRS25;dxPSdxPDFViewerLnkRS25;vclactnband;dxPSdxLCLnkRS25;TMSScripter;fmxFireDAC;SFTPBBoxCliD24;acQueryBuilderFireDACD25;officeXPrt;lmdrtelcore;dxPSdxFCLnkRS25;dxorgcRS25;DBXMySQLDriver;dxSkinsdxBarPainterRS25;ApLibServer;VclSmp;JvPascalInterpreter;dxPSLnksRS25;dxPSdxSpreadSheetLnkRS25;EurekaLogCore;fmxase;JvPluginSystem;dxmdsRS25;cxSchedulerGridRS25;JvTimeFramework;dbrtl;dxPSdxOCLnkRS25;rbTC1621;TeeDB;PGPBBoxD24;FireDACMSAccDriver;dxPSdxDBTVLnkRS25;dxPScxTLLnkRS25;SSHBBoxCliD24;JclDeveloperTools;dxSkinsCoreRS25;vcldsnap;DBXInterBaseDriver;dxPDFViewerRS25;JvWizards;dxOfficeCoreRS25;SSLBBoxCliD24;ipstudiowinclient;vcldb;dxSpreadSheetConditionalFormattingDialogsRS25;dxdborRS25;cxEditorsRS25;dxPSdxDBOCLnkRS25;ApInterfaces;SynEditDR;FTPSBBoxCliD24;CloudBBoxD24;JvCore;TeeWorld;bindcomp;lmdrtelpro;IndyCore;RESTBackendComponents;DAVBBoxSrvD24;cxSchedulerRibbonStyleEventEditorRS25;rbCIDE1621;dxPSTeeChartRS25;BCEditorR;dxComnRS25;dxSpreadSheetRS25;FireDACADSDriver;RaizeComponentsVclDb;LockBox;dxPScxVGridLnkRS25;RESTComponents;dxPScxPivotGridLnkRS25;IndyIPServer;vcl;dsnapxml;adortl;dsnapcon;JvDotNetCtrls;JvHMI;TMSScripter_Legacy;acCriteriaBuilderD25;EDIBBoxD24;dxSkinscxSchedulerPainterRS25;dxMapControlRS25;dxBarDBNavRS25;FireDACPgDriver;JvPrintPreview;tethering;JvStdCtrls;bindcompvcl;CloudService;PDFBBoxD24;lmdrtrtlx;dxSkinscxPCPainterRS25;soaprtl;RaizeComponentsVcl;cxSchedulerTreeBrowserRS25;$(DCC_UsePackage)</DCC_UsePackage>
@@ -109,6 +109,8 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -133,6 +135,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="unImplementacao.pas"/>
+        <DCCReference Include="unSymetricCripto.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -158,12 +161,74 @@
                     <Excluded_Packages Name="$(BDSBIN)\dclIndyCore280.bpl">File c:\program files (x86)\embarcadero\studio\22.0\bin\dclIndyCore280.bpl not found</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclIndyProtocols280.bpl">Indy 10 Protocols Design Time</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclBaseExpert250.bpl">JCL Package containing common units for JCL Experts</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclDebugExpert250.bpl">JCL Debug IDE extension</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclProjectAnalysisExpert250.bpl">JCL Project Analyzer</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclFavoriteFoldersExpert250.bpl">JCL Open and Save IDE dialogs with favorite folders</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclRepositoryExpert250.bpl">JCL Package containing repository wizards</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclSIMDViewExpert250.bpl">JCL Debug Window of XMM registers</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JclStackTraceViewerExpert250.bpl">JCL Stack Trace Viewer</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvAppFrmDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvAppFrmDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvCoreDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvCoreDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvBandsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvBandsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvCmpDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvCmpDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvControlsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvControlsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvCryptDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvCryptDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvCustomDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvCustomDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvDBDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvDBDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvDlgsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvDlgsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvDockingDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvDockingDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvDotNetCtrlsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvDotNetCtrlsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvGlobusDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvGlobusDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvHMIDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvHMIDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvJansDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvJansDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvManagedThreadsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvManagedThreadsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvMMDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvMMDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvNetDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvNetDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvPageCompsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvPageCompsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvPascalInterpreterDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvPascalInterpreterDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvPluginSystemDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvPluginSystemDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvPrintPreviewDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvPrintPreviewDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvRuntimeDesignDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvRuntimeDesignDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvStdCtrlsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvStdCtrlsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvSystemDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvSystemDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvTimeFrameworkDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvTimeFrameworkDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvWizardsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvWizardsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\JvXPCtrlsDesign250.bpl">File C:\ApData_x64\ApBPL\Win32\JvXPCtrlsDesign250.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\dclRBFireDAC1621.bpl">ReportBuilder Data Access for FireDAC</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\EurekaLogComponent240.bpl">File C:\ApData_x64\ApBPL\Win32\EurekaLogComponent240.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\dclIndyCore250.bpl">Indy 10 Core Design Time [ApData]</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\dclIndyProtocols250.bpl">Indy 10 Protocols Design Time [ApData]</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\dclIndyIP250.bpl">Custom IP Indy Implementation Design Package [Apdata]</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\DclTeePro9_250.bpl">TeeChart Pro 2017 VCL Components [ApData]</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\dcldxHttpIndyRequestRS25.bpl">Express Cross Platform Library Indy Request Handler by Developer Express Inc. [ApData]</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\dcldxMapControlRS25.bpl">ExpressMapControl by Developer Express Inc. [ApData]</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\dcldxPSdxMapControlLnkRS25.bpl">ExpressPrinting System ReportLink for ExpressMap Control by Developer Express Inc. [ApData]</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\EurekaLogComponent250.bpl">EurekaLog Component</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\SSLBBoxCliIndy10D24.bpl">SSLBlackbox Client IOHandler for Indy 10 [ApData]</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\SSLBBoxSrvIndy10D24.bpl">SSLBlackbox Server IOHandler for Indy 10 [ApData]</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\DclApBasicControls240.bpl">ApData Basic Controls Library Designtime</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\DclApLibClient240.bpl">ApData Client Controls Library Designtime</Excluded_Packages>
+                    <Excluded_Packages Name="C:\ApData_x64\ApBPL\Win32\DclApLibServer240.bpl">ApData Server Controls Library Designtime</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="4">
                 <DeployFile LocalName="Win32\Debug\dummyCriptoSymetric.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>dummyCriptoSymetric.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\app\dummyCriptoSymetric.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>dummyCriptoSymetric.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\app\dummyCriptoSymetric.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>dummyCriptoSymetric.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
