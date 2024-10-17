@@ -1,7 +1,6 @@
 ﻿unit unSymetricCripto;
 
 interface
-
 uses
   System.Classes,
   System.SysUtils,
@@ -17,10 +16,8 @@ uses
   SBHashFunction,
   SBHMAC,
   SBUtils;
-
 type
   TSymetricStatus = (tssEmpty, tssEncrypt, tssDecrypt);
-
   TSymetricCript = class
   private
     const ENCRYPTED_EXTENSION = '.APC';
@@ -29,14 +26,12 @@ type
     ListFiles: TDictionary<String, Boolean>; // Path, (Encrypt/Decrypt = True/False)
     FPassPhrase: String;
     FUseMetaFile: Boolean;
-
     procedure UpdateFileIni(const AFilePath: String; const AEncrypt: Boolean);
     function GetSymetricStatusIni(const AFilePath: String): TSymetricStatus;
     function IsFileIni(const AFilePath: String): Boolean;
     function IsValidFileForEncryptOrDecrypt(const AFilePath: String; AExtensions: array of String): Boolean;
     procedure EncryptFileMark(const AFilePath: String; const ARenameFile: Boolean);
     procedure DecryptFileMark(const AFilePath: String; const ARenameFile: Boolean);
-
     // DEK's KEK's
     function GenerateDEK: ByteArray;
     function EncryptDEK(const ADEK: ByteArray; const AKEK: ByteArray; out AEncryptedDEKIV: ByteArray): ByteArray;
@@ -48,7 +43,6 @@ type
     function PBKDF2_HMAC_SHA256(const Password, Salt: ByteArray; Iterations, KeyLength: Integer): ByteArray;
     function XorBytes(const A, B: ByteArray): ByteArray;
     function GetMetadataSizeFromFile(const AFilePath: String): Int64;
-
     // Info In MetaData or InFile
     procedure RetrieveEncryptionMetadataFromFile(const AFilePath: String; out EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
     procedure RetrieveEncryptionMetadataFromStream(const AFilePath: String; out EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
@@ -57,20 +51,15 @@ type
   public
     constructor Create(const APassPhrase: String; AUseMetaFile: Boolean = True);
     destructor Destroy; override;
-
     procedure DecryptAndAddList(const AFilePath: String);
     procedure EncryptAndRemoveList(const AFilePath: String);
-
     procedure EncryptAllListFilesNecessary;
-
     function EncryptFile(const AFilePath: String): Boolean; overload;
     function DecryptFile(const AFilePath: String): Boolean; overload;
     function EncryptFile(var AFilePath: String; const ARenameFile: Boolean): Boolean; overload;
     function DecryptFile(var AFilePath: String; const ARenameFile: Boolean): Boolean; overload;
   end;
-
 implementation
-
 { TSymetricCript }
 
 procedure WriteDWordToStream(Stream: TStream; Value: Cardinal);
@@ -103,7 +92,6 @@ var
   HashInner: ByteArray;
 begin
   BlockSize := 64;
-
   if Length(Key) > BlockSize then
   begin
     Hash := TElHashFunction.Create(SB_ALGORITHM_DGST_SHA256);
@@ -118,17 +106,14 @@ begin
   begin
     KeyBlock := Key;
   end;
-
   SetLength(KeyBlock, BlockSize);
   SetLength(OKeyPad, BlockSize);
   SetLength(IKeyPad, BlockSize);
-
   for i := 0 to BlockSize - 1 do
   begin
     OKeyPad[i] := KeyBlock[i] xor $5C;
     IKeyPad[i] := KeyBlock[i] xor $36;
   end;
-
   Hash := TElHashFunction.Create(SB_ALGORITHM_DGST_SHA256);
   try
     Hash.Update(@IKeyPad[0], BlockSize);
@@ -137,7 +122,6 @@ begin
   finally
     Hash.Free;
   end;
-
   Hash := TElHashFunction.Create(SB_ALGORITHM_DGST_SHA256);
   try
     Hash.Update(@OKeyPad[0], BlockSize);
@@ -161,7 +145,6 @@ begin
     EncryptAllListFilesNecessary;
   except
   end;
-
   ListFiles.Free;
   inherited;
 end;
@@ -171,10 +154,8 @@ var
   NewFilePath: String;
 begin
   NewFilePath := AFilePath;
-
   if not IsValidFileForEncryptOrDecrypt(AFilePath, ['.TMP', '.ZIP']) then
     Exit;
-
   if (not NewFilePath.IsEmpty) and FileExists(NewFilePath) then
   begin
     if IsFileIni(NewFilePath) then
@@ -209,7 +190,6 @@ begin
         km.Key := AKEK;
         km.IV := AEncryptedDEKIV;
         crypto.KeyMaterial := km;
-
         msDEKIn := TMemoryStream.Create;
         msDEKOut := TMemoryStream.Create;
         try
@@ -263,11 +243,8 @@ var
 begin
   try
     RetrieveEncryptionMetadata(AFilePath, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
-
     KEK := DeriveKEKFromPassword(FPassPhrase, Salt);
-
     DEK := DecryptDEK(EncryptedDEK, KEK, EncryptedDEKIV);
-
     factory := TElSymmetricCryptoFactory.Create;
     try
       crypto := factory.CreateInstance(SB_ALGORITHM_CNT_AES256, cmCBC);
@@ -277,18 +254,15 @@ begin
           km.Key := DEK;
           km.IV := FileIV;
           crypto.KeyMaterial := km;
-
           msFileIn := TMemoryStream.Create;
           msFileOut := TMemoryStream.Create;
           try
             msFileIn.LoadFromFile(AFilePath);
-
             if not FUseMetaFile then
             begin
               MetaDataSize := GetMetadataSizeFromFile(AFilePath);
               msFileIn.Size := msFileIn.Size - MetaDataSize;
             end;
-
             crypto.Decrypt(msFileIn, msFileOut);
             msFileOut.SaveToFile(AFilePath);
             if ARenameFile then
@@ -329,13 +303,11 @@ var
   c: Integer;
 begin
   IniPath := ChangeFileExt(AFilePath, '.ini');
-
   if FileExists(IniPath) then
   begin
     IniFile := TIniFile.Create(IniPath);
     try
       c := 1;
-
       while IniFile.ValueExists(INI_REPORT_SETTINGS, Format('FileMark_%d', [c])) do
       begin
         FileName := ExtractFilePath(AFilePath) + IniFile.ReadString(INI_REPORT_SETTINGS, Format('FileMark_%d', [c]), '');
@@ -361,17 +333,12 @@ var
 begin
   try
     DEK := GenerateDEK;
-
     SetLength(Salt, 16);
     GenerateSecureRandom(Salt, Length(Salt));
-
     KEK := DeriveKEKFromPassword(FPassPhrase, Salt);
-
     EncryptedDEK := EncryptDEK(DEK, KEK, EncryptedDEKIV);
-
     SetLength(FileIV, 16);
     GenerateSecureRandom(FileIV, Length(FileIV));
-
     factory := TElSymmetricCryptoFactory.Create;
     try
       crypto := factory.CreateInstance(SB_ALGORITHM_CNT_AES256, cmCBC);
@@ -381,13 +348,11 @@ begin
           km.Key := DEK;
           km.IV := FileIV;
           crypto.KeyMaterial := km;
-
           msFileIn := TMemoryStream.Create;
           msFileOut := TMemoryStream.Create;
           try
             msFileIn.LoadFromFile(AFilePath);
             crypto.Encrypt(msFileIn, msFileOut);
-
             if FUseMetaFile then
             begin
               msFileOut.SaveToFile(AFilePath);
@@ -398,7 +363,6 @@ begin
               StoreEncryptionMetadataInStream(msFileOut, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
               msFileOut.SaveToFile(AFilePath);
             end;
-
             if ARenameFile then
             begin
               newExt := ExtractFileExt(AFilePath) + ENCRYPTED_EXTENSION;
@@ -433,13 +397,11 @@ var
   c: Integer;
 begin
   IniPath := ChangeFileExt(AFilePath, '.ini');
-
   if FileExists(IniPath) then
   begin
     IniFile := TIniFile.Create(IniPath);
     try
       c := 1;
-
       while IniFile.ValueExists(INI_REPORT_SETTINGS, Format('FileMark_%d', [c])) do
       begin
         FileName := ExtractFilePath(AFilePath) + IniFile.ReadString(INI_REPORT_SETTINGS, Format('FileMark_%d', [c]), '');
@@ -489,7 +451,6 @@ begin
         if FileExists(NewPath) then
           EncryptFile(NewPath, False);
       end;
-
       ListFiles[Pair.Key] := True;
     end;
   end;
@@ -534,11 +495,9 @@ begin
       try
         SetLength(AEncryptedDEKIV, 16);
         GenerateSecureRandom(AEncryptedDEKIV, Length(AEncryptedDEKIV));
-
         km.Key := AKEK;
         km.IV := AEncryptedDEKIV;
         crypto.KeyMaterial := km;
-
         msDEKIn := TMemoryStream.Create;
         msDEKOut := TMemoryStream.Create;
         try
@@ -569,7 +528,6 @@ var
   IniPath: String;
 begin
   IniPath := ChangeFileExt(AFilePath, '.ini');
-
   if FileExists(IniPath) then
   begin
     IniFile := TIniFile.Create(IniPath);
@@ -594,16 +552,13 @@ var
   status: String;
 begin
   IniPath := ChangeFileExt(AFilePath, '.ini');
-
   if FileExists(IniPath) then
   begin
     IniFile := TIniFile.Create(IniPath);
     try
       status := IniFile.ReadString(INI_REPORT_SETTINGS, 'SymetricCript', '');
-
       if status.IsEmpty then
         Exit(tssEmpty);
-
       case status[1] of
         'E': Result := tssEncrypt;
         'D': Result := tssDecrypt;
@@ -645,13 +600,10 @@ begin
   try
     WriteDWordToStream(fs, Length(EncryptedDEK));
     fs.WriteBuffer(EncryptedDEK[0], Length(EncryptedDEK));
-
     WriteDWordToStream(fs, Length(EncryptedDEKIV));
     fs.WriteBuffer(EncryptedDEKIV[0], Length(EncryptedDEKIV));
-
     WriteDWordToStream(fs, Length(FileIV));
     fs.WriteBuffer(FileIV[0], Length(FileIV));
-
     WriteDWordToStream(fs, Length(Salt));
     fs.WriteBuffer(Salt[0], Length(Salt));
   finally
@@ -668,19 +620,14 @@ begin
   try
     WriteDWordToStream(MetaDataStream, Length(EncryptedDEK));
     MetaDataStream.WriteBuffer(EncryptedDEK[0], Length(EncryptedDEK));
-
     WriteDWordToStream(MetaDataStream, Length(EncryptedDEKIV));
     MetaDataStream.WriteBuffer(EncryptedDEKIV[0], Length(EncryptedDEKIV));
-
     WriteDWordToStream(MetaDataStream, Length(FileIV));
     MetaDataStream.WriteBuffer(FileIV[0], Length(FileIV));
-
     WriteDWordToStream(MetaDataStream, Length(Salt));
     MetaDataStream.WriteBuffer(Salt[0], Length(Salt));
-
     MetaDataSize := MetaDataStream.Size;
     WriteInt64ToStream(MetaDataStream, MetaDataSize);
-
     MetaDataStream.Position := 0;
     Stream.CopyFrom(MetaDataStream, MetaDataStream.Size);
   finally
@@ -706,15 +653,12 @@ begin
     EncryptedDEKSize := ReadDWordFromStream(fs);
     SetLength(EncryptedDEK, EncryptedDEKSize);
     fs.ReadBuffer(EncryptedDEK[0], EncryptedDEKSize);
-
     EncryptedDEKIVSize := ReadDWordFromStream(fs);
     SetLength(EncryptedDEKIV, EncryptedDEKIVSize);
     fs.ReadBuffer(EncryptedDEKIV[0], EncryptedDEKIVSize);
-
     FileIVSize := ReadDWordFromStream(fs);
     SetLength(FileIV, FileIVSize);
     fs.ReadBuffer(FileIV[0], FileIVSize);
-
     SaltSize := ReadDWordFromStream(fs);
     SetLength(Salt, SaltSize);
     fs.ReadBuffer(Salt[0], SaltSize);
@@ -733,23 +677,18 @@ begin
   try
     fs.Position := fs.Size - SizeOf(Int64);
     MetaDataSize := ReadInt64FromStream(fs);
-
     fs.Position := fs.Size - MetaDataSize - SizeOf(Int64);
     EncryptedDEKSize := ReadDWordFromStream(fs);
     SetLength(EncryptedDEK, EncryptedDEKSize);
-
     fs.ReadBuffer(EncryptedDEK[0], EncryptedDEKSize);
     EncryptedDEKIVSize := ReadDWordFromStream(fs);
     SetLength(EncryptedDEKIV, EncryptedDEKIVSize);
-
     fs.ReadBuffer(EncryptedDEKIV[0], EncryptedDEKIVSize);
     FileIVSize := ReadDWordFromStream(fs);
     SetLength(FileIV, FileIVSize);
-
     fs.ReadBuffer(FileIV[0], FileIVSize);
     SaltSize := ReadDWordFromStream(fs);
     SetLength(Salt, SaltSize);
-
     fs.ReadBuffer(Salt[0], SaltSize);
   finally
     fs.Free;
@@ -801,28 +740,22 @@ var
 begin
   blocks := (KeyLength + 31) div 32;
   SetLength(Result, blocks * 32);
-
   SetLength(Counter, 4);
-
   for i := 1 to blocks do
   begin
     Counter[0] := Byte((i shr 24) and $FF);
     Counter[1] := Byte((i shr 16) and $FF);
     Counter[2] := Byte((i shr 8) and $FF);
     Counter[3] := Byte(i and $FF);
-
     U := HMAC_SHA256(Password, Salt + Counter);
     F := U;
-
     for j := 2 to Iterations do
     begin
       U := HMAC_SHA256(Password, U);
       F := XorBytes(F, U);
     end;
-
     Move(F[0], Result[(i - 1) * 32], Length(F));
   end;
-
   SetLength(Result, KeyLength);
 end;
 
