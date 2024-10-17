@@ -1,6 +1,7 @@
 ﻿unit unSymetricCripto;
 
 interface
+
 uses
   System.Classes,
   System.SysUtils,
@@ -16,8 +17,10 @@ uses
   SBHashFunction,
   SBHMAC,
   SBUtils;
+
 type
   TSymetricStatus = (tssEmpty, tssEncrypt, tssDecrypt);
+
   TSymetricCript = class
   private
     const ENCRYPTED_EXTENSION = '.APC';
@@ -59,7 +62,9 @@ type
     function EncryptFile(var AFilePath: String; const ARenameFile: Boolean): Boolean; overload;
     function DecryptFile(var AFilePath: String; const ARenameFile: Boolean): Boolean; overload;
   end;
+
 implementation
+
 { TSymetricCript }
 
 procedure WriteDWordToStream(Stream: TStream; Value: Cardinal);
@@ -106,14 +111,17 @@ begin
   begin
     KeyBlock := Key;
   end;
+
   SetLength(KeyBlock, BlockSize);
   SetLength(OKeyPad, BlockSize);
   SetLength(IKeyPad, BlockSize);
+
   for i := 0 to BlockSize - 1 do
   begin
     OKeyPad[i] := KeyBlock[i] xor $5C;
     IKeyPad[i] := KeyBlock[i] xor $36;
   end;
+
   Hash := TElHashFunction.Create(SB_ALGORITHM_DGST_SHA256);
   try
     Hash.Update(@IKeyPad[0], BlockSize);
@@ -122,6 +130,7 @@ begin
   finally
     Hash.Free;
   end;
+
   Hash := TElHashFunction.Create(SB_ALGORITHM_DGST_SHA256);
   try
     Hash.Update(@OKeyPad[0], BlockSize);
@@ -191,17 +200,20 @@ begin
         km.IV := AEncryptedDEKIV;
         crypto.KeyMaterial := km;
         msDEKIn := TMemoryStream.Create;
-        msDEKOut := TMemoryStream.Create;
         try
-          msDEKIn.WriteBuffer(AEncryptedDEK[0], Length(AEncryptedDEK));
-          msDEKIn.Position := 0;
-          crypto.Decrypt(msDEKIn, msDEKOut);
-          SetLength(Result, msDEKOut.Size);
-          msDEKOut.Position := 0;
-          msDEKOut.ReadBuffer(Result[0], msDEKOut.Size);
+          msDEKOut := TMemoryStream.Create;
+          try
+            msDEKIn.WriteBuffer(AEncryptedDEK[0], Length(AEncryptedDEK));
+            msDEKIn.Position := 0;
+            crypto.Decrypt(msDEKIn, msDEKOut);
+            SetLength(Result, msDEKOut.Size);
+            msDEKOut.Position := 0;
+            msDEKOut.ReadBuffer(Result[0], msDEKOut.Size);
+          finally
+            msDEKOut.Free;
+          end;
         finally
           msDEKIn.Free;
-          msDEKOut.Free;
         end;
       finally
         km.Free;
@@ -255,31 +267,34 @@ begin
           km.IV := FileIV;
           crypto.KeyMaterial := km;
           msFileIn := TMemoryStream.Create;
-          msFileOut := TMemoryStream.Create;
           try
-            msFileIn.LoadFromFile(AFilePath);
-            if not FUseMetaFile then
-            begin
-              MetaDataSize := GetMetadataSizeFromFile(AFilePath);
-              msFileIn.Size := msFileIn.Size - MetaDataSize;
-            end;
-            crypto.Decrypt(msFileIn, msFileOut);
-            msFileOut.SaveToFile(AFilePath);
-            if ARenameFile then
-            begin
-              newExt := ExtractFileExt(AFilePath);
-              if (newExt = ENCRYPTED_EXTENSION) then
+            msFileOut := TMemoryStream.Create;
+            try
+              msFileIn.LoadFromFile(AFilePath);
+              if not FUseMetaFile then
               begin
-                newExt := StringReplace(newExt, ENCRYPTED_EXTENSION, '', [rfReplaceAll]);
-                newFilePath := ChangeFileExt(AFilePath, newExt);
-                if RenameFile(AFilePath, newFilePath) then
-                  AFilePath := newFilePath;
+                MetaDataSize := GetMetadataSizeFromFile(AFilePath);
+                msFileIn.Size := msFileIn.Size - MetaDataSize;
               end;
+              crypto.Decrypt(msFileIn, msFileOut);
+              msFileOut.SaveToFile(AFilePath);
+              if ARenameFile then
+              begin
+                newExt := ExtractFileExt(AFilePath);
+                if (newExt = ENCRYPTED_EXTENSION) then
+                begin
+                  newExt := StringReplace(newExt, ENCRYPTED_EXTENSION, '', [rfReplaceAll]);
+                  newFilePath := ChangeFileExt(AFilePath, newExt);
+                  if RenameFile(AFilePath, newFilePath) then
+                    AFilePath := newFilePath;
+                end;
+              end;
+              Result := True;
+            finally
+              msFileOut.Free;
             end;
-            Result := True;
           finally
             msFileIn.Free;
-            msFileOut.Free;
           end;
         finally
           km.Free;
@@ -349,31 +364,34 @@ begin
           km.IV := FileIV;
           crypto.KeyMaterial := km;
           msFileIn := TMemoryStream.Create;
-          msFileOut := TMemoryStream.Create;
           try
-            msFileIn.LoadFromFile(AFilePath);
-            crypto.Encrypt(msFileIn, msFileOut);
-            if FUseMetaFile then
-            begin
-              msFileOut.SaveToFile(AFilePath);
-              StoreEncryptionMetadata(AFilePath, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
-            end
-            else
-            begin
-              StoreEncryptionMetadataInStream(msFileOut, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
-              msFileOut.SaveToFile(AFilePath);
+            msFileOut := TMemoryStream.Create;
+            try
+              msFileIn.LoadFromFile(AFilePath);
+              crypto.Encrypt(msFileIn, msFileOut);
+              if FUseMetaFile then
+              begin
+                msFileOut.SaveToFile(AFilePath);
+                StoreEncryptionMetadata(AFilePath, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
+              end
+              else
+              begin
+                StoreEncryptionMetadataInStream(msFileOut, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
+                msFileOut.SaveToFile(AFilePath);
+              end;
+              if ARenameFile then
+              begin
+                newExt := ExtractFileExt(AFilePath) + ENCRYPTED_EXTENSION;
+                newFilePath := ChangeFileExt(AFilePath, newExt);
+                if RenameFile(AFilePath, newFilePath) then
+                  AFilePath := newFilePath;
+              end;
+              Result := True;
+            finally
+              msFileOut.Free;
             end;
-            if ARenameFile then
-            begin
-              newExt := ExtractFileExt(AFilePath) + ENCRYPTED_EXTENSION;
-              newFilePath := ChangeFileExt(AFilePath, newExt);
-              if RenameFile(AFilePath, newFilePath) then
-                AFilePath := newFilePath;
-            end;
-            Result := True;
           finally
             msFileIn.Free;
-            msFileOut.Free;
           end;
         finally
           km.Free;
@@ -499,17 +517,20 @@ begin
         km.IV := AEncryptedDEKIV;
         crypto.KeyMaterial := km;
         msDEKIn := TMemoryStream.Create;
-        msDEKOut := TMemoryStream.Create;
         try
-          msDEKIn.WriteBuffer(ADEK[0], Length(ADEK));
-          msDEKIn.Position := 0;
-          crypto.Encrypt(msDEKIn, msDEKOut);
-          SetLength(Result, msDEKOut.Size);
-          msDEKOut.Position := 0;
-          msDEKOut.ReadBuffer(Result[0], msDEKOut.Size);
+          msDEKOut := TMemoryStream.Create;
+          try
+            msDEKIn.WriteBuffer(ADEK[0], Length(ADEK));
+            msDEKIn.Position := 0;
+            crypto.Encrypt(msDEKIn, msDEKOut);
+            SetLength(Result, msDEKOut.Size);
+            msDEKOut.Position := 0;
+            msDEKOut.ReadBuffer(Result[0], msDEKOut.Size);
+          finally
+            msDEKOut.Free;
+          end;
         finally
           msDEKIn.Free;
-          msDEKOut.Free;
         end;
       finally
         km.Free;
