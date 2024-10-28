@@ -351,6 +351,7 @@ var
             if TFile.Exists(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository])) then
               Result := Result + #13#10 + 'AtualizaPath ' +  (ExecuteInternal(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository]), '', 'AtualizaPath'));
           finally
+            OriginalContent.LoadFromFile(Format('%s\GenerateMessages.bat', [DirectoryRepository]));
             TFile.WriteAllText(Format('%s\GenerateMessages.bat', [DirectoryRepository]), OriginalContent.Text.Replace('\\srvdevel1\', '\\srvdevel\').TrimRight);
             OriginalContent.Free;
           end;

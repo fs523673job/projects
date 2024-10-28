@@ -1615,7 +1615,7 @@ begin
 
 		    if not EXISTS(Select 1 From GruposUsuarios where GUS_D1sGrupoUsuario = 'Apdata - Programação - SCE')
 			begin
-			  exec sp_DuplicarRegistroComAlteracoes 'GruposUsuarios', 'GUS_CdiGrupoUsuario', 1019, 'GUS_D1sGrupoUsuario', '''Apdata - Programação - SCE''', @ultimaChaveNovoGrupo OUTPUT
+			  exec sp_DuplicarRegistroComAlteracoes 'GruposUsuarios', 'GUS_CdiGrupoUsuario', 1019, 'GUS_D1sGrupoUsuario, GUS_CdiTipoAutenticacao', '''Apdata - Programação - SCE'', 1', @ultimaChaveNovoGrupo OUTPUT
 			end
 
 		    if not EXISTS(Select 1 From Usuarios Where USR_CdsUsuario = 'flsantos@apdata.com.br')
@@ -1697,7 +1697,7 @@ begin
 
 		/*Objeto 3090*/
 			exec sp_Execute_Update 'dbo', '01', 'DefSisIntegracaoAD', 'DZW_DtdOficializacaoSistema = null, DZW_OplAtivaIntegracao = 1, DZW_OplCriacaoUsuarioAut =  0, DZW_DssCaminhoLDAP = ''DC=apdatatst,DC=com,DC=br'', DZW_OplIntegraViaWS = 1, DZW_DssWSCriaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtualizaDados = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrocaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSResetaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtivaDesativaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_CdsWSUsuario = ''flsantos'', DZW_CosWSSenha = ''Fls12345@'', DZW_OplAtivaLogIntegracao = 1, DZW_OplNaoSincronizarGrupo = 0, DZW_OplNaoSincronizarEstrutura = 0, DZW_DssWSValidaLogin = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrataSSO = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 'DZW_CdiSistema = 72', 1
-			--Para ativar a integração da ApData marcar a configuração da seguinte forma [GUS_CdiOpcao_AtivaIntegracao = 1, GUS_CdiTipoAutenticacao = 2, GUS_CdiOpcao_IntegraViaWS = 1]
+			--Para ativar a integração da ApData marcar a configuração da seguinte forma [GUS_CdiOpcao_AtivaIntegracao = 2, GUS_CdiTipoAutenticacao = 1, GUS_CdiOpcao_IntegraViaWS = 1]
 			exec sp_Execute_Update 'dbo', '02', 'GruposUsuarios', 'GUS_CdiOpcao_AtivaIntegracao = 1, GUS_CdiTipoAutenticacao = 2, GUS_CdiOpcao_IntegraViaWS = 1', 'GUS_CdiGrupoUsuario = 1019', 1
 			
 			--Para ativar a validação da apdata [usuários com nome e-mail]

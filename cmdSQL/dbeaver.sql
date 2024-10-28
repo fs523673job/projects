@@ -11,6 +11,8 @@ VALUES ('PT_804458_MR', 'Liberacao_559', 'a125bd53', 'Relatorio, Invite, Email',
 
 /***************************************************************************************************************************/
 
+SELECT * FROM FEATURE_CRIADAS fc WHERE REGEX_SEARCH LIKE '%OR,%'
+
  
 
 
