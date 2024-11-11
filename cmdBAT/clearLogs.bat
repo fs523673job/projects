@@ -26,13 +26,6 @@ if !count! EQU 0 (
     goto fim
 )
 
-:: Debug: listar as variáveis dir1, dir2, etc.
-echo Verificando as variáveis dirN:
-for /l %%i in (1,1,!count!) do (
-    echo dir%%i!=!dir%%i!
-)
-echo.
-
 :: Pergunta ao usuário para escolher um diretório
 :ChooseDir
 set /p choice=Digite o número correspondente ao diretório que deseja acessar: 
@@ -68,9 +61,6 @@ echo.
 set /a isValid=0
 if %choice% GEQ 1 set /a isValid+=1
 if %choice% LEQ !count! set /a isValid+=1
-
-echo isValid: !isValid!
-echo.
 
 if !isValid! EQU 2 (
     rem Escolha válida, continuar
