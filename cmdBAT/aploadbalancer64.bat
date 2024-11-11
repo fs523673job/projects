@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 echo Calling with: LoadBalancer64
-call "C:\github\fs523673job\projects\cmdBAT\aploadbalanceronly64.bat"
+::call "C:\github\fs523673job\projects\cmdBAT\aploadbalanceronly64.bat"
 
 :: O primeiro argumento (opcional) será o número de vezes que o script será executado. 
 :: Se não for fornecido, assumiremos o valor 3 como padrão.
