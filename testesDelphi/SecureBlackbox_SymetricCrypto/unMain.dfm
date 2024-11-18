@@ -108,7 +108,7 @@ object Form1: TForm1
     Top = 416
     Width = 612
     Height = 73
-    ActivePage = tbClasseSymetricCript
+    ActivePage = tabApenasMetodos
     TabOrder = 5
     object tabApenasMetodos: TTabSheet
       Caption = 'Apenas Metodos'
@@ -143,7 +143,7 @@ object Form1: TForm1
         Left = 552
         Top = 10
         Width = 51
-        Height = 25
+        Height = 23
         Alignment = taRightJustify
         NumbersOnly = True
         TabOrder = 3

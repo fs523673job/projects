@@ -20,6 +20,7 @@ for /d %%d in (*) do (
 )
 
 :: Verificar se houve diretórios listados
+echo.
 echo Total de diretórios encontrados: !count!
 if !count! EQU 0 (
     echo Nenhum diretório encontrado.
@@ -52,22 +53,11 @@ if %choice% GTR !count! (
     goto ChooseDir
 )
 
-:: Define o diretório escolhido com a expansão correta
-set "chosenDir=!dir%choice%!"
+:: Define o diretório escolhido com a expansão correta usando CALL
+call set "chosenDir=%%dir%choice%%%"
+echo.
 echo Você escolheu acessar o diretório: !chosenDir!
 echo.
-
-:: Verifica se 'isValid' é 2
-set /a isValid=0
-if %choice% GEQ 1 set /a isValid+=1
-if %choice% LEQ !count! set /a isValid+=1
-
-if !isValid! EQU 2 (
-    rem Escolha válida, continuar
-) else (
-    echo Escolha inválida. Por favor, selecione um número entre 1 e !count!.
-    goto ChooseDir
-)
 
 :: Pergunta se deseja incluir subdiretórios
 :AskSubDir
@@ -76,63 +66,100 @@ set /p includeSub=Deseja incluir subdiretórios? (S/N):
 if /i "!includeSub!"=="S" (
     set "searchOption=/s"
     echo Você escolheu incluir subdiretórios.
-    goto CountFiles
+    goto ProcessFiles
 ) else if /i "!includeSub!"=="N" (
     set "searchOption="
     echo Você escolheu não incluir subdiretórios.
-    goto CountFiles
+    goto ProcessFiles
 ) else (
     echo Resposta inválida. Por favor, digite S ou N.
     goto AskSubDir
 )
 
-:CountFiles
+:ProcessFiles
 :: Navega para o diretório escolhido
 cd /d "!chosenDir!"
 echo Diretório atual após mudar: %cd%
 echo.
 
-:: Lista os arquivos .log encontrados (para depuração)
-echo Procurando arquivos .log...
+:: Define os tipos de arquivos a serem deletados
+set "fileTypes=.log .zip"
+
+:: Loop para cada tipo de arquivo
+for %%T in (%fileTypes%) do (
+    set "ext=%%~T"
+    set "ext=!ext:.=!"  :: Remove o ponto para usar em rótulos
+    call :ProcessFileType !ext! %%T
+)
+goto fim
+
+:ProcessFileType
+:: %1 = extensão sem ponto (e.g., log, zip)
+:: %2 = extensão com ponto (e.g., .log, .zip)
+set "fileTypeWithDot=%~2"
+
+echo Procurando arquivos %fileTypeWithDot%...
 if defined searchOption (
-    dir /s /b /a-d *.log
+    dir /s /b /a-d *%fileTypeWithDot%
 ) else (
-    dir /b /a-d *.log
+    dir /b /a-d *%fileTypeWithDot%
 )
 echo.
 
-:: Conta os arquivos .log
+:: Conta os arquivos %fileTypeWithDot%
 if defined searchOption (
-    for /f %%a in ('dir /s /b /a-d *.log 2^>nul ^| find /c /v ""') do set "totalFiles=%%a"
+    for /f %%a in ('dir /s /b /a-d *%fileTypeWithDot% 2^>nul ^| find /c /v ""') do set "totalFiles=%%a"
 ) else (
-    for /f %%a in ('dir /b /a-d *.log 2^>nul ^| find /c /v ""') do set "totalFiles=%%a"
+    for /f %%a in ('dir /b /a-d *%fileTypeWithDot% 2^>nul ^| find /c /v ""') do set "totalFiles=%%a"
 )
 
-echo Total de arquivos .log a serem excluídos: %totalFiles%
+echo Total de arquivos %fileTypeWithDot% a serem excluídos: !totalFiles!
 echo.
 
-if "%totalFiles%"=="0" (
-    echo Nenhum arquivo .log encontrado no diretório selecionado.
-    goto fim
+if "!totalFiles!"=="0" (
+    echo Nenhum arquivo %fileTypeWithDot% encontrado no diretório selecionado.
+    echo.
+    goto :eof
 )
 
-:: Pergunta ao usuário para confirmar a exclusão
-:ConfirmDelete
-set /p confirm=Tem certeza que deseja excluir todos os arquivos .log? (S/N): 
+:: Pergunta ao usuário para confirmar a exclusão dos arquivos %fileTypeWithDot%
+set "confirm="
+set /a maxAttempts=3
+set /a attempts=0
+
+:ConfirmDelete_%1%
+set /a attempts+=1
+if !attempts! GTR !maxAttempts! (
+    echo Máximo de tentativas excedido. Operação cancelada.
+    echo.
+    goto :eof
+)
+
+set /p confirm=Tem certeza que deseja excluir todos os arquivos %fileTypeWithDot%? (S/N): 
 
 if /i "!confirm!"=="S" (
-    echo Excluindo arquivos .log...
-    del /f /q *.log %searchOption%
+    echo Excluindo arquivos %fileTypeWithDot%...
+    del /f /q *%fileTypeWithDot% %searchOption%
     if errorlevel 1 (
-        echo Erro ao excluir arquivos .log.
+        echo Erro ao excluir arquivos %fileTypeWithDot%.
     ) else (
-        echo Arquivos .log excluídos com sucesso.
+        echo Arquivos %fileTypeWithDot% excluídos com sucesso.
     )
+    echo.
+    goto :eof
 ) else if /i "!confirm!"=="N" (
-    echo Operação cancelada pelo usuário.
+    echo Operação para arquivos %fileTypeWithDot% cancelada pelo usuário.
+    echo.
+    goto :eof
 ) else (
     echo Resposta inválida. Por favor, digite S ou N.
-    goto ConfirmDelete
+    if !attempts! LSS !maxAttempts! (
+        goto ConfirmDelete_%1%
+    ) else (
+        echo Máximo de tentativas excedido. Operação cancelada.
+        echo.
+        goto :eof
+    )
 )
 
 :fim

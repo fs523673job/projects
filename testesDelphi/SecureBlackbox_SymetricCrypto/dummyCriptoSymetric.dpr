@@ -4,7 +4,8 @@ uses
   Vcl.Forms,
   unMain in 'unMain.pas' {Form1},
   unImplementacao in 'unImplementacao.pas',
-  unSymetricCripto in 'unSymetricCripto.pas';
+  unSymetricCripto in 'unSymetricCripto.pas',
+  unSymetricCriptoRefactor in 'unSymetricCriptoRefactor.pas';
 
 {$R *.res}
 

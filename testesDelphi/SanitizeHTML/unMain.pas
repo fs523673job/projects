@@ -30,8 +30,10 @@ type
     btClearAll: TButton;
     cbAnalisysXSS: TCheckBox;
     cbAnalysisXSSTags: TCheckBox;
+    btnProvavelHTML: TButton;
     procedure btnSanitizeHTMLClick(Sender: TObject);
     procedure btClearAllClick(Sender: TObject);
+    procedure btnProvavelHTMLClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,6 +51,15 @@ procedure TfrmMain.btClearAllClick(Sender: TObject);
 begin
   seInput.Lines.Clear;
   seOutput.Lines.Clear;
+end;
+
+procedure TfrmMain.btnProvavelHTMLClick(Sender: TObject);
+begin
+  seOutput.Lines.Clear;
+  if TPreventXSS.IsProbablyHTML(seInput.Lines.Text) then
+    seOutput.Text := 'Provável HTML'
+  else
+    seOutput.Text := 'Provável Não é HTML';
 end;
 
 procedure TfrmMain.btnSanitizeHTMLClick(Sender: TObject);

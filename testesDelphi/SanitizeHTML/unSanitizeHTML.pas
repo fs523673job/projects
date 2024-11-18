@@ -68,7 +68,7 @@ var
   LocalContent: String;
 begin
   LocalContent := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.AdjustNBSPError(AContent)));
-  Exit(TRegEx.IsMatch(LocalContent, '<\/?[a-z][\s\S]*>', [roIgnoreCase]));
+  Exit(TRegEx.IsMatch(LocalContent, '<\/?[a-z][\s\S]*>|<\/?[a-z][\s\S]*|\/?[a-z][\s\S]*>', [roIgnoreCase]));
 end;
 
 class function TPreventXSS.IsProbablyHTML(const AContentBytes: TBytes): Boolean;

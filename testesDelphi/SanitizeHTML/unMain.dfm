@@ -2,7 +2,7 @@ object frmMain: TfrmMain
   Left = 0
   Top = 0
   Caption = 'frmMain'
-  ClientHeight = 419
+  ClientHeight = 465
   ClientWidth = 976
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -246,6 +246,15 @@ object frmMain: TfrmMain
     Height = 17
     Caption = 'Analisa Conte'#250'do das Tags'
     TabOrder = 5
+  end
+  object btnProvavelHTML: TButton
+    Left = 10
+    Top = 428
+    Width = 473
+    Height = 25
+    Caption = 'Prov'#225'vel HTML'
+    TabOrder = 6
+    OnClick = btnProvavelHTMLClick
   end
   object SynHTMLSyn1: TSynHTMLSyn
     Left = 440

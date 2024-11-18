@@ -136,6 +136,7 @@
         </DCCReference>
         <DCCReference Include="unImplementacao.pas"/>
         <DCCReference Include="unSymetricCripto.pas"/>
+        <DCCReference Include="unSymetricCriptoRefactor.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

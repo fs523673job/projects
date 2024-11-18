@@ -1,6 +1,6 @@
 ﻿# Lista de nomes de aplicações para monitorar as portas
 #$applications = @("ApServer", "ApLoadBalancerServer", "ApIntegrationServer","bds")  
-$applications = @("ApLoadBalancerServer")  
+$applications = @("ApIntegrationServer")  
  
 $intervalo = 10
  
