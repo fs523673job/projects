@@ -21,11 +21,13 @@ uses
   Vcl.StdCtrls,
   Vcl.Mask,
   Vcl.ExtCtrls,
+  Vcl.ComCtrls,
 
   SynEdit,
 
   unImplementacao,
-  unSymetricCripto, Vcl.ComCtrls
+  unSymetricCripto,
+  unSymetricCriptorefactor
 
   ;
 
@@ -50,12 +52,19 @@ type
     btDescriptografarSC: TButton;
     btStressSC: TButton;
     Edit1: TEdit;
+    tbClasseReSymetricCript: TTabSheet;
+    btEncrypt3: TButton;
+    btDecript3: TButton;
+    btStress3: TButton;
+    Edit2: TEdit;
+    cmbTypeCriptografic: TComboBox;
     procedure spFileNameClick(Sender: TObject);
     procedure btnEncryptClick(Sender: TObject);
     procedure btnDescriptografarClick(Sender: TObject);
     procedure btStressClick(Sender: TObject);
     procedure btnEncryptSCClick(Sender: TObject);
     procedure btDescriptografarSCClick(Sender: TObject);
+    procedure btEncrypt3Click(Sender: TObject);
   private
     { Private declarations }
     procedure EnableDisable(const AFlag: Boolean);
@@ -183,6 +192,25 @@ begin
     SymetricCript.Free;
   end;
 
+end;
+
+procedure TForm1.btEncrypt3Click(Sender: TObject);
+var
+  SymetricCript: ISymmetricCrypt;
+  NewNameFile: String;
+begin
+  try
+    case cmbTypeCriptografic.ItemIndex of
+      0 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
+      1 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tscKekDek, 'CriptoSymetric', False);
+      else
+        SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
+    end;
+    NewNameFile := leFilePath.Text;
+    SymetricCript.EncryptFile(NewNameFile, False);
+  finally
+    SymetricCript := nil;
+  end;
 end;
 
 procedure TForm1.btnDescriptografarClick(Sender: TObject);

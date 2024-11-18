@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Criptografia Sim'#233'trica - SecureBlackbox'
-  ClientHeight = 499
+  ClientHeight = 533
   ClientWidth = 628
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -107,8 +107,8 @@ object Form1: TForm1
     Left = 8
     Top = 416
     Width = 612
-    Height = 73
-    ActivePage = tabApenasMetodos
+    Height = 105
+    ActivePage = tbClasseReSymetricCript
     TabOrder = 5
     object tabApenasMetodos: TTabSheet
       Caption = 'Apenas Metodos'
@@ -189,6 +189,58 @@ object Form1: TForm1
         NumbersOnly = True
         TabOrder = 3
         Text = '100'
+      end
+    end
+    object tbClasseReSymetricCript: TTabSheet
+      Caption = 'Classe ReSymetricCript'
+      ImageIndex = 2
+      object btEncrypt3: TButton
+        Left = 3
+        Top = 10
+        Width = 161
+        Height = 25
+        Caption = 'Encriptografar'
+        TabOrder = 0
+        OnClick = btEncrypt3Click
+      end
+      object btDecript3: TButton
+        Left = 170
+        Top = 10
+        Width = 161
+        Height = 25
+        Caption = 'Descriptografar'
+        TabOrder = 1
+      end
+      object btStress3: TButton
+        Left = 341
+        Top = 10
+        Width = 203
+        Height = 25
+        Caption = 'Stress Encryp/Decript'
+        TabOrder = 2
+      end
+      object Edit2: TEdit
+        Left = 552
+        Top = 10
+        Width = 51
+        Height = 23
+        Alignment = taRightJustify
+        NumbersOnly = True
+        TabOrder = 3
+        Text = '100'
+      end
+      object cmbTypeCriptografic: TComboBox
+        Left = 3
+        Top = 43
+        Width = 161
+        Height = 22
+        Style = csOwnerDrawFixed
+        ItemIndex = 0
+        TabOrder = 4
+        Text = 'Legado'
+        Items.Strings = (
+          'Legado'
+          'Keks/Deks')
       end
     end
   end

@@ -19,6 +19,10 @@ uses
   SBUtils
   ;
 
+const
+  ENCRYPTED_EXTENSION = '.APC';
+  INI_REPORT_SETTINGS = 'Report Settings';
+
 type
   TSymetricClass  = (tsclegacy, tscKekDek);
   TSymetricStatus = (tssEmpty, tssEncrypt, tssDecrypt);
@@ -36,9 +40,6 @@ type
   end;
 
   TLegacySymetricCript = class(TInterfacedObject, ISymmetricCrypt)
-  private
-    const ENCRYPTED_EXTENSION = '.APC';
-    const INI_REPORT_SETTINGS = 'Report Settings';
   private
     ListFiles: TDictionary<String, Boolean>; //Path, (Encrypt/Decrypt = True/False)
 
@@ -67,9 +68,6 @@ type
 
   TKekDekSymetricCript = class(TInterfacedObject, ISymmetricCrypt)
   private
-    const ENCRYPTED_EXTENSION = '.APC';
-    const INI_REPORT_SETTINGS = 'Report Settings';
-  private
     ListFiles: TDictionary<String, Boolean>; // Path, (Encrypt/Decrypt = True/False)
     FPassPhrase: String;
     FUseMetaFile: Boolean;
@@ -93,7 +91,7 @@ type
     // Info In MetaData or InFile
     procedure RetrieveEncryptionMetadataFromFile(const AFilePath: String; out EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
     procedure RetrieveEncryptionMetadataFromStream(const AFilePath: String; out EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
-    procedure StoreEncryptionMetadataInStream(Stream: TMemoryStream; const EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
+    procedure StoreEncryptionMetadataInStream(Stream: TStream; const EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
     procedure StoreEncryptionMetadataToFile(const AFilePath: String; const EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
   public
     constructor Create(const APassPhrase: String; AUseMetaFile: Boolean = True);
@@ -781,10 +779,12 @@ var
   factory: TElSymmetricCryptoFactory;
   crypto: TElSymmetricCrypto;
   km: TElSymmetricKeyMaterial;
-  msFileIn, msFileOut: TMemoryStream;
+  msFileIn: TStreamReader;
+  msFileOut: TStreamWriter;
   newExt: String;
   newFilePath: String;
   DEK, EncryptedDEK, EncryptedDEKIV, FileIV, Salt, KEK: ByteArray;
+  sFileOut: string;
 begin
   try
     DEK := GenerateDEK;
@@ -803,21 +803,21 @@ begin
           km.Key := DEK;
           km.IV := FileIV;
           crypto.KeyMaterial := km;
-          msFileIn := TMemoryStream.Create;
+          msFileIn := TStreamReader.Create(AFilePath);
           try
-            msFileOut := TMemoryStream.Create;
+            sFileOut := ChangeFileExt(AFilePath, '.tmp');
+            msFileOut := TStreamWriter.Create(sFileOut);
             try
-              msFileIn.LoadFromFile(AFilePath);
-              crypto.Encrypt(msFileIn, msFileOut);
+              crypto.Encrypt(msFileIn.BaseStream, msFileOut.BaseStream);
               if FUseMetaFile then
               begin
-                msFileOut.SaveToFile(AFilePath);
+                msFileOut.Close;
                 StoreEncryptionMetadata(AFilePath, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
               end
               else
               begin
-                StoreEncryptionMetadataInStream(msFileOut, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
-                msFileOut.SaveToFile(AFilePath);
+                StoreEncryptionMetadataInStream(msFileOut.BaseStream, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
+                msFileOut.Close;
               end;
               if ARenameFile then
               begin
@@ -1072,7 +1072,7 @@ begin
   end;
 end;
 
-procedure TKekDekSymetricCript.StoreEncryptionMetadataInStream(Stream: TMemoryStream; const EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
+procedure TKekDekSymetricCript.StoreEncryptionMetadataInStream(Stream: TStream; const EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
 var
   MetaDataStream: TMemoryStream;
   MetaDataSize: Int64;
