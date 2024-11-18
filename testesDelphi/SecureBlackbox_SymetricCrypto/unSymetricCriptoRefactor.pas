@@ -819,6 +819,8 @@ begin
                 StoreEncryptionMetadataInStream(msFileOut.BaseStream, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
                 msFileOut.Close;
               end;
+              TFile.Delete(AFilePath);
+              TFile.Move(sFileOut, AFilePath);
               if ARenameFile then
               begin
                 newExt := ExtractFileExt(AFilePath) + ENCRYPTED_EXTENSION;
@@ -843,7 +845,16 @@ begin
       factory.Free;
     end;
   except
-    Result := False;
+    on E: EElSymmetricCryptoError do
+    begin
+      TFile.Delete(sFileOut);
+      Result := False;
+    end;
+    on E: Exception do
+    begin
+      Result := False;
+      raise Exception.CreateFmt('Erro ao criptografar o relatório "%s": %s', [AFilePath, E.Message]);
+    end;
   end;
 end;
 

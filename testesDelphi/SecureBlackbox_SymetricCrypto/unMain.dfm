@@ -210,6 +210,7 @@ object Form1: TForm1
         Height = 25
         Caption = 'Descriptografar'
         TabOrder = 1
+        OnClick = btDecript3Click
       end
       object btStress3: TButton
         Left = 341

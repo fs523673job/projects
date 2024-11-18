@@ -65,6 +65,7 @@ type
     procedure btnEncryptSCClick(Sender: TObject);
     procedure btDescriptografarSCClick(Sender: TObject);
     procedure btEncrypt3Click(Sender: TObject);
+    procedure btDecript3Click(Sender: TObject);
   private
     { Private declarations }
     procedure EnableDisable(const AFlag: Boolean);
@@ -176,6 +177,25 @@ begin
     SymetricCript.EncryptFile(NewNameFile, False);
   finally
     SymetricCript.Free;
+  end;
+end;
+
+procedure TForm1.btDecript3Click(Sender: TObject);
+var
+  SymetricCript: ISymmetricCrypt;
+  NewNameFile: String;
+begin
+  try
+    case cmbTypeCriptografic.ItemIndex of
+      0 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
+      1 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tscKekDek, 'CriptoSymetric', False);
+      else
+        SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
+    end;
+    NewNameFile := leFilePath.Text;
+    SymetricCript.DecryptFile(NewNameFile, False);
+  finally
+    SymetricCript := nil;
   end;
 end;
 
