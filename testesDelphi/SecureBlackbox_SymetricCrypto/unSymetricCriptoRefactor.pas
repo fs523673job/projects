@@ -819,6 +819,8 @@ begin
                 StoreEncryptionMetadataInStream(msFileOut.BaseStream, EncryptedDEK, EncryptedDEKIV, FileIV, Salt);
                 msFileOut.Close;
               end;
+              msFileIn.Close;
+              msFileOut.Close;
               TFile.Delete(AFilePath);
               TFile.Move(sFileOut, AFilePath);
               if ARenameFile then
