@@ -243,6 +243,16 @@ object Form1: TForm1
           'Legado'
           'Keks/Deks')
       end
+      object btTimeExecute: TEdit
+        Left = 341
+        Top = 43
+        Width = 262
+        Height = 23
+        Color = clBtnFace
+        Enabled = False
+        TabOrder = 5
+        Text = 'btTimeExecute'
+      end
     end
   end
   object OpenDialog: TOpenDialog

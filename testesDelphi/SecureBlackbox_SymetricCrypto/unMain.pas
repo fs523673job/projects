@@ -58,6 +58,7 @@ type
     btStress3: TButton;
     Edit2: TEdit;
     cmbTypeCriptografic: TComboBox;
+    btTimeExecute: TEdit;
     procedure spFileNameClick(Sender: TObject);
     procedure btnEncryptClick(Sender: TObject);
     procedure btnDescriptografarClick(Sender: TObject);
@@ -184,19 +185,27 @@ procedure TForm1.btDecript3Click(Sender: TObject);
 var
   SymetricCript: ISymmetricCrypt;
   NewNameFile: String;
+  Stopwatch: TStopwatch;
 begin
+  Stopwatch := TStopwatch.StartNew;
   try
-    case cmbTypeCriptografic.ItemIndex of
-      0 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
-      1 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tscKekDek, 'CriptoSymetric', False);
-      else
-        SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
+    try
+      case cmbTypeCriptografic.ItemIndex of
+        0 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
+        1 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tscKekDek, 'CriptoSymetric', False);
+        else
+          SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
+      end;
+      NewNameFile := leFilePath.Text;
+      if not SymetricCript.DecryptFile(NewNameFile, False) then
+        ShowMessage('Falha na descriptografia');
+    finally
+      SymetricCript := nil;
     end;
-    NewNameFile := leFilePath.Text;
-    SymetricCript.DecryptFile(NewNameFile, False);
   finally
-    SymetricCript := nil;
+    Stopwatch.Stop;
   end;
+  btTimeExecute.Text := Format('Time to execute: %d', [Stopwatch.Elapsed.Seconds]);
 end;
 
 procedure TForm1.btDescriptografarSCClick(Sender: TObject);
@@ -218,19 +227,27 @@ procedure TForm1.btEncrypt3Click(Sender: TObject);
 var
   SymetricCript: ISymmetricCrypt;
   NewNameFile: String;
+  Stopwatch: TStopwatch;
 begin
+  Stopwatch := TStopwatch.StartNew;
   try
-    case cmbTypeCriptografic.ItemIndex of
-      0 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
-      1 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tscKekDek, 'CriptoSymetric', False);
-      else
-        SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
+    try
+      case cmbTypeCriptografic.ItemIndex of
+        0 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
+        1 : SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tscKekDek, 'CriptoSymetric', False);
+        else
+          SymetricCript := TSymmetricCryptFactory.NewSymmetricCrypt(tsclegacy, 'CriptoSymetric', False);
+      end;
+      NewNameFile := leFilePath.Text;
+      if not SymetricCript.EncryptFile(NewNameFile, False) then
+        ShowMessage('Falha na criptografia');
+    finally
+      SymetricCript := nil;
     end;
-    NewNameFile := leFilePath.Text;
-    SymetricCript.EncryptFile(NewNameFile, False);
   finally
-    SymetricCript := nil;
+    Stopwatch.Stop;
   end;
+  btTimeExecute.Text := Format('Time to execute: %d', [Stopwatch.Elapsed.Seconds]);
 end;
 
 procedure TForm1.btnDescriptografarClick(Sender: TObject);

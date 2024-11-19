@@ -1085,6 +1085,7 @@ begin
   end;
 end;
 
+(*
 procedure TKekDekSymetricCript.StoreEncryptionMetadataInStream(Stream: TStream; const EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
 var
   MetaDataStream: TMemoryStream;
@@ -1107,6 +1108,31 @@ begin
   finally
     MetaDataStream.Free;
   end;
+end;
+*)
+
+procedure TKekDekSymetricCript.StoreEncryptionMetadataInStream(Stream: TStream; const EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
+var
+  MetaDataSize: Int64;
+begin
+  MetaDataSize := 0;
+  MetaDataSize := MetaDataSize + SizeOf(Cardinal) + Length(EncryptedDEK);
+  MetaDataSize := MetaDataSize + SizeOf(Cardinal) + Length(EncryptedDEKIV);
+  MetaDataSize := MetaDataSize + SizeOf(Cardinal) + Length(FileIV);
+  MetaDataSize := MetaDataSize + SizeOf(Cardinal) + Length(Salt);
+  WriteDWordToStream(Stream, Length(EncryptedDEK));
+  if Length(EncryptedDEK) > 0 then
+    Stream.WriteBuffer(EncryptedDEK[0], Length(EncryptedDEK));
+  WriteDWordToStream(Stream, Length(EncryptedDEKIV));
+  if Length(EncryptedDEKIV) > 0 then
+    Stream.WriteBuffer(EncryptedDEKIV[0], Length(EncryptedDEKIV));
+  WriteDWordToStream(Stream, Length(FileIV));
+  if Length(FileIV) > 0 then
+    Stream.WriteBuffer(FileIV[0], Length(FileIV));
+  WriteDWordToStream(Stream, Length(Salt));
+  if Length(Salt) > 0 then
+    Stream.WriteBuffer(Salt[0], Length(Salt));
+  WriteInt64ToStream(Stream, MetaDataSize);
 end;
 
 procedure TKekDekSymetricCript.RetrieveEncryptionMetadata(const AFilePath: String; out EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
