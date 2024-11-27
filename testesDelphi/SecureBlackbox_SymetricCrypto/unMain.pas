@@ -59,6 +59,7 @@ type
     Edit2: TEdit;
     cmbTypeCriptografic: TComboBox;
     btTimeExecute: TEdit;
+    btnDetectFileType: TButton;
     procedure spFileNameClick(Sender: TObject);
     procedure btnEncryptClick(Sender: TObject);
     procedure btnDescriptografarClick(Sender: TObject);
@@ -67,6 +68,8 @@ type
     procedure btDescriptografarSCClick(Sender: TObject);
     procedure btEncrypt3Click(Sender: TObject);
     procedure btDecript3Click(Sender: TObject);
+    procedure btStress3Click(Sender: TObject);
+    procedure btnDetectFileTypeClick(Sender: TObject);
   private
     { Private declarations }
     procedure EnableDisable(const AFlag: Boolean);
@@ -293,6 +296,28 @@ begin
   end
   else
     ShowMessage('Arquivo selecionado não encontrado');
+end;
+
+procedure TForm1.btnDetectFileTypeClick(Sender: TObject);
+var
+  SymetricCript: TSymetricCript;
+begin
+  SymetricCript := TSymetricCript.Create('', False);
+  try
+    case SymetricCript.TryCheckFile(leFilePath.Text) of
+      tsfNone: ShowMessage('Tipo Desconhecido');
+      tsfPDF: ShowMessage('Tipo PDF');
+      tsfXLS: ShowMessage('Tipo XLS');
+      tsfXLSX: ShowMessage('Tipo XLSX');
+    end;
+  finally
+    SymetricCript.Free;
+   end;
+end;
+
+procedure TForm1.btStress3Click(Sender: TObject);
+begin
+//
 end;
 
 procedure TForm1.btStressClick(Sender: TObject);

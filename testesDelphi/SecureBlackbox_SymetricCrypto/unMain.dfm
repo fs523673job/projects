@@ -219,6 +219,7 @@ object Form1: TForm1
         Height = 25
         Caption = 'Stress Encryp/Decript'
         TabOrder = 2
+        OnClick = btStress3Click
       end
       object Edit2: TEdit
         Left = 552
@@ -254,6 +255,15 @@ object Form1: TForm1
         Text = 'btTimeExecute'
       end
     end
+  end
+  object btnDetectFileType: TButton
+    Left = 448
+    Top = 52
+    Width = 172
+    Height = 25
+    Caption = 'Verifica Tipo'
+    TabOrder = 6
+    OnClick = btnDetectFileTypeClick
   end
   object OpenDialog: TOpenDialog
     Left = 424

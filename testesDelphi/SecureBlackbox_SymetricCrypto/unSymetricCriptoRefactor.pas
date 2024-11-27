@@ -88,6 +88,7 @@ type
     function PBKDF2_HMAC_SHA256(const Password, Salt: ByteArray; Iterations, KeyLength: Integer): ByteArray;
     function XorBytes(const A, B: ByteArray): ByteArray;
     function GetMetadataSizeFromFile(const AFilePath: String): Int64;
+    function GetMetadataSizeFromStream(const AStream: TStream): Int64;
     // Info In MetaData or InFile
     procedure RetrieveEncryptionMetadataFromFile(const AFilePath: String; out EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
     procedure RetrieveEncryptionMetadataFromStream(const AFilePath: String; out EncryptedDEK, EncryptedDEKIV, FileIV, Salt: ByteArray);
@@ -1205,6 +1206,19 @@ begin
     Result := ReadInt64FromStream(fs) + SizeOf(Int64);
   finally
     fs.Free;
+  end;
+end;
+
+function TKekDekSymetricCript.GetMetadataSizeFromStream(const AStream: TStream): Int64;
+var
+  OriginalPosition: Int64;
+begin
+  OriginalPosition := AStream.Position;
+  try
+    AStream.Position := AStream.Size - SizeOf(Int64);
+    Result := ReadInt64FromStream(AStream) + SizeOf(Int64);
+  finally
+    AStream.Position := OriginalPosition;
   end;
 end;
 

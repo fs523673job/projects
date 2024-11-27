@@ -19,6 +19,7 @@ uses
   SBUtils;
 
 type
+  TSymetricTypeFile = (tsfNone, tsfPDF, tsfXLS, tsfXLSX);
   TSymetricStatus = (tssEmpty, tssEncrypt, tssDecrypt);
 
   TSymetricCript = class
@@ -54,6 +55,9 @@ type
   public
     constructor Create(const APassPhrase: String; AUseMetaFile: Boolean = True);
     destructor Destroy; override;
+
+    function TryCheckFile(const AFilePath: String): TSymetricTypeFile;
+
     procedure DecryptAndAddList(const AFilePath: String);
     procedure EncryptAndRemoveList(const AFilePath: String);
     procedure EncryptAllListFilesNecessary;
@@ -788,6 +792,43 @@ begin
   for i := 0 to Length(A) - 1 do
     Result[i] := A[i] xor B[i];
 end;
+
+function TSymetricCript.TryCheckFile(const AFilePath: String): TSymetricTypeFile;
+var
+  FileStream: TFileStream;
+  Buffer: array of Byte;
+  ReadBytes, i: Integer;
+begin
+  Result := tsfNone;
+
+  if not FileExists(AFilePath) then
+    Exit;
+
+  FileStream := TFileStream.Create(AFilePath, fmOpenRead or fmShareDenyNone);
+  try
+    SetLength(Buffer, 8);
+    ReadBytes := FileStream.Read(Buffer[0], Length(Buffer));
+
+    if ReadBytes >= 4 then
+    begin
+      if (Buffer[0] = $25) and (Buffer[1] = $50) and (Buffer[2] = $44) and (Buffer[3] = $46) then
+        Exit(tsfPDF);
+
+      if ReadBytes >= 8 then
+      begin
+        if (Buffer[0] = $D0) and (Buffer[1] = $CF) and (Buffer[2] = $11) and (Buffer[3] = $E0) and
+           (Buffer[4] = $A1) and (Buffer[5] = $B1) and (Buffer[6] = $1A) and (Buffer[7] = $E1) then
+          Exit(tsfXLS);
+      end;
+
+      if (Buffer[0] = $50) and (Buffer[1] = $4B) then
+        Exit(tsfXLSX);
+    end;
+  finally
+    FileStream.Free;
+  end;
+end;
+
 
 end.
 
