@@ -1613,9 +1613,16 @@ begin
 			  exec sp_Execute_Insert_Key 'dbo', 05, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, '1672, 382', 1
 			end
 
-		    if not EXISTS(Select 1 From GruposUsuarios where GUS_D1sGrupoUsuario = 'Apdata - Programação - SCE')
+		    if not EXISTS(Select 1 From GruposUsuarios where GUS_D1sGrupoUsuario = 'Apdata - Programação - Special Login')
 			begin
-			  exec sp_DuplicarRegistroComAlteracoes 'GruposUsuarios', 'GUS_CdiGrupoUsuario', 1019, 'GUS_D1sGrupoUsuario, GUS_CdiTipoAutenticacao', '''Apdata - Programação - SCE'', 1', @ultimaChaveNovoGrupo OUTPUT
+			  /*Grupo para login especial da apdata*/
+			  exec sp_DuplicarRegistroComAlteracoes 'GruposUsuarios', 'GUS_CdiGrupoUsuario', 1019, 'GUS_D1sGrupoUsuario, GUS_CdiOpcao_AtivaIntegracao, GUS_CdiTipoAutenticacao, GUS_CdiOpcao_IntegraViaWS', '''Apdata - Programação - Special Login'', 1, 2, 1', @ultimaChaveNovoGrupo OUTPUT
+			end
+			else
+			begin
+			  Select @ultimaChaveNovoGrupo = GUS_CdiGrupoUsuario
+			  From GruposUsuarios
+			  Where GUS_D1sGrupoUsuario = 'Apdata - Programação - Special Login';
 			end
 
 		    if not EXISTS(Select 1 From Usuarios Where USR_CdsUsuario = 'flsantos@apdata.com.br')
@@ -1623,31 +1630,36 @@ begin
 			  /*Cria o usuario flsantos@apdata.com.br*/
 			  exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''flsantos@apdata.com.br'', ''flsantos@apdata.com.br'', ''Flsantos Apdata Com Br''', @ultimaChaveUsuario OUTPUT
 
+			  /*Adiciona o grupo ao novo usuario*/
+			  set @valoresCamposSet = 'USR_CdiGrupoUsuario = ' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20))
+			  set @WhereNovoUsuario = 'USR_CdiUsuario = ' + CAST(@ultimaChaveUsuario AS NVARCHAR(20))
+			  exec sp_Execute_Update 'dbo', 06, 'Usuarios', @valoresCamposSet, @WhereNovoUsuario
+
 			  /*Adicionnar Usuarios Contratados*/
 			  set @valoresCampos = CAST(@ultimaChaveUsuario AS NVARCHAR(20)) + ',0'
-			  exec sp_Execute_Insert 'dbo', 06, 'UsuariosContratados', 'USC_CdiUsuario, USC_CdiContratado_Usuario', @valoresCampos, 1 
+			  exec sp_Execute_Insert 'dbo', 07, 'UsuariosContratados', 'USC_CdiUsuario, USC_CdiContratado_Usuario', @valoresCampos, 1 
 
 			  /*Adicionar Perfis*/
 			  exec sp_GetLastIdFromTable 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil', 0, @ultimaChavePerfil OUTPUT
-			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 07, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 01, @ultimaChaveUsuario, 0, '217', 1  
-			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 08, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 02, @ultimaChaveUsuario, 0, '218', 1  
-			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 09, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 03, @ultimaChaveUsuario, 0, '220', 1  
-			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 10, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 04, @ultimaChaveUsuario, 0, '222', 1
-			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 11, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, @ultimaChaveUsuario, 0, '382', 1
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 08, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 01, @ultimaChaveUsuario, 0, '217', 1  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 09, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 02, @ultimaChaveUsuario, 0, '218', 1  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 10, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 03, @ultimaChaveUsuario, 0, '220', 1  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 11, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 04, @ultimaChaveUsuario, 0, '222', 1
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 12, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, @ultimaChaveUsuario, 0, '382', 1
 			  
 			  /*Cria MFA Teste*/
 			  exec sp_GetLastIdFromTable 'ModFatoresAutenticacoes', 'JRZ_CdiModFatorAutenticacao', 1, @ultimaChaveTabela OUTPUT
 			  
 			  set @valoresCampos = CAST(@ultimaChaveTabela AS NVARCHAR(20)) + ',''Modelo Teste MFA'''
-			  exec sp_Execute_Insert 'dbo', 12, 'ModFatoresAutenticacoes', 'JRZ_CdiModFatorAutenticacao, JRZ_D1sModFatorAutenticacao', @valoresCampos, 1
+			  exec sp_Execute_Insert 'dbo', 13, 'ModFatoresAutenticacoes', 'JRZ_CdiModFatorAutenticacao, JRZ_D1sModFatorAutenticacao', @valoresCampos, 1
 
 			  /*Atualiza tipo autenticação para teste*/
 			  set @WhereNovoUsuario = 'USR_CdiUsuario = ' + CAST(@ultimaChaveUsuario AS NVARCHAR(20))
-			  exec sp_Execute_Update 'dbo', 13, 'Usuarios', 'USR_CdiOpcao_AutenticacaoNativ = 2', @WhereNovoUsuario
+			  exec sp_Execute_Update 'dbo', 14, 'Usuarios', 'USR_CdiOpcao_AutenticacaoNativ = 2', @WhereNovoUsuario
 
 			  /*Atualiza fator de autenticação*/
 			  set @valoresCamposSet = 'USR_CdiModFatorAutenticacao = ' + CAST(@ultimaChaveTabela AS NVARCHAR(20))  
-			  exec sp_Execute_Update 'dbo', 14, 'Usuarios', @valoresCamposSet, @WhereNovoUsuario
+			  exec sp_Execute_Update 'dbo', 15, 'Usuarios', @valoresCamposSet, @WhereNovoUsuario
 
 			  /*Cria tipo de fator de autenticação por e-mail*/
 			  set @valoresCampos = CAST(@ultimaChaveTabela AS NVARCHAR(20)) + ',1,1'
@@ -1656,35 +1668,45 @@ begin
 
 			  set @valoresCampos = CAST(@ultimaChaveTabela AS NVARCHAR(20)) + ',' + @valoresCampos
 
-			  exec sp_Execute_Insert 'dbo', 15, 'ModFatoresAutenticacoesIts', 'JSB_CdiModFatorAutenticacaoIt, JSB_CdiModFatorAutenticacao, JSB_CdiFatorAutenticacao, JSB_NuiOrdem', @valoresCampos, 1
+			  exec sp_Execute_Insert 'dbo', 16, 'ModFatoresAutenticacoesIts', 'JSB_CdiModFatorAutenticacaoIt, JSB_CdiModFatorAutenticacao, JSB_CdiFatorAutenticacao, JSB_NuiOrdem', @valoresCampos, 1
 			  
+			  Print 'Criado o Grupo [' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20)) + '] Adicionado flsantos@apdata.com.br'
 			  Print 'Criação e adição do usuário flsantos@apdata.com.br para testes de MFA autenticação especial apdata.'
 			end
 			else
 			  Print 'Usuário flsantos@apdata.com.br já existe. Operção não realizada.';
+
+		    if not EXISTS(Select 1 From GruposUsuarios where GUS_D1sGrupoUsuario = 'Apdata - Programação - Login Integrator')
+			begin
+			  /*Grupo para login especial da apdata*/
+			  exec sp_DuplicarRegistroComAlteracoes 'GruposUsuarios', 'GUS_CdiGrupoUsuario', 1019, 'GUS_D1sGrupoUsuario, GUS_CdiOpcao_AtivaIntegracao, GUS_CdiTipoAutenticacao, GUS_CdiOpcao_IntegraViaWS', '''Apdata - Programação - Login Integrator'', 0, 2, 0', @ultimaChaveNovoGrupo OUTPUT
+			end
+			else
+			begin
+			  Select @ultimaChaveNovoGrupo = GUS_CdiGrupoUsuario
+			  From GruposUsuarios
+			  Where GUS_D1sGrupoUsuario = 'Apdata - Programação - Login Integrator';
+			end
 
 		    if not EXISTS(Select 1 From Usuarios Where USR_CdsUsuario = 'flsantos@apdatatst.com.br')
 			begin
 			  exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''flsantos@apdatatst.com.br'', ''flsantos@apdatatst.com.br'', ''Flsantos ApdataTst Com Br''', @ultimaChaveUsuario OUTPUT
 
 			  set @valoresCampos = CAST(@ultimaChaveUsuario AS NVARCHAR(20)) + ',0'
-			  exec sp_Execute_Insert 'dbo', 11, 'UsuariosContratados', 'USC_CdiUsuario, USC_CdiContratado_Usuario', @valoresCampos , 1
+			  exec sp_Execute_Insert 'dbo', 17, 'UsuariosContratados', 'USC_CdiUsuario, USC_CdiContratado_Usuario', @valoresCampos , 1
 			  
 			  set @valoresCamposSet = 'USR_CdiGrupoUsuario = ' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20))
 			  set @WhereNovoUsuario = 'USR_CdiUsuario = ' + CAST(@ultimaChaveUsuario AS NVARCHAR(20))
+			  exec sp_Execute_Update 'dbo', 18, 'Usuarios', @valoresCamposSet, @WhereNovoUsuario
 			  
-			  exec sp_Execute_Update 'dbo', 16, 'Usuarios', @valoresCamposSet, @WhereNovoUsuario
-			  exec sp_Execute_Update 'dbo', 17, 'Usuarios', @valoresCamposSet, 'USR_CdiUsuario = 1672'
-
 			  exec sp_GetLastIdFromTable 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil', 0, @ultimaChavePerfil OUTPUT
-			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 18, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 01, @ultimaChaveUsuario, 0, '217'  
-			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 19, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 02, @ultimaChaveUsuario, 0, '218'  
-			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 20, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 03, @ultimaChaveUsuario, 0, '220'  
-			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 21, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 04, @ultimaChaveUsuario, 0, '222'
-			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 22, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, @ultimaChaveUsuario, 0, '382'
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 19, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 01, @ultimaChaveUsuario, 0, '217'  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 20, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 02, @ultimaChaveUsuario, 0, '218'  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 21, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 03, @ultimaChaveUsuario, 0, '220'  
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 22, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 04, @ultimaChaveUsuario, 0, '222'
+			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 23, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, @ultimaChaveUsuario, 0, '382'
 
-
-			  Print 'Criado o Grupo [' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20)) + '] Adicionado o usuário flsantos e flsantos@apdatatst.com.br'
+			  Print 'Criado o Grupo [' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20)) + '] Adicionado flsantos@apdatatst.com.br'
 			  Print 'Criação e adição do usuário flsantos@apdatatst.com.br para testes de no servidor http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf.'
 			end
 			else
@@ -1697,8 +1719,8 @@ begin
 
 		/*Objeto 3090*/
 			exec sp_Execute_Update 'dbo', '01', 'DefSisIntegracaoAD', 'DZW_DtdOficializacaoSistema = null, DZW_OplAtivaIntegracao = 1, DZW_OplCriacaoUsuarioAut =  0, DZW_DssCaminhoLDAP = ''DC=apdatatst,DC=com,DC=br'', DZW_OplIntegraViaWS = 1, DZW_DssWSCriaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtualizaDados = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrocaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSResetaSenha = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSAtivaDesativaUsuario = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_CdsWSUsuario = ''flsantos'', DZW_CosWSSenha = ''Fls12345@'', DZW_OplAtivaLogIntegracao = 1, DZW_OplNaoSincronizarGrupo = 0, DZW_OplNaoSincronizarEstrutura = 0, DZW_DssWSValidaLogin = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf'', DZW_DssWSTrataSSO = ''http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 'DZW_CdiSistema = 72', 1
-			--Para ativar a integração da ApData marcar a configuração da seguinte forma [GUS_CdiOpcao_AtivaIntegracao = 2, GUS_CdiTipoAutenticacao = 1, GUS_CdiOpcao_IntegraViaWS = 1]
-			exec sp_Execute_Update 'dbo', '02', 'GruposUsuarios', 'GUS_CdiOpcao_AtivaIntegracao = 1, GUS_CdiTipoAutenticacao = 2, GUS_CdiOpcao_IntegraViaWS = 1', 'GUS_CdiGrupoUsuario = 1019', 1
+			--Para ativar a integração da ApData marcar a configuração da seguinte forma [GUS_CdiOpcao_AtivaIntegracao = 1, GUS_CdiTipoAutenticacao = 2, GUS_CdiOpcao_IntegraViaWS = 1]
+			--exec sp_Execute_Update 'dbo', '02', 'GruposUsuarios', 'GUS_CdiOpcao_AtivaIntegracao = 1, GUS_CdiTipoAutenticacao = 2, GUS_CdiOpcao_IntegraViaWS = 1', 'GUS_CdiGrupoUsuario = 1019', 1
 			
 			--Para ativar a validação da apdata [usuários com nome e-mail]
 			exec sp_Execute_Or_Insert 'dbo', 01, 'IdentificacoesApServer', 'EON_DssNomeMaquina', '''APDNSON0220''', 'EON_CdiIdentificacaoApServer', 'EON_DssNomeMaquina, EON_DssNomeInstancia, EON_DssLinkADIntegratorWS', '''APDNSON0220'',''localhost'',''https://apad.apdata.com.br/aPAD/ApADIntegratorWS.dll/soap/IApADIntegrationIntf''', 1
