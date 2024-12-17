@@ -229,106 +229,6 @@ end
 GO
 
 /**********************************************************************
-    1.1.3 - OVERLOAD SP_EXECUTESQL (Insert our Update)
-***********************************************************************/
-
-create or alter procedure sp_Execute_Or_Insert(
-    @schema   varchar(200) = 'dbo',
-    @ordNum   int = 0,
-    @table    varchar(200),
-    @keyField varchar(200),
-    @keyValue varchar(200),
-    @keyInc   varchar(200),
-    @fields   varchar(max) = null,
-    @values   varchar(max) = null,
-    @showCmd  int = 1
-)
-as
-begin
-    declare @exists int;
-    declare @sql nvarchar(max);
-    declare @params nvarchar(max);
-    declare @keyIncrement int;
-    declare @updateClause nvarchar(max) = '';
-    declare @i int = 1;
-    declare @field nvarchar(200);
-    declare @value nvarchar(max);
-    declare @fieldList table (Field nvarchar(200), RowNum int identity(1,1));
-    declare @valueList table (Value nvarchar(max), RowNum int identity(1,1));
-
-    set nocount on;
-
-    -- Verifica se o registro existe
-    set @sql = 'select @exists = count(1) from ' + @schema + '.' + @table + ' where ' + @keyField + ' = ' + @keyValue;
-    set @params = N'@exists int output, @keyValue varchar(200)';
-
-    exec sp_executesql @sql, @params, @exists = @exists output, @keyValue = @keyValue;
-
-    if @exists > 0
-    begin
-        -- Insere os campos e valores em tabelas temporárias com numeração de linha
-        insert into @fieldList(Field) select value from string_split(@fields, ',');
-        insert into @valueList(Value) select value from string_split(@values, ',');
-
-        -- Constrói a cláusula SET
-        while @i <= (select count(*) from @fieldList)
-        begin
-            select @field = Field from @fieldList where RowNum = @i;
-            select @value = Value from @valueList where RowNum = @i;
-
-            if @updateClause <> ''
-                set @updateClause = @updateClause + ', ';
-
-            set @updateClause = @updateClause + @field + ' = ' + @value;
-
-            set @i = @i + 1;
-        end
-
-        -- Monta a string SQL para o UPDATE
-        set @sql = 'update ' + @schema + '.' + @table + ' set ' + @updateClause + ' where ' + @keyField + ' = ' + @keyValue;
-
-        begin try
-            exec sp_executesql @sql;
-            if (@showCmd = 1)
-                print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected = ' + cast(@@ROWCOUNT as char(03)) + '] -> Command: ' + @sql;
-            else 
-                print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @sql;
-        end try
-        begin catch
-            print '--################### ERROR BEGINS ##################';
-            print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + ' -> Command: ' + @sql;
-            print '--################### ERROR ENDS ####################';
-        end catch
-    end
-    else
-    begin
-        -- Tratamento para a inserção
-        if (@keyInc <> '')
-        begin
-            exec sp_takeKeyForInsertion @table, @keyIncrement OUTPUT;
-            set @fields = @keyInc + ',' + @fields;
-            set @values = cast(@keyIncrement as varchar(10)) + ',' + @values;
-        end
-
-        set @sql = 'insert into ' + @schema + '.' + @table + ' (' + @fields + ') values (' + @values + ')';
-        
-        begin try
-            exec sp_executesql @sql;
-            if (@showCmd = 1)
-                print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected = ' + cast(@@ROWCOUNT as char(03)) + '] -> Command: ' + @sql;
-            else 
-                print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @sql;
-        end try
-        begin catch
-            print '--################### ERROR BEGINS ##################';
-            print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + ' -> Command: ' + @sql;
-            print '--################### ERROR ENDS ####################';
-        end catch
-    end
-end
-GO
-
-/**********************************************************************
     1.4 - OVERLOAD SP_EXECUTESQL (Insert Three Key)
 ***********************************************************************/
 
@@ -1082,6 +982,292 @@ BEGIN
         'Mock error message ' + CAST(n AS VARCHAR(10)),  -- error
         'Mock description ' + CAST(n AS VARCHAR(10))     -- desc_cargo
     FROM Numbers;
+END;
+GO
+
+/**********************************************************************
+    7.1 - OVERLOAD SP_EXECUTESQL (Insert our Update)
+***********************************************************************/
+
+create or alter procedure sp_Execute_Or_Insert(
+    @schema   varchar(200) = 'dbo',
+    @ordNum   int = 0,
+    @table    varchar(200),
+    @keyField varchar(200),
+    @keyValue varchar(200),
+    @keyInc   varchar(200),
+    @fields   varchar(max) = null,
+    @values   varchar(max) = null,
+    @showCmd  int = 1
+)
+as
+begin
+    declare @exists int;
+    declare @sql nvarchar(max);
+    declare @params nvarchar(max);
+    declare @keyIncrement int;
+    declare @updateClause nvarchar(max) = '';
+    declare @i int = 1;
+    declare @field nvarchar(200);
+    declare @value nvarchar(max);
+    declare @fieldList table (Field nvarchar(200), RowNum int identity(1,1));
+    declare @valueList table (Value nvarchar(max), RowNum int identity(1,1));
+
+    set nocount on;
+
+    -- Verifica se o registro existe
+    set @sql = 'select @exists = count(1) from ' + @schema + '.' + @table + ' where ' + @keyField + ' = ' + @keyValue;
+    set @params = N'@exists int output, @keyValue varchar(200)';
+
+    exec sp_executesql @sql, @params, @exists = @exists output, @keyValue = @keyValue;
+
+    if @exists > 0
+    begin
+        -- Insere os campos e valores em tabelas temporárias com numeração de linha
+        insert into @fieldList(Field) select value from string_split(@fields, ',');
+        insert into @valueList(Value) select value from string_split(@values, ',');
+
+        -- Constrói a cláusula SET
+        while @i <= (select count(*) from @fieldList)
+        begin
+            select @field = Field from @fieldList where RowNum = @i;
+            select @value = Value from @valueList where RowNum = @i;
+
+            if @updateClause <> ''
+                set @updateClause = @updateClause + ', ';
+
+            set @updateClause = @updateClause + @field + ' = ' + @value;
+
+            set @i = @i + 1;
+        end
+
+        -- Monta a string SQL para o UPDATE
+        set @sql = 'update ' + @schema + '.' + @table + ' set ' + @updateClause + ' where ' + @keyField + ' = ' + @keyValue;
+
+        begin try
+            exec sp_executesql @sql;
+            if (@showCmd = 1)
+                print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected = ' + cast(@@ROWCOUNT as char(03)) + '] -> Command: ' + @sql;
+            else 
+                print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @sql;
+        end try
+        begin catch
+            print '--################### ERROR BEGINS ##################';
+            print 'After Execute Update: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + ' -> Command: ' + @sql;
+            print '--################### ERROR ENDS ####################';
+        end catch
+    end
+    else
+    begin
+        -- Tratamento para a inserção
+        if (@keyInc <> '')
+        begin
+            exec sp_takeKeyForInsertion @table, @keyIncrement OUTPUT;
+            set @fields = @keyInc + ',' + @fields;
+            set @values = cast(@keyIncrement as varchar(10)) + ',' + @values;
+        end
+
+        set @sql = 'insert into ' + @schema + '.' + @table + ' (' + @fields + ') values (' + @values + ')';
+        
+        begin try
+            exec sp_executesql @sql;
+            if (@showCmd = 1)
+                print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] - [rows affected = ' + cast(@@ROWCOUNT as char(03)) + '] -> Command: ' + @sql;
+            else 
+                print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table  [' + @table + '] -> Command: ' + @sql;
+        end try
+        begin catch
+            print '--################### ERROR BEGINS ##################';
+            print 'After Execute Insert: OrdNum [' + cast(@ordNum as char(03)) + '] - Table [' + @table + '] - OrdNum [' + cast(@ordNum as char(03)) + '] - Error Message: [' + ERROR_MESSAGE() + ']' + ' -> Command: ' + @sql;
+            print '--################### ERROR ENDS ####################';
+        end catch
+    end
+end
+GO
+
+/**********************************************************************
+    7.2 - DUPLICAR REGISTRO
+***********************************************************************/
+
+create or alter procedure sp_DuplicarRegistroComAlteracoes(@TableName NVARCHAR(128),
+                                                           @PrimaryKeyColumn NVARCHAR(128),
+                                                           @PrimaryKeyValue SQL_VARIANT, 
+                                                           @CamposAlterar NVARCHAR(MAX) = NULL,  -- Ex: 'Coluna1, Coluna2'
+                                                           @NovosValores NVARCHAR(MAX) = NULL,     -- Ex: 'Valor1, Valor2'
+														   @NovoValorChavePrimaria INT OUTPUT    -- Parâmetro de saída para a chave primária
+                                                          ) 
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @sql NVARCHAR(MAX);
+    DECLARE @columns NVARCHAR(MAX);
+    DECLARE @selectColumns NVARCHAR(MAX);
+    DECLARE @NextPrimaryKeyValue INT;
+
+    -- Calcular o próximo valor disponível para a chave primária
+    SET @sql = N'SELECT @NextPrimaryKeyValue = ISNULL(MAX(' + QUOTENAME(@PrimaryKeyColumn) + '), 0) + 1 FROM ' + QUOTENAME(@TableName);
+    EXEC sp_executesql @sql, N'@NextPrimaryKeyValue INT OUTPUT', @NextPrimaryKeyValue = @NextPrimaryKeyValue OUTPUT;
+
+    -- Obter a lista de colunas, incluindo a chave primária
+    SELECT @columns = STRING_AGG(CAST(QUOTENAME(name) AS NVARCHAR(MAX)), ', ')
+    FROM sys.columns
+    WHERE object_id = OBJECT_ID(@TableName)
+      AND is_identity = 0;  -- Exclui colunas de identidade (se houver)
+
+    IF @columns IS NULL
+    BEGIN
+        RAISERROR('Tabela ou colunas não encontradas.', 16, 1);
+        RETURN;
+    END
+
+    -- Inicializar @selectColumns com as colunas originais
+    SET @selectColumns = @columns;
+
+    -- Se campos para alterar forem fornecidos
+    IF @CamposAlterar IS NOT NULL AND @NovosValores IS NOT NULL
+    BEGIN
+        -- Dividir os campos e valores em tabelas temporárias com números de linha
+        DECLARE @Campos TABLE (RN INT, Nome NVARCHAR(128));
+        DECLARE @Valores TABLE (RN INT, Valor NVARCHAR(MAX));
+
+        INSERT INTO @Campos (RN, Nome)
+        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RN, LTRIM(RTRIM(value))
+        FROM STRING_SPLIT(@CamposAlterar, ',');
+
+        INSERT INTO @Valores (RN, Valor)
+        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RN, LTRIM(RTRIM(value))
+        FROM STRING_SPLIT(@NovosValores, ',');
+
+        -- Verificar se o número de campos e valores correspondem
+        IF (SELECT COUNT(*) FROM @Campos) <> (SELECT COUNT(*) FROM @Valores)
+        BEGIN
+            RAISERROR('O número de campos e valores não corresponde.', 16, 1);
+            RETURN;
+        END
+
+        -- Reconstituir @selectColumns com os novos valores
+        SELECT @selectColumns = STRING_AGG(
+            CAST(
+                CASE
+                    WHEN c.name = @PrimaryKeyColumn THEN CAST(@NextPrimaryKeyValue AS NVARCHAR(MAX)) + ' AS ' + QUOTENAME(c.name)
+                    WHEN cn.Nome IS NOT NULL THEN vn.Valor + ' AS ' + QUOTENAME(c.name)
+                    ELSE QUOTENAME(c.name)
+                END AS NVARCHAR(MAX)
+            ), ', '
+        )
+        FROM sys.columns c
+        LEFT JOIN @Campos cn ON c.name = cn.Nome
+        LEFT JOIN @Valores vn ON cn.RN = vn.RN
+        WHERE c.object_id = OBJECT_ID(@TableName)
+          AND c.is_identity = 0;
+    END
+    ELSE
+    BEGIN
+        -- Quando não há campos para alterar, ainda precisamos definir o novo valor para a chave primária
+        SELECT @selectColumns = STRING_AGG(
+            CAST(
+                CASE
+                    WHEN c.name = @PrimaryKeyColumn THEN CAST(@NextPrimaryKeyValue AS NVARCHAR(MAX)) + ' AS ' + QUOTENAME(c.name)
+                    ELSE QUOTENAME(c.name)
+                END AS NVARCHAR(MAX)
+            ), ', '
+        )
+        FROM sys.columns c
+        WHERE c.object_id = OBJECT_ID(@TableName)
+          AND c.is_identity = 0;
+    END
+
+    -- Criar uma tabela temporária para capturar o valor da chave primária inserida
+    CREATE TABLE #InsertedKeys (ChavePrimaria INT);
+
+    -- Construir o SQL dinâmico com a cláusula OUTPUT
+    SET @sql = N'
+    INSERT INTO ' + QUOTENAME(@TableName) + ' (' + @columns + ')
+    OUTPUT inserted.' + QUOTENAME(@PrimaryKeyColumn) + ' INTO #InsertedKeys(ChavePrimaria)
+    SELECT ' + @selectColumns + '
+    FROM ' + QUOTENAME(@TableName) + '
+    WHERE ' + QUOTENAME(@PrimaryKeyColumn) + ' = @PrimaryKeyValue;
+    ';
+
+    -- Executar o SQL dinâmico
+    EXEC sp_executesql @sql, N'@PrimaryKeyValue SQL_VARIANT', @PrimaryKeyValue = @PrimaryKeyValue;
+
+    -- Recuperar o valor da chave primária inserida
+    SELECT TOP 1 @NovoValorChavePrimaria = ChavePrimaria FROM #InsertedKeys;
+
+    -- Limpar a tabela temporária
+    DROP TABLE #InsertedKeys;
+END;
+GO
+
+/**********************************************************************
+    7.3 - PEGAR A ÚLTIMA CHAVE DE UMA TABELA
+***********************************************************************/
+
+create or alter procedure sp_GetLastIdFromTable(@TableName NVARCHAR(128),
+                                                @IdColumn NVARCHAR(128),
+                                                @Increment INT = 0,
+                                                @LastId INT OUTPUT
+                                               )
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @SQL NVARCHAR(MAX);
+    DECLARE @ParmDefinition NVARCHAR(500);
+
+    -- Construir o SQL dinâmico
+    SET @SQL = N'SELECT @LastIdOut = MAX(' + QUOTENAME(@IdColumn) + ') FROM ' + QUOTENAME(@TableName) + ';';
+    SET @ParmDefinition = N'@LastIdOut INT OUTPUT';
+
+    -- Executar o SQL dinâmico
+    EXEC sp_executesql @SQL, @ParmDefinition, @LastIdOut = @LastId OUTPUT;
+
+    -- Tratar casos onde MAX retorna NULL (tabela vazia)
+    IF @LastId IS NULL
+        SET @LastId = 0;
+
+    -- Incrementar o ID se necessário
+    SET @LastId = @LastId + @Increment;
+END;
+GO
+
+create or alter procedure sp_GetLastIdFromTableEx(@TableName SYSNAME,
+                                                  @LastId INT OUTPUT
+                                                 )
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @IdColumn SYSNAME;
+    DECLARE @SQL NVARCHAR(MAX);
+    DECLARE @ParmDefinition NVARCHAR(500);
+
+    -- Obter o nome da coluna de chave primária
+    SELECT TOP 1 @IdColumn = KU.COLUMN_NAME
+    FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS TC
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KU
+        ON TC.CONSTRAINT_TYPE = 'PRIMARY KEY' AND
+           TC.CONSTRAINT_NAME = KU.CONSTRAINT_NAME
+    WHERE KU.TABLE_NAME = @TableName;
+
+    IF @IdColumn IS NULL
+    BEGIN
+        RAISERROR('Chave primária não encontrada para a tabela %s.', 16, 1, @TableName);
+        RETURN;
+    END
+
+    -- Construir o SQL dinâmico
+    SET @SQL = N'SELECT @LastIdOut = MAX(' + QUOTENAME(@IdColumn) + ') FROM ' + QUOTENAME(@TableName) + ';';
+    SET @ParmDefinition = N'@LastIdOut INT OUTPUT';
+
+    -- Executar o SQL dinâmico
+    EXEC sp_executesql @SQL, @ParmDefinition, @LastIdOut = @LastId OUTPUT;
+
+    -- Tratar casos onde MAX retorna NULL (tabela vazia)
+    IF @LastId IS NULL
+        SET @LastId = 0;
 END;
 GO
 
@@ -2125,192 +2311,6 @@ begin
 end
 GO
 */
-
-/**********************************************************************
-    16 - DUPLICAR REGISTRO
-***********************************************************************/
-
-create or alter procedure sp_DuplicarRegistroComAlteracoes(@TableName NVARCHAR(128),
-                                                           @PrimaryKeyColumn NVARCHAR(128),
-                                                           @PrimaryKeyValue SQL_VARIANT, 
-                                                           @CamposAlterar NVARCHAR(MAX) = NULL,  -- Ex: 'Coluna1, Coluna2'
-                                                           @NovosValores NVARCHAR(MAX) = NULL,     -- Ex: 'Valor1, Valor2'
-														   @NovoValorChavePrimaria INT OUTPUT    -- Parâmetro de saída para a chave primária
-                                                          ) 
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    DECLARE @sql NVARCHAR(MAX);
-    DECLARE @columns NVARCHAR(MAX);
-    DECLARE @selectColumns NVARCHAR(MAX);
-    DECLARE @NextPrimaryKeyValue INT;
-
-    -- Calcular o próximo valor disponível para a chave primária
-    SET @sql = N'SELECT @NextPrimaryKeyValue = ISNULL(MAX(' + QUOTENAME(@PrimaryKeyColumn) + '), 0) + 1 FROM ' + QUOTENAME(@TableName);
-    EXEC sp_executesql @sql, N'@NextPrimaryKeyValue INT OUTPUT', @NextPrimaryKeyValue = @NextPrimaryKeyValue OUTPUT;
-
-    -- Obter a lista de colunas, incluindo a chave primária
-    SELECT @columns = STRING_AGG(CAST(QUOTENAME(name) AS NVARCHAR(MAX)), ', ')
-    FROM sys.columns
-    WHERE object_id = OBJECT_ID(@TableName)
-      AND is_identity = 0;  -- Exclui colunas de identidade (se houver)
-
-    IF @columns IS NULL
-    BEGIN
-        RAISERROR('Tabela ou colunas não encontradas.', 16, 1);
-        RETURN;
-    END
-
-    -- Inicializar @selectColumns com as colunas originais
-    SET @selectColumns = @columns;
-
-    -- Se campos para alterar forem fornecidos
-    IF @CamposAlterar IS NOT NULL AND @NovosValores IS NOT NULL
-    BEGIN
-        -- Dividir os campos e valores em tabelas temporárias com números de linha
-        DECLARE @Campos TABLE (RN INT, Nome NVARCHAR(128));
-        DECLARE @Valores TABLE (RN INT, Valor NVARCHAR(MAX));
-
-        INSERT INTO @Campos (RN, Nome)
-        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RN, LTRIM(RTRIM(value))
-        FROM STRING_SPLIT(@CamposAlterar, ',');
-
-        INSERT INTO @Valores (RN, Valor)
-        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RN, LTRIM(RTRIM(value))
-        FROM STRING_SPLIT(@NovosValores, ',');
-
-        -- Verificar se o número de campos e valores correspondem
-        IF (SELECT COUNT(*) FROM @Campos) <> (SELECT COUNT(*) FROM @Valores)
-        BEGIN
-            RAISERROR('O número de campos e valores não corresponde.', 16, 1);
-            RETURN;
-        END
-
-        -- Reconstituir @selectColumns com os novos valores
-        SELECT @selectColumns = STRING_AGG(
-            CAST(
-                CASE
-                    WHEN c.name = @PrimaryKeyColumn THEN CAST(@NextPrimaryKeyValue AS NVARCHAR(MAX)) + ' AS ' + QUOTENAME(c.name)
-                    WHEN cn.Nome IS NOT NULL THEN vn.Valor + ' AS ' + QUOTENAME(c.name)
-                    ELSE QUOTENAME(c.name)
-                END AS NVARCHAR(MAX)
-            ), ', '
-        )
-        FROM sys.columns c
-        LEFT JOIN @Campos cn ON c.name = cn.Nome
-        LEFT JOIN @Valores vn ON cn.RN = vn.RN
-        WHERE c.object_id = OBJECT_ID(@TableName)
-          AND c.is_identity = 0;
-    END
-    ELSE
-    BEGIN
-        -- Quando não há campos para alterar, ainda precisamos definir o novo valor para a chave primária
-        SELECT @selectColumns = STRING_AGG(
-            CAST(
-                CASE
-                    WHEN c.name = @PrimaryKeyColumn THEN CAST(@NextPrimaryKeyValue AS NVARCHAR(MAX)) + ' AS ' + QUOTENAME(c.name)
-                    ELSE QUOTENAME(c.name)
-                END AS NVARCHAR(MAX)
-            ), ', '
-        )
-        FROM sys.columns c
-        WHERE c.object_id = OBJECT_ID(@TableName)
-          AND c.is_identity = 0;
-    END
-
-    -- Criar uma tabela temporária para capturar o valor da chave primária inserida
-    CREATE TABLE #InsertedKeys (ChavePrimaria INT);
-
-    -- Construir o SQL dinâmico com a cláusula OUTPUT
-    SET @sql = N'
-    INSERT INTO ' + QUOTENAME(@TableName) + ' (' + @columns + ')
-    OUTPUT inserted.' + QUOTENAME(@PrimaryKeyColumn) + ' INTO #InsertedKeys(ChavePrimaria)
-    SELECT ' + @selectColumns + '
-    FROM ' + QUOTENAME(@TableName) + '
-    WHERE ' + QUOTENAME(@PrimaryKeyColumn) + ' = @PrimaryKeyValue;
-    ';
-
-    -- Executar o SQL dinâmico
-    EXEC sp_executesql @sql, N'@PrimaryKeyValue SQL_VARIANT', @PrimaryKeyValue = @PrimaryKeyValue;
-
-    -- Recuperar o valor da chave primária inserida
-    SELECT TOP 1 @NovoValorChavePrimaria = ChavePrimaria FROM #InsertedKeys;
-
-    -- Limpar a tabela temporária
-    DROP TABLE #InsertedKeys;
-END;
-GO
-
-/**********************************************************************
-    17 - PEGAR A ÚLTIMA CHAVE DE UMA TABELA
-***********************************************************************/
-
-create or alter procedure sp_GetLastIdFromTable(@TableName NVARCHAR(128),
-                                                @IdColumn NVARCHAR(128),
-                                                @Increment INT = 0,
-                                                @LastId INT OUTPUT
-                                               )
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    DECLARE @SQL NVARCHAR(MAX);
-    DECLARE @ParmDefinition NVARCHAR(500);
-
-    -- Construir o SQL dinâmico
-    SET @SQL = N'SELECT @LastIdOut = MAX(' + QUOTENAME(@IdColumn) + ') FROM ' + QUOTENAME(@TableName) + ';';
-    SET @ParmDefinition = N'@LastIdOut INT OUTPUT';
-
-    -- Executar o SQL dinâmico
-    EXEC sp_executesql @SQL, @ParmDefinition, @LastIdOut = @LastId OUTPUT;
-
-    -- Tratar casos onde MAX retorna NULL (tabela vazia)
-    IF @LastId IS NULL
-        SET @LastId = 0;
-
-    -- Incrementar o ID se necessário
-    SET @LastId = @LastId + @Increment;
-END;
-GO
-
-create or alter procedure sp_GetLastIdFromTableEx(@TableName SYSNAME,
-                                                  @LastId INT OUTPUT
-                                                 )
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    DECLARE @IdColumn SYSNAME;
-    DECLARE @SQL NVARCHAR(MAX);
-    DECLARE @ParmDefinition NVARCHAR(500);
-
-    -- Obter o nome da coluna de chave primária
-    SELECT TOP 1 @IdColumn = KU.COLUMN_NAME
-    FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS TC
-    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KU
-        ON TC.CONSTRAINT_TYPE = 'PRIMARY KEY' AND
-           TC.CONSTRAINT_NAME = KU.CONSTRAINT_NAME
-    WHERE KU.TABLE_NAME = @TableName;
-
-    IF @IdColumn IS NULL
-    BEGIN
-        RAISERROR('Chave primária não encontrada para a tabela %s.', 16, 1, @TableName);
-        RETURN;
-    END
-
-    -- Construir o SQL dinâmico
-    SET @SQL = N'SELECT @LastIdOut = MAX(' + QUOTENAME(@IdColumn) + ') FROM ' + QUOTENAME(@TableName) + ';';
-    SET @ParmDefinition = N'@LastIdOut INT OUTPUT';
-
-    -- Executar o SQL dinâmico
-    EXEC sp_executesql @SQL, @ParmDefinition, @LastIdOut = @LastId OUTPUT;
-
-    -- Tratar casos onde MAX retorna NULL (tabela vazia)
-    IF @LastId IS NULL
-        SET @LastId = 0;
-END;
-GO
 
 /**********************************************************************/
 

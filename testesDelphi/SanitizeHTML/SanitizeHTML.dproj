@@ -109,6 +109,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="unSanitizeHTML.pas"/>
+        <DCCReference Include="unConstTeste.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -18,6 +18,7 @@ type
     class function DecodeEntities(const AText: String): String;
     class function MatchEvaluator(const Match: TMatch): String;
     class function AdjustNBSPError(const AContent: String; const ADecharacterizesNBSP: Boolean = True): String; static;
+    class function NormalizeHTML(const AContent: String): String;
   public
     class function IsProbablyHTML(const AContent: String): Boolean; overload; static;
     class function IsProbablyHTML(const AContentBytes: TBytes): Boolean; overload; static;
@@ -106,11 +107,30 @@ begin
   Exit(not AContentHTML.Equals(DecodedContent));
 end;
 
+class function TPreventXSS.NormalizeHTML(const AContent: String): String;
+var
+  Normalized: String;
+  RegEx: TRegEx;
+begin
+  Normalized := AContent;
+  if Normalized.StartsWith(#$EF#$BB#$BF) then
+    Delete(Normalized, 1, 3);
+  Normalized := Normalized.Replace('＜', '<', [rfReplaceAll]);
+  Normalized := Normalized.Replace('＞', '>', [rfReplaceAll]);
+  RegEx := TRegEx.Create('<{2,}', [roIgnoreCase]);
+  Normalized := RegEx.Replace(Normalized, '<');
+  RegEx := TRegEx.Create('>{2,}', [roIgnoreCase]);
+  Normalized := RegEx.Replace(Normalized, '>');
+  RegEx := TRegEx.Create('<(?!/?[a-zA-Z0-9])', [roIgnoreCase]);
+  Normalized := RegEx.Replace(Normalized, '');
+  Exit(Normalized);
+end;
+
 class function TPreventXSS.SanitizeHTML(const AContentHTML: String): String;
 const
   SPECIAL_APDATA_BEGIN = '/*APDATABEGIN*/';
   SPECIAL_APDATA_END = '/*APDATAEND*/';
-  AllowedTags: array[0..10] of string = ('b', 'i', 'u', 'p', 'br', 'img', 'div', 'font', 'span', 'a', 'strong');
+  AllowedTags: array[0..15] of string = ('b', 'i', 'u', 'p', 'br', 'img', 'div', 'font', 'span', 'a', 'strong', 'h1', 'h2', 'h3', 'h4', 'h5');
   AllowedAttributes: array[0..4] of string = ('href', 'src', 'style', 'face', 'class');
 var
   TagRegex, AttrRegex: TRegEx;
@@ -138,7 +158,7 @@ var
   end;
 
 begin
-  Output := AContentHTML;
+  Output := NormalizeHTML(AContentHTML);
   AllowedTagList := TDictionary<string, Boolean>.Create;
   AllowedAttrList := TDictionary<string, Boolean>.Create;
   SanitizedOutput := TStringBuilder.Create;

@@ -18,7 +18,8 @@ uses
   SynHighlighterHtml,
   SynEdit,
 
-  unSanitizeHTML
+  unSanitizeHTML,
+  unConstTeste
   ;
 
 type
@@ -31,9 +32,11 @@ type
     cbAnalisysXSS: TCheckBox;
     cbAnalysisXSSTags: TCheckBox;
     btnProvavelHTML: TButton;
+    cmbExamples: TComboBox;
     procedure btnSanitizeHTMLClick(Sender: TObject);
     procedure btClearAllClick(Sender: TObject);
     procedure btnProvavelHTMLClick(Sender: TObject);
+    procedure cmbExamplesChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -76,6 +79,17 @@ begin
     seOutput.Text := TPreventXSS.SanitizeTag(seInput.Lines.Text)
   else
     seOutput.Text := TPreventXSS.SanitizeHTML(seInput.Lines.Text);
+end;
+
+procedure TfrmMain.cmbExamplesChange(Sender: TObject);
+begin
+  case cmbExamples.ItemIndex of
+    0 :
+      begin
+        btClearAllClick(Self);
+        seInput.Lines.Text := GENERAL_TESTE;
+      end;
+  end;
 end;
 
 end.

@@ -167,7 +167,22 @@ object frmMain: TfrmMain
         #9'<span style="font-family:'#39#39'Arial'#39#39';font-size:11.00pt;">&amp;lt;' +
         'img src=https://teste.teste.jpg onerror=alert(&#39;teste&#39;)&a' +
         'mp;gt;</span>'
-      '</div>'#9)
+      '</div>'#9
+      ''
+      #239#187#191'<img src=x onerror=alert(document.location)'
+      #239#187#191'<img src=x onerror="alert(document.location)" '
+      #239#187#191'<img src=x onerror="alert(document.location)"'
+      #239#187#191'&lt;img src=x onerror=alert(document.location)'
+      #239#187#191'<'#239#188#339#239#185#164'<img src=x onerror=alert(document.location>>'
+      #239#187#191'<<img src=x onerror="alert(document.location)'
+      #239#187#191#239#185#164'img src=x onerror="alert(document.location)"'
+      #239#187#191'aaa'
+      #239#187#191'<'#239#188#339#239#185#164'<img src=x onerror=alert(document.location)>>'
+      #239#187#191'<'#28'd<img src=x onerror=alert(document.location)>>'
+      #239#187#191'<<img src=x onerror=alert(document.location)>>'
+      #239#187#191'<img src=x onerror=alert(document.location)>>'
+      #239#187#191'<<img src=x onerror=alert(document.location)>>'
+      #239#187#191'<<img src=x onerror=alert(document.location)>')
     SelectedColor.Alpha = 0.400000005960464500
   end
   object seOutput: TSynEdit
@@ -255,6 +270,19 @@ object frmMain: TfrmMain
     Caption = 'Prov'#225'vel HTML'
     TabOrder = 6
     OnClick = btnProvavelHTMLClick
+  end
+  object cmbExamples: TComboBox
+    Left = 489
+    Top = 405
+    Width = 473
+    Height = 23
+    Style = csDropDownList
+    ItemIndex = 0
+    TabOrder = 7
+    Text = '01 - Exemplo Geral'
+    OnChange = cmbExamplesChange
+    Items.Strings = (
+      '01 - Exemplo Geral')
   end
   object SynHTMLSyn1: TSynHTMLSyn
     Left = 440

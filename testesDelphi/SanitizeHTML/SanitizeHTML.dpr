@@ -3,7 +3,8 @@ program SanitizeHTML;
 uses
   Vcl.Forms,
   unMain in 'unMain.pas' {frmMain},
-  unSanitizeHTML in 'unSanitizeHTML.pas';
+  unSanitizeHTML in 'unSanitizeHTML.pas',
+  unConstTeste in 'unConstTeste.pas';
 
 {$R *.res}
 
