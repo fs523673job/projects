@@ -100,24 +100,24 @@ var
   begin
     SizeSQL := Length(SQLText);
     StackSnippetPos := TStack<TExcerptStructure>.Create;
+    SQLText := SQLText.Trim;
     try
       PosSQL    := 1;
       InQuoted  := False;
       InComment := False;
       while PosSQL <= SizeSQL  do
       begin
-        if (SQLText[PosSQL] = '/') and (SQLText[PosSQL + 1] = '*') then
+        if (SQLText[PosSQL] = '/') and ((PosSQL + 1) <= SizeSQL) and (SQLText[PosSQL + 1] = '*') then
         begin
           InComment := not InComment;
           Inc(PosSQL);
           KeyWord := '/*';
         end
-        else if (SQLText[PosSQL] = '*') and (SQLText[PosSQL + 1] = '/') then
+        else if (SQLText[PosSQL] = '*') and ((PosSQL + 1) <= SizeSQL) and (SQLText[PosSQL + 1] = '/') then
         begin
           InComment := not InComment;
           Inc(PosSQL);
           KeyWord := '*/';
-          KeyWord := EmptyStr;
         end
         else if (SQLText[PosSQL] = '''') or (SQLText[PosSQL] = '"') then
         begin
@@ -154,7 +154,7 @@ var
           else if (KeyWord.ToUpper = AKeyWordEnd) and (StackSnippetPos.Count > 0) and (not InQuoted) then
           begin
             ExcerptStructure := StackSnippetPos.Pop();
-            ExcerptStructure.IndexEnd := PosSQL - Length(KeyWord) + 1;
+            ExcerptStructure.IndexEnd := PosSQL;
             ExcerptStructure.SQLSnipped := Copy(SQLText, ExcerptStructure.IndexBegin, (ExcerptStructure.IndexEnd + 1) - ExcerptStructure.IndexBegin);
 
             if Assigned(AAnalysSnipped) then
@@ -231,6 +231,7 @@ begin
   SQLSanitized  := LinearizeSQL(ASQL);
   AnalysSnipped :=  TStringList.Create;
   try
+    RemoveSnippetInSQL(SQLSanitized, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], '/*', '*/');
     RemoveSnippetInSQL(SQLSanitized, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ','], '(', ')');
     RemoveSnippetInSQL(SQLSanitized, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], 'CASE', 'END');
     RemoveSnippetInSQL(SQLSanitized, AnalysSnipped, ['<', '>', '/', '-', '+', '*', '=', '|', ',', '(', ')'], 'HAVING', 'UNION');
@@ -322,7 +323,6 @@ function TSQLAnalyzer.HasFailSecurityTag(const ASQL: String): Boolean;
 var
   SQL: String;
   Table, TableSec: String;
-  Index: Integer;
   TablesInScript: TArray<string>;
   TablesInTagSec: TArray<string>;
   SecurityTag: TArray<string>;
