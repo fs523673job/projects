@@ -98,9 +98,9 @@ var
     InQuoted         : Boolean;
     InComment        : Boolean;
   begin
-    StackSnippetPos := TStack<TExcerptStructure>.Create;
     SQLText := SQLText.Trim;
     SizeSQL := Length(SQLText);
+    StackSnippetPos := TStack<TExcerptStructure>.Create;
     try
       PosSQL    := 1;
       InQuoted  := False;

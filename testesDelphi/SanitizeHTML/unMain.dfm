@@ -2,7 +2,7 @@ object frmMain: TfrmMain
   Left = 0
   Top = 0
   Caption = 'frmMain'
-  ClientHeight = 465
+  ClientHeight = 480
   ClientWidth = 976
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -250,8 +250,6 @@ object frmMain: TfrmMain
     Width = 138
     Height = 17
     Caption = 'Analisa Tags Permitidas'
-    Checked = True
-    State = cbChecked
     TabOrder = 4
   end
   object cbAnalysisXSSTags: TCheckBox
@@ -273,16 +271,29 @@ object frmMain: TfrmMain
   end
   object cmbExamples: TComboBox
     Left = 489
-    Top = 405
+    Top = 428
     Width = 473
-    Height = 23
-    Style = csDropDownList
+    Height = 22
+    Style = csOwnerDrawFixed
     ItemIndex = 0
     TabOrder = 7
     Text = '01 - Exemplo Geral'
     OnChange = cmbExamplesChange
     Items.Strings = (
-      '01 - Exemplo Geral')
+      '01 - Exemplo Geral'
+      '02 - Conteudo 01'
+      '03 - Conteudo 02'
+      '04 - Conteudo 03')
+  end
+  object cbAnalysisXSSAllContent: TCheckBox
+    Left = 488
+    Top = 404
+    Width = 153
+    Height = 17
+    Caption = 'Analisar Todo Conte'#250'do'
+    Checked = True
+    State = cbChecked
+    TabOrder = 8
   end
   object SynHTMLSyn1: TSynHTMLSyn
     Left = 440

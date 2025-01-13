@@ -14,8 +14,10 @@ uses
 
 type
   TPreventXSS = class
+  const
+    FAKETAGBEGIN = '<faketag ';
+    FAKETAGEND = ' faketagend>';
   private
-    class function DecodeEntities(const AText: String): String;
     class function MatchEvaluator(const Match: TMatch): String;
     class function AdjustNBSPError(const AContent: String; const ADecharacterizesNBSP: Boolean = True): String; static;
     class function NormalizeHTML(const AContent: String): String;
@@ -29,6 +31,8 @@ type
     class function SanitizeTag(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeAll(const AContentHTML: String): String; overload;
     class function SanitizeAll(const AContentBytes: TBytes): TBytes; overload;
+    class function SanitizeForceAll(const AContentHTML: String): String; overload;
+    class function SanitizeForceAll(const AContentBytes: TBytes): TBytes; overload;
   end;
 
 
@@ -45,15 +49,6 @@ begin
   ContentString := Encoding.GetString(AContentBytes);
   SanitizedString := SanitizeHTML(ContentString);
   Exit(Encoding.GetBytes(SanitizedString));
-end;
-
-class function TPreventXSS.DecodeEntities(const AText: String): String;
-var
-  RegEx: TRegEx;
-begin
-  Result := AText;
-  RegEx := TRegEx.Create('&#(x?)([0-9A-Fa-f]+);', [roIgnoreCase]);
-  Result := RegEx.Replace(Result, MatchEvaluator);
 end;
 
 class function TPreventXSS.AdjustNBSPError(const AContent: String; const ADecharacterizesNBSP: Boolean = True): String;
@@ -74,8 +69,8 @@ end;
 
 class function TPreventXSS.IsProbablyHTML(const AContentBytes: TBytes): Boolean;
 var
-  ContentString, SanitizedString: String;
   Encoding: TEncoding;
+  ContentString: String;
 begin
   Encoding := TEncoding.UTF8;
   ContentString := Encoding.GetString(AContentBytes);
@@ -130,7 +125,7 @@ class function TPreventXSS.SanitizeHTML(const AContentHTML: String): String;
 const
   SPECIAL_APDATA_BEGIN = '/*APDATABEGIN*/';
   SPECIAL_APDATA_END = '/*APDATAEND*/';
-  AllowedTags: array[0..15] of string = ('b', 'i', 'u', 'p', 'br', 'img', 'div', 'font', 'span', 'a', 'strong', 'h1', 'h2', 'h3', 'h4', 'h5');
+  AllowedTags: array[0..16] of string = ('b', 'i', 'u', 'p', 'br', 'img', 'div', 'font', 'span', 'a', 'strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'faketag');
   AllowedAttributes: array[0..4] of string = ('href', 'src', 'style', 'face', 'class');
 var
   TagRegex, AttrRegex: TRegEx;
@@ -143,7 +138,6 @@ var
   AttrName, AttrValue, AttrValueApdata: String;
   SanitizedOutput: TStringBuilder;
   IsSafeTag: Boolean;
-  IsNeedEncoding: Boolean;
 
   function GetValueFromTagApdata(const AAttrValueApdata: String): String;
   var
@@ -332,59 +326,35 @@ begin
   Exit(Encoding.GetBytes(SanitizedString));
 end;
 
+class function TPreventXSS.SanitizeForceAll(const AContentBytes: TBytes): TBytes;
+var
+  ContentString, SanitizedString: String;
+  Encoding: TEncoding;
+begin
+  Encoding := TEncoding.UTF8;
+  ContentString := Encoding.GetString(AContentBytes);
+  SanitizedString := TPreventXSS.SanitizeForceAll(ContentString);
+  Exit(Encoding.GetBytes(SanitizedString));
+end;
+
+class function TPreventXSS.SanitizeForceAll(const AContentHTML: String): String;
+
+  function RemoveFakeTag(const AStringContent: String): String;
+  begin
+    Result := AStringContent;
+    if Result.StartsWith(FAKETAGBEGIN) then
+      Result := Result.Substring(FAKETAGBEGIN.Length);
+    if Result.EndsWith(FAKETAGEND) then
+      Result := Result.Substring(0, Result.Length - FAKETAGEND.Length);
+    if Result.StartsWith(Format('%s>', [FAKETAGBEGIN.Trim])) then
+      Result := Result.Substring(FAKETAGBEGIN.Trim.Length + 1);
+  end;
+
+begin
+  if not (TPreventXSS.IsProbablyHTML(AContentHTML)) then
+    Exit(RemoveFakeTag(TPreventXSS.SanitizeAll(Format('%s%s%s', [FAKETAGBEGIN, AContentHTML, FAKETAGEND]))))
+  else
+    Exit(TPreventXSS.SanitizeAll(AContentHTML));
+end;
+
 end.
-
-{
-Testes:
-<div style=background-color:red onclick=alert('XSS')>
-  Conteúdo perigoso
-</div>
-<img src=x onerror=alert("XSS Teste" )>
-<a href="http://exemplo.com" href="javascript:alert('XSS')">Link</a>
-
-<!--<script>Malicious code</script>-->
-<p>Texto após comentário malicioso.</p>
-
-<a href="&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&#101;&#114;&#116;&#40;&#39;XSS&#39;&#41;">Link Malicioso</a>
-
-<foo:bar>Conteúdo com namespace desconhecido</foo:bar>
-
-<a href="javascript:alert('XSS')">Clique aqui</a>
-
-<script>alert('Este é um script malicioso');</script>
-
-<form action="/submit" method="post">
-  <label for="nome">Nome:</label>
-  <input type="text" id="nome" name="nome"><br><br>
-  <input type="submit" value="Enviar">
-</form>
-
-<table>
-  <thead>
-    <tr>
-      <th>Nome</th>
-      <th>Idade</th>
-      <th>Cidade</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Ana</td>
-      <td>28</td>
-      <td>São Paulo</td>
-    </tr>
-    <tr>
-      <td>Bruno</td>
-      <td>35</td>
-      <td>Rio de Janeiro</td>
-    </tr>
-  </tbody>
-</table>
-
-<img src="imagem.jpg" alt="Descrição da imagem">
-
-<a href="http://exemplo.com" href="javascript:alert('XSS')">Link</a>
-
-<div data-info="informação" data-test="testando">Conteúdo com data-attributes</div>
-
-}

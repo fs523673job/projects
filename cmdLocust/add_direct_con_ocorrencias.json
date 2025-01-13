@@ -1,0 +1,112 @@
+{
+    "userName": "system",
+    "pass": "master",
+    "tenantName": "ApData",
+    "transactionId": 16122,
+    "items": [
+        {
+            "clientFieldName": "POC_DtdOcorrencia",
+            "value": "2024-12-12"
+        },
+        {
+            "clientFieldName": "POC_CdiOcorrencia",
+            "value": 50001
+        },
+        {
+            "clientFieldName": "POC_CdiContratado",
+            "value": 1
+        },
+        {
+            "clientFieldName": "POC_D1sConteudoFlexivel",
+            "value": "LOTAR (A4H)"
+        },
+        {
+            "clientFieldName": "POC_D2sConteudoFlexivel",
+            "value": "202411"
+        },
+        {
+            "clientFieldName": "POC_D3sConteudoFlexivel",
+            "value": "010101021051"
+        },
+        {
+            "clientFieldName": "POC_D4sConteudoFlexivel",
+            "value": "Sell Out"
+        },
+        {
+            "clientFieldName": "POC_D5sConteudoFlexivel",
+            "value": "G3"
+        },
+        {
+            "clientFieldName": "POC_D6sConteudoFlexivel",
+            "value": "LOTAR CAPS GEL 5X6 5.0 MG  X 30 /100"
+        },
+        {
+            "clientFieldName": "POC_D7sConteudoFlexivel",
+            "value": "0000063838"
+        },
+        {
+            "clientFieldName": "POC_CdiCodigoFlexivelOcor01",
+            "value": 0
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_1",
+            "value": 64.15
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_2",
+            "value": 36.7744
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_3",
+            "value": 445.1087
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_4",
+            "value": 20354.0000
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_5",
+            "value": 2359.0786
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_6",
+            "value": 28553.7213
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_7",
+            "value": 1305709.1000
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_16",
+            "value": 0.0000
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_17",
+            "value": 0.0000
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_8",
+            "value": 0.0000
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_10",
+            "value": 0.0000
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_11",
+            "value": 0.0000
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_13",
+            "value": 0.0000
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_14",
+            "value": 0.0000
+        },
+        {
+            "clientFieldName": "POC_VlnConteudoFlexivel_15",
+            "value": 0.0000
+        }
+    ]   
+}

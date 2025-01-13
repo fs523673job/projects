@@ -35,7 +35,13 @@ begin
        (Pos(('warning W1002: Symbol ''IncludeTrailingBackslash'' is specific to a platform').ToLower, MessageSanitized) > 0) or
        (Pos(('warning W1002: Symbol ''faArchive'' is specific to a platform').ToLower, MessageSanitized) > 0) or
        (Pos(('warning W1002: Symbol ''Create'' is specific to a platform').ToLower, MessageSanitized) > 0) or
-       (Pos(('warning W1029: Duplicate constructor').ToLower, MessageSanitized) > 0)
+       (Pos(('warning W1029: Duplicate constructor').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''FileMajorNumber'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''FileMinorNumber'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''FileRelease'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''FileBuild'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''StringPatchSplit'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0) or
+       (Pos(('Variable ''Conn'' is declared but never used in ''TRPCServer.Start''').ToLower, MessageSanitized) > 0)
     ) then
    begin
      Exit(True);
