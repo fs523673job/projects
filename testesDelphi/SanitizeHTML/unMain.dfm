@@ -295,6 +295,14 @@ object frmMain: TfrmMain
     State = cbChecked
     TabOrder = 8
   end
+  object chAnalysisXSSLink: TCheckBox
+    Left = 663
+    Top = 359
+    Width = 186
+    Height = 17
+    Caption = 'Analisar Conte'#250'do de um Link'
+    TabOrder = 9
+  end
   object SynHTMLSyn1: TSynHTMLSyn
     Left = 440
     Top = 120

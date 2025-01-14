@@ -34,6 +34,7 @@ type
     btnProvavelHTML: TButton;
     cmbExamples: TComboBox;
     cbAnalysisXSSAllContent: TCheckBox;
+    chAnalysisXSSLink: TCheckBox;
     procedure btnSanitizeHTMLClick(Sender: TObject);
     procedure btClearAllClick(Sender: TObject);
     procedure btnProvavelHTMLClick(Sender: TObject);
@@ -80,6 +81,8 @@ begin
     seOutput.Text := TPreventXSS.SanitizeTag(seInput.Lines.Text)
   else if cbAnalysisXSSAllContent.Checked then
     seOutput.Text := TPreventXSS.SanitizeForceAll(seInput.Lines.Text)
+  else if chAnalysisXSSLink.Checked then
+    seOutput.Text := TPreventXSS.SanitizeLink(seInput.Lines.Text)
   else
     seOutput.Text := TPreventXSS.SanitizeHTML(seInput.Lines.Text);
 end;
