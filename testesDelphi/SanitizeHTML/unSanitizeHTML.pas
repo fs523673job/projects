@@ -36,6 +36,7 @@ type
     class function SanitizeForceAll(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeLink(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeLink(const AContentHTML: String): String; overload;
+    class function SanitizeSimpleLink(const ALinkText: String): String; static;
   end;
 
 
@@ -427,5 +428,14 @@ begin
 
   Exit(False);
 end;
+
+class function TPreventXSS.SanitizeSimpleLink(const ALinkText: String): String;
+begin
+  if ALinkText.IsEmpty then
+    Exit(EmptyStr)
+  else
+    Exit(ALinkText.Replace('"', ' ', [rfReplaceall, rfIgnoreCase]).Split([' '])[0]);
+end;
+
 
 end.
