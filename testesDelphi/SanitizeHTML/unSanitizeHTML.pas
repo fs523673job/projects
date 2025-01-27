@@ -34,8 +34,8 @@ type
     class function SanitizeAll(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeForceAll(const AContentHTML: String): String; overload;
     class function SanitizeForceAll(const AContentBytes: TBytes): TBytes; overload;
-    class function SanitizeLink(const AContentBytes: TBytes): TBytes; overload;
-    class function SanitizeLink(const AContentHTML: String): String; overload;
+    class function SanitizeTexto(const AContentBytes: TBytes): TBytes; overload;
+    class function SanitizeTexto(const AContentHTML: String): String; overload;
     class function SanitizeSimpleLink(const ALinkText: String): String; static;
   end;
 
@@ -130,7 +130,7 @@ const
   SPECIAL_APDATA_BEGIN = '/*APDATABEGIN*/';
   SPECIAL_APDATA_END = '/*APDATAEND*/';
   AllowedTags: array[0..16] of string = ('b', 'i', 'u', 'p', 'br', 'img', 'div', 'font', 'span', 'a', 'strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'faketag');
-  AllowedAttributes: array[0..4] of string = ('href', 'src', 'style', 'face', 'class');
+  AllowedAttributes: array[0..5] of string = ('href', 'src', 'style', 'face', 'class', 'hrefbegin');
 var
   TagRegex, AttrRegex: TRegEx;
   Matches: TMatchCollection;
@@ -243,14 +243,14 @@ begin
   end;
 end;
 
-class function TPreventXSS.SanitizeLink(const AContentBytes: TBytes): TBytes;
+class function TPreventXSS.SanitizeTexto(const AContentBytes: TBytes): TBytes;
 var
   ContentString, SanitizedString: String;
   Encoding: TEncoding;
 begin
   Encoding := TEncoding.UTF8;
   ContentString := Encoding.GetString(AContentBytes);
-  SanitizedString := TPreventXSS.SanitizeLink(ContentString);
+  SanitizedString := TPreventXSS.SanitizeTexto(ContentString);
   Exit(Encoding.GetBytes(SanitizedString));
 end;
 
@@ -372,9 +372,9 @@ begin
     Exit(TPreventXSS.SanitizeAll(AContentHTML));
 end;
 
-class function TPreventXSS.SanitizeLink(const AContentHTML: String): String;
+class function TPreventXSS.SanitizeTexto(const AContentHTML: String): String;
 const
-  HREFTAGBEGIN = 'href="';
+  HREFTAGBEGIN = 'hrefbegin="';
   HREFTAGEND = '" hrefend';
   ENDTAG = '">';
 
@@ -390,7 +390,7 @@ const
     if Result.EndsWith(Format('">', [ENDTAG.Trim])) then
       Result := Result.Substring(0, Result.Length - ENDTAG.Length);
     if ACleanHref then
-      Result := Result.Replace('href="', '', [rfReplaceAll, rfIgnoreCase]);
+      Result := Result.Replace(HREFTAGBEGIN, '', [rfReplaceAll, rfIgnoreCase]);
   end;
 
 begin

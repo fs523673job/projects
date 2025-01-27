@@ -283,7 +283,8 @@ object frmMain: TfrmMain
       '01 - Exemplo Geral'
       '02 - Conteudo 01'
       '03 - Conteudo 02'
-      '04 - Conteudo 03')
+      '04 - Conteudo 03'
+      '05 - Conteudo 04')
   end
   object cbAnalysisXSSAllContent: TCheckBox
     Left = 488
@@ -295,12 +296,12 @@ object frmMain: TfrmMain
     State = cbChecked
     TabOrder = 8
   end
-  object chAnalysisXSSLink: TCheckBox
+  object chAnalysisXSSTexto: TCheckBox
     Left = 663
     Top = 359
     Width = 186
     Height = 17
-    Caption = 'Analisar Conte'#250'do de um Link'
+    Caption = 'Analisar Conte'#250'do de um Texto'
     TabOrder = 9
   end
   object SynHTMLSyn1: TSynHTMLSyn

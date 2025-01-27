@@ -92,6 +92,7 @@ const
   GENERAL_TEST_CONTENT_01 = 'javascript:alert(document.domain);/*" onload="alert(document.domain)';
   GENERAL_TEST_CONTENT_02 = 'teste" onmouseover="alert(1)" a ';
   GENERAL_TEST_CONTENT_03 = 'testeXPTO" sTyLe="width:1px; filter:glow" onfilterchange="javascript:alert(1)" onmouseover="alert(2)" onload="alert(3)"  autofocus onfocus="alert(4)" ';
+  GENERAL_TEST_CONTENT_04 = 'Empregado Teste Da Silva sTyLe="width:1px; filter:glow" onfilterchange="javascript:alert(1)" onmouseover="alert(2)" onload="alert(3)"  autofocus onfocus="alert(4)" ';
 
 implementation
 
