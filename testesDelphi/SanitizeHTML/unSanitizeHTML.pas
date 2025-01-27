@@ -37,6 +37,8 @@ type
     class function SanitizeTexto(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeTexto(const AContentHTML: String): String; overload;
     class function SanitizeSimpleLink(const ALinkText: String): String; static;
+    class function SanitizeBlackList(const AContent: String; const APatterns: TArray<String>): String; overload; static;
+    class function SanitizeBlackList(const AContent: String): String; overload;
   end;
 
 
@@ -325,6 +327,65 @@ begin
   Exit(Encoding.GetBytes(SanitizedString));
 end;
 
+class function TPreventXSS.SanitizeBlackList(const AContent: String): String;
+var
+  BlackList: TArray<String>;
+begin
+ BlackList := [
+    '<script.*?>.*?</script>',
+    '<iframe.*?>.*?</iframe>',
+    'onerror\s*=',
+    'onclick\s*=',
+    'alert\s*\(',
+    'onload\s*=',
+    'onmouseover\s*=',
+    'onfocus\s*=',
+    'onblur\s*=',
+    'onchange\s*=',
+    'oninput\s*=',
+    'onfilterchange\s*=',
+    'eval\s*\(',
+    'setTimeout\s*\(',
+    'setInterval\s*\(',
+    'document\.write',
+    'autofocus',
+    'innerHTML',
+    'outerHTML',
+    'window',
+    'javascript',
+    'console',
+    'location',
+    'history',
+    'xmlhttprequest',
+    'fetch',
+    'document',
+    'cookie',
+    'localStorage',
+    'sessionStorage',
+    'navigator',
+    'parent',
+    'self',
+    'top'
+  ];
+
+  Exit(TPreventXSS.SanitizeBlackList(AContent, BlackList));
+end;
+
+class function TPreventXSS.SanitizeBlackList(const AContent: String; const APatterns: TArray<String>): String;
+var
+  Pattern: String;
+  Regex: TRegEx;
+  Sanitized: String;
+begin
+  Sanitized := AContent;
+  for Pattern in APatterns do
+  begin
+    Regex := TRegEx.Create(Pattern, [roIgnoreCase, roMultiLine]);
+    Sanitized := Regex.Replace(Sanitized, EmptyStr);
+  end;
+  Exit(Sanitized);
+end;
+
 class function TPreventXSS.SanitizeAll(const AContentHTML: String): String;
 begin
   Exit(TPreventXSS.SanitizeHTML(TPreventXSS.SanitizeTag(AContentHTML)));
@@ -415,7 +476,7 @@ var
   c: Integer;
 begin
   DecodedText := TNetEncoding.HTML.Decode(AContent);
-  SuspiciousPatterns := ['<script', 'onerror\s*=', 'onclick\s*=', 'onload\s*=', 'onerror\s*=', 'onfocus\s*=', 'onmouseover\s*=', 'javascript'];
+  SuspiciousPatterns := ['<script', 'onerror\s*=', 'onclick\s*=', 'onload\s*=', 'onerror\s*=', 'onfocus\s*=', 'onmouseover\s*=', 'javascript' , 'alert'];
   SetLength(RegexList, Length(SuspiciousPatterns));
   for c := Low(RegexList) to High(RegexList) do
     RegexList[c] := TRegEx.Create(SuspiciousPatterns[c], [roIgnoreCase, roMultiLine]);
