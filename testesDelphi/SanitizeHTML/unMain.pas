@@ -40,7 +40,9 @@ type
     procedure btClearAllClick(Sender: TObject);
     procedure btnProvavelHTMLClick(Sender: TObject);
     procedure cmbExamplesChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
+    procedure AddItensCmb;
     { Private declarations }
   public
     { Public declarations }
@@ -52,6 +54,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrmMain.FormCreate(Sender: TObject);
+begin
+  AddItensCmb;
+end;
 
 procedure TfrmMain.btClearAllClick(Sender: TObject);
 begin
@@ -99,7 +106,19 @@ begin
     2 : seInput.Lines.Text := GENERAL_TEST_CONTENT_02;
     3 : seInput.Lines.Text := GENERAL_TEST_CONTENT_03;
     4 : seInput.Lines.Text := GENERAL_TEST_CONTENT_04;
+    5 : seInput.Lines.Text := GENERAL_TEST_CONTENT_05;
   end;
+end;
+
+procedure TfrmMain.AddItensCmb;
+begin
+  cmbExamples.Items.Clear;
+  cmbExamples.Items.Add('01 - Exemplo Geral');
+  cmbExamples.Items.Add('02 - Conteudo 01');
+  cmbExamples.Items.Add('03 - Conteudo 02');
+  cmbExamples.Items.Add('04 - Conteudo 03');
+  cmbExamples.Items.Add('05 - Conteudo 04');
+  cmbExamples.Items.Add('06 - Conteudo 05');
 end;
 
 end.

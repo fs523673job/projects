@@ -24,7 +24,6 @@ type
   public
     class function IsProbablyHTML(const AContent: String): Boolean; overload; static;
     class function IsProbablyHTML(const AContentBytes: TBytes): Boolean; overload; static;
-    class function IsProbalyXSS(const AContent: String): Boolean;
     class function NeedsDecoding(const AContentHTML: String): Boolean; static;
     class function SanitizeHTML(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeHTML(const AContentHTML: String): String; overload;
@@ -35,10 +34,12 @@ type
     class function SanitizeForceAll(const AContentHTML: String): String; overload;
     class function SanitizeForceAll(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeTexto(const AContentBytes: TBytes): TBytes; overload;
-    class function SanitizeTexto(const AContentHTML: String): String; overload;
+    class function SanitizeTexto(const AContent: String): String; overload;
     class function SanitizeSimpleLink(const ALinkText: String): String; static;
+    class function PatternBlackList: TArray<String>;
     class function SanitizeBlackList(const AContent: String; const APatterns: TArray<String>): String; overload; static;
     class function SanitizeBlackList(const AContent: String): String; overload;
+    class function PossiblyHasXSS(const AContent: String): Boolean; static;
   end;
 
 
@@ -125,6 +126,46 @@ begin
   RegEx := TRegEx.Create('<(?!/?[a-zA-Z0-9])', [roIgnoreCase]);
   Normalized := RegEx.Replace(Normalized, '');
   Exit(Normalized);
+end;
+
+class function TPreventXSS.PatternBlackList: TArray<String>;
+begin
+ Result := [
+    '<script.*?>.*?</script>',
+    '<iframe.*?>.*?</iframe>',
+    'onerror\s*=',
+    'onclick\s*=',
+    'alert\s*\(',
+    'onload\s*=',
+    'onmouseover\s*=',
+    'onfocus\s*=',
+    'onblur\s*=',
+    'onchange\s*=',
+    'oninput\s*=',
+    'onfilterchange\s*=',
+    'eval\s*\(',
+    'setTimeout\s*\(',
+    'setInterval\s*\(',
+    'document\.write',
+    'autofocus',
+    'innerHTML',
+    'outerHTML',
+    'window',
+    'javascript',
+    'console',
+    'location',
+    'history',
+    'xmlhttprequest',
+    'fetch',
+    'document',
+    'cookie',
+    'localStorage',
+    'sessionStorage',
+    'navigator',
+    'parent',
+    'self',
+    'top'
+  ];
 end;
 
 class function TPreventXSS.SanitizeHTML(const AContentHTML: String): String;
@@ -328,47 +369,8 @@ begin
 end;
 
 class function TPreventXSS.SanitizeBlackList(const AContent: String): String;
-var
-  BlackList: TArray<String>;
 begin
- BlackList := [
-    '<script.*?>.*?</script>',
-    '<iframe.*?>.*?</iframe>',
-    'onerror\s*=',
-    'onclick\s*=',
-    'alert\s*\(',
-    'onload\s*=',
-    'onmouseover\s*=',
-    'onfocus\s*=',
-    'onblur\s*=',
-    'onchange\s*=',
-    'oninput\s*=',
-    'onfilterchange\s*=',
-    'eval\s*\(',
-    'setTimeout\s*\(',
-    'setInterval\s*\(',
-    'document\.write',
-    'autofocus',
-    'innerHTML',
-    'outerHTML',
-    'window',
-    'javascript',
-    'console',
-    'location',
-    'history',
-    'xmlhttprequest',
-    'fetch',
-    'document',
-    'cookie',
-    'localStorage',
-    'sessionStorage',
-    'navigator',
-    'parent',
-    'self',
-    'top'
-  ];
-
-  Exit(TPreventXSS.SanitizeBlackList(AContent, BlackList));
+  Exit(TPreventXSS.SanitizeBlackList(AContent, PatternBlackList));
 end;
 
 class function TPreventXSS.SanitizeBlackList(const AContent: String; const APatterns: TArray<String>): String;
@@ -377,7 +379,7 @@ var
   Regex: TRegEx;
   Sanitized: String;
 begin
-  Sanitized := AContent;
+  Sanitized := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.AdjustNBSPError(TNetEncoding.URL.Decode(AContent))));
   for Pattern in APatterns do
   begin
     Regex := TRegEx.Create(Pattern, [roIgnoreCase, roMultiLine]);
@@ -433,11 +435,14 @@ begin
     Exit(TPreventXSS.SanitizeAll(AContentHTML));
 end;
 
-class function TPreventXSS.SanitizeTexto(const AContentHTML: String): String;
+class function TPreventXSS.SanitizeTexto(const AContent: String): String;
 const
   HREFTAGBEGIN = 'hrefbegin="';
   HREFTAGEND = '" hrefend';
   ENDTAG = '">';
+
+var
+  Normalized: String;
 
   function RemoveFakeTag(const AStringContent: String; ACleanHref: Boolean = False): String;
   begin
@@ -455,40 +460,39 @@ const
   end;
 
 begin
-  if not (TPreventXSS.IsProbablyHTML(AContentHTML)) then
+  Normalized := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.AdjustNBSPError(TNetEncoding.URL.Decode(AContent))));
+  if not (TPreventXSS.IsProbablyHTML(Normalized)) then
   begin
-    if (Pos(HREFTAGBEGIN, AContentHTML.ToLower) = 0) then
-      Exit(RemoveFakeTag(TPreventXSS.SanitizeAll(Format('%s %s%s%s %s', [FAKETAGBEGIN, HREFTAGBEGIN, AContentHTML, HREFTAGEND, FAKETAGEND])), True))
+    if (Pos(HREFTAGBEGIN, Normalized.ToLower) = 0) then
+      Exit(RemoveFakeTag(TPreventXSS.SanitizeAll(Format('%s %s%s%s %s', [FAKETAGBEGIN, HREFTAGBEGIN, Normalized, HREFTAGEND, FAKETAGEND])), True))
     else
-      Exit(RemoveFakeTag(TPreventXSS.SanitizeAll(Format('%s%s%s', [FAKETAGBEGIN, AContentHTML, FAKETAGEND]))));
+      Exit(RemoveFakeTag(TPreventXSS.SanitizeAll(Format('%s%s%s', [FAKETAGBEGIN, Normalized, FAKETAGEND]))));
   end
   else
-    Exit(TPreventXSS.SanitizeAll(AContentHTML));
+    Exit(TPreventXSS.SanitizeAll(Normalized));
 end;
 
-
-class function TPreventXSS.IsProbalyXSS(const AContent: String): Boolean;
+class function TPreventXSS.PossiblyHasXSS(const AContent: String): Boolean;
 var
-  DecodedText: string;
-  RegexList: TArray<TRegEx>;
-  SuspiciousPatterns: array of string;
-  RegEx: TRegEx;
-  c: Integer;
+  Pattern: String;
+  Regex: TRegEx;
+  Normalized: String;
 begin
-  DecodedText := TNetEncoding.HTML.Decode(AContent);
-  SuspiciousPatterns := ['<script', 'onerror\s*=', 'onclick\s*=', 'onload\s*=', 'onerror\s*=', 'onfocus\s*=', 'onmouseover\s*=', 'javascript' , 'alert'];
-  SetLength(RegexList, Length(SuspiciousPatterns));
-  for c := Low(RegexList) to High(RegexList) do
-    RegexList[c] := TRegEx.Create(SuspiciousPatterns[c], [roIgnoreCase, roMultiLine]);
+  if AContent.Trim.IsEmpty then
+    Exit(False);
 
-  for RegEx in RegexList do
+  Normalized := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.AdjustNBSPError(TNetEncoding.URL.Decode(AContent))));
+
+  for Pattern in PatternBlackList do
   begin
-    if RegEx.IsMatch(DecodedText) then
+    Regex := TRegEx.Create(Pattern, [roIgnoreCase, roSingleLine]);
+    if Regex.IsMatch(Normalized) then
       Exit(True);
   end;
 
   Exit(False);
 end;
+
 
 class function TPreventXSS.SanitizeSimpleLink(const ALinkText: String): String;
 begin

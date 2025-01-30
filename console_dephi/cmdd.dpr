@@ -141,17 +141,18 @@ var
     Console.WriteColorLine('* 16 - ApADIntegratorWS                                               *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 17 - ApDeveloper                                                    *', [TConsoleColor.Blue]);
     Console.WriteColorLine('* 18 - RelogioVirtual                                                 *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 19 - Generate Messages [compile messages]                           *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 20 - Build Sass [compile sass]                                      *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 21 - Pack Integracao [pintegration32]                               *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 22 - Pack Integracao [pintegration64]                               *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 23 - Pack Servidores [pservers32]                                   *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 24 - Pack Servidores [pservers64]                                   *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 25 - Pack Dlls [pdlls32]                                            *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 26 - Pack Dlls [pdlls64]                                            *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 27 - Pack Clients [pclients]                                        *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 28 - Pack Tools [ptools]                                            *', [TConsoleColor.Blue]);
-    Console.WriteColorLine('* 29 - All [All32, All64]                                             *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 19 - TestParser                                                     *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 20 - Generate Messages [compile messages]                           *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 21 - Build Sass [compile sass]                                      *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 22 - Pack Integracao [pintegration32]                               *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 23 - Pack Integracao [pintegration64]                               *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 24 - Pack Servidores [pservers32]                                   *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 25 - Pack Servidores [pservers64]                                   *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 26 - Pack Dlls [pdlls32]                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 27 - Pack Dlls [pdlls64]                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 28 - Pack Clients [pclients]                                        *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 29 - Pack Tools [ptools]                                            *', [TConsoleColor.Blue]);
+    Console.WriteColorLine('* 30 - All [All32, All64]                                             *', [TConsoleColor.Blue]);
     Console.WriteColorLine('***********************************************************************', [TConsoleColor.Red]);
   end;
 
@@ -333,6 +334,41 @@ var
         end;
       19 :
         begin
+          strListMsg := TStringList.Create;
+          try
+            for var c := Low(CompileBuild) to High(CompileBuild) do
+            begin
+              if (CompileBuild[c].dirApp.Equals('TesteParser')) then
+              begin
+                strListMsg.Add(
+                  ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\compile.bat',
+                        Format('%s %s %s %s %s %s %s %s %s %s %s',
+                                [
+                                   versionDelphi,
+                                   IfThen(CompileBuild[c].typeBuild.IsEmpty, ASubCommand, CompileBuild[c].typeBuild),
+                                   dirDelphi,
+                                   CompileBuild[c].dirApp,
+                                   CompileBuild[c].arquitetura,
+                                   CompileBuild[c].appName,
+                                   CompileBuild[c].aplicacoes,
+                                   CompileBuild[c].bin,
+                                   CompileBuild[c].source,
+                                   CompileBuild[c].lib,
+                                   CompileBuild[c].addEureka
+                                ]
+                              ),
+                        Format('%s %s - %s', [CompileBuild[c].appName, CompileBuild[c].arquitetura, versionDelphi.ToUpper])
+                 ));
+              end;
+            end;
+          finally
+            strListMsg.Free;
+          end;
+
+          Result := 'compile Tools [TestParser, GenVersionRes, ApIdControl]';
+        end;
+      20 :
+        begin
           var OriginalContent := TStringList.Create;
           try
             if not FileExists(Format('%s\ApIdControl.exe',[DirectoryRepository])) then
@@ -356,11 +392,11 @@ var
             OriginalContent.Free;
           end;
         end;
-      20 :
+      21 :
         begin
           Result := ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Site\buildSass.bat', [DirectoryRepository]), '', 'GenerateSass');
         end;
-      21 :
+      22 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -373,9 +409,9 @@ var
             strListMsg.Free;
           end;
 
-          Result := 'compile pack 19';
+          Result := 'compile pack 22';
         end;
-      22 :
+      23 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -388,9 +424,9 @@ var
             strListMsg.Free;
           end;
 
-          Result := 'compile pack 20';
+          Result := 'compile pack 23';
         end;
-      23 :
+      24 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -404,9 +440,9 @@ var
             strListMsg.Free;
           end;
 
-          Result := 'compile pack 21';
+          Result := 'compile pack 24';
         end;
-      24 :
+      25 :
          begin
           strListMsg := TStringList.Create;
           try
@@ -420,9 +456,9 @@ var
             strListMsg.Free;
           end;
 
-          Result := 'compile pack 22';
+          Result := 'compile pack 25';
         end;
-      25 :
+      26 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -434,9 +470,9 @@ var
             strListMsg.Free;
           end;
 
-          Result := 'compile pack 23';
+          Result := 'compile pack 26';
         end;
-      26 :
+      27 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -448,9 +484,9 @@ var
             strListMsg.Free;
           end;
 
-          Result := 'compile pack 24';
+          Result := 'compile pack 27';
         end;
-      27 :
+      28 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -465,33 +501,36 @@ var
             strListMsg.Free;
           end;
 
-          Result := 'compile pack 25';
+          Result := 'compile pack 28';
         end;
-      28 :
+      29 :
         begin
           strListMsg := TStringList.Create;
           try
             for var c := Low(CompileBuild) to High(CompileBuild) do
             begin
-              strListMsg.Add(
-                ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\compile.bat',
-                      Format('%s %s %s %s %s %s %s %s %s %s %s',
-                              [
-                                 versionDelphi,
-                                 IfThen(CompileBuild[c].typeBuild.IsEmpty, ASubCommand, CompileBuild[c].typeBuild),
-                                 dirDelphi,
-                                 CompileBuild[c].dirApp,
-                                 CompileBuild[c].arquitetura,
-                                 CompileBuild[c].appName,
-                                 CompileBuild[c].aplicacoes,
-                                 CompileBuild[c].bin,
-                                 CompileBuild[c].source,
-                                 CompileBuild[c].lib,
-                                 CompileBuild[c].addEureka
-                              ]
-                            ),
-                      Format('%s %s - %s', [CompileBuild[c].appName, CompileBuild[c].arquitetura, versionDelphi.ToUpper])
-               ));
+              if CompileBuild[c].dirApp.Equals('GenVersionRes') or CompileBuild[c].dirApp.Equals('ApIdControl') then
+              begin
+                strListMsg.Add(
+                  ExecuteInternal('C:\github\fs523673job\projects\cmdBAT\compile.bat',
+                        Format('%s %s %s %s %s %s %s %s %s %s %s',
+                                [
+                                   versionDelphi,
+                                   IfThen(CompileBuild[c].typeBuild.IsEmpty, ASubCommand, CompileBuild[c].typeBuild),
+                                   dirDelphi,
+                                   CompileBuild[c].dirApp,
+                                   CompileBuild[c].arquitetura,
+                                   CompileBuild[c].appName,
+                                   CompileBuild[c].aplicacoes,
+                                   CompileBuild[c].bin,
+                                   CompileBuild[c].source,
+                                   CompileBuild[c].lib,
+                                   CompileBuild[c].addEureka
+                                ]
+                              ),
+                        Format('%s %s - %s', [CompileBuild[c].appName, CompileBuild[c].arquitetura, versionDelphi.ToUpper])
+                 ));
+              end;
             end;
           finally
             strListMsg.Free;
@@ -499,7 +538,7 @@ var
 
           Result := 'compile Tools [TestParser, GenVersionRes, ApIdControl]';
         end;
-      29 :
+      30 :
         begin
           strListMsg := TStringList.Create;
           try
@@ -530,36 +569,7 @@ var
             strListMsg.Free;
           end;
 
-          Result := 'compile pack 26';
-        end;
-
-      30 :
-        begin
-          strListMsg := TStringList.Create;
-          try
-            strListMsg.Add(ExecuteCommand(19, ASubCommand));
-            strListMsg.Add(ExecuteCommand(20, ASubCommand));
-
-            strListMsg.Add(ExecuteCommand(01, ASubCommand));
-            strListMsg.Add(ExecuteCommand(03, ASubCommand));
-            strListMsg.Add(ExecuteCommand(04, ASubCommand));
-            strListMsg.Add(ExecuteCommand(05, ASubCommand));
-            strListMsg.Add(ExecuteCommand(07, ASubCommand));
-            strListMsg.Add(ExecuteCommand(08, ASubCommand));
-            strListMsg.Add(ExecuteCommand(10, ASubCommand));
-            strListMsg.Add(ExecuteCommand(12, ASubCommand));
-            strListMsg.Add(ExecuteCommand(14, ASubCommand));
-            strListMsg.Add(ExecuteCommand(15, ASubCommand));
-            strListMsg.Add(ExecuteCommand(16, ASubCommand));
-            strListMsg.Add(ExecuteCommand(17, ASubCommand));
-            strListMsg.Add(ExecuteCommand(18, ASubCommand));
-
-            PrintResumeComp(strListMsg);
-          finally
-            strListMsg.Free;
-          end;
-
-          Result := 'compile pack 27';
+          Result := 'compile pack 30';
         end;
 
       31 :
@@ -569,6 +579,35 @@ var
             strListMsg.Add(ExecuteCommand(19, ASubCommand));
             strListMsg.Add(ExecuteCommand(20, ASubCommand));
 
+            strListMsg.Add(ExecuteCommand(01, ASubCommand));
+            strListMsg.Add(ExecuteCommand(03, ASubCommand));
+            strListMsg.Add(ExecuteCommand(04, ASubCommand));
+            strListMsg.Add(ExecuteCommand(05, ASubCommand));
+            strListMsg.Add(ExecuteCommand(07, ASubCommand));
+            strListMsg.Add(ExecuteCommand(08, ASubCommand));
+            strListMsg.Add(ExecuteCommand(10, ASubCommand));
+            strListMsg.Add(ExecuteCommand(12, ASubCommand));
+            strListMsg.Add(ExecuteCommand(14, ASubCommand));
+            strListMsg.Add(ExecuteCommand(15, ASubCommand));
+            strListMsg.Add(ExecuteCommand(16, ASubCommand));
+            strListMsg.Add(ExecuteCommand(17, ASubCommand));
+            strListMsg.Add(ExecuteCommand(18, ASubCommand));
+
+            PrintResumeComp(strListMsg);
+          finally
+            strListMsg.Free;
+          end;
+
+          Result := 'compile pack 31';
+        end;
+
+      32 :
+        begin
+          strListMsg := TStringList.Create;
+          try
+            strListMsg.Add(ExecuteCommand(19, ASubCommand));
+            strListMsg.Add(ExecuteCommand(20, ASubCommand));
+
             strListMsg.Add(ExecuteCommand(02, ASubCommand));
             strListMsg.Add(ExecuteCommand(03, ASubCommand));
             strListMsg.Add(ExecuteCommand(04, ASubCommand));
@@ -589,7 +628,7 @@ var
             strListMsg.Free;
           end;
 
-          Result := 'compile pack 28';
+          Result := 'compile pack 32';
         end;
       else
         Console.WriteColor('not executed!', [TConsoleColor.Red]);
