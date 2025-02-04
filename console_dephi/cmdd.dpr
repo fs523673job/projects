@@ -369,6 +369,7 @@ var
         end;
       20 :
         begin
+          var replaceSrvDevel: Boolean := False;
           var OriginalContent := TStringList.Create;
           try
             if not FileExists(Format('%s\ApIdControl.exe',[DirectoryRepository])) then
@@ -381,14 +382,18 @@ var
 
             OriginalContent.LoadFromFile(Format('%s\GenerateMessages.bat', [DirectoryRepository]));
 
-            TFile.WriteAllText(Format('%s\GenerateMessages.bat', [DirectoryRepository]), OriginalContent.Text.Replace('\\srvdevel\', '\\srvdevel1\').TrimRight);
+            replaceSrvDevel := Pos('\\srvdevel\dynamicSource', OriginalContent.Text) > 0;
+
+            if (replaceSrvDevel) then
+              TFile.WriteAllText(Format('%s\GenerateMessages.bat', [DirectoryRepository]), OriginalContent.Text.Replace('\\srvdevel\', '\\srvdevel1\').TrimRight);
 
             Result := ExecuteInternal(Format('%s\GenerateMessages.bat', [DirectoryRepository]), '', 'GenerateMessages');
             if TFile.Exists(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository])) then
               Result := Result + #13#10 + 'AtualizaPath ' +  (ExecuteInternal(Format('%\Aplicacoes\ApServer\Source\atualiza_patch.bat', [DirectoryRepository]), '', 'AtualizaPath'));
           finally
             OriginalContent.LoadFromFile(Format('%s\GenerateMessages.bat', [DirectoryRepository]));
-            TFile.WriteAllText(Format('%s\GenerateMessages.bat', [DirectoryRepository]), OriginalContent.Text.Replace('\\srvdevel1\', '\\srvdevel\').TrimRight);
+            if (replaceSrvDevel) then
+              TFile.WriteAllText(Format('%s\GenerateMessages.bat', [DirectoryRepository]), OriginalContent.Text.Replace('\\srvdevel1\', '\\srvdevel\').TrimRight);
             OriginalContent.Free;
           end;
         end;
@@ -677,32 +682,34 @@ var
         Result := 17
       else if (AnsiSameText(ANameSystem, 'RelogioVirtual')) then
         Result := 18
-      else if (AnsiSameText(ANameSystem, 'Messages')) then
+      else if (AnsiSameText(ANameSystem, 'TestParser')) then
         Result := 19
-      else if (AnsiSameText(ANameSystem, 'Sass')) then
+      else if (AnsiSameText(ANameSystem, 'Messages')) then
         Result := 20
-      else if (AnsiSameText(ANameSystem, 'pintegration32')) then
+      else if (AnsiSameText(ANameSystem, 'Sass')) then
         Result := 21
-      else if (AnsiSameText(ANameSystem, 'pintegration64')) then
+      else if (AnsiSameText(ANameSystem, 'pintegration32')) then
         Result := 22
-      else if (AnsiSameText(ANameSystem, 'pservers32')) then
+      else if (AnsiSameText(ANameSystem, 'pintegration64')) then
         Result := 23
-      else if (AnsiSameText(ANameSystem, 'pservers64')) then
+      else if (AnsiSameText(ANameSystem, 'pservers32')) then
         Result := 24
-      else if (AnsiSameText(ANameSystem, 'pdlls32')) then
+      else if (AnsiSameText(ANameSystem, 'pservers64')) then
         Result := 25
-      else if (AnsiSameText(ANameSystem, 'pdlls64')) then
+      else if (AnsiSameText(ANameSystem, 'pdlls32')) then
         Result := 26
-      else if (AnsiSameText(ANameSystem, 'pclients')) then
+      else if (AnsiSameText(ANameSystem, 'pdlls64')) then
         Result := 27
-      else if (AnsiSameText(ANameSystem, 'ptools')) then
+      else if (AnsiSameText(ANameSystem, 'pclients')) then
         Result := 28
-      else if (AnsiSameText(ANameSystem, 'All')) then
+      else if (AnsiSameText(ANameSystem, 'ptools')) then
         Result := 29
-      else if (AnsiSameText(ANameSystem, 'All32')) then
+      else if (AnsiSameText(ANameSystem, 'All')) then
         Result := 30
-      else if (AnsiSameText(ANameSystem, 'All64')) then
+      else if (AnsiSameText(ANameSystem, 'All32')) then
         Result := 31
+      else if (AnsiSameText(ANameSystem, 'All64')) then
+        Result := 32
     end;
   end;
 

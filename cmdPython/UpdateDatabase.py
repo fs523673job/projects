@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 from tqdm import tqdm
+from datetime import datetime
 
 # Constants for SQL server details and file paths
 SERVER = "APDNSON0220"
@@ -24,6 +25,16 @@ def delete_file_if_exists(path):
     if os.path.exists(path):
         os.remove(path)
         print(f"Arquivo deletado: {path}")
+
+def rename_file_if_exists(path):
+    if os.path.exists(path):
+        directory, filename = os.path.split(path)
+        name, extension = os.path.splitext(filename)
+        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+        new_filename = f"{name}_{current_time}{extension}"
+        new_path = os.path.join(directory, new_filename)
+        os.rename(path, new_path)
+        print(f"Arquivo renomeado para: {new_path}")
 
 def copy_file_with_progress(src, dest):
     # Make sure the source file exists before trying to copy
@@ -60,6 +71,7 @@ def main():
     # Start process
     print(f"Database a ser restaurado: {database}")
     if copiar_arquivo == "yes":
+        rename_file_if_exists(os.path.join(BASES_LOCAL_PATH, database))
         delete_file_if_exists(os.path.join(BASES_LOCAL_PATH, database))
     delete_file_if_exists(os.path.join(BASES_LOCAL_PATH, "logData.txt"))
 
