@@ -5,7 +5,7 @@ set "VRS_DEFAULT=Apdata_X64"
 set "APP_DEFAULT=ApServer"
 set "ARQ_DEFAULT=Win64"
 set "BLD_DEFAULT=Debug"
-set "PRN_DEFAULT=localhost /start /enablelog /integration_timeout 130"
+set "PRN_DEFAULT=localhost /start /enablelog /UseHTTPS /integration_timeout 130"
 
 if not "%~2"=="" (
     set "VRS_DEFAULT=%~1"

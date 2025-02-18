@@ -128,10 +128,10 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsPars'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd = 10031', 'BBP_CdiModeloIntegracaoCmdCpo,BBP_CdiModeloIntegracaoCmd,BBP_DssCampo_Destino,BBP_DssCampo_Origem,BBP_CdiTipoCampo'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd = 10026'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao = 10033'
-exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 20069', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL,SQL_D1bComentarios'
+exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10022', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL,SQL_D1bComentarios'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLsGrupos'
 exec sp_Simple_Generate_Inserts_From_Selects 'Consultas', 'ACS_CdiConsulta = 10018'
-exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida in (1012)', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
+exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida in (1013)', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
 exec sp_Simple_Generate_Inserts_From_Selects 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao = 1'
 exec sp_Simple_Generate_Inserts_From_Selects 'TiposComandosIntegrs'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsRets'
@@ -207,3 +207,34 @@ select * from ListasGenericasItens
 
 select * from EstruturasADxSitsAtivs
 select * from ModFatoresAutenticacoesIts
+
+declare @ultimaChaveUsuario int
+declare @ultimaChaveTabela int
+declare @ultimaChaveNovoGrupo int
+declare @ultimaChavePerfil int
+declare @WhereNovoUsuario nvarchar(max)
+declare @valoresCampos nvarchar(max)
+declare @valoresCamposSet nvarchar(max)
+
+
+if not EXISTS(Select 1 From Usuarios Where USR_CdsUsuario = 'jmenotti@apdatatst.com.br')
+begin
+  exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''jmenotti@apdatatst.com.br'', ''jmenotti@apdatatst.com.br'', ''Flsantos ApdataTst Com Br''', @ultimaChaveUsuario OUTPUT
+
+  set @valoresCampos = CAST(@ultimaChaveUsuario AS NVARCHAR(20)) + ',0'
+  exec sp_Execute_Insert 'dbo', 17, 'UsuariosContratados', 'USC_CdiUsuario, USC_CdiContratado_Usuario', @valoresCampos , 1
+  
+  set @valoresCamposSet = 'USR_CdiGrupoUsuario = ' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20))
+  set @WhereNovoUsuario = 'USR_CdiUsuario = ' + CAST(@ultimaChaveUsuario AS NVARCHAR(20))
+  exec sp_Execute_Update 'dbo', 18, 'Usuarios', @valoresCamposSet, @WhereNovoUsuario
+  
+  exec sp_GetLastIdFromTable 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil', 0, @ultimaChavePerfil OUTPUT
+  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 19, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 01, @ultimaChaveUsuario, 0, '217'  
+  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 20, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 02, @ultimaChaveUsuario, 0, '218'  
+  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 21, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 03, @ultimaChaveUsuario, 0, '220'  
+  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 22, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 04, @ultimaChaveUsuario, 0, '222'
+  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 23, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, @ultimaChaveUsuario, 0, '382'
+
+  Print 'Criado o Grupo [' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20)) + '] Adicionado flsantos@apdatatst.com.br'
+  Print 'Criação e adição do usuário flsantos@apdatatst.com.br para testes de no servidor http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf.'
+end
