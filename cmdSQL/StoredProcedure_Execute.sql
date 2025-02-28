@@ -208,6 +208,8 @@ select * from ListasGenericasItens
 select * from EstruturasADxSitsAtivs
 select * from ModFatoresAutenticacoesIts
 
+/* Cria usuario Begin*/
+
 declare @ultimaChaveUsuario int
 declare @ultimaChaveTabela int
 declare @ultimaChaveNovoGrupo int
@@ -217,9 +219,9 @@ declare @valoresCampos nvarchar(max)
 declare @valoresCamposSet nvarchar(max)
 
 
-if not EXISTS(Select 1 From Usuarios Where USR_CdsUsuario = 'jmenotti@apdatatst.com.br')
+if not EXISTS(Select 1 From Usuarios Where USR_CdsUsuario = 'jmenotti')
 begin
-  exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''jmenotti@apdatatst.com.br'', ''jmenotti@apdatatst.com.br'', ''Flsantos ApdataTst Com Br''', @ultimaChaveUsuario OUTPUT
+  exec sp_DuplicarRegistroComAlteracoes 'Usuarios', 'USR_CdiUsuario', 1672, 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa', '''jmenotti'', ''jmenotti'', ''Criacao de usuarios''', @ultimaChaveUsuario OUTPUT
 
   set @valoresCampos = CAST(@ultimaChaveUsuario AS NVARCHAR(20)) + ',0'
   exec sp_Execute_Insert 'dbo', 17, 'UsuariosContratados', 'USC_CdiUsuario, USC_CdiContratado_Usuario', @valoresCampos , 1
@@ -235,6 +237,10 @@ begin
   exec sp_Execute_Insert_Key_ForeignKey 'dbo', 22, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 04, @ultimaChaveUsuario, 0, '222'
   exec sp_Execute_Insert_Key_ForeignKey 'dbo', 23, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, @ultimaChaveUsuario, 0, '382'
 
-  Print 'Criado o Grupo [' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20)) + '] Adicionado flsantos@apdatatst.com.br'
-  Print 'Criação e adição do usuário flsantos@apdatatst.com.br para testes de no servidor http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf.'
+  Print 'Criado o Grupo [' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20)) + '] Adicionado nome_usuario'
+  Print 'Criação e adição do usuário nome_usuario para testes de no servidor http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf.'
 end
+
+/*Cria usuario End*/
+
+EXEC sp_CriarUsuario @NomeUsuario   = 'jmenotti',  @BaseUsuarioID = 1672,  @NovoGrupoID = 9999,  @Email = 'jmenotti@apdatatst.com', @NomeCompleto  = 'José Menotti';

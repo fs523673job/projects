@@ -68,6 +68,8 @@ drop procedure if exists sp_DuplicarRegistroComAlteracoes
 GO
 drop procedure if exists sp_GetLastIdFromTable
 GO
+drop procedure if exists sp_CriarUsuario
+GO
 
 /*** FUNÇÕES UTILITÁRIAS **********************************************/
 /*** PROCEDURES UTILITÁRIAS *******************************************/
@@ -2367,8 +2369,118 @@ end
 GO
 */
 
-/**********************************************************************/
+/**********************************************************************
+    16 - CRIA USUARIO
+***********************************************************************/
 
+
+CREATE OR ALTER PROCEDURE sp_CriarUsuario
+(
+    @NomeUsuario        NVARCHAR(100),  -- 'jmenotti'
+    @BaseUsuarioID      INT = 1672,     -- usuário que será duplicado
+    @NovoGrupoID        INT = NULL,     -- se precisar definir explicitamente o grupo do usuário
+    @Email              NVARCHAR(200) = NULL,  -- se quiser parametrizar email
+    @NomeCompleto       NVARCHAR(200) = NULL   -- se quiser parametrizar nome completo
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @ultimaChaveUsuario      INT,
+            @ultimaChaveTabela       INT,
+            @ultimaChaveNovoGrupo    INT,
+            @ultimaChavePerfil       INT,
+            @WhereNovoUsuario        NVARCHAR(MAX),
+            @valoresCampos           NVARCHAR(MAX),
+            @valoresCamposSet        NVARCHAR(MAX);
+
+    -------------------------------------------------------------------------
+    -- Se @NovoGrupoID não for passado, você pode setar algum valor default
+    -- ou buscá-lo de alguma tabela. Exemplo (opcional):
+    -- SET @NovoGrupoID = ISNULL(@NovoGrupoID, 9999); 
+    -------------------------------------------------------------------------
+
+    IF NOT EXISTS (SELECT 1 FROM Usuarios WHERE USR_CdsUsuario = @NomeUsuario)
+    BEGIN
+        ---------------------------------------------------------------------
+        -- 1) Duplicar registro base (ex: id 1672) e gerar novo usuário
+        ---------------------------------------------------------------------
+        -- Exemplo de construção dinâmica dos campos a serem alterados:
+        DECLARE @CamposAlterar  NVARCHAR(MAX) = 'USR_CdsUsuario, USR_CosEMail, USR_DssNomeCompletoPessoa';
+        DECLARE @ValoresAlterar NVARCHAR(MAX);
+
+        SET @ValoresAlterar =  '''' + @NomeUsuario + ''', '
+                            + COALESCE('''' + @Email + '''', '''jmenotti''') + ', ' 
+                            + COALESCE('''' + @NomeCompleto + '''', '''Criação de usuários''');
+
+        EXEC sp_DuplicarRegistroComAlteracoes
+              @NomeTabela         = 'Usuarios',
+              @CampoChave         = 'USR_CdiUsuario',
+              @ValorChave         = @BaseUsuarioID,            -- 1672
+              @CamposAlterar      = @CamposAlterar, 
+              @ValoresAlterar     = @ValoresAlterar, 
+              @ValorNovaChave     = @ultimaChaveUsuario OUTPUT;
+
+        ---------------------------------------------------------------------
+        -- 2) Inserir registro na tabela UsuariosContratados
+        ---------------------------------------------------------------------
+        SET @valoresCampos = CAST(@ultimaChaveUsuario AS NVARCHAR(20)) + ',0';
+        EXEC sp_Execute_Insert 
+              @Esquema        = 'dbo',
+              @IdAcao         = 17,
+              @NomeTabela     = 'UsuariosContratados',
+              @Campos         = 'USC_CdiUsuario, USC_CdiContratado_Usuario',
+              @Valores        = @valoresCampos,
+              @FlagRetorno    = 1;
+
+        ---------------------------------------------------------------------
+        -- 3) Atualizar o grupo do novo usuário (USR_CdiGrupoUsuario)
+        --    Obs.: aqui estamos usando @ultimaChaveNovoGrupo. 
+        --    Se for o valor de @NovoGrupoID, use-o. Se não, defina algum valor.
+        ---------------------------------------------------------------------
+        SET @ultimaChaveNovoGrupo = ISNULL(@NovoGrupoID, 9999);  -- Exemplo de fallback
+        SET @valoresCamposSet = 'USR_CdiGrupoUsuario = ' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20));
+        SET @WhereNovoUsuario = 'USR_CdiUsuario = ' + CAST(@ultimaChaveUsuario AS NVARCHAR(20));
+
+        EXEC sp_Execute_Update
+              @Esquema    = 'dbo',
+              @IdAcao     = 18,
+              @NomeTabela = 'Usuarios',
+              @Campos     = @valoresCamposSet,
+              @Where      = @WhereNovoUsuario;
+
+        ---------------------------------------------------------------------
+        -- 4) Inserir perfis (UsuariosXPerfis) para o novo usuário
+        ---------------------------------------------------------------------
+        EXEC sp_GetLastIdFromTable 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil', 0, @ultimaChavePerfil OUTPUT;
+
+        -- Exemplo: inserindo vários perfis (217,218,220,222,382).
+        -- Note que no seu script, há 5 inserts, cada um com um ID_Acao diferente (19, 20, 21, 22, 23).
+        EXEC sp_Execute_Insert_Key_ForeignKey 'dbo', 19, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil',
+                                              @ultimaChavePerfil, 01, @ultimaChaveUsuario, 0, '217';
+        EXEC sp_Execute_Insert_Key_ForeignKey 'dbo', 20, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil',
+                                              @ultimaChavePerfil, 02, @ultimaChaveUsuario, 0, '218';
+        EXEC sp_Execute_Insert_Key_ForeignKey 'dbo', 21, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil',
+                                              @ultimaChavePerfil, 03, @ultimaChaveUsuario, 0, '220';
+        EXEC sp_Execute_Insert_Key_ForeignKey 'dbo', 22, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil',
+                                              @ultimaChavePerfil, 04, @ultimaChaveUsuario, 0, '222';
+        EXEC sp_Execute_Insert_Key_ForeignKey 'dbo', 23, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil',
+                                              @ultimaChavePerfil, 05, @ultimaChaveUsuario, 0, '382';
+
+        ---------------------------------------------------------------------
+        -- 5) Mensagens para depuração/log
+        ---------------------------------------------------------------------
+        PRINT 'Criado o Grupo [' + CAST(@ultimaChaveNovoGrupo AS NVARCHAR(20)) + '] e adicionado o usuário ' + @NomeUsuario;
+        PRINT 'Criação e adição do usuário ' + @NomeUsuario + ' para testes no servidor http://172.26.100.149:7080/ADIDebug/ApADIntegratorWS.dll/soap/IApADIntegrationIntf.';
+    END
+    ELSE
+    BEGIN
+        PRINT 'O usuário ' + @NomeUsuario + ' já existe na tabela [Usuarios]. Nenhuma ação foi executada.';
+    END;
+END;
+GO
+
+/**********************************************************************/
 
 IF DB_NAME() = 'INTEGRATION_BETA'
 begin
