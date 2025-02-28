@@ -1,0 +1,46 @@
+﻿package SimDesignNativeXML;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS OFF}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE RELEASE}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'SimDesign Native XML [ApData]'}
+{$LIBSUFFIX '240'}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcl;
+
+contains
+  NativeXml in 'NativeXml.pas',
+  NativeXmlAppend in 'NativeXmlAppend.pas',
+  NativeXmlObjectStorage in 'NativeXmlObjectStorage.pas',
+  NativeXmlNodes in 'NativeXmlNodes.pas',
+  NativeXmlCodepages in 'NativeXmlCodepages.pas',
+  sdDebug in 'sdDebug.pas',
+  sdStreams in 'sdStreams.pas';
+
+end.

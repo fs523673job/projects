@@ -208,6 +208,8 @@ select * from ListasGenericasItens
 select * from EstruturasADxSitsAtivs
 select * from ModFatoresAutenticacoesIts
 
+Select USR_CdiUsuario From Usuarios Where USR_CdsUsuario = 'jmenotti'
+
 /* Cria usuario Begin*/
 
 declare @ultimaChaveUsuario int

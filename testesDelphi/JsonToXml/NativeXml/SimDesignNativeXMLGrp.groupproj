@@ -1,0 +1,44 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{F0A239C6-9E21-480F-B58B-BE56DB4E7FC8}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="SimDesignNativeXML.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="SimDesignNativeXML">
+        <MSBuild Projects="SimDesignNativeXML.dproj"/>
+    </Target>
+    <Target Name="SimDesignNativeXML:Clean">
+        <MSBuild Projects="SimDesignNativeXML.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SimDesignNativeXML:Make">
+        <MSBuild Projects="SimDesignNativeXML.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="SimDesignNativeXML"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="SimDesignNativeXML:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="SimDesignNativeXML:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+    <ItemGroup Condition="'$(BuildGroup)'=='APData'">
+        <BuildGroupProject Include="SimDesignNativeXML.dproj">
+            <ProjectGuid>{41EEC42B-8C75-42B6-94A6-AE7F342F96F5}</ProjectGuid>
+            <Configurations>Release</Configurations>
+            <Platforms>Win32;Win64</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+    </ItemGroup>
+</Project>
