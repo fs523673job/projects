@@ -2,8 +2,8 @@ object frmMain: TfrmMain
   Left = 862
   Top = 0
   Caption = 'Main'
-  ClientHeight = 743
-  ClientWidth = 1553
+  ClientHeight = 751
+  ClientWidth = 1555
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

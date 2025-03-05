@@ -233,6 +233,42 @@ begin
   end;
 end;
 
+function NodeHasAllChildren(Node: TXmlNode; const ChildNames: TArray<String>): Boolean;
+var
+  ChildName: string;
+begin
+  Result := True;
+  for ChildName in ChildNames do
+  begin
+    if Node.FindNode(ChildName) = nil then
+    begin
+      Result := False;
+      Break;
+    end;
+  end;
+end;
+
+function FindNodeByNameAndChildren(Node: TXmlNode; const Name: string; const ChildNames: TArray<String>): TXmlNode;
+var
+  i: Integer;
+  Child: TXmlNode;
+begin
+  Result := nil;
+  if AnsiSameText(Node.Name, Name) and NodeHasAllChildren(Node, ChildNames) then
+    Exit(Node)
+  else
+  begin
+    for i := 0 to Node.NodeCount - 1 do
+    begin
+      Child := Node.Nodes[i];
+      Result := FindNodeByNameAndChildren(Child, Name, ChildNames);
+      if Assigned(Result) then
+        Break;
+    end;
+  end;
+end;
+
+
 class function TRestUtils.JsonToXML(AJSONObj: TJSONObject): String;
 begin
   Result := '';
@@ -271,299 +307,224 @@ var
   FullPathXml            : String;
   ChildPathXml           : String;
 begin
+  Response := TStringStream.Create;
   try
-    Response := TStringStream.Create;
+    KeyLogsIntegracoesRets := 0;
     try
-      KeyLogsIntegracoesRets := 0;
+      ConcatXML := False;
+
+      if not IsSOAPResponse then
+      begin
+        Response.Position := 0;
+        ContentString     := Response.DataString;
+        jsonObject        := TRestUtils.ConvertJSONValueToJSONObject(ContentString);
+        try
+          ContentString     := TRestUtils.JsonToXML(jsonObject);
+
+          Response.Clear;
+          Response.WriteString(ContentString);
+        finally
+          if Assigned(jsonObject) then
+            FreeAndNil(jsonObject);
+        end;
+      end;
+
+      XMLResponse  := TNativeXml.Create(nil);
+      XMLListNodes := TList.Create;
       try
-        ConcatXML := False;
+        Response.Position := 0;
+        XMLResponse.DefaultReadEncoding := seUTF8;
+        XMLResponse.LoadFromStream(Response);
 
-        if not IsSOAPResponse then
+        XMLNodesStructures    := TDictionary<String, TTagsXML>.Create;
+        XMLNodesStructuresRep := TDictionary<String, TTagsXML>.Create;
+
+        for var mapIndex := Low(AMap) to High(AMap) do
         begin
-          Response.Position := 0;
-          ContentString     := Response.DataString;
-          jsonObject        := TRestUtils.ConvertJSONValueToJSONObject(ContentString);
-          try
-            ContentString     := TRestUtils.JsonToXML(jsonObject);
+          PathTags := AMap[mapIndex];
 
-            Response.Clear;
-            Response.WriteString(ContentString);
-          finally
-            if Assigned(jsonObject) then
-              FreeAndNil(jsonObject);
+          //Retro-compatibilidade de mapeamento
+          PathTags := StringReplace(PathTags, 'ResponseArray', 'dataArray', [rfReplaceAll]);
+
+          StrMapXml := PathTags.Split([';']);
+
+          if (Length(StrMapXml) < 2) then
+            Continue;
+
+          if (Pos('/', StrMapXml[0]) > 0) then
+          begin
+            StrTagsNames     := StrMapXml[0].Split(['/']);
+            StrTagsChild     := Copy(StrTagsNames, 1, Length(StrTagsNames) - 1);
+            StrTagsDeepChild := Copy(StrMapXml, 1, Length(StrMapXml) - 1);
+
+            XMLNode := FindNodeByNameAndChildren(XMLResponse.Root, StrTagsNames[0], StrTagsChild);
+            if Assigned(XMLNode) then
+              FullPathXml := Format('%s/%s', [XMLNode.FullPath, String.Join('/', StrTagsChild)])
+            else
+              FullPathXml := StrMapXml[0];
+
+            if XMLNodesStructuresRep.Count = 0 then
+            begin
+              TagName   := String.Join('/', StrTagsChild);
+              TagParent := StrTagsNames[0];
+
+              TagsStructureRepXML := TTagsXML.Create(TagName, TagParent, FullPathXml);
+
+              XMLNodesStructuresRep.Add(FullPathXml, TagsStructureRepXML);
+            end
+            else
+              TagsStructureRepXML := XMLNodesStructuresRep[XMLNodesStructuresRep.Keys.ToArray[0]];
+
+            StrTagsChild := Copy(StrMapXml, 1, Length(StrMapXml) - 1);
+            ChildPathXml := String.Join(';', StrTagsChild);
+
+            TagsStructureRepXML.AddTags(ChildPathXml, '', FullPathXml);
+          end
+          else
+          begin
+            TagName   := StrTagsNames[Length(StrTagsNames) - 1];
+            TagParent := PathTags;
+
+            Delete(TagParent, Length(TagParent) - Length(TagName), Length(TagName) + 1);
+
+            XMLNodesStructures.TryGetValue(TagName, TagsStructureXML);
+
+            if not Assigned(TagsStructureXML) then
+            begin
+              TagsStructureXML := TTagsXML.Create(TagName, TagParent, FullPathXml);
+              XMLNodesStructures.Add(TagName, TagsStructureXML);
+            end;
+
+            TagsStructureXML.AddTags(PathTags, '', FullPathXml);
           end;
         end;
 
-        XMLResponse  := TNativeXml.Create(nil);
-        XMLListNodes := TList.Create;
-        try
-          Response.Position := 0;
-          XMLResponse.DefaultReadEncoding := seUTF8;
-          XMLResponse.LoadFromStream(Response);
-
-          XMLNodesStructures    := TDictionary<String, TTagsXML>.Create;
-          XMLNodesStructuresRep := TDictionary<String, TTagsXML>.Create;
-
-          while not QueryModelo.Eof do
+        if (XMLNodesStructuresRep.Count > 0) then
+        begin
+          for Key in XMLNodesStructuresRep.Keys do
           begin
-            PathTags := QueryModelo.FieldByName('JWR_DssCampoOrigem').AsString;
+            XMLNodesStructuresRep.TryGetValue(Key, TagsStructureRepXML);
 
-            //Retro-compatibilidade de mapeamento
-            PathTags := StringReplace(PathTags, 'ResponseArray', 'dataArray', [rfReplaceAll]);
-
-            StrMapXml := PathTags.Split([';']);
-
-            if (Length(StrMapXml) < 2) then
+            if Assigned(TagsStructureRepXML) then
             begin
-              QueryModelo.Next;
-              Continue;
-            end;
+              XMLNode := XMLResponse.Root.FindNode(TagsStructureRepXML.TagParent);
 
-            if (Pos('/', StrMapXml[0]) > 0) then
-            begin
-              StrTagsNames     := StrMapXml[0].Split(['/']);
-              StrTagsChild     := Copy(StrTagsNames, 1, Length(StrTagsNames) - 1);
-              StrTagsDeepChild := Copy(StrMapXml, 1, Length(StrMapXml) - 1);
-
-              XMLNode := FindNodeByNameAndChildren(XMLResponse.Root, StrTagsNames[0], StrTagsChild);
-              if Assigned(XMLNode) then
-                FullPathXml := Format('%s/%s', [XMLNode.FullPath, String.Join('/', StrTagsChild)])
-              else
-                FullPathXml := StrMapXml[0];
-
-              if XMLNodesStructuresRep.Count = 0 then
+              if not Assigned(XMLNode) then
               begin
-                TagName   := String.Join('/', StrTagsChild);
-                TagParent := StrTagsNames[0];
-
-                TagsStructureRepXML := TTagsXML.Create(TagName, TagParent, FullPathXml);
-                TagsStructureRepXML.CdiTransacao_Retorno    := QueryModelo.FieldByName('BBS_CdiTransacao_Retorno').AsInteger;
-                TagsStructureRepXML.NuiTipoEdicao_Retorno   := QueryModelo.FieldByName('BBS_NuiTipoEdicao_Retorno').AsInteger;
-                TagsStructureRepXML.CdiModeloIntegracao_Ret := QueryModelo.FieldByName('BBS_CdiModeloIntegracao_Ret').AsInteger;
-
-                XMLNodesStructuresRep.Add(FullPathXml, TagsStructureRepXML);
-              end
-              else
-                TagsStructureRepXML := XMLNodesStructuresRep[XMLNodesStructuresRep.Keys.ToArray[0]];
-
-              StrTagsChild := Copy(StrMapXml, 1, Length(StrMapXml) - 1);
-              ChildPathXml := String.Join(';', StrTagsChild);
-
-              TagsStructureRepXML.AddTags(ChildPathXml, QueryModelo.FieldByName('JWR_DssCampoDestino').AsString, FullPathXml);
-            end
-            else
-            begin
-              TagName   := StrTagsNames[Length(StrTagsNames) - 1];
-              TagParent := PathTags;
-
-              Delete(TagParent, Length(TagParent) - Length(TagName), Length(TagName) + 1);
-
-              XMLNodesStructures.TryGetValue(TagName, TagsStructureXML);
-
-              if not Assigned(TagsStructureXML) then
-              begin
-                TagsStructureXML := TTagsXML.Create(TagName, TagParent, FullPathXml);
-                TagsStructureXML.CdiTransacao_Retorno    := QueryModelo.FieldByName('BBS_CdiTransacao_Retorno').AsInteger;
-                TagsStructureXML.NuiTipoEdicao_Retorno   := QueryModelo.FieldByName('BBS_NuiTipoEdicao_Retorno').AsInteger;
-                TagsStructureXML.CdiModeloIntegracao_Ret := QueryModelo.FieldByName('BBS_CdiModeloIntegracao_Ret').AsInteger;
-
-                XMLNodesStructures.Add(TagName, TagsStructureXML);
+                if AnsiSameText(XMLResponse.Root.Name, TagsStructureRepXML.TagParent) then
+                  XMLNode := XMLResponse.Root
+                else
+                  Continue;
               end;
 
-              TagsStructureXML.AddTags(PathTags, QueryModelo.FieldByName('JWR_DssCampoDestino').AsString, FullPathXml);
-            end;
+              XMLListNodes.Clear;
 
-            QueryModelo.Next;
-          end;
+              XMLNode.FindNodes(Format('%s/%s', [XMLNode.FullPath, TagsStructureRepXML.TagName]), XMLListNodes);
 
-          if (XMLNodesStructuresRep.Count > 0) then
-          begin
-            for Key in XMLNodesStructuresRep.Keys do
-            begin
-              XMLNodesStructuresRep.TryGetValue(Key, TagsStructureRepXML);
+              if (XMLListNodes.Count - 1 < 0) then
+                XMLNode.FindNodes(Format('/%s/%s', [TagsStructureRepXML.TagParent, TagsStructureRepXML.TagName]), XMLListNodes);
 
-              if Assigned(TagsStructureRepXML) then
+              for c := 0 to XMLListNodes.Count - 1 do
               begin
-                XMLNode := XMLResponse.Root.FindNode(TagsStructureRepXML.TagParent);
-
-                if not Assigned(XMLNode) then
+                if (true) then
                 begin
-                  if AnsiSameText(XMLResponse.Root.Name, TagsStructureRepXML.TagParent) then
-                    XMLNode := XMLResponse.Root
-                  else
-                    Continue;
-                end;
-
-                XMLListNodes.Clear;
-
-                XMLNode.FindNodes(Format('%s/%s', [XMLNode.FullPath, TagsStructureRepXML.TagName]), XMLListNodes);
-
-                if (XMLListNodes.Count - 1 < 0) then
-                  XMLNode.FindNodes(Format('/%s/%s', [TagsStructureRepXML.TagParent, TagsStructureRepXML.TagName]), XMLListNodes);
-
-                for c := 0 to XMLListNodes.Count - 1 do
-                begin
-                  QueryInsertLog.ParamByName('pCdiLogIntegracao').AsInteger        := IdLastLogsIntegracoes;
-                  QueryInsertLog.ParamByName('pNuiRegistro').AsInteger             := c + 1;
-                  QueryInsertLog.ParamByName('pCdiTransacao_Retorno').AsInteger    := TagsStructureRepXML.CdiTransacao_Retorno;
-                  QueryInsertLog.ParamByName('pNuiTipoEdicao_Retorno').AsInteger   := TagsStructureRepXML.NuiTipoEdicao_Retorno;
-                  QueryInsertLog.ParamByName('pCdiModeloIntegracao_Ret').AsInteger := TagsStructureRepXML.CdiModeloIntegracao_Ret;
-                  QueryInsertLog.ParamByName('pCdiStatusProcArquivo').AsInteger    := 1;
-                  QueryInsertLog.ParamByName('pDsbArquivoXML').AsString            := TXmlNode(XMLListNodes.Items[c]).FullPath + #13#10 + #13#10 + TXmlNode(XMLListNodes.Items[c]).WriteToString;
-
-                  KeyLogsIntegracoesRets := NewAutoIncrementInsert(QueryInsertLog, 'LogsIntegracoesRets', 0);
-
-                  if (KeyLogsIntegracoesRets > 0) then
+                  for i := 0 to TagsStructureRepXML.TagListOrigem.Count - 1 do
                   begin
-                    for i := 0 to TagsStructureRepXML.TagListOrigem.Count - 1 do
+                    if (Pos(';', TagsStructureRepXML.TagListOrigem[i]) > 0) then
                     begin
-                      if (Pos(';', TagsStructureRepXML.TagListOrigem[i]) > 0) then
-                      begin
-                        StrTagsNames := TagsStructureRepXML.TagListOrigem[i].Split([';']);
+                      StrTagsNames := TagsStructureRepXML.TagListOrigem[i].Split([';']);
 
-                        XMLNode := TXmlNode(XMLListNodes.Items[c]).FindNode(StrTagsNames[0]);
-
-                        if Assigned(XMLNode) then
-                        begin
-                          for x := 1 to Length(StrTagsNames) - 1 do
-                          begin
-                            XMLNode := XMLNode.FindNode(StrTagsNames[x]);
-
-                            if not Assigned(XMLNode) then
-                              Break;
-                          end;
-                        end;
-                      end
-                      else
-                      begin
-                        XMLNode := TXmlNode(XMLListNodes.Items[c]).FindNode(TagsStructureRepXML.TagListOrigem[i]);
-                        if Assigned(XMLNode) then
-                        begin
-                          if not AnsiSameText(XMLNode.FullPath, TXmlNode(XMLListNodes.Items[c]).FullPath + '/' + TagsStructureRepXML.TagListOrigem[i]) then
-                          begin
-                            XMLNode := TXmlNode(XMLListNodes.Items[c]).FindNode(TXmlNode(XMLListNodes.Items[c]).FullPath + '/' + TagsStructureRepXML.TagListOrigem[i]);
-                          end;
-                        end
-                        else
-                          XMLNode := XMLResponse.Root.FindNode(TagsStructureRepXML.ListFullPath[i] + '/' + TagsStructureRepXML.TagListOrigem[i]);
-                      end;
+                      XMLNode := TXmlNode(XMLListNodes.Items[c]).FindNode(StrTagsNames[0]);
 
                       if Assigned(XMLNode) then
                       begin
-                        QueryInsertLogCampos.ParamByName('pCdiLogIntegracaoRet').AsInteger  := KeyLogsIntegracoesRets;
-                        QueryInsertLogCampos.ParamByName('pDssCampo').AsString              := TagsStructureRepXML.TagListDestino[i];
-                        QueryInsertLogCampos.ParamByName('pDssValor').AsString              := XMLNode.ValueUnicode;
-
-                        NewAutoIncrementInsert(QueryInsertLogCampos, 'LogsIntegracoesRetsCampos', 0);
-                      end;
-                    end;
-
-                    for Key2 in XMLNodesStructures.Keys do
-                    begin
-                      XMLNodesStructures.TryGetValue(Key2, TagsStructureXML);
-
-                      if Assigned(TagsStructureXML) then
-                      begin
-                        XMLNode := XMLResponse.Root.FindNode(TagsStructureXML.TagParent);
-
-                        if Assigned(XMLNode) then
-                          XMLNode := XMLNode.FindNode(TagsStructureXML.TagName);
-
-                        if Assigned(XMLNode) then
+                        for x := 1 to Length(StrTagsNames) - 1 do
                         begin
-                          QueryInsertLogCampos.ParamByName('pCdiLogIntegracaoRet').AsInteger  := KeyLogsIntegracoesRets;
-                          QueryInsertLogCampos.ParamByName('pDssCampo').AsString              := TagsStructureXML.TagListDestino[0];
-                          QueryInsertLogCampos.ParamByName('pDssValor').AsString              := XMLNode.ValueUnicode;
+                          XMLNode := XMLNode.FindNode(StrTagsNames[x]);
 
-                          NewAutoIncrementInsert(QueryInsertLogCampos, 'LogsIntegracoesRetsCampos', 0);
+                          if not Assigned(XMLNode) then
+                            Break;
                         end;
                       end;
+                    end
+                    else
+                    begin
+                      XMLNode := TXmlNode(XMLListNodes.Items[c]).FindNode(TagsStructureRepXML.TagListOrigem[i]);
+                      if Assigned(XMLNode) then
+                      begin
+                        if not AnsiSameText(XMLNode.FullPath, TXmlNode(XMLListNodes.Items[c]).FullPath + '/' + TagsStructureRepXML.TagListOrigem[i]) then
+                        begin
+                          XMLNode := TXmlNode(XMLListNodes.Items[c]).FindNode(TXmlNode(XMLListNodes.Items[c]).FullPath + '/' + TagsStructureRepXML.TagListOrigem[i]);
+                        end;
+                      end
+                      else
+                        XMLNode := XMLResponse.Root.FindNode(TagsStructureRepXML.ListFullPath[i] + '/' + TagsStructureRepXML.TagListOrigem[i]);
+                    end;
+                  end;
+
+                  for Key2 in XMLNodesStructures.Keys do
+                  begin
+                    XMLNodesStructures.TryGetValue(Key2, TagsStructureXML);
+
+                    if Assigned(TagsStructureXML) then
+                    begin
+                      XMLNode := XMLResponse.Root.FindNode(TagsStructureXML.TagParent);
+
+                      if Assigned(XMLNode) then
+                        XMLNode := XMLNode.FindNode(TagsStructureXML.TagName);
                     end;
                   end;
                 end;
               end;
             end;
-          end
-          else if (XMLNodesStructures.Count > 0) then
+          end;
+        end
+        else if (XMLNodesStructures.Count > 0) then
+        begin
+          for Key in XMLNodesStructures.Keys do
           begin
-            for Key in XMLNodesStructures.Keys do
-            begin
-              XMLNodesStructures.TryGetValue(Key, TagsStructureXML);
+            XMLNodesStructures.TryGetValue(Key, TagsStructureXML);
 
-              if Assigned(TagsStructureXML) then
+            if Assigned(TagsStructureXML) then
+            begin
+              XMLNode := XMLResponse.Root.FindNode(TagsStructureXML.TagParent);
+
+              if not Assigned(XMLNode) then
               begin
-                XMLNode := XMLResponse.Root.FindNode(TagsStructureXML.TagParent);
+                if AnsiSameStr(XMLResponse.Root.Name, TagsStructureXML.TagParent) then
+                  XMLNode := XMLResponse.Root.Nodes[0]
+                else
+                  Continue;
+              end;
+
+              if (KeyLogsIntegracoesRets > 0) then
+              begin
+                XMLNode := XMLResponse.Root.FindNode(TagsStructureXML.TagName);
 
                 if not Assigned(XMLNode) then
                 begin
-                  if AnsiSameStr(XMLResponse.Root.Name, TagsStructureXML.TagParent) then
+                  if AnsiSameStr(XMLResponse.Root.Name, TagsStructureXML.TagName) then
                     XMLNode := XMLResponse.Root.Nodes[0]
                   else
                     Continue;
                 end;
 
-                if (KeyLogsIntegracoesRets = 0) then
+                if ConcatXML then
                 begin
-                  QueryInsertLog.ParamByName('pCdiLogIntegracao').AsInteger        := IdLastLogsIntegracoes;
-                  QueryInsertLog.ParamByName('pNuiRegistro').AsInteger             := 1;
-                  QueryInsertLog.ParamByName('pCdiTransacao_Retorno').AsInteger    := TagsStructureXML.CdiTransacao_Retorno;
-                  QueryInsertLog.ParamByName('pNuiTipoEdicao_Retorno').AsInteger   := TagsStructureXML.NuiTipoEdicao_Retorno;
-                  QueryInsertLog.ParamByName('pCdiModeloIntegracao_Ret').AsInteger := TagsStructureXML.CdiModeloIntegracao_Ret;
-                  QueryInsertLog.ParamByName('pCdiStatusProcArquivo').AsInteger    := 1;
-                  QueryInsertLog.ParamByName('pDsbArquivoXML').AsString            := XMLNode.FullPath + #13#10 + #13#10 + XMLNode.WriteToString;
-
-                  KeyLogsIntegracoesRets := NewAutoIncrementInsert(QueryInsertLog, 'LogsIntegracoesRets', 0);
                 end;
-
-                if (KeyLogsIntegracoesRets > 0) then
-                begin
-                  XMLNode := XMLResponse.Root.FindNode(TagsStructureXML.TagName);
-
-                  if not Assigned(XMLNode) then
-                  begin
-                    if AnsiSameStr(XMLResponse.Root.Name, TagsStructureXML.TagName) then
-                      XMLNode := XMLResponse.Root.Nodes[0]
-                    else
-                      Continue;
-                  end;
-
-                  QueryInsertLogCampos.ParamByName('pCdiLogIntegracaoRet').AsInteger  := KeyLogsIntegracoesRets;
-                  QueryInsertLogCampos.ParamByName('pDssCampo').AsString              := TagsStructureXML.TagListDestino[0];
-                  QueryInsertLogCampos.ParamByName('pDssValor').AsString              := XMLNode.ValueUnicode;
-
-                  NewAutoIncrementInsert(QueryInsertLogCampos, 'LogsIntegracoesRetsCampos', 0);
-
-                  if ConcatXML then
-                  begin
-                    QuerySelectLogCampos.Close;
-                    QuerySelectLogCampos.ParamByName('pCdiLogIntegracaoRet').AsInteger := KeyLogsIntegracoesRets;
-                    QuerySelectLogCampos.Open;
-
-                    QueryUpdateLog.ParamByName('pDsbArquivoXML').AsString        := QuerySelectLogCampos.FieldByName('JWS_DsbArquivoXML').AsString + #13#10 + #13#10 + XMLNode.FullPath + #13#10 + #13#10 + XMLNode.WriteToString;
-                    QueryUpdateLog.ParamByName('pCdiLogIntegracaoRet').AsInteger := KeyLogsIntegracoesRets;
-                    QueryUpdateLog.ExecSQL;
-                  end;
-                end;
-                ConcatXML := True;
               end;
+              ConcatXML := True;
             end;
           end;
-        finally
-          XMLResponse.Free;
-          XMLListNodes.Free;
         end;
       finally
-        DeleteQuery(QueryModelo, ConnId);
-        DeleteQuery(QueryInsertLog, ConnId);
-        DeleteQuery(QueryInsertLogCampos, ConnId);
-        DeleteQuery(QueryUpdateLog, ConnId);
-        DeleteQuery(QuerySelectLogCampos, ConnId);
+        XMLResponse.Free;
+        XMLListNodes.Free;
       end;
     finally
-      Response.Free;
     end;
   finally
-    ReleaseDBSharedConn(ConnId);
+    Response.Free;
   end;
 end;
 
