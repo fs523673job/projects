@@ -108,6 +108,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="unJsonToXML.pas"/>
+        <DCCReference Include="unNewJsonToXml.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -12,16 +12,6 @@ uses
   ;
 
 type
-  TRestUtils = class
-  private
-  public
-    class function JsonToXML(AJSONValue: TJSONValue): String; overload;
-    class function JsonToXML(AJSONObj: TJSONObject): String; overload;
-    class function ConvertJSONValueToJSONObject(const AJSONContent: String; const AIsUTF8: Boolean = False): TJSONObject;
-    class function ConvertJSONObjectToStringStream(const AJSONObj: TJSONObject): TStringStream;
-    class function ResultContentNodesInMap(const AMap: TArray<String>; const AContentXML: String): TArray<String>;
-  end;
-
   TTagsXML = class(TObject)
   private
     FTagName                  : String;
@@ -52,6 +42,16 @@ type
     property CdiTransacao_Retorno     : Integer read FCdiTransacao_Retorno write FCdiTransacao_Retorno;
     property NuiTipoEdicao_Retorno    : Integer read FNuiTipoEdicao_Retorno write FNuiTipoEdicao_Retorno;
     property CdiModeloIntegracao_Ret  : Integer read FCdiModeloIntegracao_Ret write FCdiModeloIntegracao_Ret;
+  end;
+
+  TRestUtils = class
+  private
+  public
+    class function JsonToXML(AJSONValue: TJSONValue): String; overload;
+    class function JsonToXML(AJSONObj: TJSONObject): String; overload;
+    class function ConvertJSONValueToJSONObject(const AJSONContent: String; const AIsUTF8: Boolean = False): TJSONObject;
+    class function ConvertJSONObjectToStringStream(const AJSONObj: TJSONObject): TStringStream;
+    class function ResultContentNodesInMap(const AMap: TArray<String>; const AContentXML: String): TArray<String>;
   end;
 
 implementation

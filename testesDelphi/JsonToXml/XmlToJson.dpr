@@ -3,7 +3,8 @@ program XmlToJson;
 uses
   Vcl.Forms,
   unMain in 'unMain.pas' {frmMain},
-  unJsonToXML in 'unJsonToXML.pas';
+  unJsonToXML in 'unJsonToXML.pas',
+  unNewJsonToXml in 'unNewJsonToXml.pas';
 
 {$R *.res}
 
