@@ -2306,12 +2306,14 @@ BEGIN
         ---------------------------------------------------------------------
         SET @valoresCampos = CAST(@ultimaChaveUsuario AS NVARCHAR(20)) + ',0';
         EXEC sp_Execute_Insert 
-              @Esquema        = 'dbo',
-              @IdAcao         = 17,
-              @NomeTabela     = 'UsuariosContratados',
-              @Campos         = 'USC_CdiUsuario, USC_CdiContratado_Usuario',
-              @Valores        = @valoresCampos,
-              @FlagRetorno    = 1;
+              @schema         = 'dbo',
+              @ordNum         = 17,
+              @table          = 'UsuariosContratados',
+              @fields         = 'USC_CdiUsuario, USC_CdiContratado_Usuario',
+              @values         = @valoresCampos,
+			  @showCmd        = 1,
+              @customMsgError = '';
+
 
         ---------------------------------------------------------------------
         -- 3) Atualizar o grupo do novo usuário (USR_CdiGrupoUsuario)
