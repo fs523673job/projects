@@ -11,8 +11,8 @@ VALUES ('PT_550463_MR', 'V559', 'ebc5d8a6', 'Login By Ticket', ' LoginByTicket (
 
 /***************************************************************************************************************************/
 
-SELECT * FROM FEATURE_CRIADAS fc WHERE REGEX_SEARCH LIKE '%OR,%'
-
+SELECT * FROM FEATURE_CRIADAS fc WHERE REGEX_SEARCH LIKE '%823321%'
+SELECT * FROM FEATURE_CRIADAS fc WHERE NAME_PT = 823321
  
 
 
