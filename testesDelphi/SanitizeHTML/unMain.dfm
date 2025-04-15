@@ -30,6 +30,7 @@ object frmMain: TfrmMain
     Gutter.Font.Height = -11
     Gutter.Font.Name = 'Consolas'
     Gutter.Font.Style = []
+    Gutter.Font.Quality = fqClearTypeNatural
     Gutter.Bands = <
       item
         Kind = gbkMarks
@@ -204,6 +205,7 @@ object frmMain: TfrmMain
     Gutter.Font.Height = -11
     Gutter.Font.Name = 'Consolas'
     Gutter.Font.Style = []
+    Gutter.Font.Quality = fqClearTypeNatural
     Gutter.Bands = <
       item
         Kind = gbkMarks
