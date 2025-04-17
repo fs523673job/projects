@@ -1,3 +1,3 @@
-cd "C:\github\fs523673job\projects\cmdGIT"
-copy "C:\github\fs523673job\projects\cmdGIT\git-fs*" "C:\Program Files\Git\usr\bin\" 
+cd "C:\github\repository\projects\cmdGIT"
+copy "C:\github\repository\projects\cmdGIT\git-fs*" "C:\Program Files\Git\usr\bin\" 
 
