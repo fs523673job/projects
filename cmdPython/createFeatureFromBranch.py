@@ -96,7 +96,30 @@ def update_feature_file(feature_name: str):
 
 
 def main():
-    os.chdir(r'c:/apdata_x64')
+    diretorios_disponiveis = [
+        r"c:/apdata_x64",
+        r"c:/apdata_xwt",
+        # Adicione outros caminhos futuramente, se desejar
+    ]
+
+    print("Selecione o diretório desejado para a operação:")
+    for i, d in enumerate(diretorios_disponiveis, start=1):
+        print(f"{i} - {d}")
+
+    escolha = input("Digite o número da opção: ")
+
+    try:
+        escolha_int = int(escolha)
+        if 1 <= escolha_int <= len(diretorios_disponiveis):
+            diretorio_escolhido = diretorios_disponiveis[escolha_int - 1]
+        else:
+            print("Opção inválida. Encerrando.")
+            return
+    except ValueError:
+        print("Entrada inválida. Encerrando.")
+        return
+
+    os.chdir(diretorio_escolhido)
 
     branch_name = input("Digite o nome da branch: ")
     feature_name = input("Digite o nome da feature: ")

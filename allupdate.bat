@@ -2,7 +2,7 @@
 setlocal
 
 :: Configuração do repositório
-set REPO_PATH=C:\github\fs523673job\projects
+set REPO_PATH=C:\github\repository\projects
 
 :: Atualizando o repositório
 cd /d %REPO_PATH%

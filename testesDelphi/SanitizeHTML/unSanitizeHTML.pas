@@ -19,8 +19,11 @@ type
     FAKETAGEND = ' faketagend>';
   private
     class function MatchEvaluator(const Match: TMatch): String;
-    class function AdjustNBSPError(const AContent: String; const ADecharacterizesNBSP: Boolean = True): String; static;
     class function NormalizeHTML(const AContent: String): String;
+    class function BasicDecode(const AContent: String; out ANeedEncoding: Boolean): String; static;
+    class function BasicEncode(const AContent: String): String; static;
+    class function PatternBlackList: TArray<String>;
+    class function PatternDecode: TDictionary<String, String>;
   public
     class function IsProbablyHTML(const AContent: String): Boolean; overload; static;
     class function IsProbablyHTML(const AContentBytes: TBytes): Boolean; overload; static;
@@ -36,7 +39,6 @@ type
     class function SanitizeTexto(const AContentBytes: TBytes): TBytes; overload;
     class function SanitizeTexto(const AContent: String): String; overload;
     class function SanitizeSimpleLink(const ALinkText: String): String; static;
-    class function PatternBlackList: TArray<String>;
     class function SanitizeBlackList(const AContent: String; const APatterns: TArray<String>): String; overload; static;
     class function SanitizeBlackList(const AContent: String): String; overload;
     class function PossiblyHasXSS(const AContent: String): Boolean; static;
@@ -58,19 +60,47 @@ begin
   Exit(Encoding.GetBytes(SanitizedString));
 end;
 
-class function TPreventXSS.AdjustNBSPError(const AContent: String; const ADecharacterizesNBSP: Boolean = True): String;
+class function TPreventXSS.BasicDecode(const AContent: String; out ANeedEncoding: Boolean): String;
+var
+  DecodePatterns: TDictionary<String, String>;
+  ContentDecoded: String;
 begin
-  if ADecharacterizesNBSP then
-    Exit(AContent.Replace('&nbsp;', '#nbsp;', [rfIgnoreCase, rfReplaceAll]))
-  else
-    Exit(AContent.Replace('#nbsp;', '&nbsp;', [rfIgnoreCase, rfReplaceAll]));
+  DecodePatterns := PatternDecode;
+  try
+    ContentDecoded := AContent;
+    for var pair in DecodePatterns do
+      ContentDecoded := ContentDecoded.Replace(pair.Key, pair.Value, [rfReplaceAll]);
+    ANeedEncoding := not ContentDecoded.Equals(AContent);
+    Exit(ContentDecoded);
+  finally
+    if Assigned(DecodePatterns) then
+      DecodePatterns.Free;
+  end;
+end;
+
+class function TPreventXSS.BasicEncode(const AContent: String): String;
+var
+  DecodePatterns: TDictionary<String, String>;
+  ContentEncode: String;
+begin
+  DecodePatterns := PatternDecode;
+  try
+    ContentEncode := AContent;
+    for var pair in DecodePatterns do
+      ContentEncode := ContentEncode.Replace(pair.Value, pair.Key, [rfReplaceAll]);
+    Exit(ContentEncode);
+  finally
+    if Assigned(DecodePatterns) then
+      DecodePatterns.Free;
+  end;
 end;
 
 class function TPreventXSS.IsProbablyHTML(const AContent: String): Boolean;
 var
   LocalContent: String;
+  dummyEncode: Boolean;
 begin
-  LocalContent := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.AdjustNBSPError(AContent)));
+  LocalContent := TNetEncoding.HTML.Decode(TPreventXSS.BasicDecode(AContent, dummyEncode));
   Exit(TRegEx.IsMatch(LocalContent, '<\/?[a-z][\s\S]*>|<\/?[a-z][\s\S]*|\/?[a-z][\s\S]*>', [roIgnoreCase]));
 end;
 
@@ -148,24 +178,24 @@ begin
     'setInterval\s*\(',
     'document\.write',
     'autofocus',
-    'innerHTML',
-    'outerHTML',
-    'window',
-    'javascript',
-    'console',
-    'location',
-    'history',
+    '.innerHTML',
+    '.outerHTML',
+    'javascript:',
     'xmlhttprequest',
-    'fetch',
-    'document',
-    'cookie',
     'localStorage',
-    'sessionStorage',
-    'navigator',
-    'parent',
-    'self',
-    'top'
+    'sessionStorage'
   ];
+end;
+
+class function TPreventXSS.PatternDecode: TDictionary<String, String>;
+begin
+  Result := TDictionary<String, String>.Create;
+  Result.Add('&lt;',   '#lt;');
+  Result.Add('&gt;',   '#gt;');
+  Result.Add('&quot;', '#quot;');
+  Result.Add('&#39;',  '##39;');
+  Result.Add('&amp;',  '#amp;');
+  Result.Add('&nbsp;', '#nbsp;');
 end;
 
 class function TPreventXSS.SanitizeHTML(const AContentHTML: String): String;
@@ -310,6 +340,7 @@ var
   IsNeedEncoding: Boolean;
   c: Integer;
   NotNeedEncodedList: TDictionary<string, Boolean>;
+  dummyEncode: Boolean;
 begin
   Input := AContentHTML;
   Output := TStringBuilder.Create;
@@ -332,7 +363,7 @@ begin
 
           if (ProcessedContent.Trim <> '') and (not NotNeedEncodedList.ContainsKey(ProcessedContent)) then
           begin
-            ProcessedContent :=  TPreventXSS.AdjustNBSPError(ProcessedContent);
+            ProcessedContent :=  TPreventXSS.BasicDecode(ProcessedContent, dummyEncode);
             IsNeedEncoding := TPreventXSS.NeedsDecoding(ProcessedContent);
 
             if IsNeedEncoding then
@@ -343,7 +374,8 @@ begin
             if IsNeedEncoding then
               ProcessedContent := TNetEncoding.HTML.Encode(ProcessedContent);
 
-            ProcessedContent :=  TPreventXSS.AdjustNBSPError(ProcessedContent, False);
+            if dummyEncode then
+              ProcessedContent :=  TPreventXSS.BasicEncode(ProcessedContent);
           end;
           Output.Append(ProcessedContent);
         end;
@@ -378,14 +410,27 @@ var
   Pattern: String;
   Regex: TRegEx;
   Sanitized: String;
+  needEncoding: Boolean;
 begin
-  Sanitized := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.AdjustNBSPError(TNetEncoding.URL.Decode(AContent))));
-  for Pattern in APatterns do
-  begin
-    Regex := TRegEx.Create(Pattern, [roIgnoreCase, roMultiLine]);
-    Sanitized := Regex.Replace(Sanitized, EmptyStr);
+  try
+    try
+      Sanitized := TNetEncoding.URL.Decode(AContent);
+    except
+      Sanitized := AContent;
+    end;
+    Sanitized := TPreventXSS.BasicDecode(Sanitized, needEncoding);
+    for Pattern in APatterns do
+    begin
+      Regex := TRegEx.Create(Pattern, [roIgnoreCase, roMultiLine]);
+      Sanitized := Regex.Replace(Sanitized, EmptyStr);
+    end;
+    if needEncoding then
+      Exit(TPreventXSS.BasicEncode(Sanitized))
+    else
+      Exit(Sanitized);
+  except
+    Exit(AContent);
   end;
-  Exit(Sanitized);
 end;
 
 class function TPreventXSS.SanitizeAll(const AContentHTML: String): String;
@@ -443,6 +488,8 @@ const
 
 var
   Normalized: String;
+  needEncoding: Boolean;
+  sanitizedContent: String;
 
   function RemoveFakeTag(const AStringContent: String; ACleanHref: Boolean = False): String;
   begin
@@ -460,16 +507,21 @@ var
   end;
 
 begin
-  Normalized := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.AdjustNBSPError(TNetEncoding.URL.Decode(AContent))));
+  Normalized := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.BasicDecode(TNetEncoding.URL.Decode(AContent), needEncoding)));
   if not (TPreventXSS.IsProbablyHTML(Normalized)) then
   begin
     if (Pos(HREFTAGBEGIN, Normalized.ToLower) = 0) then
-      Exit(RemoveFakeTag(TPreventXSS.SanitizeAll(Format('%s %s%s%s %s', [FAKETAGBEGIN, HREFTAGBEGIN, Normalized, HREFTAGEND, FAKETAGEND])), True))
+      sanitizedContent := RemoveFakeTag(TPreventXSS.SanitizeAll(Format('%s %s%s%s %s', [FAKETAGBEGIN, HREFTAGBEGIN, Normalized, HREFTAGEND, FAKETAGEND])), True)
     else
-      Exit(RemoveFakeTag(TPreventXSS.SanitizeAll(Format('%s%s%s', [FAKETAGBEGIN, Normalized, FAKETAGEND]))));
+      sanitizedContent := RemoveFakeTag(TPreventXSS.SanitizeAll(Format('%s%s%s', [FAKETAGBEGIN, Normalized, FAKETAGEND])))
   end
   else
-    Exit(TPreventXSS.SanitizeAll(Normalized));
+    sanitizedContent := TPreventXSS.SanitizeAll(Normalized);
+
+  if needEncoding then
+    Exit(TPreventXSS.BasicEncode(sanitizedContent))
+  else
+    Exit(sanitizedContent);
 end;
 
 class function TPreventXSS.PossiblyHasXSS(const AContent: String): Boolean;
@@ -477,11 +529,12 @@ var
   Pattern: String;
   Regex: TRegEx;
   Normalized: String;
+  dummyEncode: Boolean;
 begin
   if AContent.Trim.IsEmpty then
     Exit(False);
 
-  Normalized := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.AdjustNBSPError(TNetEncoding.URL.Decode(AContent))));
+  Normalized := TNetEncoding.HTML.Decode(TNetEncoding.HTML.Decode(TPreventXSS.BasicDecode(TNetEncoding.URL.Decode(AContent), dummyEncode)));
 
   for Pattern in PatternBlackList do
   begin
