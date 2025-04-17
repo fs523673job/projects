@@ -21,6 +21,10 @@ if /I "%vrsDelphi%" == "%delphiAlexandria%" (
     set "studioVer=19.0"
 )
 
+if /I "%typeBuild%"=="DEBUG"   set "typeBuild=Debug"
+if /I "%typeBuild%"=="RELEASE" set "typeBuild=Release"
+if /I "%typeBuild%"=="MEMLEAK" set "typeBuild=Memleak"
+
 :: Caminhos
 set "app_exe=C:\%dirBase%\Aplicacoes\%dirApp%\Bin\%arquitetura%\%typeBuild%\%appName%.exe
 set "app_dll=C:\%dirBase%\Aplicacoes\%dirApp%\Bin\%arquitetura%\%typeBuild%\%appName%.dll
@@ -44,6 +48,17 @@ set "ecc32exe=C:\%dirBase%\ApComps\EurekaLog7\Bin\ecc32.exe"
 @set PlatformSDK=
 
 set status=0
+
+::Verifica o caminho Warning.logs existe
+for %%F in ("%warning_path%") do set "warning_dir=%%~dpF"
+
+if "%warning_dir:~-1%"=="\" (
+    set "warning_dir=%warning_dir:~0,-1%"
+)
+
+if not exist "%warning_dir%" (
+    mkdir %warning_dir%
+)
 
 :: Deleta pasta de dcus
 echo %date% %time% ==== Step 01 - Cleaning dcu from %app_lib%
