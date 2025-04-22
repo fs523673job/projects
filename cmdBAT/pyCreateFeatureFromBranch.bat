@@ -1,1 +1,1 @@
-python "C:\github\fs523673job\projects\cmdPython\createFeatureFromBranch.py"
+python "%ScriptsBase%\cmdPython\createFeatureFromBranch.py"

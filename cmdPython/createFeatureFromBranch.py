@@ -1,4 +1,4 @@
-import fdb
+import firebird.driver as fdb
 import subprocess
 import os
 from unidecode import unidecode
@@ -11,6 +11,8 @@ def insert_into_firebird(input_name, input_sha, branch_name, regex_search, featu
     DB_USER = 'SYSDBA'
     DB_PASSWORD = 'master'
 
+    dsn = f"{DB_HOST}:{DB_NAME}"
+
     # Remove acentuação
     regex_search = unidecode(regex_search)
     feature_desc = unidecode(feature_desc)
@@ -19,7 +21,7 @@ def insert_into_firebird(input_name, input_sha, branch_name, regex_search, featu
     name_pt = re.sub(r'\D', '', name_pt)
 
     # Conexão com o banco de dados
-    con = fdb.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+    con = fdb.connect(dsn, user=DB_USER, password=DB_PASSWORD)
     cur = con.cursor()
     cur.execute("SELECT COUNT(*) FROM FEATURE_CRIADAS")
     count = cur.fetchone()[0]

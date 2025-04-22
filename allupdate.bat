@@ -20,6 +20,10 @@ call update.bat
 cd /d %REPO_PATH%\cmdScripter
 call update.bat
 
+:: Executa o backup da base firebird
+cd /d %REPO_PATH%\cmdBat
+call UPDATE_FIB.bat
+
 :: Adicionando todas as mudanças no repositório
 cd /d %REPO_PATH%
 git add --all
