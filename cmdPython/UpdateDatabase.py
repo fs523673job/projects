@@ -3,13 +3,15 @@ import shutil
 import subprocess
 from tqdm import tqdm
 from datetime import datetime
+from pathlib import Path
 
 # Constants for SQL server details and file paths
+PROJECT_ROOT = Path(os.environ['ScriptsBase'])
 SERVER = "APDNSON0220"
 USERNAME = "sa"
-PASSWORD = "18|=S1=aHbU{T1Tn"
-CMD_SQL_PATH = r"C:\github\fs523673job\projects\cmdSQL"
-BASES_LOCAL_PATH = r"C:\Bases_Local"
+PASSWORD = "Apdata!@#1*C#123!@"
+CMD_SQL_PATH = PROJECT_ROOT / 'cmdSQL'
+BASES_LOCAL_PATH = r"C:\BasesOficiais"
 
 # Functions to execute SQL Commands
 def run_sql(file_name):
