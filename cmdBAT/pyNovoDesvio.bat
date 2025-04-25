@@ -1,1 +1,1 @@
-python "C:\github\fs523673job\projects\cmdPython\novoDesvio.py"
+python "C:\github\repository\projects\cmdPython\novoDesvio.py"

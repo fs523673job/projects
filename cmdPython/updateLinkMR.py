@@ -1,4 +1,4 @@
-import fdb
+import firebird.driver as fdb
 
 def atualizar_link_firebird(chamado_numero: str, link: str):
     # Configurações de conexão com o banco Firebird
@@ -7,8 +7,10 @@ def atualizar_link_firebird(chamado_numero: str, link: str):
     DB_USER = 'SYSDBA'
     DB_PASSWORD = 'master'
 
+    dsn = f"{DB_HOST}:{DB_NAME}"
+
     # Conexão com o banco de dados
-    con = fdb.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+    con = fdb.connect(dsn, user=DB_USER, password=DB_PASSWORD)
     cur = con.cursor()
 
     # Construir o nome da feature
@@ -24,8 +26,8 @@ def atualizar_link_firebird(chamado_numero: str, link: str):
 
     # SQL para atualizar o link
     sql = """
-    UPDATE FEATURE_CRIADAS 
-    SET LINK_MR = ? 
+    UPDATE FEATURE_CRIADAS
+    SET LINK_MR = ?
     WHERE NAME_FEATURE = ?
     """
 

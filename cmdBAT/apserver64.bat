@@ -5,7 +5,7 @@ set "VRS_DEFAULT=Apdata_X64"
 set "APP_DEFAULT=ApServer"
 set "ARQ_DEFAULT=Win64"
 set "BLD_DEFAULT=Debug"
-set "PRN_DEFAULT=localhost /start /enablelog /UseHTTPS /integration_timeout 130"
+set "PRN_DEFAULT=localhost /start /enablelog /integration_timeout 130"
 
 if not "%~2"=="" (
     set "VRS_DEFAULT=%~1"
@@ -22,6 +22,8 @@ if not "%~2"=="" (
     )
 )
 
-call "C:\github\fs523673job\projects\cmdBAT\run.bat" %VRS_DEFAULT% %APP_DEFAULT% %APP_DEFAULT% %ARQ_DEFAULT% %BLD_DEFAULT% "%PRN_DEFAULT%"
+set "PROJECT_ROOT=%~dp0.."
+
+call "%PROJECT_ROOT%\cmdBAT\run.bat" %VRS_DEFAULT% %APP_DEFAULT% %APP_DEFAULT% %ARQ_DEFAULT% %BLD_DEFAULT% "%PRN_DEFAULT%"
 
 endlocal

@@ -1,1 +1,1 @@
-python "C:\github\fs523673job\projects\cmdPython\updateAlterFontsForTests.py"
+python "C:\github\repository\projects\cmdPython\updateAlterFontsForTests.py"

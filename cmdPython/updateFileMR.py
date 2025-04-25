@@ -1,4 +1,4 @@
-import fdb
+import firebird.driver as fdb
 import os
 import re
 
@@ -9,8 +9,10 @@ def buscar_links():
     DB_USER = 'SYSDBA'
     DB_PASSWORD = 'master'
 
+    dsn = f"{DB_HOST}:{DB_NAME}"
+
     # Conexão com o banco de dados
-    con = fdb.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+    con = fdb.connect(dsn, user=DB_USER, password=DB_PASSWORD)
     cur = con.cursor()
 
     # Buscar todos os registros com LINK_MR

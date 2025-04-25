@@ -25,7 +25,9 @@ if not "%~2"=="" (
     )
 )
 
+set "PROJECT_ROOT=%~dp0.."
+
 :: Chama o primeiro script com os valores padrão
-call "C:\github\fs523673job\projects\cmdBAT\run.bat" %VRS_DEFAULT% %APP_DEFAULT% %APP_DEFAULT% %ARQ_DEFAULT% %BLD_DEFAULT% "%PRN_DEFAULT%"
+call "%PROJECT_ROOT%\cmdBAT\run.bat" %VRS_DEFAULT% %APP_DEFAULT% %APP_DEFAULT% %ARQ_DEFAULT% %BLD_DEFAULT% "%PRN_DEFAULT%"
 
 endlocal

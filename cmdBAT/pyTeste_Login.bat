@@ -8,5 +8,5 @@ set HEADLESS=%1
 set URL=%2
 set TIMES=%3
 
-python "C:\github\fs523673job\projects\cmdPython\teste_login.py" --headless %HEADLESS% --url "%URL%" --times %TIMES%
+python "C:\github\repository\projects\cmdPython\teste_login.py" --headless %HEADLESS% --url "%URL%" --times %TIMES%
 

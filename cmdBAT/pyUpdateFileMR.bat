@@ -1,1 +1,1 @@
-python "C:\github\fs523673job\projects\cmdPython\updateFileMR.py"
+python "C:\github\repository\projects\cmdPython\updateFileMR.py"

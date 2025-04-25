@@ -1,1 +1,1 @@
-python "C:\github\fs523673job\projects\cmdPython\verifyMROpen.py"
+python "C:\github\repository\projects\cmdPython\verifyMROpen.py"

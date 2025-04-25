@@ -1,1 +1,1 @@
-python "C:\github\fs523673job\projects\cmdPython\openLinkMR.py"
+python "C:\github\repository\projects\cmdPython\openLinkMR.py"
