@@ -15,14 +15,23 @@ def atualizar_link_firebird(chamado_numero: str, link: str):
 
     # Construir o nome da feature
     nome_feature = f"PT_{chamado_numero}_MR"
+    original_feature = f"{chamado_numero}"
 
     # Verificar se a feature existe
     cur.execute("SELECT COUNT(*) FROM FEATURE_CRIADAS WHERE NAME_FEATURE = ?", (nome_feature,))
     count = cur.fetchone()[0]
 
     if count == 0:
-        print(f"Não foi encontrado o chamado com o nome {nome_feature}.")
-        return
+        print(f"Não foi encontrado o chamado com o nome {nome_feature}. Será pesquisado pelo {original_feature}")
+
+        cur.execute("SELECT COUNT(*) FROM FEATURE_CRIADAS WHERE NAME_FEATURE = ?", (original_feature,))
+        count = cur.fetchone()[0]
+
+        if count == 0:
+            print(f"Feature com nome {original_feature} também não encotrada.")
+            return
+        else:
+            nome_feature = original_feature
 
     # SQL para atualizar o link
     sql = """
@@ -34,7 +43,7 @@ def atualizar_link_firebird(chamado_numero: str, link: str):
     # Executa a SQL
     cur.execute(sql, (link, nome_feature))
     con.commit()
-    con.close()
+    #con.close()
 
     print(f"Link atualizado para o chamado {chamado_numero}.")
 
