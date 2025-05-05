@@ -8,6 +8,12 @@ Import-Module WebAdministration
 $siteName = "559"
 $appName = ".net"
 
+$siteNameInput = Read-Host "Digite o nome do site (por exemplo, 559)"
+
+if (-not [string]::IsNullOrWhiteSpace($siteNameInput)) {
+    $siteName = $siteNameInput
+}
+
 $virtualDirPath = "IIS:\Sites\Default Web Site\$siteName"
 $virtualDirExists = Test-Path $virtualDirPath
 

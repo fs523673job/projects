@@ -7,12 +7,12 @@ SELECT * FROM CHAMADOS c ORDER BY 1 DESC;
 SELECT * FROM FEATURE_CRIADAS fc ORDER BY 1 DESC;
 
 INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM, REGEX_SEARCH, DESC_PT, NAME_PT, TYPE_FEATURE, DATETIME_FIELD) 
-VALUES ('PT_550463_MR', 'V559', 'ebc5d8a6', 'Login By Ticket', ' LoginByTicket (Utilizando Direct)', '550463', 'MR', '2020-06-18 19:07:00.000')
+VALUES ('PT_856800_MR', 'V559', '', 'ChatBot - Alex fez eu fiz o MR', ' ChatBot - Alex fez eu fiz o MR', '856800', 'MR', '2025-04-30 16:28:00.000')
 
 /***************************************************************************************************************************/
 
 SELECT * FROM FEATURE_CRIADAS fc WHERE REGEX_SEARCH LIKE '%823321%'
-SELECT * FROM FEATURE_CRIADAS fc WHERE NAME_PT = 823321
+SELECT * FROM FEATURE_CRIADAS fc WHERE NAME_PT LIKE '%823321%'
 
 UPDATE FEATURE_CRIADAS fc SET LINK_MR = 'https://gitlab.com/apdata/global-antares/-/merge_requests/2983' WHERE SHA_ORIGEM = '3e07dfe4f21'
  
