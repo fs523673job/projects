@@ -8,6 +8,21 @@ set "VRS_DEFAULT=Apdata_X64"
 set "APP_DEFAULT=ApServer"
 set "NAME_DEFAULT=ApServer"
 
+
+if not "%~2"=="" (
+    set "VRS_DEFAULT=%~1"
+    set "DELPHIVERSION=%~2"
+) else (
+    if not "%~1"=="" (
+        if /I "%~1"=="Debug" (
+            set "BLD_DEFAULT=Debug"
+        ) else if /I "%~1"=="Release" (
+            set "BLD_DEFAULT=Release"
+        ) else (
+            set "VRS_DEFAULT=%~1"
+        )
+    )
+)
 :: Check if a version argument was passed in
 if "%~1"=="" (
     set "DELPHIVERSION=22.0"

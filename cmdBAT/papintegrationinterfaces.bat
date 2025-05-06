@@ -7,8 +7,14 @@ setlocal
 set "VRS_DEFAULT=Apdata_X64"
 set "APP_DEFAULT=ApIntegrationInterface"
 set "NAME_DEFAULT=ApIntegrationInterface"
+set "DELPHIVERSION=22.0"
 
 :: Check if a version argument was passed in
+
+if "%~1" neq "" (
+    set "VRS_DEFAULT=%~1"
+)
+
 if "%~1"=="" (
     set "DELPHIVERSION=22.0"
 ) else (

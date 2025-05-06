@@ -1,6 +1,8 @@
 @echo off
 setlocal
 
+echo Rodando
+
 :: Define a versão
 set "VRS=%1"
 
