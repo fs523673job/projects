@@ -16,6 +16,8 @@ if not "%~2"=="" (
             set "BLD_DEFAULT=Debug"
         ) else if /I "%~1"=="Release" (
             set "BLD_DEFAULT=Release"
+        ) else if /I "%~1"=="Memleak" (
+            set "BLD_DEFAULT=Memleak"
         ) else (
             set "VRS_DEFAULT=%~1"
         )

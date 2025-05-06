@@ -1,36 +1,25 @@
 @echo off
 setlocal
 
-::Abrir o delphi com o projeto do ApServer
-
 :: Defina aqui os valores padrão para cada argumento
 set "VRS_DEFAULT=Apdata_X64"
 set "APP_DEFAULT=ApServer"
 set "NAME_DEFAULT=ApServer"
+set "DELPHIVERSION=22.0"
 
-
+:: Check if a version argument was passed in
 if not "%~2"=="" (
     set "VRS_DEFAULT=%~1"
     set "DELPHIVERSION=%~2"
 ) else (
     if not "%~1"=="" (
-        if /I "%~1"=="Debug" (
-            set "BLD_DEFAULT=Debug"
-        ) else if /I "%~1"=="Release" (
-            set "BLD_DEFAULT=Release"
+        if /I "%~1"=="DelphiTokio" (
+            set "DELPHIVERSION=19.0"
+        ) else if /I "%~1"=="DelphiAlexandria" (
+            set "DELPHIVERSION=22.0"
         ) else (
             set "VRS_DEFAULT=%~1"
         )
-    )
-)
-:: Check if a version argument was passed in
-if "%~1"=="" (
-    set "DELPHIVERSION=22.0"
-) else (
-    if /I "%~1"=="DelphiTokio" (
-        set "DELPHIVERSION=19.0"
-    ) else if /I "%~1"=="DelphiAlexandria" (
-        set "DELPHIVERSION=22.0"
     )
 )
 
