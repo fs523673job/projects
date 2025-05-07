@@ -11,17 +11,19 @@ set "DELPHIVERSION=22.0"
 
 :: Check if a version argument was passed in
 
-if "%~1" neq "" (
+:: Check if a version argument was passed in
+if not "%~2"=="" (
     set "VRS_DEFAULT=%~1"
-)
-
-if "%~1"=="" (
-    set "DELPHIVERSION=22.0"
+    set "DELPHIVERSION=%~2"
 ) else (
-    if /I "%~1"=="DelphiTokio" (
-        set "DELPHIVERSION=19.0"
-    ) else if /I "%~1"=="DelphiAlexandria" (
-        set "DELPHIVERSION=22.0"
+    if not "%~1"=="" (
+        if /I "%~1"=="DelphiTokio" (
+            set "DELPHIVERSION=19.0"
+        ) else if /I "%~1"=="DelphiAlexandria" (
+            set "DELPHIVERSION=22.0"
+        ) else (
+            set "VRS_DEFAULT=%~1"
+        )
     )
 )
 
