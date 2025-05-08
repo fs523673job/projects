@@ -9,6 +9,105 @@ uses
   Vcl.Graphics,
   Vcl.Imaging.pngimage;
 
+const
+  COR_MAGICA = $00FF00FF;
+
+function CoresSemelhantes(C1, C2: TColor; Tolerancia: Byte = 10): Boolean;
+var
+  RGB1, RGB2: COLORREF;
+begin
+  RGB1 := ColorToRGB(C1);
+  RGB2 := ColorToRGB(C2);
+
+  Result :=
+    (Abs(Integer(GetRValue(RGB1)) - Integer(GetRValue(RGB2))) <= Integer(Tolerancia)) and
+    (Abs(Integer(GetGValue(RGB1)) - Integer(GetGValue(RGB2))) <= Integer(Tolerancia)) and
+    (Abs(Integer(GetBValue(RGB1)) - Integer(GetBValue(RGB2))) <= Integer(Tolerancia));
+end;
+
+
+procedure SubstituirCorPorBranco(ABitmap: TBitmap; CorAlvo: TColor; Tolerancia: Byte = 10);
+var
+  X, Y: Integer;
+  PixelColor: TColor;
+begin
+  for Y := 0 to ABitmap.Height - 1 do
+  begin
+    for X := 0 to ABitmap.Width - 1 do
+    begin
+      PixelColor := ABitmap.Canvas.Pixels[X, Y];
+      if CoresSemelhantes(PixelColor, CorAlvo, Tolerancia) then
+        ABitmap.Canvas.Pixels[X, Y] := clWhite;
+    end;
+  end;
+end;
+
+procedure PngSubstituirCorPorBranco(APng: TPngImage; CorAlvo: TColor; Tolerancia: Byte = 10);
+var
+  X, Y: Integer;
+  PixelColor: TColor;
+begin
+
+  var Bitmap := TBitmap.Create;
+  try
+    Bitmap.PixelFormat := pf32bit;
+    Bitmap.AlphaFormat := afIgnored;
+    Bitmap.SetSize(APng.Width, APng.Height);
+
+    Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+
+    var RectImg: TRect := Rect(0, 0, APng.Width, APng.Height);
+    APng.Draw(Bitmap.Canvas, RectImg);
+
+    for Y := 0 to Bitmap.Height - 1 do
+    begin
+      for X := 0 to Bitmap.Width - 1 do
+      begin
+        PixelColor := Bitmap.Canvas.Pixels[X, Y];
+        if CoresSemelhantes(PixelColor, CorAlvo, Tolerancia) then
+          Bitmap.Canvas.Pixels[X, Y] := clWhite;
+      end;
+    end;
+
+    APng.Assign(Bitmap);
+    APng.RemoveTransparency;
+  finally
+    Bitmap.Free;
+  end;
+end;
+
+function PngContemCorAlvo(APng: TPngImage; CorAlvo: TColor; Tolerancia: Byte = 10): Boolean;
+var
+  X, Y: Integer;
+  PixelColor: TColor;
+  Bitmap: TBitmap;
+  RectImg: TRect;
+begin
+  Result := False;
+
+  Bitmap := TBitmap.Create;
+  try
+    Bitmap.PixelFormat := pf32bit;
+    Bitmap.AlphaFormat := afIgnored;
+    Bitmap.SetSize(APng.Width, APng.Height);
+
+    RectImg := Rect(0, 0, APng.Width, APng.Height);
+    APng.Draw(Bitmap.Canvas, RectImg);
+
+    for Y := 0 to Bitmap.Height - 1 do
+    begin
+      for X := 0 to Bitmap.Width - 1 do
+      begin
+        PixelColor := ColorToRGB(Bitmap.Canvas.Pixels[X, Y]);
+        if CoresSemelhantes(PixelColor, CorAlvo, Tolerancia) then
+          Exit(True);
+      end;
+    end;
+  finally
+    Bitmap.Free;
+  end;
+end;
+
 function TemTransparencia(APng: TPngImage): Boolean;
 var
   X, Y: Integer;
@@ -152,6 +251,37 @@ begin
   end;
 end;
 
+procedure ExRemoverTransparenciaPNG(APng: TPngImage; const ArquivoEntrada, ArquivoSaida: String; CorFundoTemporario: TColor);
+var
+  Bitmap: TBitmap;
+  RectImg: TRect;
+begin
+  if not FileExists(ArquivoEntrada) then
+    raise Exception.Create('Arquivo não encontrado: ' + ArquivoEntrada);
+
+  Bitmap := TBitmap.Create;
+  try
+    Bitmap.PixelFormat := pf32bit;
+    Bitmap.AlphaFormat := afIgnored;
+    Bitmap.SetSize(APng.Width, APng.Height);
+
+    Bitmap.Canvas.Brush.Color := CorFundoTemporario;
+    Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+
+    RectImg := Rect(0, 0, APng.Width, APng.Height);
+    APng.Draw(Bitmap.Canvas, RectImg);
+
+    SubstituirCorPorBranco(Bitmap, CorFundoTemporario, 10);
+
+    APng.Assign(Bitmap);
+    APng.RemoveTransparency;
+    APng.SaveToFile(ArquivoSaida);
+  finally
+    Bitmap.Free;
+  end;
+end;
+
+
 var
   Png: TPngImage;
   ArquivoEntrada, ArquivoSaida: String;
@@ -173,9 +303,14 @@ begin
 
         ArquivoSaida := ChangeFileExt(ArquivoEntrada, '_SemTransparencia.png');
 
-        RemoverTransparenciaCorretamente(Png, clBlack);
-        RemoverTransparencia(Png, clBlack);
-        RemoverTransparenciaPNG(Png, ArquivoEntrada, ArquivoSaida, clBlack);
+        //RemoverTransparenciaCorretamente(Png, clBlack);
+        //RemoverTransparencia(Png, clBlack);
+        //RemoverTransparenciaPNG(Png, ArquivoEntrada, ArquivoSaida, clBlack);
+        ExRemoverTransparenciaPNG(Png, ArquivoEntrada, ArquivoSaida, COR_MAGICA);
+
+
+        while PngContemCorAlvo(Png, COR_MAGICA, 10) do
+          PngSubstituirCorPorBranco(Png, COR_MAGICA, 20);
 
         Png.SaveToFile(ArquivoSaida);
 
