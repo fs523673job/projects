@@ -1,0 +1,1 @@
+python "C:\github\repository\projects\cmdPython\verifyMROpenBase.py"

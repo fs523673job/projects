@@ -13,7 +13,7 @@ def update_file_with_status(file_path, mr_url, status, date=None):
     lines = []
     with open(file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
-    
+
     updated = False
     i = 0
     while i < len(lines):
@@ -43,7 +43,7 @@ def update_file_with_status(file_path, mr_url, status, date=None):
         lines.append(f'Status Merge Request: {status}\n')
         if date:
             lines.append(f'Data Merge Request: {date}\n')
-    
+
     # Escreve de volta no arquivo
     with open(file_path, 'w', encoding='utf-8') as file:
         file.writelines(lines)
@@ -101,13 +101,25 @@ def main():
     chrome_options = Options()
     user_data_dir = r'C:\Users\flsantos\AppData\Local\Google\Chrome\User Data'
     profile_directory = 'Default'
+
     chrome_options.add_argument(f"user-data-dir={user_data_dir}")
     chrome_options.add_argument(f"profile-directory={profile_directory}")
+
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--remote-debugging-port=9222')
+    chrome_options.add_argument('--log-level=3')
+
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
 
-    service = Service(executable_path=r'C:\ChromeDriver\Win64\chromedriver.exe')
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    try:
+        service = Service(executable_path=r'C:\ChromeDriver\Win64\chromedriver.exe', service_args=['--verbose', '--log-path=chromedriver.log'])
+        driver = webdriver.Chrome(service=service, options=chrome_options)
+    except Exception as e:
+        print(f"Erro ao iniciar o ChromeDriver: {e}")
+        print("Verifique se a versão do ChromeDriver é compatível com sua versão do Chrome")
+        return
 
     directory_path = sys.argv[1] if len(sys.argv) > 1 else r"C:\Users\flsantos\OneDrive - Apdata do Brasil Software Ltda\Chamados"
 
