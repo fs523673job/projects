@@ -28,7 +28,7 @@ PROFILE_DIR  = r"C:\ChromeDriverProfiles\GitLabBot"           # perfil dedicado 
 def kill_chrome():
     """Fecha instâncias pré‑existentes do Chrome."""
     try:
-        subprocess.run(['taskkill', '/F', '/IM', 'chrome.exe'], check=False, stderr=DEVNULL)
+        subprocess.run(['taskkill', '/F', '/IM', 'chrome.exe'], check=True)
     except Exception as e:
         print(f"Não foi possível fechar todas instâncias do chrome. {e}")
 
@@ -36,16 +36,14 @@ def kill_chrome():
 def get_driver():
     """Cria/retorna um webdriver Chrome com perfil dedicado."""
     chrome_options = Options()
-    user_data_dir = r'C:\Users\flsantos\AppData\Local\Google\Chrome\User Data'
-    profile_directory = 'Default'
+    #user_data_dir = r'C:\Users\flsantos\AppData\Local\Google\Chrome\User Data'
+    #profile_directory = 'Profile 3'
+    user_data_dir = r'C:\ChromeDriver\ChromeProfiles'
+    profile_directory = 'SeleniumTest'
     chrome_options.add_argument(f"user-data-dir={user_data_dir}")
     chrome_options.add_argument(f"profile-directory={profile_directory}")
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-    chrome_options.add_argument('--remote-debugging-port=9222')
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
-
 
     service = Service(CHROMEDRIVER)
     return webdriver.Chrome(service=service, options=chrome_options)
@@ -103,7 +101,7 @@ def main():
     driver = get_driver()
 
     # conecta ao Firebird
-    conn = fdb.connect(dsn=DSN, user=DB_USER, password=DB_PASSWORD)
+    conn = fdb.connect(DSN, user=DB_USER, password=DB_PASSWORD)
 
     try:
         for feature_id, link_mr, current_status in fetch_pending_mrs(conn):
