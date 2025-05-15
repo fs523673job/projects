@@ -99,11 +99,12 @@ def main():
         print(f"Não foi possível fechar as instâncias do Chrome: {e}")
 
     chrome_options = Options()
-    user_data_dir = r'C:\Users\flsantos\AppData\Local\Google\Chrome\User Data'
-    profile_directory = 'Profile 3'
+    #user_data_dir = r'C:\Users\flsantos\AppData\Local\Google\Chrome\User Data'
+    #profile_directory = 'Default'
+    user_data_dir = r'C:\ChromeDriver\ChromeProfiles'
+    profile_directory = 'SeleniumTest'
     chrome_options.add_argument(f"user-data-dir={user_data_dir}")
     chrome_options.add_argument(f"profile-directory={profile_directory}")
-    chrome_options.add_argument(f"--remote-debugging-port=9222")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
 
