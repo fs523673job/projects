@@ -208,6 +208,25 @@ select * from ListasGenericasItens
 select * from EstruturasADxSitsAtivs
 select * from ModFatoresAutenticacoesIts
 
+/*Verifica MFA Usuario*/
+
+select USR_CdiModFatorAutenticacao from Usuarios where USR_CdsUsuario = 'flsantos@apdatatst.com.br'
+select USR_CdiModFatorAutenticacao from Usuarios where USR_CdsUsuario = 'flsantos@apdata.com.br'
+
+/*Ativar MFA no Usuario*/
+
+update Usuarios set USR_CdiModFatorAutenticacao = 1 where USR_CdsUsuario = 'flsantos@apdatatst.com.br'
+
+/*Tirar o flsantos do grupo especial de login*/
+
+select GUS_D1sGrupoUsuario, GUS_CdiOpcao_AtivaIntegracao, GUS_CdiTipoAutenticacao, GUS_CdiOpcao_IntegraViaWS From GruposUsuarios where GUS_D1sGrupoUsuario = 'Apdata - Programação - Special Login'
+select DZW_OplIntegraViaWS from DefSisIntegracaoAD 
+
+update GruposUsuarios set GUS_CdiOpcao_IntegraViaWS = 0 where GUS_D1sGrupoUsuario = 'Apdata - Programação - Special Login'  
+update DefSisIntegracaoAD set DZW_OplIntegraViaWS = 0 
+
+/***/
+
 Select USR_CdiUsuario From Usuarios Where USR_CdsUsuario = 'jmenotti'
 
 /* Cria usuario Begin*/

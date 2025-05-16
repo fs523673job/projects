@@ -78,11 +78,11 @@ def check_status(driver, mr_url):
 
     for selector in selectors:
         try:
-            tag = WebDriverWait(driver, 5).until(
+            tag = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, selector))
             )
             status = tag.text.strip()   # Open, Merged ou Closed
-            if status in ("Open", "Merged", "Closed"):
+            if status in ["Open", "Merged", "Closed"]:
                 # tenta capturar <time class="js-timeago ... datetime=...">
                 try:
                     time_el = driver.find_element(By.CSS_SELECTOR, "time.js-timeago.gl-inline-block")
@@ -93,8 +93,26 @@ def check_status(driver, mr_url):
         except Exception:
             # selector não encontrado, tenta o próximo
             pass
-    return None, None
 
+    try:
+        WebDriverWait(driver, 8).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "span.gl-badge-content"))
+        )
+    except:
+        return None, None
+
+    badges = driver.find_elements(By.CSS_SELECTOR, "span.gl-badge-content")
+    for badge in badges:
+        status = badge.text.strip()
+        if status in ("Open", "Merged", "Closed"):
+            try:
+                time_el = driver.find_element(By.CSS_SELECTOR, "time.js-timeago.gl-inline-block")
+                mr_date = time_el.get_attribute("datetime")
+            except:
+                mr_date = None
+            return status, mr_date
+
+    return None, None
 # --------------------------------------------------------------------------------------
 def main():
     kill_chrome()
