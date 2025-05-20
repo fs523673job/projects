@@ -126,8 +126,12 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesSobs'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesQueries'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsPars'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd = 10031', 'BBP_CdiModeloIntegracaoCmdCpo,BBP_CdiModeloIntegracaoCmd,BBP_DssCampo_Destino,BBP_DssCampo_Origem,BBP_CdiTipoCampo'
-exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd = 10026'
-exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao = 10033'
+exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd = 10045'
+exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao = 10038'
+exec sp_Generate_Exec_Insert @table = 'ModelosIntegracoes',  @where = 'BBR_CdiModeloIntegracao = 10038',  @ordNum = 42, @showCmd = 1; 
+exec sp_Generate_Exec_Insert @table = 'ModelosIntegracoesCmds',  @where = 'BBS_CdiModeloIntegracaoCmd = 10045',  @ordNum = 42, @showCmd = 1; 
+exec sp_Generate_Exec_Insert @table = 'ModelosIntegracoesCmdsCpos',  @where = 'BBP_CdiModeloIntegracaoCmdCpo = 10248',  @ordNum = 42, @showCmd = 1;
+exec sp_Generate_Exec_Insert @table = 'ServidoresIntegracoesBDs',  @where = 'BBO_CdiServidorIntegracaoBD = 33',  @ordNum = 31, @showCmd = 1;
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10022', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL,SQL_D1bComentarios'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLsGrupos'
 exec sp_Simple_Generate_Inserts_From_Selects 'Consultas', 'ACS_CdiConsulta = 10018'

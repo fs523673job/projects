@@ -1394,7 +1394,8 @@ begin
 		/*REST*/ /*MI: 10034*/ exec sp_Execute_Insert 'dbo', 33, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10034, ''(OUT) POSTMAN PRE REQUEST''', 1
 		/*REST*/ /*MI: 10035*/ exec sp_Execute_Insert 'dbo', 34, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10035, ''(OUT) POSTMAN SQL''', 1
 		/*REST*/ /*MI: 10036*/ exec sp_Execute_Insert 'dbo', 36, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10036, ''(OUT) POSTMAN api/v5/get/arrayjson''', 1
-		/*REST*/ /*MI: 10037*/ exec sp_Execute_Insert 'dbo', 35, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10037, ''(IN/OUT) REPROCESS MODEL''', 1
+		/*REST*/ /*MI: 10037*/ exec sp_Execute_Insert 'dbo', 36, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10037, ''(IN/OUT) REPROCESS MODEL''', 1
+		/*REST*/ /*MI: 10038*/ exec sp_Execute_Insert 'dbo', 37, 'ModelosIntegracoes', 'BBR_CdiModeloIntegracao, BBR_D1sModeloIntegracao', '10038, ''(IN) PROVIDER GRID''', 1
 
 		/*#### OBJETO - 554 - ModeloIntegracoes/EventoMonitoracaoBase */
 		/*MONI*/ exec sp_Execute_Insert 'dbo', 01, 'ModsIntsMonitsBasesEventos', 'EBK_CdiModIntMonitBaseEvento, EBK_CdiModeloIntegracao, EBK_CdiTransacao, EBK_CdiIdioma, EBK_D1sModIntMonitBaseEvento, EBK_DssCondicaoExecucao, EBK_DsbComandoSQLEvento', '10002, 10029, 19232, 1, ''(TESTES) MONIT INSERIR CARGO'', ''Evento = 1'', 0xEFBBBF73656C656374202A2066726F6D20496E746567726174696F6E4D6F6E69746F726163616F2077686572652069645F696E746567726174696F6E6D6F6E69746F726163616F203D203A69645F696E746567726174696F6E6D6F6E69746F726163616F', 1
@@ -1445,6 +1446,7 @@ begin
 		/*REST*/ /*MI: 10035, MIC: 10042*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 41, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_OplEnviarTudo, BBS_CdiEventoTransacao', 10042, 0, @SQL_CdiComandoSQL, 21, '10035, ''(TESTES) SAIDA SQL'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/post/replayContent'', 3, 1, 2', 1
    	    /*REST*/ /*MI: 10036, MIC: 10043*/ exec sp_Execute_Insert 'dbo', 42, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_OplGravarResponse, BBS_CdiTransacao_Retorno, BBS_CdiModeloIntegracao_Ret', '10043, 10036, ''(TESTES) REST MOCK POSTMAN GET COMPLEXY ARRAY V5'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v5/get/arrayjson'', 1, 1, 39772, 10037', 1
 		/*REST*/ /*MI: 10037, MIC: 10044*/ exec sp_Execute_Insert 'dbo', 43, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_CdiVerboHTTP, BBS_OplGravarResponse', '10044, 10037, ''(TESTES) MODELO REPROCESSAMENTO'', 1, 30063, 1, 1', 1
+		/*REST*/ /*MI: 10038, MIC: 10045*/ exec sp_Execute_Insert 'dbo', 44, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_OplOneForManyInclusao, BBS_D1sModeloIntegracaoCmd', '10045, 10038, 1, 57852, 1, ''(IN) PROVIDER GRID''', 1
 
 		/*##### ModelosIntegracoesCmdsCpos MICC*/
 		/*SOAP*/ /*MIC: 10001, MICC: 10001*/ exec sp_Execute_Insert 'dbo', 001, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String, BBP_OplConteudoFixo', '10001, 10001, ''consultaCEP;cep'', 9, ''03510030'', 1', 1        
@@ -1691,6 +1693,8 @@ begin
 		/*REST*/ /*MIC: 10042, MICC: 10244*/ exec sp_Execute_Insert 'dbo', 243, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida, BBP_CdiOperacaoLogica', '10244, 10042, ''Campo4LT'', ''Campo4SQL'', 9, 1013, 1', 1
 		/*REST*/ /*MIC: 10042, MICC: 10245*/ exec sp_Execute_Insert 'dbo', 244, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida, BBP_CdiOperacaoLogica', '10245, 10042, ''Campo5LT'', ''Campo5SQL'', 9, 1013, 1', 1
 		/*REST*/ /*MIC: 10042, MICC: 10246*/ exec sp_Execute_Insert 'dbo', 245, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiLayOutSaida, BBP_CdiOperacaoLogica', '10246, 10042, ''Campo6LT'', ''Campo6SQL'', 9, 1013, 1', 1 
+		/*REST*/ /*MIC: 10045, MICC: 10247*/ exec sp_Execute_Insert 'dbo', 246, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiModeloIntegracaoCmdCpo', '10045, BED_CdiJuridicaLocal, BED_CdiJuridicaLocal, 9, 10247', 1
+		/*REST*/ /*MIC: 10045, MICC: 10248*/ exec sp_Execute_Insert 'dbo', 247, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_DssCampo_Origem, BBP_CdiTipoCampo, BBP_CdiModeloIntegracaoCmdCpo', '10045, BED_CdiContratoPJ, BED_CdiContratoPJ, 9, 10248', 1
 
 		/*##### ModelosIntegracoesCmdsRets*/
 		/*REST*/ /*MICR: 10003, MIC: 10016*/ exec sp_Execute_Insert 'dbo', 02, 'ModelosIntegracoesCmdsRets', 'JWR_CdiModeloIntegracaoCmdRets, JWR_CdiModeloIntegracaoCmd, JWR_DssCampoDestino, JWR_DssCampoOrigem', '10003, 10016, ''name'', ''data;name''', 1
@@ -1782,6 +1786,8 @@ begin
 		exec sp_Execute_Insert 'dbo', 29, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '29, 1, ''(TESTES) REST MOCK POSTMAN PRE REQUEST'', 10034, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1
 		exec sp_Execute_Insert 'dbo', 30, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '30, 1, ''(TESTES) REST MOCK POSTMAN V5'', 10036, 1, 10, 1, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/''', 1
 		exec sp_Execute_Insert 'dbo', 31, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_DssNomeServidor', '31, 1, ''(TESTES) REST REPROCESSAMENTO RETORNO 7313'', 10037, 1, 10, 1, ''https://localhost:7081/soap/IApWebServices''', 1
+		exec sp_Execute_Insert 'dbo', 32, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_CdsUsuario_Banco, BBO_DssNomeServidor, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiTipoAutentConsWebServi, BBO_CosSenha_Banco', '32, 1, ''test'', ''tes'', 7, 1, 10038, 2, ''(TESTES) PROVIDER GRID IMP.XML'', 1, ''063D31''', 1
+		exec sp_Execute_Insert 'dbo', 33, 'ServidoresIntegracoesBDs', 'BBO_CdiServidorIntegracaoBD, BBO_CdiServidorIntegracao, BBO_CdiBaseDado, BBO_CdiTipoConexaoBaseDado, BBO_CdiModeloIntegracao, BBO_CdiTipoIntegracao, BBO_D1sServidorIntegracaoBD, BBO_CdiTipoAutentConsWebServi, BBO_CosSenha_Banco', '33, 1, 10, 1, 10038, 2, ''(TESTES) PROVIDER GRID REST'', 1, ''02''', 1
 
 		/*OUTROS AJUSTES PARA TESTES - INICIO*/
 			exec sp_Execute_Update 'dbo', 01, 'FormulariosWFSobreps', 'BRH_CdiOpcao_Desativado = 0', 'BRH_CdiFormularioWF = 407'
@@ -2362,8 +2368,182 @@ BEGIN
 END;
 GO
 
-/**********************************************************************/
+/**********************************************************************
+    17 - EXPORTA NO FORMATO SP_EXECUTE_INSERT
+***********************************************************************/
 
+CREATE OR ALTER PROCEDURE sp_Generate_Exec_Insert
+(
+    @table VARCHAR(200),
+    @where VARCHAR(MAX) = NULL,
+    @fields VARCHAR(MAX) = NULL,
+    @ordNum INT = 0,
+    @showCmd INT = 0
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @insert VARCHAR(MAX);
+    DECLARE @schema VARCHAR(200) = 'dbo';
+    DECLARE @tempTable TABLE (LineText VARCHAR(MAX));
+    
+    -- Usar tabela temporária para capturar a saída
+    DECLARE @outputTable TABLE (LineText VARCHAR(MAX));
+    
+    -- Gerar os INSERTs básicos diretamente na tabela temporária
+	declare @lineResult varchar(max);
+    
+	exec sp_Generate_Inserts_From_Selects @schema = 'dbo',
+		                                  @table  = @table,
+			                              @where  = @where,
+										  @fields = @fields,
+				                          @insert = @lineResult output;
+
+   print @lineResult
+
+   INSERT INTO @outputTable select @lineResult
+
+    -- Processar cada linha para formatar como sp_Execute_Insert
+   DECLARE @processedResults TABLE (FormattedLine VARCHAR(MAX));
+    
+   DECLARE @currentLine VARCHAR(MAX);
+   DECLARE @tableName VARCHAR(200);
+   DECLARE @fieldsList VARCHAR(MAX);
+   DECLARE @valuesList VARCHAR(MAX);
+    
+    -- Extrair informações de cada INSERT
+   DECLARE line_cursor CURSOR FOR 
+   SELECT LineText FROM @outputTable 
+   WHERE LineText LIKE '%insert into dbo.%' OR LineText LIKE 'insert into %values%';
+    
+    OPEN line_cursor;
+    FETCH NEXT FROM line_cursor INTO @currentLine;
+    
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Extrair nome da tabela
+        SET @tableName = SUBSTRING(@currentLine, 
+                                  CHARINDEX('.', @currentLine) + 1,
+                                  CHARINDEX('(', @currentLine) - CHARINDEX('.', @currentLine) - 1);
+        SET @tableName = REPLACE(@tableName, CHAR(13), '');
+        SET @tableName = REPLACE(@tableName, CHAR(10), '');
+        SET @tableName = LTRIM(RTRIM(@tableName));
+        
+        -- Extrair lista de campos
+        SET @fieldsList = SUBSTRING(@currentLine,
+                                   CHARINDEX('(', @currentLine) + 1,
+                                   CHARINDEX(')', @currentLine) - CHARINDEX('(', @currentLine) - 1);
+        SET @fieldsList = REPLACE(@fieldsList, CHAR(13), '');
+        SET @fieldsList = REPLACE(@fieldsList, CHAR(10), '');
+        SET @fieldsList = LTRIM(RTRIM(@fieldsList));
+        
+        -- Extrair lista de valores
+        SET @valuesList = SUBSTRING(@currentLine,
+                                   CHARINDEX('values(', @currentLine) + 7,
+                                   CHARINDEX(');', @currentLine) - CHARINDEX('values(', @currentLine) - 7);
+        SET @valuesList = REPLACE(@valuesList, CHAR(13), '');
+        SET @valuesList = REPLACE(@valuesList, CHAR(10), '');
+        SET @valuesList = LTRIM(RTRIM(@valuesList));
+        
+        -- Processar campos e valores para remover nulos/zerados
+        DECLARE @filteredFields VARCHAR(MAX) = '';
+        DECLARE @filteredValues VARCHAR(MAX) = '';
+        
+        DECLARE @field VARCHAR(200);
+        DECLARE @value VARCHAR(MAX);
+        DECLARE @pos INT;
+        DECLARE @nextPos INT;
+        DECLARE @commaPos INT;
+        
+        -- Processar cada par campo/valor
+        WHILE LEN(@fieldsList) > 0 AND LEN(@valuesList) > 0
+        BEGIN
+            -- Extrair próximo campo
+            SET @commaPos = CHARINDEX(',', @fieldsList);
+            IF @commaPos = 0
+                SET @commaPos = LEN(@fieldsList) + 1;
+                
+            SET @field = SUBSTRING(@fieldsList, 1, @commaPos - 1);
+            SET @field = LTRIM(RTRIM(@field));
+            
+            -- Extrair próximo valor correspondente
+            SET @pos = 1;
+            SET @nextPos = 1;
+            DECLARE @inQuotes BIT = 0;
+            DECLARE @char CHAR(1);
+            
+            WHILE @nextPos <= LEN(@valuesList)
+            BEGIN
+                SET @char = SUBSTRING(@valuesList, @nextPos, 1);
+                
+                IF @char = '''' 
+                    SET @inQuotes = ~@inQuotes;
+                ELSE IF @char = ',' AND @inQuotes = 0
+                    BREAK;
+                    
+                SET @nextPos = @nextPos + 1;
+            END
+            
+            IF @nextPos > LEN(@valuesList)
+                SET @nextPos = LEN(@valuesList) + 1;
+                
+            SET @value = SUBSTRING(@valuesList, 1, @nextPos - 1);
+            SET @value = LTRIM(RTRIM(@value));
+            
+            -- Verificar se o valor não é nulo ou zero
+            IF @value NOT IN ('null', '0', '''''')
+            BEGIN
+                IF LEN(@filteredFields) > 0
+                BEGIN
+                    SET @filteredFields = @filteredFields + ', ';
+                    SET @filteredValues = @filteredValues + ', ';
+                END
+                
+                SET @filteredFields = @filteredFields + @field;
+                SET @filteredValues = @filteredValues + @value;
+            END
+            
+            -- Remover campo e valor processados
+            IF @commaPos <= LEN(@fieldsList)
+                SET @fieldsList = SUBSTRING(@fieldsList, @commaPos + 1, LEN(@fieldsList) - @commaPos);
+            ELSE
+                SET @fieldsList = '';
+                
+            IF @nextPos <= LEN(@valuesList)
+                SET @valuesList = SUBSTRING(@valuesList, @nextPos + 1, LEN(@valuesList) - @nextPos);
+            ELSE
+                SET @valuesList = '';
+        END
+        
+		print @tableName
+
+        DECLARE @origTable VARCHAR(MAX) = @tableName;
+
+		SET @pos = CHARINDEX('dbo.', LOWER(@origTable));
+
+        IF @pos > 0
+          SET @origTable = SUBSTRING(@origTable, @pos + 4, LEN(@origTable));
+
+        -- Gerar o comando formatado para sp_Execute_Insert
+        DECLARE @formattedCmd VARCHAR(MAX);
+        SET @formattedCmd = '/*REST*/ /*????: 00000, ????: 00000*/ exec sp_Execute_Insert ''' + @schema + ''', ' + 
+                           CAST(@ordNum AS VARCHAR) + ', ''' + @origTable + ''', ''' + 
+                           @filteredFields + ''', ''' + @filteredValues + ''', ' + 
+                           CAST(@showCmd AS VARCHAR);
+        
+        INSERT INTO @processedResults VALUES (@formattedCmd);
+        
+        FETCH NEXT FROM line_cursor INTO @currentLine;
+    END
+    
+    CLOSE line_cursor;
+    DEALLOCATE line_cursor;
+    
+    -- Exibir resultados
+    SELECT FormattedLine FROM @processedResults;
+END
+GO
 
 /**********************************************************************
     13 - STRING SPLIT (COMPATIBILIDADE DE FUNCAO)
