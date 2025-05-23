@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<root>
+	<record>
+		<IDFUN>0001</IDFUN>
+		<CONT>FULANO_01</CONT>
+		<FIELDSDEP>
+			<FIELD>
+				<NAME>PRIMEIRO TESTE</NAME>
+				<VALUE>10</VALUE>
+				<AGE>11 ANOS</AGE>
+			</FIELD>
+			<FIELD>
+				<NAME>SEGUNDO TESTE</NAME>
+				<VALUE>12 ANOS</VALUE>
+			</FIELD>
+			<FIELD>
+				<NAME>TERCEIRO TESTE</NAME>
+				<VALUE>13 ANOS</VALUE>
+			</FIELD>
+		</FIELDSDEP>
+	</record>
+	<record>
+		<IDFUN>0002</IDFUN>
+		<CONT>FULANO_02</CONT>
+		<FIELDSDEP>
+			<FIELD>
+				<NAME>NOVO_TESTE</NAME>
+				<VALUE>001</VALUE>
+				<AGE>001</AGE>
+			</FIELD>
+			<FIELD>
+				<NAME>NOVO_TESTE1</NAME>
+				<VALUE>002</VALUE>
+				<AGE>002</AGE>
+			</FIELD>
+			<FIELD>
+				<NAME>NOVO_TESTE3</NAME>
+				<VALUE>003</VALUE>
+				<AGE>003</AGE>
+			</FIELD>
+		</FIELDSDEP>
+	</record>
+</root>
+
+<!-- 
+record.IDFUN#integer
+record.CONT#integer
+record.FIELDSDEP{FIELD.NAME;FIELD.VALUE;FIELD.AGE}#integer;integer;integer
+-->

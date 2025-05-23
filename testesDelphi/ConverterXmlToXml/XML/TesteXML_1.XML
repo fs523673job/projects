@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<root>
+	<record>
+		<FIELD1>1</FIELD1>
+		<FIELD2>2</FIELD2>
+		<FIELD3>3</FIELD3>
+	</record>
+	<record>
+		<FIELD1>4</FIELD1>
+		<FIELD2>5</FIELD2>
+		<FIELD3>6</FIELD3>
+	</record>
+</root>
+
+<!--
+record.FIELD1#Integer
+record.FIELD2#Integer
+record.FIELD3#Integer
+-->

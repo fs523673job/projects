@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<root>
+	<record>
+		<CONJUNTOCAMPOS>
+			<FIELD1>6</FIELD1>
+			<FIELD2>7</FIELD2>
+			<FIELD3>8</FIELD3>
+		</CONJUNTOCAMPOS>
+	</record>
+	<record>
+		<CONJUNTOCAMPOS>
+			<FIELD1>9</FIELD1>
+			<FIELD2>10</FIELD2>
+			<FIELD3>11</FIELD3>
+		</CONJUNTOCAMPOS>	
+	</record>
+</root>
+
+<!--
+record.CONJUNTOCAMPOS.FIELD1#Integer
+record.CONJUNTOCAMPOS.FIELD2#Integer
+record.CONJUNTOCAMPOS.FIELD3#Integer
+-->

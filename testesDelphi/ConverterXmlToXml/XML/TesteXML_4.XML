@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<root>
+	<record>
+		<IDFUN>0001</IDFUN>
+		<CONJUNTOCAMPOS>
+			<CAMPO1>
+				<FIELD1>10</FIELD1>
+				<FIELD2>11</FIELD2>
+				<FIELD3>12</FIELD3>
+				<FIELDS>
+					<FIELD1>16</FIELD1>
+					<FIELD2>17</FIELD2>
+					<FIELD3>18</FIELD3>
+				</FIELDS>
+				<FIELDSDEP>
+					<FIELD>
+						<NAME>TESTE</NAME>
+						<VALUE>10</VALUE>
+						<AGE>11</AGE>
+					</FIELD>
+					<FIELD>
+						<NAME>TESTE1</NAME>
+						<VALUE>11</VALUE>
+					</FIELD>
+					<FIELD>
+						<NAME>TESTE2</NAME>
+						<VALUE>12</VALUE>
+					</FIELD>
+				</FIELDSDEP>
+			</CAMPO1>
+		</CONJUNTOCAMPOS>
+	</record>
+	<record>
+	    <IDFUN>0002</IDFUN>
+		<CONJUNTOCAMPOS>
+			<CAMPO1>
+				<FIELD1>13</FIELD1>
+				<FIELD2>14</FIELD2>
+				<FIELD3>15</FIELD3>
+				<FIELDS>
+					<FIELD1>20</FIELD1>
+					<FIELD2>21</FIELD2>
+					<FIELD3>22</FIELD3>
+				</FIELDS>
+				<FIELDSDEP>
+					<FIELD>
+						<NAME>TESTE4</NAME>
+						<VALUE>13</VALUE>
+					</FIELD>
+					<FIELD>
+						<NAME>TESTE5</NAME>
+						<VALUE>14</VALUE>
+					</FIELD>
+					<FIELD>
+						<NAME>TESTE6</NAME>
+						<VALUE>15</VALUE>
+					</FIELD>
+				</FIELDSDEP>
+			</CAMPO1>
+		</CONJUNTOCAMPOS>	
+	</record>
+</root>
+
+<!--
+record.IDFUN#Integer
+record.CONJUNTOCAMPOS.CAMPO1.FIELD1#Integer
+record.CONJUNTOCAMPOS.CAMPO1.FIELD2#Integer
+record.CONJUNTOCAMPOS.CAMPO1.FIELD3#Integer
+record.CONJUNTOCAMPOS.CAMPO1.FIELDS.FIELD1#Integer
+record.CONJUNTOCAMPOS.CAMPO1.FIELDS.FIELD2#Integer
+record.CONJUNTOCAMPOS.CAMPO1.FIELDS.FIELD3#Integer
+record.CONJUNTOCAMPOS.CAMPO1.FIELDSDEP{FIELD.NAME;FIELD.VALUE;FIELD.AGE}#String;Integer;Integer
+-->
