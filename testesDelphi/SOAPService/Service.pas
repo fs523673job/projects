@@ -177,3 +177,9 @@ begin
 end;
 
 end.
+
+initialization
+  InvRegistry.RegisterInterface(TypeInfo(IServices), 'urn:IServicesIntf', '');
+  InvRegistry.RegisterInvokableClass(TServices);
+end.
+
