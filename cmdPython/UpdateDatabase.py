@@ -54,15 +54,31 @@ def copy_file_with_progress(src, dest):
             fdst.write(buffer)
             bar.update(len(buffer))
 
+def listar_backups(caminho):
+    arquivos = [f for f in os.listdir(caminho) if f.endswith('.BAK')]
+    for idx, arquivo in enumerate(arquivos, 1):
+        print(f"[{idx}] {arquivo}")
+    escolha = int(input("Escolha o número do backup a restaurar: "))
+    return arquivos[escolha - 1]
+
 def main():
     # Solicitando entrada do usuário
-    copiar_arquivo = input("Copiar novo backup da base? [yes, no]: ").lower()
+    copiar_arquivo = input("Copiar novo backup da base? [yes, no, listar]: ").lower()
     restaurar = input("Restaurar Base Dados e adicionar dados default (*no* apenas restauracao) [yes, no]: ").lower()
-    base_beta = input("Restaurar Base Beta [yes, no]: ").lower()
 
     # Set database based on user input
     global database
-    database = "Oficial_31202.BAK" if base_beta == "yes" else "Oficial_55900.BAK"
+
+    base_beta = "no"
+    if copiar_arquivo != "listar":
+        base_beta = input("Restaurar Base Beta [yes, no]: ").lower()
+
+    if copiar_arquivo == "listar":
+        backup_escolhido = listar_backups(BASES_LOCAL_PATH)
+        database = backup_escolhido
+    else:
+        database = "Oficial_31202.BAK" if base_beta == "yes" else "Oficial_55900.BAK"
+
     source_path = rf"\\172.26.7.209\BackupsOficiais\{database}"
 
     if (copiar_arquivo == "yes"):
