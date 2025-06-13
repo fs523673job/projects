@@ -47,11 +47,12 @@ type
   TRestUtils = class
   private
   public
-    class function JsonToXML(AJSONValue: TJSONValue): String; overload;
-    class function JsonToXML(AJSONObj: TJSONObject): String; overload;
+    class function JsonToXML(const AJSONValue: TJSONValue): String; overload;
     class function ConvertJSONValueToJSONObject(const AJSONContent: String; const AIsUTF8: Boolean = False): TJSONObject;
     class function ConvertJSONObjectToStringStream(const AJSONObj: TJSONObject): TStringStream;
     class function ResultContentNodesInMap(const AMap: TArray<String>; const AContentXML: String): TArray<String>;
+    class function BeautifierXML(const AXmlContent: String): String;
+    class function XMLPath(const AXmlContent: String): String;
   end;
 
 implementation
@@ -101,7 +102,7 @@ begin
   end;
 end;
 
-class function TRestUtils.JsonToXML(AJSONValue: TJSONValue): String;
+class function TRestUtils.JsonToXML(const AJSONValue: TJSONValue): String;
 var
   nativeXML : TNativeXml;
 
@@ -119,9 +120,9 @@ var
       for c := 0 to TJSONObject(AJSONObj).Count - 1 do
       begin
         if Assigned(AElement) then
-          XMLNode := AElement.NodeNew(TJSONObject(AJSONObj).Pairs[c].JsonString.Value)
+          XMLNode := AElement.NodeNew(TJSONObject(AJSONObj).Pairs[c].JsonString.Value.Trim.Replace(' ', '', [rfReplaceAll]))
         else
-          XMLNode := ANode.NodeNew(TJSONObject(AJSONObj).Pairs[c].JsonString.Value);
+          XMLNode := ANode.NodeNew(TJSONObject(AJSONObj).Pairs[c].JsonString.Value.Trim.Replace(' ', '', [rfReplaceAll]));
 
         if (TJSONObject(AJSONObj).Pairs[c].JsonValue is TJSONArray) then
           AddJsonArray(XMLNode, TJSONArray(TJSONObject(AJSONObj).Pairs[c].JsonValue))
@@ -151,7 +152,7 @@ var
           begin
             if (item.Pairs[i].JsonValue is TJSONArray) then
             begin
-              XMLNode := XMLNode.NodeNew(item.Pairs[i].JsonString.Value);
+              XMLNode := XMLNode.NodeNew(item.Pairs[i].JsonString.Value.Trim.Replace(' ', '', [rfReplaceAll]));
               AddJsonArray(XMLNode, item.Pairs[i].JsonValue as TJSONArray);
             end
             else if (item.Pairs[i].JsonValue is TJSONObject) then
@@ -159,11 +160,11 @@ var
               for w := 0 to TJSONObject(item.Pairs[i].JsonValue).Count - 1 do
               begin
                 itemObj := TJSONObject(item.Pairs[i].JsonValue);
-                XMLNode.NodeNew(itemObj.Pairs[w].JsonString.Value).Value := itemObj.Pairs[w].JsonValue.Value;
+                XMLNode.NodeNew(itemObj.Pairs[w].JsonString.Value.Trim.Replace(' ', '', [rfReplaceAll])).Value := itemObj.Pairs[w].JsonValue.Value;
               end;
             end
             else
-              XMLNode.NodeNew(item.Pairs[i].JsonString.Value).Value := item.Pairs[i].JsonValue.Value;
+              XMLNode.NodeNew(item.Pairs[i].JsonString.Value.Trim.Replace(' ', '', [rfReplaceAll])).Value := item.Pairs[i].JsonValue.Value;
           end;
         end;
       end;
@@ -189,25 +190,30 @@ var
         begin
           if itemObj.Pairs[x].JsonValue is TJSONArray then
           begin
-            auxNode := LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value);
+            auxNode := LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value.Trim.Replace(' ', '', [rfReplaceAll]));
             AddJsonArray(auxNode, TJSONArray(itemObj.Pairs[x].JsonValue))
           end
           else if (itemObj.Pairs[x].JsonValue is TJSONObject) then
           begin
-            auxNode := LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value);
+            auxNode := LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value.Trim.Replace(' ', '', [rfReplaceAll]));
             AddJsonObject(nil, auxNode, itemObj.Pairs[x].JsonValue);
           end
           else
-            LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value).Value := itemObj.Pairs[x].JsonValue.Value;
+            LocalNode.NodeNew(itemObj.Pairs[x].JsonString.Value.Trim.Replace(' ', '', [rfReplaceAll])).Value := itemObj.Pairs[x].JsonValue.Value;
         end
       end
       else if AJSONArray.Items[y].ClassType = TJSONPair then
       begin
-         auxNode := ARootNode.NodeNew(TJSONPair(AJSONArray.Items[y]).JSONString.Value);
+         auxNode := ARootNode.NodeNew(TJSONPair(AJSONArray.Items[y]).JSONString.Value.Trim.Replace(' ', '', [rfReplaceAll]));
          if (TJSONPair(AJSONArray.Items[y]).JsonValue.Value <> '') then
            auxNode.Value := TJSONPair(AJSONArray.Items[y]).JsonValue.Value
          else
-           AddJsonObject(nil, auxNode, TJSONPair(AJSONArray.Items[y]).JsonValue);
+         begin
+           if (TJSONPair(AJSONArray.Items[y]).JsonValue is TJSONObject) then
+             AddJsonObject(nil, auxNode, TJSONPair(AJSONArray.Items[y]).JsonValue)
+           else if (TJSONPair(AJSONArray.Items[y]).JsonValue is TJSONArray) then
+             AddJsonArray(auxNode, TJSONArray(TJSONPair(AJSONArray.Items[y]).JsonValue));
+         end;
       end
       else if AJSONArray.Items[y].ClassType <> TJSONArray then
       begin
@@ -268,13 +274,6 @@ begin
   end;
 end;
 
-
-class function TRestUtils.JsonToXML(AJSONObj: TJSONObject): String;
-begin
-  Result := '';
-end;
-
-
 class function TRestUtils.ResultContentNodesInMap(const AMap: TArray<String>; const AContentXML: String): TArray<String>;
 var
   ConnId                 : Integer;
@@ -316,7 +315,7 @@ begin
       if not IsSOAPResponse then
       begin
         Response.Position := 0;
-        ContentString     := Response.DataString;
+        ContentString     := AContentXML;
         jsonObject        := TRestUtils.ConvertJSONValueToJSONObject(ContentString);
         try
           ContentString     := TRestUtils.JsonToXML(jsonObject);
@@ -382,7 +381,9 @@ begin
           end
           else
           begin
-            TagName   := StrTagsNames[Length(StrTagsNames) - 1];
+            FullPathXml := String.Join(';', StrMapXml);
+
+            TagName   := StrMapXml[Length(StrMapXml) - 1];
             TagParent := PathTags;
 
             Delete(TagParent, Length(TagParent) - Length(TagName), Length(TagName) + 1);
@@ -426,7 +427,9 @@ begin
 
               for c := 0 to XMLListNodes.Count - 1 do
               begin
-                if (true) then
+                KeyLogsIntegracoesRets := 1;
+
+                if (KeyLogsIntegracoesRets > 1) then
                 begin
                   for i := 0 to TagsStructureRepXML.TagListOrigem.Count - 1 do
                   begin
@@ -460,6 +463,12 @@ begin
                       else
                         XMLNode := XMLResponse.Root.FindNode(TagsStructureRepXML.ListFullPath[i] + '/' + TagsStructureRepXML.TagListOrigem[i]);
                     end;
+
+                    if Assigned(XMLNode) then
+                    begin
+                      SetLength(Result, Length(Result) + 1);
+                      Result[High(Result)] := Format('%s=%s', [XMLNode.FullPath, XMLNode.Value]);
+                    end;
                   end;
 
                   for Key2 in XMLNodesStructures.Keys do
@@ -490,12 +499,17 @@ begin
               XMLNode := XMLResponse.Root.FindNode(TagsStructureXML.TagParent);
 
               if not Assigned(XMLNode) then
+                XMLNode := XMLResponse.Root.FindNode('/' + TagsStructureXML.TagParent.Replace(';', '/'));
+
+              if not Assigned(XMLNode) then
               begin
                 if AnsiSameStr(XMLResponse.Root.Name, TagsStructureXML.TagParent) then
                   XMLNode := XMLResponse.Root.Nodes[0]
                 else
                   Continue;
               end;
+
+              KeyLogsIntegracoesRets := 1;
 
               if (KeyLogsIntegracoesRets > 0) then
               begin
@@ -509,11 +523,9 @@ begin
                     Continue;
                 end;
 
-                if ConcatXML then
-                begin
-                end;
+                SetLength(Result, Length(Result) + 1);
+                Result[High(Result)] := Format('%s=%s', [XMLNode.FullPath, XMLNode.Value]);
               end;
-              ConcatXML := True;
             end;
           end;
         end;
@@ -527,6 +539,59 @@ begin
     Response.Free;
   end;
 end;
+
+class function TRestUtils.XMLPath(const AXmlContent: String): String;
+var
+  oXml : TNativeXml;
+  nodeXml: TXmlNode;
+
+  procedure WalkNodes(Node: TXmlNode; AListPath: TStringList);
+  begin
+    AListPath.Add(Copy(Node.FullPath.Replace('/', ';'), 2, Length(Node.FullPath)));
+
+    for var c : Integer := 0 to Node.NodeCount - 1 do
+      WalkNodes(Node.Nodes[c], AListPath)
+  end;
+
+begin
+  var ListPath := TStringList.Create;
+  try
+    oXml := TNativeXml.Create(nil);
+    try
+      try
+        oXml.ReadFromString(AXmlContent);
+        nodeXml := oXml.Root;
+        WalkNodes(nodeXml, ListPath);
+        Exit(ListPath.Text);
+      except
+        Result := 'Falha ao determinar os caminhos do XML';
+      end;
+    finally
+      oXml.Free;
+    end;
+  finally
+    ListPath.Free;
+  end;
+end;
+
+class function TRestUtils.BeautifierXML(const AXmlContent: String): String;
+var
+  oXml : TNativeXml;
+begin
+  oXml := TNativeXml.Create(nil);
+  try
+    try
+      oXml.ReadFromString(AXmlContent);
+      oXml.XmlFormat := xfReadable;
+      oXml.SaveToString(Result);
+    except
+      Result := AXmlContent;
+    end;
+  finally
+    oXml.Free;
+  end;
+end;
+
 
 { TTagsXML }
 

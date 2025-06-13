@@ -242,7 +242,10 @@ var
         end;
       04 :
         begin
-          Result := ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\Source\buildWebDispatcher.bat', [DirectoryRepository]), ASubCommand, Format('ApWebDispatcher - %s', [versionDelphi.ToUpper]));
+          if NewBuild then
+            Result := ExecuteInternal(PRJREPO + '\cmdBAT\bwebdispatcher.bat', Format('%s %s %s ApWebDispatcher Win64 ApWebDispatcher 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApWebDispatcher 64 - %s', [versionDelphi.ToUpper]))
+          else
+            Result := ExecuteInternal(Format('%s\Aplicacoes\ApWebDispatcher\ApWebDispatcher\buildWebDispatcher.bat', [DirectoryRepository]), ASubCommand, Format('ApWebDispatcher - %s', [versionDelphi.ToUpper]));
         end;
       05 :
         begin

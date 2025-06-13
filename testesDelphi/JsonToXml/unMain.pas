@@ -8,6 +8,7 @@ uses
   System.SysUtils,
   System.Variants,
   System.Classes,
+  System.Types,
   Vcl.Graphics,
   Vcl.Controls,
   Vcl.Forms,
@@ -36,7 +37,13 @@ type
     seJson: TSynEdit;
     tbXML: TTabSheet;
     seXML: TSynEdit;
+    tabPath: TTabSheet;
+    seXMLPath: TSynEdit;
+    tabXMLMap: TTabSheet;
+    seXMLMap: TSynEdit;
+    btnClearAll: TButton;
     procedure btConvertJsonToXmlClick(Sender: TObject);
+    procedure btnClearAllClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -57,7 +64,10 @@ begin
     0:
       begin
         try
-          seXML.Text := TRestUtils.ConvertJSONValueToJSONObject(seJson.Text).ToJSON;
+          var xmlResult := TRestUtils.BeautifierXML(TRestUtils.JsonToXML(TRestUtils.ConvertJSONValueToJSONObject(seJson.Text)));
+          seXML.Text := xmlResult;
+          seXMLPath.Text := TRestUtils.XMLPath(xmlResult);
+          seXMLMap.Lines.AddStrings(TRestUtils.ResultContentNodesInMap(seXMLPath.Lines.ToStringArray, seJson.Text));
         except
           on e: Exception do
             ShowMessage('Error na conversão do json' + sLineBreak + e.Message);
@@ -67,6 +77,16 @@ begin
       begin
       end;
   end;
+end;
+
+procedure TfrmMain.btnClearAllClick(Sender: TObject);
+begin
+  seJson.Lines.Clear;
+  seXML.Lines.Clear;
+  seXMLPath.Clear;
+  seXMLMap.Clear;
+
+  pg.TabIndex := 0;
 end;
 
 end.

@@ -2,19 +2,19 @@ object frmMain: TfrmMain
   Left = 245
   Top = 270
   Caption = 'Main'
-  ClientHeight = 743
-  ClientWidth = 714
+  ClientHeight = 696
+  ClientWidth = 1115
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
-  Position = poDesigned
+  Position = poDesktopCenter
   TextHeight = 15
   object btConvertJsonToXml: TButton
-    Left = 8
-    Top = 718
+    Left = 835
+    Top = 70
     Width = 273
     Height = 25
     Caption = 'Convert Json To Xml'
@@ -22,8 +22,8 @@ object frmMain: TfrmMain
     OnClick = btConvertJsonToXmlClick
   end
   object cmModel: TComboBox
-    Left = 8
-    Top = 690
+    Left = 835
+    Top = 42
     Width = 273
     Height = 22
     Style = csOwnerDrawFixed
@@ -37,16 +37,16 @@ object frmMain: TfrmMain
   object pg: TPageControl
     Left = 8
     Top = 16
-    Width = 704
+    Width = 825
     Height = 668
-    ActivePage = tbXML
+    ActivePage = tbJson
     TabOrder = 2
     object tbJson: TTabSheet
       Caption = 'JSON'
       object seJson: TSynEdit
         Left = 0
         Top = 0
-        Width = 696
+        Width = 817
         Height = 638
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
@@ -1573,8 +1573,7 @@ object frmMain: TfrmMain
           '    ]'
           '}')
         SelectedColor.Alpha = 0.400000005960464500
-        ExplicitLeft = -3
-        ExplicitTop = 88
+        ExplicitWidth = 1041
       end
     end
     object tbXML: TTabSheet
@@ -1583,7 +1582,7 @@ object frmMain: TfrmMain
       object seXML: TSynEdit
         Left = 0
         Top = 0
-        Width = 696
+        Width = 817
         Height = 638
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
@@ -1622,12 +1621,112 @@ object frmMain: TfrmMain
         Lines.Strings = (
           'seXML')
         SelectedColor.Alpha = 0.400000005960464500
-        ExplicitLeft = 71
-        ExplicitTop = 85
-        ExplicitWidth = 625
-        ExplicitHeight = 553
+        ExplicitWidth = 1041
       end
     end
+    object tabPath: TTabSheet
+      Caption = 'XML - Path'
+      ImageIndex = 2
+      object seXMLPath: TSynEdit
+        Left = 0
+        Top = 0
+        Width = 817
+        Height = 638
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Consolas'
+        Font.Style = []
+        Font.Quality = fqClearTypeNatural
+        TabOrder = 0
+        UseCodeFolding = False
+        Gutter.Font.Charset = DEFAULT_CHARSET
+        Gutter.Font.Color = clWindowText
+        Gutter.Font.Height = -11
+        Gutter.Font.Name = 'Consolas'
+        Gutter.Font.Style = []
+        Gutter.Font.Quality = fqClearTypeNatural
+        Gutter.Bands = <
+          item
+            Kind = gbkMarks
+            Width = 13
+          end
+          item
+            Kind = gbkLineNumbers
+          end
+          item
+            Kind = gbkFold
+          end
+          item
+            Kind = gbkTrackChanges
+          end
+          item
+            Kind = gbkMargin
+            Width = 3
+          end>
+        Lines.Strings = (
+          'seXMLPath')
+        SelectedColor.Alpha = 0.400000005960464500
+        ExplicitWidth = 1041
+      end
+    end
+    object tabXMLMap: TTabSheet
+      Caption = 'XML - Map'
+      ImageIndex = 3
+      object seXMLMap: TSynEdit
+        Left = 0
+        Top = 0
+        Width = 817
+        Height = 638
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Consolas'
+        Font.Style = []
+        Font.Quality = fqClearTypeNatural
+        TabOrder = 0
+        UseCodeFolding = False
+        Gutter.Font.Charset = DEFAULT_CHARSET
+        Gutter.Font.Color = clWindowText
+        Gutter.Font.Height = -11
+        Gutter.Font.Name = 'Consolas'
+        Gutter.Font.Style = []
+        Gutter.Font.Quality = fqClearTypeNatural
+        Gutter.Bands = <
+          item
+            Kind = gbkMarks
+            Width = 13
+          end
+          item
+            Kind = gbkLineNumbers
+          end
+          item
+            Kind = gbkFold
+          end
+          item
+            Kind = gbkTrackChanges
+          end
+          item
+            Kind = gbkMargin
+            Width = 3
+          end>
+        Lines.Strings = (
+          'seXMLMap')
+        SelectedColor.Alpha = 0.400000005960464500
+        ExplicitWidth = 1041
+      end
+    end
+  end
+  object btnClearAll: TButton
+    Left = 835
+    Top = 101
+    Width = 273
+    Height = 25
+    Caption = 'Clear All'
+    TabOrder = 3
+    OnClick = btnClearAllClick
   end
   object SynJSONSyn1: TSynJSONSyn
     Left = 760
