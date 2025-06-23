@@ -9,7 +9,7 @@ SELECT * FROM FEATURE_CRIADAS fc ORDER BY 1 DESC;
 SELECT * FROM FEATURE_CRIADAS fc WHERE fc.LINK_MR <> '' ORDER BY 1 DESC;
 
 INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM, REGEX_SEARCH, DESC_PT, NAME_PT, TYPE_FEATURE, DATETIME_FIELD) 
-VALUES ('PT_856800_MR', 'V559', '', 'ChatBot - Alex fez eu fiz o MR', ' ChatBot - Alex fez eu fiz o MR', '856800', 'MR', '2025-04-30 16:28:00.000')
+VALUES ('PT_867482_MR', 'V559', '', 'Corrigir Vulnerabilidades GA 5.59.14 (Pentest)', ' Corrigir Vulnerabilidades GA 5.59.14 (Pentest)', '867482', 'MR', '2025-06-18 17:38:00.000')
 
 /***************************************************************************************************************************/
 
@@ -18,6 +18,7 @@ SELECT * FROM FEATURE_CRIADAS fc WHERE NAME_PT LIKE '%823321%'
 
 UPDATE FEATURE_CRIADAS fc SET LINK_MR = 'https://gitlab.com/apdata/global-antares/-/merge_requests/2983' WHERE SHA_ORIGEM = '3e07dfe4f21'
 UPDATE FEATURE_CRIADAS fc SET STATUS_MR = 'Merged' WHERE ID in (183, 184, 185, 186, 187, 188)
+UPDATE FEATURE_CRIADAS SET NAME_FEATURE = 'PT_864782_MR' WHERE ID = 252 
  
 
 

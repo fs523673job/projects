@@ -162,7 +162,9 @@ class function TPreventXSS.PatternBlackList: TArray<String>;
 begin
  Result := [
     '<script.*?>.*?</script>',
+    '%3Cscript.*?%3E.*?%3E/script%3E',
     '<iframe.*?>.*?</iframe>',
+    '%3Ciframe.*?%3E.*?%3C/iframe%3E',
     'onerror\s*=',
     'onclick\s*=',
     'alert\s*\(',
@@ -413,11 +415,16 @@ var
   needEncoding: Boolean;
 begin
   try
+    Sanitized := AContent.Replace('+', '%2B');
     try
-      Sanitized := TNetEncoding.URL.Decode(AContent);
-    except
-      Sanitized := AContent;
+      try
+        Sanitized := TNetEncoding.URL.Decode(Sanitized);
+      except
+      end;
+    finally
+      Sanitized := Sanitized.Replace('%2B', '+');
     end;
+
     Sanitized := TPreventXSS.BasicDecode(Sanitized, needEncoding);
     for Pattern in APatterns do
     begin

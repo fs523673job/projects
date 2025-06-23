@@ -107,6 +107,7 @@ begin
     3 : seInput.Lines.Text := GENERAL_TEST_CONTENT_03;
     4 : seInput.Lines.Text := GENERAL_TEST_CONTENT_04;
     5 : seInput.Lines.Text := GENERAL_TEST_CONTENT_05;
+    6 : seInput.Lines.Text := GENERAL_TEST_CONTENT_06;
   end;
 end;
 
@@ -119,6 +120,7 @@ begin
   cmbExamples.Items.Add('04 - Conteudo 03');
   cmbExamples.Items.Add('05 - Conteudo 04');
   cmbExamples.Items.Add('06 - Conteudo 05');
+  cmbExamples.Items.Add('07 - Conteudo 06');
 end;
 
 end.

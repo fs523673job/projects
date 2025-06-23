@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  ftp-server:
+    image: fauria/vsftpd
+    container_name: ftp_server
+    ports:
+      - "21:21" # Porta de controle FTP
+      - "20:20" # Porta de dados FTP (ativo)
+      - "21100-21110:21100-21110" # Portas para modo passivo (PASV)
+    environment:
+      - FTP_USER=seu_usuario
+      - FTP_PASS=sua_senha_segura
+      - PASV_MIN_PORT=21100
+      - PASV_MAX_PORT=21110
+      - PASV_ADDRESS=127.0.0.1
+    volumes:
+      - ./ftp_data:/home/vsftpd # Onde os dados FTP serão armazenados
+    restart: always
