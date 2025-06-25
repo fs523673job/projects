@@ -131,7 +131,7 @@ exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoes', 'BBR_CdiModel
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLs', 'SQL_CdiComandoSQL = 10022', 'SQL_CdiComandoSQL,SQL_CdiComandoSQLGrupo,SQL_D1sComandoSQL,SQL_DsbComandoSQL,SQL_D1bComentarios'
 exec sp_Simple_Generate_Inserts_From_Selects 'ComandosSQLsGrupos'
 exec sp_Simple_Generate_Inserts_From_Selects 'Consultas', 'ACS_CdiConsulta = 10018'
-exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida in (1013)', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
+exec sp_Simple_Generate_Inserts_From_Selects 'LayoutsSaidas', 'BRD_CdiLayOutSaida in (1014)', 'BRD_CdiLayOutSaida,BRD_D1sLayOutSaida,BRD_D1bLayOutSaida'
 exec sp_Simple_Generate_Inserts_From_Selects 'UsuariosAutenticacoes', 'JVQ_CdiUsuarioAutenticacao = 1'
 exec sp_Simple_Generate_Inserts_From_Selects 'TiposComandosIntegrs'
 exec sp_Simple_Generate_Inserts_From_Selects 'ModelosIntegracoesCmdsRets'
@@ -144,6 +144,7 @@ exec sp_Generate_Exec_Insert @table = 'ModelosIntegracoesCmds',  @where = 'BBS_C
 exec sp_Generate_Exec_Insert @table = 'ModelosIntegracoesCmdsCpos',  @where = 'BBP_CdiModeloIntegracaoCmdCpo = 10248',  @ordNum = 42, @showCmd = 1;
 exec sp_Generate_Exec_Insert @table = 'ServidoresIntegracoesBDs',  @where = 'BBO_CdiServidorIntegracaoBD = 33',  @ordNum = 31, @showCmd = 1;
 exec sp_Generate_Exec_Insert @table = 'ModelosIntegracoesCmdsRets',  @where = 'JWR_CdiModeloIntegracaoCmdRets = 10059',  @ordNum = 42, @showCmd = 1; 
+exec sp_Generate_Exec_Insert @table = 'LayoutsSaidas',  @where = 'BRD_CdiLayOutSaida = 1015',  @ordNum = 42, @showCmd = 1; 
 
 
 exec sp_Execute_Insert_Key_ForeignKey 'dbo', 01, 'ListasGenericasItens', 'CJU_CdiListaGenericaItem, CJU_CdiListaGenerica, CJU_NuiConteudo_Inteiro', 1001, 1, 1002, 1, '1', 1 
