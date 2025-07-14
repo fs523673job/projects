@@ -1992,13 +1992,13 @@ begin
 			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 11, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 04, @ultimaChaveUsuario, 0, '222', 1
 			  exec sp_Execute_Insert_Key_ForeignKey 'dbo', 12, 'UsuariosXPerfis', 'USP_CdiUsuarioxPerfil, USP_CdiUsuario, USP_CdiPerfil', @ultimaChavePerfil, 05, @ultimaChaveUsuario, 0, '382', 1
 			  
-			  /*Cria MFA Teste*/
+			  /*Cria MFA Teste Objeto: 7172*/
 			  exec sp_GetLastIdFromTable 'ModFatoresAutenticacoes', 'JRZ_CdiModFatorAutenticacao', 1, @ultimaChaveTabela OUTPUT
 			  
 			  set @valoresCampos = CAST(@ultimaChaveTabela AS NVARCHAR(20)) + ',''Modelo Teste MFA'''
 			  exec sp_Execute_Insert 'dbo', 13, 'ModFatoresAutenticacoes', 'JRZ_CdiModFatorAutenticacao, JRZ_D1sModFatorAutenticacao', @valoresCampos, 1
 
-			  /*Atualiza tipo autenticação para teste*/
+			  /*Atualiza tipo autenticação para teste Objeto: 2330*/
 			  set @WhereNovoUsuario = 'USR_CdiUsuario = ' + CAST(@ultimaChaveUsuario AS NVARCHAR(20))
 			  exec sp_Execute_Update 'dbo', 14, 'Usuarios', 'USR_CdiOpcao_AutenticacaoNativ = 2', @WhereNovoUsuario
 

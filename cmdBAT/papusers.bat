@@ -7,6 +7,7 @@ setlocal
 set "VRS_DEFAULT=Apdata_X64"
 set "APP_DEFAULT=ApUsers"
 set "NAME_DEFAULT=ApUsers"
+set "DELPHIVERSION=22.0"
 
 :: Check if a version argument was passed in
 if not "%~2"=="" (

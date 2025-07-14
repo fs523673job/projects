@@ -217,6 +217,11 @@ begin
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Green]);
                 AMessages := Format('%s - Compilado sem erros', [ASystemName]);
               end
+              else if (Pos('ApWebDispatcher', String(pCommandLine)) > 0) then
+              begin
+                Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Green]);
+                AMessages := Format('%s - Compilado sem erros', [ASystemName]);
+              end
               else if (Pos('ERROS', UpperCase(String(pCommandLine))) > 0) then
               begin
                 Console.WriteColorLine(String(pCommandLine), [TConsoleColor.Red]);
