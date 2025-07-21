@@ -72,7 +72,7 @@
         <SanitizedProjectName>Teste_Conceito_PDF</SanitizedProjectName>
         <VerInfo_Locale>1046</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-    <DCC_UnitSearchPath>modules\.dcp;..\modules\.dcp;modules\.dcu;..\modules\.dcu;$(DCC_UnitSearchPath);modules;..\modules;modules\synpdf;..\modules\synpdf</DCC_UnitSearchPath></PropertyGroup>
+    <DCC_UnitSearchPath>..\modules\.dcp;..\modules\.dcu;$(DCC_UnitSearchPath);..\modules;..\modules\synpdf;modules\.dcp;modules\.dcu;modules;modules\synpdf</DCC_UnitSearchPath></PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_UsePackage>soapserver;vclwinx;fmx;vclie;DbxCommonDriver;bindengine;vcldb;VCLRESTComponents;FireDACCommonODBC;FireDACCommonDriver;appanalytics;vclx;JclContainers;dbxcds;vcledge;vclFireDAC;bindcompvclwinx;bindcomp;FireDACCommon;RESTBackendComponents;bindcompfmx;bindcompdbx;inetdb;rtl;FireDACMySQLDriver;FireDACADSDriver;FireDACSqliteDriver;DbxClientDriver;RESTComponents;soapmidas;DBXSqliteDriver;vcl;vclactnband;dsnapxml;dsnapcon;fmxFireDAC;dbexpress;adortl;Jcl;JclVcl;DBXMySQLDriver;VclSmp;inet;vclimg;vcltouch;FireDACPgDriver;FireDAC;fmxase;inetdbxpress;xmlrtl;tethering;dbrtl;bindcompvcl;dsnap;fmxdae;CloudService;FireDACMSAccDriver;CustomIPTransport;fmxobj;bindcompvclsmp;JclDeveloperTools;soaprtl;vcldsnap;DBXInterBaseDriver;FireDACIBDriver;$(DCC_UsePackage)</DCC_UsePackage>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>

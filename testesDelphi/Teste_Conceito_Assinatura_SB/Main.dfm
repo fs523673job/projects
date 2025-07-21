@@ -2,8 +2,8 @@ object frmMain: TfrmMain
   Left = 0
   Top = 0
   Caption = 'Assinatura de PDF'
-  ClientHeight = 408
-  ClientWidth = 453
+  ClientHeight = 566
+  ClientWidth = 466
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,8 +18,8 @@ object frmMain: TfrmMain
     Left = -8
     Top = 8
     Width = 465
-    Height = 433
-    ActivePage = TabSheet2
+    Height = 529
+    ActivePage = TabSheet1
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Assinatura Convencional'
@@ -27,7 +27,7 @@ object frmMain: TfrmMain
         Left = 8
         Top = 8
         Width = 438
-        Height = 120
+        Height = 158
         Caption = 'PDF Para Ser Assinado'
         TabOrder = 0
         object Label2: TLabel
@@ -65,7 +65,7 @@ object frmMain: TfrmMain
           Top = 94
           Width = 193
           Height = 17
-          Caption = 'Teste: Assinar Todos os Campos'
+          Caption = 'Assinar Todos os Campos [Teste]'
           TabOrder = 3
         end
         object btnRemoveSignature: TButton
@@ -77,10 +77,28 @@ object frmMain: TfrmMain
           TabOrder = 4
           OnClick = btnRemoveSignatureClick
         end
+        object btnRubricar: TButton
+          Left = 321
+          Top = 122
+          Width = 109
+          Height = 25
+          Caption = 'Apenas Rubricar'
+          TabOrder = 5
+          OnClick = btnRubricarClick
+        end
+        object ckRubricas: TCheckBox
+          Left = 16
+          Top = 117
+          Width = 193
+          Height = 17
+          Caption = 'N'#227'o mostrar campos rubricados'
+          TabOrder = 6
+          OnClick = ckRubricasClick
+        end
       end
       object GroupBox1: TGroupBox
         Left = 8
-        Top = 136
+        Top = 243
         Width = 438
         Height = 85
         Caption = 'Certificado em Arquivo'
@@ -118,7 +136,7 @@ object frmMain: TfrmMain
       end
       object GroupBox2: TGroupBox
         Left = 8
-        Top = 226
+        Top = 329
         Width = 438
         Height = 62
         Caption = 'Certificado do Windows'
@@ -134,7 +152,7 @@ object frmMain: TfrmMain
       end
       object GroupBox3: TGroupBox
         Left = 8
-        Top = 300
+        Top = 400
         Width = 438
         Height = 66
         Caption = 'Adicionar uma image JPEG'
@@ -145,7 +163,7 @@ object frmMain: TfrmMain
           Width = 302
           Height = 21
           TabOrder = 0
-          Text = 'D:\Chamados\Arquivos\489275\Signer\Assinatura.jpg'
+          Text = 'C:\ToolsForTests\PDF_Assinatura\Assinatura.jpg'
         end
         object btnLoadJpegPath: TBitBtn
           Left = 322
@@ -159,12 +177,27 @@ object frmMain: TfrmMain
       end
       object btnSignDocument: TBitBtn
         Left = 8
-        Top = 373
+        Top = 472
         Width = 153
         Height = 25
         Caption = 'Assinar PDF'
         TabOrder = 4
         OnClick = btnSignDocumentClick
+      end
+      object GroupBox5: TGroupBox
+        Left = 8
+        Top = 186
+        Width = 438
+        Height = 47
+        TabOrder = 5
+        object Button1: TButton
+          Left = 284
+          Top = 12
+          Width = 147
+          Height = 25
+          Caption = 'Adicionar Campos Assinatrua'
+          TabOrder = 0
+        end
       end
     end
     object TabSheet2: TTabSheet

@@ -8,6 +8,7 @@ uses
   System.SysUtils,
   System.Variants,
   System.Classes,
+  System.IOUtils,
   Vcl.Graphics,
   Vcl.Controls,
   Vcl.Forms,
@@ -18,7 +19,8 @@ uses
   SBWinCertStorage,
   SBX509,
 
-  SignaturePDF, Vcl.ComCtrls
+  SignaturePDF,
+  Vcl.ComCtrls
   ;
 
 type
@@ -47,6 +49,10 @@ type
     btnSignDocument: TBitBtn;
     edtCriarNovoPDF: TEdit;
     btnCriarNovoPDF: TButton;
+    GroupBox5: TGroupBox;
+    Button1: TButton;
+    btnRubricar: TButton;
+    ckRubricas: TCheckBox;
     procedure btnLoadPDFClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -55,11 +61,15 @@ type
     procedure btnSignDocumentClick(Sender: TObject);
     procedure btnRemoveSignatureClick(Sender: TObject);
     procedure btnCriarNovoPDFClick(Sender: TObject);
+    procedure btnRubricarClick(Sender: TObject);
+    procedure ckRubricasClick(Sender: TObject);
   private
     PDFSign: TPDFSignature;
   private
     procedure PopulateWindowsCertificate;
     procedure PopulateFieldsSign;
+    procedure PopulateFieldsSignRubricados;
+
     procedure InitializeFields;
   public
   end;
@@ -73,8 +83,8 @@ implementation
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
-  PopulateWindowsCertificate;
   InitializeFields;
+  PopulateWindowsCertificate;
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
@@ -105,6 +115,19 @@ begin
   end;
 end;
 
+procedure TfrmMain.PopulateFieldsSignRubricados;
+var
+  c : Integer;
+begin
+  cmbCamposAssinaturas.Clear;
+  cmbCamposAssinaturas.Items.Clear;
+  for c := 0 to PDFSign.CountSignFields - 1 do
+  begin
+    if PDFSign.Field[c].AuthorName.IsEmpty then
+      cmbCamposAssinaturas.Items.Add('Campo: ' + PDFSign.Field[c].Title + ', Page: ' + IntToStr(PDFSign.Field[c].SignInfo.Page));
+  end;
+end;
+
 procedure TfrmMain.PopulateWindowsCertificate;
 var
   WinCert : TElWinCertStorage;
@@ -132,7 +155,7 @@ end;
 
 procedure TfrmMain.btnCriarNovoPDFClick(Sender: TObject);
 begin
-  PDFSign.PreparePDF(edtCriarNovoPDF.Text);
+  PDFSign.PreparePDF(edtCriarNovoPDF.Text, edtJPEGPath.Text);
 end;
 
 procedure TfrmMain.btnLoadCertClick(Sender: TObject);
@@ -178,14 +201,40 @@ var
   c, Index : Integer;
   FileName : String;
 begin
-  if not (ckbTodos.Checked) then
+  if ckbTodos.Checked then
+  begin
+    for c := 0 to PDFSign.CountSignFields - 1 do
+    begin
+      PDFSign.Field[c].Certificate.SystemStores.Add('My');
+      PDFSign.Field[c].Certificate.CertStoreIndex := cmbCertificate.ItemIndex;;
+      if not String(edtJPEGPath.Text).IsEmpty then
+      begin
+        if TFile.Exists(edtJPEGPath.Text) then
+          PDFSign.Field[c].LoadJPEGFromFile(edtJPEGPath.Text);
+      end;
+
+      if not PDFSign.Field[c].Signed then
+      begin
+        if not PDFSign.SignField(PDFSign.Field[c]) then
+        begin
+          ShowMessage(Format('Erro ao assinar o campo %d', [0]));
+          Break;
+        end;
+      end;
+    end;
+  end
+  else if (not ckbTodos.Checked and (not ckRubricas.Checked)) then
   begin
     Index := cmbCamposAssinaturas.ItemIndex;
     if (Index > -1) then
     begin
       PDFSign.Field[Index].Certificate.SystemStores.Add('My');
       PDFSign.Field[Index].Certificate.CertStoreIndex := cmbCertificate.ItemIndex;
-      PDFSign.Field[Index].LoadJPEGFromFile(edtJPEGPath.Text);
+      if not String(edtJPEGPath.Text).IsEmpty then
+      begin
+        if TFile.Exists(edtJPEGPath.Text) then
+          PDFSign.Field[Index].LoadJPEGFromFile(edtJPEGPath.Text);
+      end;
 
       if PDFSign.SignField(PDFSign.Field[Index]) then
       begin
@@ -196,31 +245,84 @@ begin
       end;
     end;
   end
-  else
+  else if (ckRubricas.Checked and (not ckbTodos.Checked)) then
   begin
-    for c := 0 to PDFSign.CountSignFields - 1 do
+    Index :=  PDFSign.CountSignFields - 1;
+    PDFSign.Field[Index].Certificate.SystemStores.Add('My');
+    PDFSign.Field[Index].Certificate.CertStoreIndex := 0;
+    if not String(edtJPEGPath.Text).IsEmpty then
     begin
-      PDFSign.Field[c].Certificate.SystemStores.Add('My');
-      PDFSign.Field[c].Certificate.CertStoreIndex := 0;
-      PDFSign.Field[c].LoadJPEGFromFile(edtJPEGPath.Text);
-
-      if not PDFSign.SignField(PDFSign.Field[c]) then
-        Break;
+      if TFile.Exists(edtJPEGPath.Text) then
+        PDFSign.Field[Index].LoadJPEGFromFile(edtJPEGPath.Text);
     end;
 
-    FileName := ExtractFilePath(edtPDF.Text) + ExtractFileName(edtPDF.Text) + '_Assinado.PDF';
-    PDFSign.SavePDFToFile(FileName);
-
-    ShowMessage('Assinado');
+    if not PDFSign.SignField(PDFSign.Field[Index]) then
+      ShowMessage(Format('Erro ao assinar o campo %d', [Index]));
   end;
+
+  FileName := ExtractFilePath(edtPDF.Text) + ExtractFileName(edtPDF.Text) + '_Assinado.PDF';
+  PDFSign.SavePDFToFile(FileName);
+
+  ShowMessage('Assinado');
+end;
+
+procedure TfrmMain.ckRubricasClick(Sender: TObject);
+begin
+  if ckRubricas.Checked then
+    PopulateFieldsSignRubricados
+  else
+    PopulateFieldsSign;
 end;
 
 procedure TfrmMain.btnRemoveSignatureClick(Sender: TObject);
 var
   FileName: String;
 begin
-  FileName := ExtractFilePath(edtPDF.Text) + ExtractFileName(edtPDF.Text) + '_Teste.PDF';
+  FileName := ExtractFilePath(edtPDF.Text) + ExtractFileName(edtPDF.Text) + '_RemoveCampoAssinatura.PDF';
   PDFSign.RemoveEmptySignatureField(cmbCamposAssinaturas.ItemIndex).SaveToFile(FileName);
+end;
+
+procedure TfrmMain.btnRubricarClick(Sender: TObject);
+var
+  c : Integer;
+  FileName : String;
+begin
+  if not (ckbTodos.Checked) then
+  begin
+    var Index: Integer := cmbCamposAssinaturas.ItemIndex;
+    if (Index > -1) then
+    begin
+      if not String(edtJPEGPath.Text).IsEmpty then
+      begin
+        if TFile.Exists(edtJPEGPath.Text) then
+          PDFSign.Field[Index].LoadJPEGFromFile(edtJPEGPath.Text);
+      end;
+
+      if PDFSign.RubricateField(PDFSign.Field[Index]) then
+      begin
+        FileName := ExtractFilePath(edtPDF.Text) + ExtractFileName(edtPDF.Text) + '_Rubricado.PDF';
+        PDFSign.SavePDFToFile(FileName);
+
+        ShowMessage('Rubricado');
+      end;
+    end;
+  end
+  else
+  begin
+    for c := 0 to PDFSign.CountSignFields - 1 do
+    begin
+      if TFile.Exists(edtJPEGPath.Text) then
+        PDFSign.Field[c].LoadJPEGFromFile(edtJPEGPath.Text);
+
+      if not PDFSign.RubricateField(PDFSign.Field[c]) then
+        Break;
+    end;
+
+    FileName := ExtractFilePath(edtPDF.Text) + ExtractFileName(edtPDF.Text) + '_Rubricado.PDF';
+    PDFSign.SavePDFToFile(FileName);
+
+    ShowMessage('Rubricado');
+  end;
 end;
 
 end.

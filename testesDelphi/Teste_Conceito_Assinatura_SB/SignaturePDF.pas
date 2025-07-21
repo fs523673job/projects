@@ -10,6 +10,7 @@ uses
   Winapi.Windows,
   System.Classes,
   System.SysUtils,
+  System.IOUtils,
   Generics.Collections,
   Graphics,
   cxGraphics,
@@ -65,10 +66,15 @@ type
     function SignField(ASignatureField: TPDFSignatureField): Boolean; overload;
     function SignField(AFieldIndex: Integer): Boolean; overload;
 
+    function RubricateField(ASignatureField: TPDFSignatureField): Boolean; overload;
+    function RubricateField(AFieldIndex: Integer): Boolean; overload;
+
     function RemoveSignature(Index: integer): TMemoryStream;
     function RemoveEmptySignatureField(Index: Integer): TMemoryStream;
 
-    procedure PreparePDF(const FileName: String = '');
+    procedure PreparePDF(const FileName: String = ''; const AImagePath: String = '');
+
+    function AddSignField(const ASignName: String): Boolean;
 
     property Field[Index:Integer]: TPDFSignatureField read GetSignField;
     property Certificate : TPDFCertificate read FCertificate;
@@ -138,16 +144,25 @@ begin
   NewJPG := TMemoryStream.Create;
   OldJPG := TMemoryStream.Create;
 
-  ASignatureField.FJPGImage.SaveToStream(OldJPG);
+  //ASignatureField.FJPGImage.SaveToStream(OldJPG);
 
   OldJPG.Position := 0;
 
-  ConvertAndResizeToJpeg(OldJPG, NewJPG, ASignatureField.SignInfo.Width, ASignatureField.SignInfo.Height);
+  var width  := ASignatureField.SignInfo.Width;
+  var height := ASignatureField.SignInfo.Height;
 
-  ASignatureField.FJPGImage.LoadFromStream(NewJPG);
+  if width > 1000 then
+    width := 40;
+
+  if height > 1000 then
+    height := 40;
+
+  //ConvertAndResizeToJpeg(OldJPG, NewJPG, width, height);
+
+  //ASignatureField.FJPGImage.LoadFromStream(NewJPG);
 
   //ADICIONANDO UM IMAGEM CUSTOMIZADA NA ASSINATURA
-  ASignature.Invisible := False;
+  //ASignature.Invisible := False;
   //ASignature.WidgetProps.AutoSize := False;
   //ASignature.WidgetProps.AutoPos  := False;
 
@@ -156,15 +171,15 @@ begin
   //ASignature.WidgetProps.Width   := ASignatureField.SignInfo.Width;
   //ASignature.WidgetProps.Height  := ASignatureField.SignInfo.Height;
 
-  PDFImage := TElPDFImage.Create;
-  PDFImage.ImageType := pitJPEG;
-  PDFImage.Width     := ASignatureField.SignInfo.Width;
-  PDFImage.Height    := ASignatureField.SignInfo.Height;
-  PDFImage.Data      := GetBytesJPG(ASignatureField.GetJPGImage);
+//  PDFImage := TElPDFImage.Create;
+//  PDFImage.ImageType := pitJPEG;
+//  PDFImage.Width     := ASignatureField.SignInfo.Width;
+//  PDFImage.Height    := ASignatureField.SignInfo.Height;
+//  PDFImage.Data      := GetBytesJPG(ASignatureField.GetJPGImage);
 
   //ASignature.WidgetProps.BackgroundStyle := pbsNoBackground;
   //ASignature.WidgetProps.AddImage(PDFImage, 0, 0, 66 * PDFImage.Width / PDFImage.Height * ASignature.WidgetProps.Height / ASignature.WidgetProps.Width, 66);
-  ASignature.WidgetProps.AddImage(PDFImage);//, 0, 0, 66 * PDFImage.Width / PDFImage.Height * ASignature.WidgetProps.Height / ASignature.WidgetProps.Width, 66);
+//  ASignature.WidgetProps.AddImage(PDFImage);//, 0, 0, 66 * PDFImage.Width / PDFImage.Height * ASignature.WidgetProps.Height / ASignature.WidgetProps.Width, 66);
 
   (*
   ASignature.WidgetProps.NoView        := False;
@@ -204,6 +219,11 @@ begin
     ASignature.WidgetProps.Background.ImageType  := pitJPEG;
     ASignature.WidgetProps.Background.Data       := GetBytesJPG(ASignatureField.GetJPGImage);
   //ADICIONANDO UM IMAGEM CUSTOMIZADA NA ASSINATURA
+end;
+
+function TPDFSignature.AddSignField(const ASignName: String): Boolean;
+begin
+// Não implementado
 end;
 
 function TPDFSignature.ConvertAndResizeToJpeg(const ASource, ADest: TStream; const AMaxWidth, AMaxHeight: Integer; const AOnlyReduce: Boolean = False; const AQuality: Cardinal = 90): Double;
@@ -365,10 +385,10 @@ begin
   end;
 end;
 
-procedure TPDFSignature.PreparePDF(const FileName: String = '');
+procedure TPDFSignature.PreparePDF(const FileName: String = ''; const AImagePath: String = '');
 var
- lPdf   : TPdfDocument;
- lPage  : TPdfPage;
+ lPdf      : TPdfDocument;
+ lPage     : TPdfPage;
 begin
   lPdf := TPdfDocument.Create;
   try
@@ -387,9 +407,22 @@ begin
     lPdf.Canvas.TextOut(50, 80, 'CPF: ');
     lPdf.Canvas.TextOut(50, 60, 'Geolocalização: ');
 
-    lPdf.Canvas.TextOut(50, 40, 'Assinatura 1: _____________________________');
+    lPdf.Canvas.TextOut(50, 40, 'Assinatura 2: _____________________________');
     lPdf.Canvas.TextOut(50, 20, 'CPF: ');
     lPdf.Canvas.TextOut(50, 0, 'Geolocalização: ');
+
+    if (not AImagePath.IsEmpty) and TFile.Exists(AImagePath) then
+    begin
+      var imageStream : TBitmap := TBitmap.Create;
+      try
+        imageStream.LoadFromFile(AImagePath);
+        var lPdfImage: TPdfImage := TPdfImage.Create(lPdf, imageStream, True);
+        var index := lPdf.RegisterXObject(lPdfImage, 'imagePDF');
+        lPdf.Canvas.DrawXObject(200, 200, 200, 200, 'imagePDF');
+      finally
+        imageStream.FreeImage;
+      end;
+    end;
 
     if FileName.IsEmpty then
       lPdf.SaveToFile(ExtractFilePath(ParamStr(0)) +'\NewPDFTest.PDF')
@@ -405,6 +438,7 @@ begin
   Result := TMemoryStream.Create;
   try
     FDocumentPDF.RemoveEmptySignatureField(Index);
+    //FDocumentPDF.RemoveEmptySignatureField(Index, sroKeepField);
   finally
     SavePDFToStream(Result);
   end;
@@ -417,6 +451,51 @@ begin
     FDocumentPDF.RemoveSignature(Index);
   finally
     SavePDFToStream(Result);
+  end;
+end;
+
+function TPDFSignature.RubricateField(AFieldIndex: Integer): Boolean;
+begin
+  Result := RubricateField(GetSignField(AFieldIndex));
+end;
+
+function TPDFSignature.RubricateField(ASignatureField: TPDFSignatureField): Boolean;
+var
+  c, Index         : Integer;
+  Signature        : TElPDFSignature;
+  PublicKeyHandler : TElPDFPublicKeySecurityHandler;
+  PageIndex        : Integer;
+begin
+  Result := False;
+
+  if (FDocumentPDF.Opened) and (ASignatureField <> nil) then
+  begin
+    Index := -1;
+    for c := 0 to FDocumentPDF.EmptySignatureFieldCount - 1 do
+    begin
+      if (FDocumentPDF.EmptySignatureFields[c].FieldName = ASignatureField.Title) then
+      begin
+        PageIndex := FDocumentPDF.EmptySignatureFields[c].Page;
+        Index := c;
+        Break;
+      end;
+    end;
+
+    if (Index > -1) then
+    begin
+      ASignatureField.AuthorName := 'Rubricado - ' + DateTimeToStr(Now) ;
+      ASignatureField.Reason     := 'Rubrica Teste';
+
+      if not ASignatureField.GetJPGImage.Empty then
+        AddImageToSignature(FDocumentPDF.Signatures[Index], ASignatureField);
+
+      FDocumentPDF.Close(True);
+
+      FPDFStream.Position := 0;
+      FDocumentPDF.Open(FPDFStream);
+
+      Result := True;
+    end;
   end;
 end;
 
