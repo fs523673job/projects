@@ -19,6 +19,7 @@ def insert_into_firebird(input_name, input_sha, branch_name, regex_search, featu
 
     # Remove tudo que não é dígito de name_pt
     name_pt = re.sub(r'\D', '', name_pt)
+    pt_name = name_pt[:6] if len(name_pt) >= 6 else name_pt.ljust(6, '0')
 
     # Conexão com o banco de dados
     con = fdb.connect(dsn, user=DB_USER, password=DB_PASSWORD)
@@ -29,12 +30,12 @@ def insert_into_firebird(input_name, input_sha, branch_name, regex_search, featu
 
     # SQL para inserir os dados
     sql = """
-    INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM, REGEX_SEARCH, TYPE_FEATURE, DESC_PT, NAME_PT)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM, REGEX_SEARCH, TYPE_FEATURE, DESC_PT, NAME_PT, PT_NAME)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """
 
     # Executa a SQL
-    cur.execute(sql, (input_name, input_sha, branch_name, regex_search, feature_type, feature_desc, name_pt))
+    cur.execute(sql, (input_name, input_sha, branch_name, regex_search, feature_type, feature_desc, name_pt, pt_name))
     con.commit()
     con.close()
 

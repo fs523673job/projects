@@ -8,8 +8,16 @@ SELECT * FROM FEATURE_CRIADAS fc ORDER BY 1 DESC;
 
 SELECT * FROM FEATURE_CRIADAS fc WHERE fc.LINK_MR <> '' ORDER BY 1 DESC;
 
-INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM, REGEX_SEARCH, DESC_PT, NAME_PT, TYPE_FEATURE, DATETIME_FIELD) 
-VALUES ('PT_867482_MR', 'V559', '', 'Corrigir Vulnerabilidades GA 5.59.14 (Pentest)', ' Corrigir Vulnerabilidades GA 5.59.14 (Pentest)', '867482', 'MR', '2025-06-18 17:38:00.000')
+SELECT * FROM FEATURE_CRIADAS WHERE REGEX_SEARCH  LIKE '%Cifras%'
+
+SELECT * FROM FEATURE_CRIADAS WHERE NAME_PT LIKE '%831437%'
+
+--INSERT INTO FEATURE_CRIADAS (NAME_FEATURE, NAME_BRANCH, SHA_ORIGEM, REGEX_SEARCH, DESC_PT, NAME_PT, TYPE_FEATURE, DATETIME_FIELD) 
+--VALUES ('PT_831437_MR', 'Liberacao_559', '', 'Access Violation, Portal do Candidato, Workflow', 'Mensagem de access violation quando o candidato finaliza o lançamento no portal', '831437', 'MR', '2024-11-25 16:51:00.000')
+
+--DELETE FROM FEATURE_CRIADAS WHERE ID = 305
+
+--UPDATE FEATURE_CRIADAS fc SET LINK_MR = 'https://gitlab.com/apdata/global-antares/-/merge_requests/2232' WHERE ID = 307
 
 /***************************************************************************************************************************/
 
@@ -20,5 +28,8 @@ UPDATE FEATURE_CRIADAS fc SET LINK_MR = 'https://gitlab.com/apdata/global-antare
 UPDATE FEATURE_CRIADAS fc SET STATUS_MR = 'Merged' WHERE ID in (183, 184, 185, 186, 187, 188)
 UPDATE FEATURE_CRIADAS SET NAME_FEATURE = 'PT_864782_MR' WHERE ID = 252 
  
+/***************************************************************************************************************************/
+
+
 
 
