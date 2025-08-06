@@ -1,0 +1,4 @@
+//Executa Relatorio Dialog
+EXECUTE REPORT = 66
+PARAM0=5
+Output_File_Format = PDF

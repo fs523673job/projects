@@ -1314,6 +1314,7 @@ begin
 		exec sp_Execute_Insert 'dbo', 08, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50008, 50001, 2, 39803', 1
 		exec sp_Execute_Insert 'dbo', 09, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50009, 50001, 2, 30122', 1
 		exec sp_Execute_Insert 'dbo', 10, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50010, 50001, 2, 29642', 1
+		exec sp_Execute_Insert 'dbo', 11, 'TransacoesIntegracoes', 'BBX_CdiTransacaoIntegracao, BBX_CdiDLLIntegracaoMetodo, BBX_CdiEventoTransacao, BBX_CdiTransacao', '50011, 50001, 2, 43163', 1
 
 		/*#### OBJETO - 962 - Tabela - LayoutsSaidas*/
 		exec sp_Execute_Insert 'dbo', 01, 'LayoutsSaidas', 'BRD_CdiLayOutSaida, BRD_D1sLayOutSaida, BRD_D1bLayOutSaida', '1001, ''LAYOUT REST PARAMETROS'', 0xEFBBBF7B226B6579223A20222376616C7565506172616D6574657223227D', 1   
@@ -1460,6 +1461,7 @@ begin
 		/*REST*/ /*MI: 10039, MIC: 10049*/ exec sp_Execute_Insert 'dbo', 48, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_OplGravarResponse', '10049, 10039, ''(IN) WEBHOOKS EX04'', 1, 30063, ''http://localhost'', 1, 1', 1
 		/*REST*/ /*MI: 10040, MIC: 10050*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 49, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_CdiEventoTransacao', 10050, 0, @SQL_CdiComandoSQL, 5,  '10040, ''(TESTES) REST MOCK POSTMAN DELETE A'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/delete'', 5, 2', 1  
 		/*REST*/ /*MI: 10041, MIC: 10051*/ exec sp_Execute_Insert_Key_ForeignKey 'dbo', 50, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiComandoSQL, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP, BBS_CdiEventoTransacao', 10051, 0, @SQL_CdiComandoSQL, 5,  '10041, ''(TESTES) REST MOCK POSTMAN DELETE B'', 1, 30063, ''https://20e776d9-fadf-47c1-91c9-02f58291b9c1.mock.pstmn.io/api/v1/delete/keyid'', 5, 2', 1  
+		/*REST*/ /*MI: 10006, MIC: 10052*/ exec sp_Execute_Insert 'dbo', 53, 'ModelosIntegracoesCmds', 'BBS_CdiModeloIntegracaoCmd, BBS_CdiModeloIntegracao, BBS_D1sModeloIntegracaoCmd, BBS_CdiTipoComandoIntegr, BBS_CdiTransacao, BBS_DssNomeObjeto, BBS_CdiVerboHTTP', '10052, 10006, ''(TESTES) REST MARCACAO PONTO 2'', 2, 43163, '''', 1', 1  
 
 		/*##### ModelosIntegracoesCmdsCpos MICC*/
 		/*SOAP*/ /*MIC: 10001, MICC: 10001*/ exec sp_Execute_Insert 'dbo', 001, 'ModelosIntegracoesCmdsCpos', 'BBP_CdiModeloIntegracaoCmdCpo, BBP_CdiModeloIntegracaoCmd, BBP_DssCampo_Destino, BBP_CdiTipoCampo, BBP_DssConteudo_String, BBP_OplConteudoFixo', '10001, 10001, ''consultaCEP;cep'', 9, ''03510030'', 1', 1        

@@ -1,12 +1,11 @@
 @echo off
 setlocal
 
-::Abrir o delphi com o projeto do ApScripter
-
 :: Defina aqui os valores padrão para cada argumento
 set "VRS_DEFAULT=Apdata_X64"
 set "APP_DEFAULT=ApScripter"
 set "NAME_DEFAULT=ApScripter"
+set "DELPHIVERSION=22.0"
 
 :: Check if a version argument was passed in
 if not "%~2"=="" (
