@@ -118,7 +118,7 @@ begin
       try
         if not LJSON.TryGetValue('access_token', LVal) then
         begin
-          if not LJOSN.TryGetValue('token', LVal) then
+          if not LJSON.TryGetValue('token', LVal) then
             raise Exception.Create('Resposta de token inválida: sem access_token');
         end;
         Result := LVal.Value;

@@ -18,9 +18,9 @@ uses
 type
   TPayloadTecban = class(TObject)
   public
-    matricula    : string;
-    dtHrRegistro : string;
-    dtHrEnvio    : string;
+    matricula         : string;
+    dataHoraBatimento : string;
+    dataHoraEnvio     : string;
   end;
 
 
@@ -47,9 +47,9 @@ begin
 
              var payload := TPayloadTecban.Create;
              try
-               payload.matricula    := '123';
-               payload.dtHrRegistro := FormatDateTime('yyyy-mm-ddThh:nn:ss.zzz', Now);
-               payload.dtHrEnvio := FormatDateTime('yyyy-mm-ddThh:nn:ss.zzzZ', Now);
+               payload.matricula         := '123';
+               payload.dataHoraBatimento := FormatDateTime('yyyy-mm-ddThh:nn:ss.zzz', Now);
+               payload.dataHoraEnvio     := FormatDateTime('yyyy-mm-ddThh:nn:ss.zzzZ', Now);
                var json := TJson.ObjectToJSonString(payload);
                R.Body.Add(json, ContentTypeFromString('application/json'));
              finally
@@ -61,7 +61,7 @@ begin
         );
 
     if not execOK then
-      Write
+      WriteLn('Error Send File');
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
