@@ -9,6 +9,9 @@ SELECT version FROM v$instance;
 /* Criação de Usuários */
 DROP ROLE C##APDATA;
 DROP ROLE C##Apdata;
+DROP USER C##APDATA CASCADE;
+DROP USER "C##apdata" CASCADE;
+DROP USER "C##userdb" CASCADE;
 
 
 CREATE USER C##apdata IDENTIFIED BY apdata;
@@ -21,10 +24,25 @@ GRANT EXECUTE ON DBMS_RLS TO C##apdata WITH GRANT OPTION;
 ALTER USER C##apdata ACCOUNT UNLOCK;
 ALTER USER C##apdata IDENTIFIED BY apdata;
 
+CREATE USER "flsantos" IDENTIFIED BY apdata;
+GRANT CONNECT TO "flsantos";
+GRANT RESOURCE TO "flsantos";
+GRANT CREATE ANY VIEW TO "flsantos";
+GRANT CREATE VIEW TO "flsantos";
+GRANT UNLIMITED TABLESPACE TO "flsantos";
+GRANT EXECUTE ON DBMS_RLS TO "flsantos" WITH GRANT OPTION;
+ALTER USER "flsantos" ACCOUNT UNLOCK;
+ALTER USER C##apdata IDENTIFIED BY apdata;
+
+--Realizar commit após os comandos
 COMMIT;
+
 
 SELECT * FROM dba_users
 SELECT username FROM dba_users WHERE username = 'C##APDATA';
+SELECT username FROM dba_users WHERE username = 'C##apdata';
+SELECT username, account_status FROM dba_users WHERE username = 'C##apdata';
+SELECT username, account_status FROM dba_users WHERE username = 'C##APDATA';
 
 
 /* Usuários */

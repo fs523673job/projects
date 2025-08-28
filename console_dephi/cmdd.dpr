@@ -177,7 +177,7 @@ var
       addEureka   : String;
     end;
   const
-    CompileBuild: array[0..2] of DataBuild = (
+    CompileBuild: array[0..3] of DataBuild = (
                                                 (
                                                   typeBuild   : 'release';
                                                   dirBase     : 'Apdata_X64';
@@ -213,7 +213,20 @@ var
                                                   source      : '\';
                                                   lib         : '\';
                                                   addEureka   : '0'
+                                                ),
+                                                (
+                                                  typeBuild   : '';
+                                                  dirBase     : 'Apdata_X64';
+                                                  dirApp      : 'ApAccessServer';
+                                                  arquitetura : 'Win64';
+                                                  appName     : 'ApAccessServer';
+                                                  aplicacoes  : '\Aplicacoes';
+                                                  bin         : '\ApAccessServer\bin';
+                                                  source      : '\ApAccessServer\Source';
+                                                  lib         : '\ApAccessServer\lib';
+                                                  addEureka   : '0'
                                                 )
+
                                              );
   var
     strListMsg: TStringList;
@@ -334,7 +347,8 @@ var
         end;
       18 :
         begin
-          Result := ExecuteInternal(PRJREPO + '\cmdBAT\build.bat',Format('%s %s %s RelogioVirtual Win32 RelogioVirtual 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('RelogioVirtual 32 - %s', [versionDelphi.ToUpper]))
+          Result := ExecuteInternal(PRJREPO + '\cmdBAT\build.bat',Format('%s %s %s RelogioVirtual Win32 RelogioVirtual 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('RelogioVirtual 32 - %s', [versionDelphi.ToUpper]));
+          Result := Result + sLineBreak + ExecuteInternal(PRJREPO + '\cmdBAT\build.bat',Format('%s %s %s ApAccessServer Win32 ApAccessServer 0', [versionDelphi, ASubCommand, dirDelphi]) , Format('ApAccessServer 32 - %s', [versionDelphi.ToUpper]));
         end;
       19 :
         begin

@@ -1,8 +1,6 @@
 @echo off
 setlocal
 
-::Executar o ApTools
-
 :: Defina aqui os valores padrão para cada argumento
 set "VRS_DEFAULT=Apdata_X64"
 set "APP_DEFAULT=ApAccessServer"

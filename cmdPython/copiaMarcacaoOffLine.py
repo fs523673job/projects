@@ -1,6 +1,7 @@
 import os
 import re
 import uuid
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -29,14 +30,12 @@ def update_xml_datetime_to_now(xml_text: str) -> str:
     Atualiza apenas o conteúdo de <Field_1 dataType="ap:dateTime">...</Field_1> para agora (UTC, Z).
     Não remove/insere tags, só troca o texto entre elas.
     """
-    now_iso_z = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    now_iso_z = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    # Função de substituição que preserva as bordas (grupo 1 = abertura, 3 = fechamento)
     def _repl(m):
         return f"{m.group(1)}{now_iso_z}{m.group(3)}"
 
-    pattern = r'(<Field_1\s+[^>]*>)(.*?)(</Field_1>)'
-    # DOTALL para atravessar quebras de linha; IGNORECASE para tolerar variações de caixa
+    pattern = r'(<Field_1\s+[^>]*dataType="ap:dateTime"[^>]*>)(.*?)(</Field_1>)'
     return re.sub(pattern, _repl, xml_text, flags=re.DOTALL | re.IGNORECASE)
 
 def ask_yesno(prompt: str) -> bool:
@@ -49,25 +48,6 @@ def next_filename(output_dir: Path, encrypted_final: bool) -> Path:
     suffix = "Encrypt" if encrypted_final else "Decrypt"
     name = f"{PRE_NAME}_{ts}_{guid}_{suffix}.off"
     return output_dir / name
-
-def try_fix_field1_datetime(raw: bytes) -> bytes:
-    """
-    Recebe bytes já DESembaralhados (decrypt). Se conseguir decodificar como XML,
-    atualiza o Field_1; senão, devolve os bytes intactos.
-    """
-    enc = detect_xml_encoding(raw, "utf-8")
-    try:
-        text = raw.decode(enc)  # sem errors="ignore"
-    except UnicodeDecodeError:
-        # Não conseguimos decodificar com o encoding declarado; não arriscar.
-        return raw
-
-    # Verifica presença explícita de Field_1 dateTime
-    if not re.search(r'<Field_1\s+[^>]*dataType="ap:dateTime"', text, flags=re.IGNORECASE):
-        return raw  # não alterar se o campo não existir
-
-    new_text = update_xml_datetime_to_now(text)
-    return new_text.encode(enc)
 
 def main():
     src_path = Path(input("Informe o caminho do arquivo a ser duplicado: ").strip().strip('"'))
@@ -91,38 +71,78 @@ def main():
         print("Quantidade inválida.")
         return
 
-    # Lê bytes
-    data = src_path.read_bytes()
-
-    # Se for para decryptar, aplica XOR 8
-    if do_decrypt:
-        data = xor8_bytes(data)
-        data = try_fix_field1_datetime(data)
-        # Tenta decodificar para texto e, se for XML com o campo Field_1, atualiza a data
+    # Pergunta o intervalo entre as cópias (em segundos)
+    delay_sec = 0.0
+    delay_in = input("Quantos segundos entre cada cópia? (ex.: 1, 0.5; vazio = 0): ").strip().replace(",", ".")
+    if delay_in:
         try:
-            text = data.decode("utf-8", errors="ignore")
-            if re.search(r'<Field_1\s+dataType="ap:dateTime">', text, flags=re.IGNORECASE):
-                text = update_xml_datetime_to_now(text)
-                data = text.encode("utf-8")
-        except Exception:
-            # Se não der para tratar como texto, segue em frente sem ajuste
+            delay_sec = max(0.0, float(delay_in))
+        except ValueError:
+            print("Valor de segundos inválido. Usando 0.")
+            delay_sec = 0.0
+
+    # Lê bytes
+    original_data = src_path.read_bytes()
+
+    # Preparação: se for para decryptar, gera uma versão de trabalho descriptografada
+    # e tenta decodificar como XML (com encoding detectado).
+    decrypted_bytes = None
+    xml_enc = None
+    xml_text = None
+    has_field1 = False
+
+    if do_decrypt:
+        decrypted_bytes = xor8_bytes(original_data)
+        # tenta decodificar com encoding do cabeçalho, sem ignorar erros
+        enc_guess = detect_xml_encoding(decrypted_bytes, "utf-8")
+        try:
+            xml_text_candidate = decrypted_bytes.decode(enc_guess)
+            # detecta se existe Field_1 com dataType ap:dateTime
+            if re.search(r'<Field_1\s+[^>]*dataType="ap:dateTime"', xml_text_candidate, flags=re.IGNORECASE):
+                xml_text = xml_text_candidate
+                xml_enc = enc_guess
+                has_field1 = True
+            else:
+                # não é o XML esperado; usaremos bytes decrypted tal como estão
+                pass
+        except UnicodeDecodeError:
+            # não decodifica; seguimos com bytes
             pass
 
-    # Se for para encriptar antes de salvar, aplica XOR 8 no estado atual
-    if do_encrypt_after:
-        data = xor8_bytes(data)
-
-    # Estado final dos bytes define o sufixo
+    # Estado final do arquivo (Encrypt/Decrypt) no nome
     encrypted_final = do_encrypt_after or (not do_decrypt)
 
-    # Gera as cópias
-    for _ in range(copies):
+    # Loop de geração das cópias
+    for i in range(copies):
+        # Gera o conteúdo desta cópia:
+        if do_decrypt:
+            if has_field1 and xml_text is not None and xml_enc is not None:
+                # Atualiza Field_1 para o "agora" desta cópia
+                updated_text = update_xml_datetime_to_now(xml_text)
+                data_for_copy = updated_text.encode(xml_enc)
+            else:
+                # Sem XML/Field_1 reconhecido; usa os bytes descriptografados tal como estão
+                data_for_copy = decrypted_bytes
+        else:
+            # Não foi pedido decrypt; usa bytes originais
+            data_for_copy = original_data
+
+        # (Opcional) Re-encrypt antes de salvar
+        if do_encrypt_after:
+            data_for_copy = xor8_bytes(data_for_copy)
+
+        # Salva com nome no padrão e extensão .off
         out_file = next_filename(output_dir, encrypted_final)
-        out_file.write_bytes(data)
+        out_file.write_bytes(data_for_copy)
         print(f"Cópia criada: {out_file}")
+
+        # Aguarda o intervalo, exceto após a última cópia
+        if i < copies - 1 and delay_sec > 0:
+            time.sleep(delay_sec)
 
 if __name__ == "__main__":
     main()
+
 
 
 
