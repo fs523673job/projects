@@ -653,7 +653,8 @@ end;
 
 function TPDFSignature.SignField(ASignatureField: TPDFSignatureField): Boolean;
 var
-  EmptyFieldIndex, Index         : Integer;
+  EmptyFieldIndex,
+  Index            : Integer;
   Signature        : TElPDFSignature;
   PublicKeyHandler : TElPDFPublicKeySecurityHandler;
 begin
@@ -705,9 +706,9 @@ begin
         else
           PublicKeyHandler.TSPClient := nil;
 
-        FDocumentPDF.Close(True);
+        //FDocumentPDF.Close(True);
+        FDocumentPDF.Close(False);
         ASignatureField.Signed := True;
-
       finally
         PublicKeyHandler.Free;
       end;

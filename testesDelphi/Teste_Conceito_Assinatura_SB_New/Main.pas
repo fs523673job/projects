@@ -21,6 +21,7 @@ uses
 
   SignaturePDF,
   Vcl.ComCtrls
+
   ;
 
 type
