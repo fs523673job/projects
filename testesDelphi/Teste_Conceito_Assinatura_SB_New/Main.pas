@@ -9,19 +9,24 @@ uses
   System.Variants,
   System.Classes,
   System.IOUtils,
+  System.Math,
+  System.Types,
   Vcl.Graphics,
   Vcl.Controls,
   Vcl.Forms,
   Vcl.Dialogs,
   Vcl.StdCtrls,
   Vcl.Buttons,
+  Vcl.ComCtrls,
+  Vcl.Imaging.jpeg,
+  Vcl.Imaging.pngimage,
 
   SBWinCertStorage,
   SBX509,
 
   SignaturePDF,
-  Vcl.ComCtrls
 
+  litePDF
   ;
 
 type
@@ -77,6 +82,10 @@ type
 
 var
   frmMain: TfrmMain;
+
+procedure JpegToPng(const JpegFile, PngFile: string);
+procedure BmpToPng(const BmpFile, PngFile: string);
+procedure Pdf_AddImageAt(const InFile, OutFile, ImageFile: string;  PageIndex: Integer;  Xmm, Ymm, Wmm, Hmm: Double; FromBottom: Boolean = False);
 
 implementation
 
@@ -260,11 +269,6 @@ begin
     if not PDFSign.SignField(PDFSign.Field[Index]) then
       ShowMessage(Format('Erro ao assinar o campo %d', [Index]));
   end;
-
-  FileName := ExtractFilePath(edtPDF.Text) + ExtractFileName(edtPDF.Text) + '_Assinado.PDF';
-  PDFSign.SavePDFToFile(FileName);
-
-  ShowMessage('Assinado');
 end;
 
 procedure TfrmMain.ckRubricasClick(Sender: TObject);
@@ -283,9 +287,173 @@ begin
   PDFSign.RemoveEmptySignatureField(cmbCamposAssinaturas.ItemIndex);
 end;
 
+const
+  PT_TO_MM = 25.4 / 72.0;
+
 procedure TfrmMain.btnRubricarClick(Sender: TObject);
 begin
-//
+  var FileName := ExtractFilePath(edtPDF.Text) + ExtractFileName(edtPDF.Text) + '_RubricarCampoAssinatura.PDF';
+  var LRect := PDFSign.SignFieldRect(cmbCamposAssinaturas.ItemIndex);
+
+
+  var Left_mm, Bottom_mm, Width_mm, Height_mm: Double;
+
+  Left_mm    := LRect.Left   * PT_TO_MM;
+  Bottom_mm  := LRect.Top    * PT_TO_MM;                      // <- Y do PDF é "bottom"
+  Width_mm   := (LRect.Right - LRect.Left)   * PT_TO_MM;      // ou LRect.Width * PT_TO_MM
+  Height_mm  := (LRect.Bottom - LRect.Top)   * PT_TO_MM;      // ou LRect.Height * PT_TO_MM
+
+  var fileAssinatura := edtJPEGPath.Text;
+  if TFile.Exists(fileAssinatura) then
+  begin
+    var filePng := TPath.Combine(TPath.GetDirectoryName(fileAssinatura),  TPath.GetFileNameWithoutExtension(fileAssinatura) + '_conpng.png');
+    JpegToPng(fileAssinatura, filePng);
+
+    Pdf_AddImageAt(
+                   edtPDF.Text,
+                   FileName,
+                   filePng,
+                   PDFSign.Field[cmbCamposAssinaturas.ItemIndex].SignInfo.Page,
+                   Left_mm,//LRect.Left,
+                   Bottom_mm,//LRect.Top,
+                   Width_mm,//LRect.Width,
+                   Height_mm,//LRect.Height,
+                   True
+                 );
+  end;
+end;
+
+(* ========================================== LITEPDF =============================================================*)
+
+procedure Pdf_AddImageAt(const InFile, OutFile, ImageFile: string;  PageIndex: Integer;  Xmm, Ymm, Wmm, Hmm: Double; FromBottom: Boolean = False);
+const
+  // Fator de “pixels por mm” para o HDC interno (igual aos exemplos do litePDF):
+  // use 10 para boa precisão (210 mm -> 2100 px em A4).
+  PX_PER_MM = 10.0;
+var
+  pdf: TLitePDF;
+  hDC: THandle;
+  Canvas: TCanvas;
+  Pic: TPicture;
+  PageW_u, PageH_u: Cardinal; // tamanho da página na unidade atual
+  PageW_mm, PageH_mm: Double;
+  PageW_px, PageH_px: Integer;
+  Xpx, Ypx, Wpx, Hpx: Integer;
+  Dest: TRect;
+begin
+  pdf := TLitePDF.Create;
+  try
+    // Abra o PDF. Os 2 últimos parâmetros controlam:
+    //   overwrite (gravar sobre o mesmo arquivo) e incremental update.
+    // Como vamos salvar em OutFile, não precisamos "overwrite".
+    // Preferimos incremental update (True) para manter o mínimo de alterações.
+    pdf.LoadFromFile(InFile, '', False, True);
+
+    // Trabalhar em milímetros para obter o tamanho da página;
+    // depois convertendo para "pixels" do HDC (escala PX_PER_MM).
+    pdf.SetUnit(LitePDFUnit_mm);
+    pdf.GetPageSize(PageIndex, PageW_u, PageH_u); // u = mm, pois SetUnit(mm)
+    PageW_mm := PageW_u;
+    PageH_mm := PageH_u;
+
+    PageW_px := Round(PageW_mm * PX_PER_MM);
+    PageH_px := Round(PageH_mm * PX_PER_MM);
+
+    // Converter a posição/tamanho desejados para pixels do HDC:
+    Wpx := Max(1, Round(Wmm * PX_PER_MM));
+    Hpx := Max(1, Round(Hmm * PX_PER_MM));
+    Xpx := Round(Xmm * PX_PER_MM);
+
+    if FromBottom then
+      // Origem no canto inferior: inverter o Y
+      Ypx := PageH_px - Round((Ymm + Hmm) * PX_PER_MM)
+    else
+      // Origem no topo (convencional do GDI)
+      Ypx := Round(Ymm * PX_PER_MM);
+
+    // Entrar em modo de atualização da página existente (pega um HDC “virtual”)
+    hDC := pdf.UpdatePage(PageIndex, PageW_px, PageH_px, LongWord(LitePDFDrawFlag_None));
+    if hDC = 0 then
+      raise Exception.Create('Falha ao iniciar UpdatePage.');
+
+    Canvas := TCanvas.Create;
+    try
+      Canvas.Handle := hDC;
+
+      // Carregar a imagem (PNG/JPG/BMP…)
+      Pic := TPicture.Create;
+      try
+        Pic.LoadFromFile(ImageFile);
+
+        // Retângulo de destino em pixels
+        Dest := Rect(Xpx, Ypx, Xpx + Wpx, Ypx + Hpx);
+
+        // Desenhar com redimensionamento
+        Canvas.StretchDraw(Dest, Pic.Graphic);
+      finally
+        Pic.Free;
+      end;
+    finally
+      Canvas.Free;
+    end;
+
+    // Finalizar desenho nesta página
+    pdf.FinishPage(hDC);
+
+    // Salvar (como incremental update) em OUTFILE
+    pdf.SaveToFile(OutFile);
+
+    // Fechar o documento
+    pdf.Close;
+  finally
+    pdf.Free;
+  end;
+end;
+
+(*=============================== UTILITARIOS =======================================================================*)
+
+procedure JpegToPng(const JpegFile, PngFile: string);
+var
+  Jpeg: TJPEGImage;
+  Bitmap: TBitmap;
+  Png: TPngImage;
+begin
+  Jpeg := TJPEGImage.Create;
+  Bitmap := TBitmap.Create;
+  Png := TPngImage.Create;
+  try
+    // Carregar JPG
+    Jpeg.LoadFromFile(JpegFile);
+
+    // Converter JPG -> Bitmap
+    Bitmap.Assign(Jpeg);
+
+    // Converter Bitmap -> PNG
+    Png.Assign(Bitmap);
+    Png.SaveToFile(PngFile);
+  finally
+    Png.Free;
+    Bitmap.Free;
+    Jpeg.Free;
+  end;
+end;
+
+procedure BmpToPng(const BmpFile, PngFile: string);
+var
+  Bitmap: TBitmap;
+  Png: TPngImage;
+begin
+  Bitmap := TBitmap.Create;
+  Png := TPngImage.Create;
+  try
+    Bitmap.LoadFromFile(BmpFile);
+
+    Png.Assign(Bitmap);
+    Png.SaveToFile(PngFile);
+  finally
+    Png.Free;
+    Bitmap.Free;
+  end;
 end;
 
 end.

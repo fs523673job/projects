@@ -100,7 +100,7 @@ def main():
 
     chrome_options = Options()
     #user_data_dir = r'C:\Users\flsantos\AppData\Local\Google\Chrome\User Data'
-    #profile_directory = 'Default'
+    #profile_directory = 'Profile 3'
     user_data_dir = r'C:\ChromeDriver\ChromeProfiles'
     profile_directory = 'SeleniumTest'
     chrome_options.add_argument(f"user-data-dir={user_data_dir}")

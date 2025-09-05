@@ -4,7 +4,8 @@ uses
   Vcl.Forms,
   unFunctions in 'unFunctions.pas',
   unSignature in 'unSignature.pas',
-  Main in 'Main.pas' {frmMain};
+  Main in 'Main.pas' {frmMain},
+  litePDF in 'litePDF\litePDF.pas';
 
 {$R *.res}
 

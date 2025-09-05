@@ -10,8 +10,10 @@ uses
   Winapi.Windows,
   System.Classes,
   System.SysUtils,
-  Generics.Collections,
+  System.Types,
   Graphics,
+  Generics.Collections,
+
   Vcl.Imaging.pngimage,
   cxGraphics,
   Math,
@@ -136,6 +138,9 @@ type
     function SignField(AFieldIndex: Integer): Boolean; overload;
 
     procedure RemoveEmptySignatureField(const Index: Integer);
+
+    function SignFieldRectF(const AIndex: Integer; const AConvertToMM: Boolean): TRectF;
+    function SignFieldRect(const AIndex: Integer; const AConvertToMM: Boolean = True): TRect;
 
     procedure SetupTimestampingProtocol(const AUseTimestamping: Boolean = False;
       const ATSPURL: string = '';
@@ -651,6 +656,45 @@ begin
   Result := SignField(GetSignField(AFieldIndex));
 end;
 
+function TPDFSignature.SignFieldRect;
+begin
+  if (AIndex >= 0) and (AIndex < FDocumentPDF.EmptySignatureFieldCount) then
+  begin
+    Exit(Bounds(
+                FDocumentPDF.EmptySignatureFields[AIndex].OffsetX,
+                FDocumentPDF.EmptySignatureFields[AIndex].OffsetY,
+                FDocumentPDF.EmptySignatureFields[AIndex].Width,
+                FDocumentPDF.EmptySignatureFields[AIndex].Height
+               )
+          );
+  end
+  else
+    Exit(Bounds(0, 0, 0, 0));
+end;
+
+function TPDFSignature.SignFieldRectF(const AIndex: Integer; const AConvertToMM: Boolean): TRectF;
+const
+  PT_TO_MM = 25.4 / 72.0;
+var
+  L, B, W, H, K: Double;
+begin
+  if (AIndex < 0) or (AIndex >= FDocumentPDF.EmptySignatureFieldCount) then
+    Exit(TRectF.Empty);
+
+  L := FDocumentPDF.EmptySignatureFields[AIndex].OffsetX;
+  B := FDocumentPDF.EmptySignatureFields[AIndex].OffsetY;
+  W := FDocumentPDF.EmptySignatureFields[AIndex].Width;
+  H := FDocumentPDF.EmptySignatureFields[AIndex].Height;
+
+  if AConvertToMM then
+  begin
+    K := PT_TO_MM;
+    L := L * K; B := B * K; W := W * K; H := H * K;
+  end;
+
+  Result := TRectF.Create(L, B, L + W, B + H);
+end;
+
 function TPDFSignature.SignField(ASignatureField: TPDFSignatureField): Boolean;
 var
   EmptyFieldIndex,
@@ -706,8 +750,7 @@ begin
         else
           PublicKeyHandler.TSPClient := nil;
 
-        //FDocumentPDF.Close(True);
-        FDocumentPDF.Close(False);
+        FDocumentPDF.Close(True);
         ASignatureField.Signed := True;
       finally
         PublicKeyHandler.Free;

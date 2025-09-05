@@ -554,7 +554,7 @@ begin
 
   JpegToPng('C:\ToolsForTests\PDF_Assinatura\ASSINATURA_JPEG.jpg', 'C:\ToolsForTests\PDF_Assinatura\ASSINATURA_JPEG.png');
 
-  Pdf_AddImageAt(FileName, outPutFile, 'C:\ToolsForTests\PDF_Assinatura\ASSINATURA_JPEG.png', 0, 20, 250, 35, 15, False)
+  Pdf_AddImageAt(FileName, outPutFile, 'C:\ToolsForTests\PDF_Assinatura\ASSINATURA_JPEG.png', 0, 20, 250, 35, 15, False);
 end;
 
 //----------------------------------------------------------------------------
