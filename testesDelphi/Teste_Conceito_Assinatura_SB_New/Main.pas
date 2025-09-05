@@ -295,14 +295,6 @@ begin
   var FileName := ExtractFilePath(edtPDF.Text) + ExtractFileName(edtPDF.Text) + '_RubricarCampoAssinatura.PDF';
   var LRect := PDFSign.SignFieldRect(cmbCamposAssinaturas.ItemIndex);
 
-
-  var Left_mm, Bottom_mm, Width_mm, Height_mm: Double;
-
-  Left_mm    := LRect.Left   * PT_TO_MM;
-  Bottom_mm  := LRect.Top    * PT_TO_MM;                      // <- Y do PDF é "bottom"
-  Width_mm   := (LRect.Right - LRect.Left)   * PT_TO_MM;      // ou LRect.Width * PT_TO_MM
-  Height_mm  := (LRect.Bottom - LRect.Top)   * PT_TO_MM;      // ou LRect.Height * PT_TO_MM
-
   var fileAssinatura := edtJPEGPath.Text;
   if TFile.Exists(fileAssinatura) then
   begin
@@ -314,10 +306,10 @@ begin
                    FileName,
                    filePng,
                    PDFSign.Field[cmbCamposAssinaturas.ItemIndex].SignInfo.Page,
-                   Left_mm,//LRect.Left,
-                   Bottom_mm,//LRect.Top,
-                   Width_mm,//LRect.Width,
-                   Height_mm,//LRect.Height,
+                   LRect.Left,
+                   LRect.Top,
+                   LRect.Width,
+                   LRect.Height,
                    True
                  );
   end;

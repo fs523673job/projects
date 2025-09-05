@@ -657,22 +657,17 @@ begin
 end;
 
 function TPDFSignature.SignFieldRect;
+var
+  R: TRectF;
 begin
-  if (AIndex >= 0) and (AIndex < FDocumentPDF.EmptySignatureFieldCount) then
-  begin
-    Exit(Bounds(
-                FDocumentPDF.EmptySignatureFields[AIndex].OffsetX,
-                FDocumentPDF.EmptySignatureFields[AIndex].OffsetY,
-                FDocumentPDF.EmptySignatureFields[AIndex].Width,
-                FDocumentPDF.EmptySignatureFields[AIndex].Height
-               )
-          );
-  end
-  else
-    Exit(Bounds(0, 0, 0, 0));
+  R := SignFieldRectF(AIndex, AConvertToMM);
+  if R.IsEmpty then
+    Exit(Rect(0, 0, 0, 0));
+
+  Result := Rect(Round(R.Left), Round(R.Top), Round(R.Right), Round(R.Bottom));
 end;
 
-function TPDFSignature.SignFieldRectF(const AIndex: Integer; const AConvertToMM: Boolean): TRectF;
+function TPDFSignature.SignFieldRectF;
 const
   PT_TO_MM = 25.4 / 72.0;
 var
